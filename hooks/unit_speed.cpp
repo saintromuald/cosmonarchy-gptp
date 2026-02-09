@@ -7,71 +7,71 @@
 #include <BW/UnitFinder.h>
 #include "BW/api.h"
 #include "globals.h"
-#include "math_utils.h"
+#include "interpolation.h"
 #include "Utils/captivating_claws.h"
 
 namespace hooks {
-    f64 get_speed_multiplier(Unit* unit) {
+    fp32 get_speed_multiplier(Unit* unit) {
         auto& unit_ext = unit->ext();
 
-        f64 speed = 1;
+        fp32 speed{1};
         // Set additives based on status effects
         s32 decrease = (unit->ensnare_timer ? unit_ext.values[ValueEnsnareFactor] : 0);
 
         if (decrease > 0) {
             for (s32 i = 0; i < decrease; i++) {
-                speed *= 0.666;
+                speed *= 0.666fp;
             }
         }
 
         // Zerg - Adrenal Frenzy - speed
         if (unit_ext.timers[TimerZergAdrenalFrenzy] > 1) {
-            speed *= 1.25;
+            speed *= 1.25fp;
         }
 
         // Protoss Cornerstone: Avenge - speed
         if (unit_ext.timers[TimerAvenge] > 1) {
-            speed *= 1.33;
+            speed *= 1.33fp;
         }
 
         // Lobotomy Mine - slow
         if (unit_ext.timers[TimerLobotomySlow] > 1) {
-            speed *= 0.666;
+            speed *= 0.666fp;
         }
 
         // Scrapworld: Implosion - slow
         if (unit_ext.timers[TimerScrapworldImplosion] > 1) {
-            speed *= 0.666;
+            speed *= 0.666fp;
         }
 
         // Claymore - Kelvin Munitions - slow
         if (unit_ext.timers[TimerKelvinMunitions] > 1) {
-            speed *= 0.666;
+            speed *= 0.666fp;
         }
 
         // Grandstand - Booming Blast - slow
         if (unit_ext.timers[TimerBoomingBlast] > 1) {
-            speed *= 0.666;
+            speed *= 0.666fp;
         }
 
         // Gorgon - Petrification - slow
         if (unit_ext.timers[TimerPetrification]) {
-            speed *= 1 - (0.10 * unit_ext.values[ValuePetrificationStacks]);
+            speed *= 1 - (0.10fp * unit_ext.values[ValuePetrificationStacks]);
         }
 
         // Vorvrokor - Captivating Claws - reduces movement speed by 25% per unique attacker
         if (captivating_claws_get_timer(unit) > 1) {
-            speed *= 1 - 0.25 * captivating_claws_get_stacks(unit);
+            speed *= 1 - 0.25fp * captivating_claws_get_stacks(unit);
         }
 
         // Sovroleth - Writhing Web - slow more based on proximal Sovroleths
         if (unit->id == UnitId::ZergSovroleth) {
-            speed *= pow(0.95, unit_ext.values[ValueSovrolethLinkCount]);
+            speed *= pow(0.95fp, unit_ext.values[ValueSovrolethLinkCount]);
         }
 
         // Keskathalor - Caustic Discharge - speed up
         if (unit_ext.timers[TimerCausticDischargeSpeed] > 1) {
-            speed *= 1.5;
+            speed *= 1.5fp;
         }
 
         // Zoryusthaleth - Swarming Omen - 133% movement speed when moving towards Zoryusthaleth victims
@@ -96,11 +96,11 @@ namespace hooks {
             }
         }
         if (unit_ext.timers[TimerSwarmingOmenSpeed] > 1) {
-            speed *= 1.33;
+            speed *= 1.33fp;
         }
 
         if (unit_ext.timers[TimerImpactDissipation] > 1) {
-            speed *= 1.33;
+            speed *= 1.33fp;
         }
 
         // Tyranny of the Sun
@@ -108,7 +108,7 @@ namespace hooks {
             auto targets = g_unit_search
                 .radial_ex(unit, unit->get_sight_range() * 32, FilterEnemy | FilterVisible);
             for (auto target : targets) {
-                speed *= 1.33;
+                speed *= 1.33fp;
                 bw::set_unit_overlay(unit, {ImageId::DemiurgeWorshipOverlay_Small, ImageId::DemiurgeWorshipOverlay_XLarge}, true);
                 // TODO: make this overlay work when not moving (probably move to game_hooks). -Pr0nogo
                 // TODO: might need to remove the overlay externally
@@ -121,76 +121,76 @@ namespace hooks {
         }
 
         if (unit_ext.values[ValueIsMalefactor] == 2) {
-            speed *= 1.33;
+            speed *= 1.33fp;
         }
 
         // Crucible - speed up
         bool has_crucible = unit_ext.unit_vectors[UnitVectorCrucibles].size() != 0;
-        speed *= 1 + (has_crucible * 0.25);
+        speed *= 1 + (has_crucible * 0.25fp);
 
         // Vassal Terminal Surge: increase movespeed when any nearby Vassal dies
         if (unit_ext.timers[TimerTerminalSurge] > 1) {
-            speed *= 1.25;
+            speed *= 1.25fp;
         }
 
         // Hierophant Signify: Cowardice
         if (unit_ext.values[ValueSignifyStacks]) {
-            speed *= 0.5;
+            speed *= 0.5fp;
         }
 
         // Hijack - slow
         if (unit_ext.timers[TimerIsBeingHijacked] > 1) {
-            speed *= 0.5;
+            speed *= 0.5fp;
         }
 
         // Mind Tyrant - Maelstrom - slow
         if (unit_ext.timers[TimerMindTyrantMaelstromSlow] > 1) {
-            speed *= 0.5;
+            speed *= 0.5fp;
         }
 
         if (unit_ext.values[ValueReclaimed]) {
-            speed *= 0.75;
+            speed *= 0.75fp;
         }
 
         // Infestation - Slow
         if (unit_ext.values[ValueInfested] && bw::get_game_kind() != GameKind::Embraced) {
-            speed *= 0.66;
+            speed *= 0.66fp;
         }
 
         // Shade - speed steroid
         if (unit_ext.values[ValueIsShade]) {
-            speed *= 1.5;
+            speed *= 1.5fp;
         }
 
         // Vengeful March - fading speed steroid
         if (unit_ext.timers[TimerVengefulMarch]) {
-            speed *= MathUtils::Map(unit_ext.timers[TimerVengefulMarch], Protoss::VengefulMarchDuration, 0, 1.33, 1);
+            speed *= utils::map<fp32>(unit_ext.timers[TimerVengefulMarch], Protoss::VengefulMarchDuration, 0, 1.33fp, 1);
         }
 
         if (unit->id == UnitId::TerranEidolonNydus && !unit_ext.timers[TimerDecloak]) {
-            speed *= 1.33;
+            speed *= 1.33fp;
         }
 
         switch (unit->id) {
             case UnitId::TerranBlackjack: {
                 // Wear and Tear: reduce movement speed based on missing health
                 if (unit_ext.values[ValueWearAndTear]) {
-                    speed *= 0.66;
+                    speed *= 0.66fp;
                 } else {
-                    speed *= 1.2;
+                    speed *= 1.2fp;
                 }
             } break;
             case UnitId::TerranBlackjackGolden: {
                 // Wear and Tear: reduce movement speed based on missing health
                 if (unit_ext.values[ValueWearAndTear]) {
-                    speed *= 0.66;
+                    speed *= 0.66fp;
                 } else {
-                    speed *= 1.1;
+                    speed *= 1.1fp;
                 }
             } break;
             case UnitId::ZergUltrokor: {
                 // Ultrokor Kaiser Rampage: gains 200% movespeed on kill for 1 second
-                speed *= 1.2;
+                speed *= 1.2fp;
                 if (unit_ext.timers[TimerKaiserRampage]) {
                     speed *= 2;
                 }
@@ -198,9 +198,9 @@ namespace hooks {
 
             // Deathless Procession
             case UnitId::ProtossAdherent: {
-                speed *= 1.25;
+                speed *= 1.25fp;
                 if (unit->shields > 256) {
-                    speed *= 1.25;
+                    speed *= 1.25fp;
                 }
             } break;
 
@@ -208,17 +208,17 @@ namespace hooks {
             case UnitId::TerranArhaun:
             case UnitId::TerranRamesses:
             case UnitId::ProtossOptecton: {
-                speed *= 0.8;
+                speed *= 0.8fp;
             } break;
             case UnitId::TerranSiren:
             case UnitId::TerranPhalanxTankMode:
             case UnitId::ProtossAccantor:
             case UnitId::ZergBactalisk:
             case UnitId::ZergEvigrilisk: {
-                speed *= 0.9;
+                speed *= 0.9fp;
             } break;
             case UnitId::ZergQuazilisk: {
-                speed *= 1.05;
+                speed *= 1.05fp;
             } break;
             case UnitId::TerranMason:
             case UnitId::ProtossScribe:
@@ -237,11 +237,11 @@ namespace hooks {
             case UnitId::AskosiVicar:
             case UnitId::AskosiObject:
             case UnitId::AskosiThaumalogue: {
-                speed *= 1.1;
+                speed *= 1.1fp;
             } break;
             case UnitId::TerranCyclops:
             case UnitId::TerranDurendal: {
-                speed *= 1.15;
+                speed *= 1.15fp;
             } break;
             case UnitId::TerranMaverickFuturist:
             case UnitId::TerranMadcap:
@@ -257,7 +257,7 @@ namespace hooks {
             case UnitId::AskosiMissionary:
             case UnitId::AskosiCardinal:
             case UnitId::AskosiDoronin: {
-                speed *= 1.2;
+                speed *= 1.2fp;
             } break;
             case UnitId::TerranSavantEntropyGauntlets:
             case UnitId::TerranHarakan:
@@ -268,7 +268,7 @@ namespace hooks {
             case UnitId::ZergMalkothrokor:
             case UnitId::ZergZethrokor:
             case UnitId::ZergAxitrilisk: {
-                speed *= 1.25;
+                speed *= 1.25fp;
             } break;
             case UnitId::TerranCyprian:
             case UnitId::ZergYblyleth:
@@ -281,46 +281,46 @@ namespace hooks {
             case UnitId::ZergZobriolisk:
             case UnitId::AskosiProselyte:
             case UnitId::AskosiAvatar: {
-                speed *= 1.3;
+                speed *= 1.3fp;
             } break;
             case UnitId::TerranHarakanGolden:
             case UnitId::TerranStriga:
             case UnitId::ProtossZealot:
             case UnitId::ProtossCicatus: {
-                speed *= 1.35;
+                speed *= 1.35fp;
             } break;
             case UnitId::TerranTiangou:
             case UnitId::ProtossZealotStarbound:
             case UnitId::ProtossAmaranth:
             case UnitId::ZergHydraliskOrkoti: {
-                speed *= 1.4;
+                speed *= 1.4fp;
             } break;
             case UnitId::ProtossLegionnaire:
             case UnitId::ProtossVagrantShade:
             case UnitId::ZergAxitriliskWeaponless: {
-                speed *= 1.5;
+                speed *= 1.5fp;
             } break;
             case UnitId::ZergMortothrokor: {
-                speed *= 1.6;
+                speed *= 1.6fp;
             } break;
             case UnitId::ZergHydralisk: {
-                speed *= 1.7;
+                speed *= 1.7fp;
             } break;
             case UnitId::TerranCannibal: {
-                speed *= 1.75;
+                speed *= 1.75fp;
             } break;
 
             // Special overrides
             case UnitId::ProtossSteward: {
-                speed = 1;
+                speed = 1fp;
             }
         }
 
-        if (speed < 0) {
-            speed = 0;
+        if (speed < 0fp) {
+            speed = 0fp;
         }
         if (unit_ext.values[ValueReassemblyActive]) {
-            speed = 0;
+            speed = 0fp;
         }
         return speed;
     }
@@ -340,7 +340,7 @@ namespace hooks {
                 // Flingy-related code
                 if (increase > 0) {
                     for (s32 i = 0; i < increase; i++) {
-                        base_speed *= 1.6;
+                        base_speed = static_cast<u32>(base_speed * 1.6fp);
                     }
                     if (base_speed < 853) {
                         base_speed = 853;
@@ -348,14 +348,14 @@ namespace hooks {
                 }
             }
         }
-        return base_speed * get_speed_multiplier(unit);
+        return static_cast<u32>(base_speed * get_speed_multiplier(unit));
     }
 
     u32 get_modified_unit_acceleration(Unit* unit) {
         if (unit->id == UnitId::TerranDiadem && unit->status & UnitStatus::InAir) {
             return flingy_dat::acceleration[units_dat::graphic[unit->id]];
         }
-        return std::max(flingy_dat::acceleration[units_dat::graphic[unit->id]] * get_speed_multiplier(unit), 1.0);
+        return u32(std::max(flingy_dat::acceleration[units_dat::graphic[unit->id]] * get_speed_multiplier(unit), 1.0fp));
     }
 
     u32 get_modified_unit_turn_speed(Unit* unit) {
@@ -364,7 +364,7 @@ namespace hooks {
                 return 27;
             }
         }
-        return std::max(flingy_dat::turn_speed[units_dat::graphic[unit->id]] * get_speed_multiplier(unit), 1.0);
+        return u32(std::max(flingy_dat::turn_speed[units_dat::graphic[unit->id]] * get_speed_multiplier(unit), 1.0fp));
     }
 
     // Hooked to investigate crashes. -Pr0nogo

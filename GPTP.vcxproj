@@ -287,7 +287,6 @@
     <ClCompile Include="hooks\fraud_launcher.cpp" />
     <CLCompile Include="BW\characters.cpp" />
     <CLCompile Include="hooks/snp.cpp" />
-    <ClCompile Include="maths.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -670,6 +669,7 @@
     <ClInclude Include="hooks\replay_hooks.h" />
     <ClInclude Include="hooks\update_unit_sight.h" />
     <ClInclude Include="include\json.hpp" />
+    <ClInclude Include="interpolation.h" />
     <ClInclude Include="main_menu.h" />
     <ClInclude Include="hooks/snp.h" />
     <ClInclude Include="_vendor\magic_enum\magic_enum.hpp" />
@@ -705,7 +705,6 @@
     <ClInclude Include="include\yaml-cpp\src\stringsource.h" />
     <ClInclude Include="include\yaml-cpp\src\tag.h" />
     <ClInclude Include="include\yaml-cpp\src\token.h" />
-    <ClInclude Include="maths.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="GameModes\Uprising.h" />
     <ClInclude Include="trigger_system\table_edit.h" />
@@ -793,7 +792,6 @@
     <ClInclude Include="hooks\target_related.h" />
     <ClInclude Include="hooks\use_tech.h" />
     <ClInclude Include="hooks\weapon_effect.h" />
-    <ClInclude Include="math_utils.h" />
     <ClInclude Include="BW\enumerations\FlingyId.h" />
     <ClInclude Include="hooks\give_unit.h" />
     <ClInclude Include="hooks\orders\spells\hallucination_spell.h" />

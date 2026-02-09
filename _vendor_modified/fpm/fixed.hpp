@@ -38,7 +38,7 @@ public:
     // Converts an integral number to the fixed-point type.
     // Like static_cast, this truncates bits that don't fit.
     template <typename T, typename std::enable_if<std::is_integral<T>::value>::type* = nullptr>
-    constexpr inline explicit fixed(T val) noexcept
+    constexpr inline fixed(T val) noexcept
         : m_value(static_cast<BaseType>(val * FRACTION_MULT))
     {}
 
@@ -500,9 +500,9 @@ struct is_fixed : std::false_type {};
 template<typename BaseType, typename IntermediateType, unsigned int FractionBits, bool EnableRounding>
 struct is_fixed<fixed<BaseType, IntermediateType, FractionBits, EnableRounding>> : std::true_type {};
 
-#if  __cplusplus >= 201703L
+//#if  __cplusplus >= 201703L
 template<typename T>
 inline constexpr bool is_fixed_v = is_fixed<T>::value;
-#endif
+//#endif
 }
 #endif

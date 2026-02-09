@@ -45,10 +45,10 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
         }
     }
 
-    fp32 scale = 1_fp32;
+    fp32 scale = 1fp;
     // Sovroleth - Writhing Web
     if (unit->id == UnitId::ZergSovroleth) {
-        scale += 0.05_fp32 * unit_ext.values[ValueSovrolethLinkCount];
+        scale += 0.05fp * unit_ext.values[ValueSovrolethLinkCount];
     }
 
     // Height advantage
@@ -57,8 +57,8 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
     // Ignore bonus distance for melee units
     u32 weapon_range = estimate_max_weapon_range(unit, target);
     if (weapon_range <= 32 || unit_id_is_trap(unit->id)) {
-        scale = 1_fp32;
-        bonus_amount = 0_fp32;
+        scale = 1fp;
+        bonus_amount = 0fp;
     }
 
     u32 final_range = units_dat::seek_range[unit->id];
@@ -96,7 +96,7 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
 u32 get_base_weapon_range(u8 weapon_id, u16 unit_id) {
     u32 final_range = weapons_dat::max_range[weapon_id];
     if (bw::get_game_kind() == GameKind::DarkAges && weapons_dat::max_range[weapon_id] > 32 && !unit_id_is_trap(unit_id)) {
-        final_range -= static_cast<u32>(round(bw::calculate_dark_ages_penalty(weapons_dat::max_range[weapon_id] / 32.0_fp32))) * 32;
+        final_range -= static_cast<u32>(round(bw::calculate_dark_ages_penalty(weapons_dat::max_range[weapon_id] / 32.0fp))) * 32;
     }
     // @TODO: Extend weapons and remove these
     switch (unit_id) {
@@ -122,7 +122,7 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
 
     fp32 bonus_amount{};
     if (bw::get_game_kind() == GameKind::DarkAges) {
-        bonus_amount -= bw::calculate_dark_ages_penalty(weapons_dat::max_range[weapon_id] / 32.0_fp32) * 32;
+        bonus_amount -= bw::calculate_dark_ages_penalty(weapons_dat::max_range[weapon_id] / 32.0fp) * 32;
     }
 
     // Stellar Enforcement - Magister behavior
@@ -133,10 +133,10 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
         }
     }
 
-    fp32 scale = 1_fp32;
+    fp32 scale = 1fp;
     // Sovroleth - Writhing Web
     if (unit->id == UnitId::ZergSovroleth) {
-        scale += 0.05_fp32 * unit_ext.values[ValueSovrolethLinkCount];
+        scale += 0.05fp * unit_ext.values[ValueSovrolethLinkCount];
     }
 
     // Height advantage
@@ -146,8 +146,8 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
 
     // Ignore bonus distance for melee units
     if (weapons_dat::max_range[weapon_id] <= 32 || unit_id_is_trap(unit->id)) {
-        scale = 1_fp32;
-        bonus_amount = 0_fp32;
+        scale = 1fp;
+        bonus_amount = 0fp;
     }
 
     // Give bonus distance to garrisoned units - after melee unit calcs so flamethrower units can attack

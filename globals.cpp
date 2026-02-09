@@ -170,10 +170,10 @@ static void tick_effect(EffectField& effect) {
     const u32 elapsed = effect.max_time - effect.current_time;
     if (elapsed % update_period == 0) {
         effect.tick++;
-        const f64 tick_scalar     = f64(update_period) / 24;
-        const f64 total_scalar    = f64(update_period) / effect.max_time;
-        const f64 tick_scalar_hp  = 256.0 * tick_scalar;
-        const f64 total_scalar_hp = 256.0 * total_scalar;
+        const fp64 tick_scalar     = fp64(update_period) / 24;
+        const fp64 total_scalar    = fp64(update_period) / effect.max_time;
+        const fp64 tick_scalar_hp  = 256 * tick_scalar;
+        const fp64 total_scalar_hp = 256 * total_scalar;
         switch (effect.id) {
             case EffectId::StarSovereignTheGriefOfAllGods: {
                 if (!effect.origin) {
@@ -182,7 +182,7 @@ static void tick_effect(EffectField& effect) {
                 }
 
                 for (Unit* unit : g_unit_search.square_ex(effect, FilterNoAir)) {
-                    unit->damage_with_custom(2500 * total_scalar_hp, -1, effect.source, effect.player);
+                    unit->damage_with_custom(s32(2500 * total_scalar_hp), -1, effect.source, effect.player);
                 }
 
                 avenge_or_ascend_corpses_in_area(effect.position, effect.radius, effect.player);
@@ -195,37 +195,37 @@ static void tick_effect(EffectField& effect) {
                             target_ext.values[ValueApollyoidAdhesiveStacks]++;
                         }
                         target_ext.timers[TimerApollyoidAdhesive] = ApollyoidAdhesive::Timer;
-                        target_ext.timers[TimerSalamanderFire] = 24;
+                        target_ext.timers[TimerSalamanderFire] = 1secs;
                     }
                 }
             } break;
             case EffectId::AspirantCriticality: {
                 for (Unit* unit : g_unit_search.search_ex(effect, FilterIncludingSelf | FilterNoAir)) {
                     if (unit->player == effect.player || bw::are_mutual_allies(effect.player, unit->player)) {
-                        unit->heal_shields_then_hp(4 * tick_scalar_hp, effect.source, true);
+                        unit->heal_shields_then_hp(s32(4 * tick_scalar_hp), effect.source, true);
                     }
                 }
             } break;
             case EffectId::KeskathalorCausticDischarge: {
                 for (Unit* unit : g_unit_search.search_ex(effect, FilterIncludingSelf | FilterNoAir)) {
                     UnitExt* unit_ext = get_unit_ext(unit);
-                    unit->damage_with_custom(30 * total_scalar_hp, -1, effect.source, effect.player);
-                    unit_ext->timers[TimerCausticDischargeSpeed] = 3 * 24 + 1;
+                    unit->damage_with_custom(s32(30 * total_scalar_hp), -1, effect.source, effect.player);
+                    unit_ext->timers[TimerCausticDischargeSpeed] = 3secs + 1;
                 }
             } break;
             case EffectId::DiademIonField: {
                 for (Unit* unit : g_unit_search.search_ex(effect, FilterIncludingSelf | FilterNoAir)) {
-                    unit->damage_with_custom(100 * total_scalar_hp, -1, effect.source, effect.player);
-                    unit->ext().timers[TimerIonFieldAttackSpeed] = 2 * 24 + 1;
+                    unit->damage_with_custom(s32(100 * total_scalar_hp), -1, effect.source, effect.player);
+                    unit->ext().timers[TimerIonFieldAttackSpeed] = 2secs + 1;
                 }
             } break;
             case EffectId::DivineDisciplineField: {
                 for (Unit* unit : g_unit_search.search_ex(effect, FilterIncludingSelf)) {
                     auto& unit_ext = unit->ext();
                     if (bw::are_mutual_allies(unit->player, effect.source->player)) {
-                        unit_ext.timers[TimerDivineDisciplineBuff] = 24;
+                        unit_ext.timers[TimerDivineDisciplineBuff] = 1secs;
                     } else {
-                        unit_ext.timers[TimerDivineDisciplineDebuff] = 24;
+                        unit_ext.timers[TimerDivineDisciplineDebuff] = 1secs;
                     }
                 }
             } break;
@@ -241,14 +241,14 @@ static void tick_effect(EffectField& effect) {
                     break;
                 }
                 auto distance = bw::distance_between(caster->position, (Point16)effect.position);
-                if (distance > weapons_dat::max_range[WeaponId::PsiStorm] + 64 || caster->status & UnitStatus::InTransport) {
+                if (distance > weapons_dat::max_range[WeaponId::PsiStorm] + 2tiles || caster->status & UnitStatus::InTransport) {
                     caster_ext.current_storm = 0;
                     effect.destroy();
                     break;
                 }
 
-                caster->spend_energy(20 * tick_scalar_hp);
-                tick_psi_storm_damage(effect, update_period, tick_scalar_hp);
+                caster->spend_energy(u32(20 * tick_scalar_hp));
+                tick_psi_storm_damage(effect, update_period, u32(tick_scalar_hp));
                 if (!caster->energy) {
                     caster_ext.current_storm = 0;
                     effect.destroy();
@@ -256,11 +256,11 @@ static void tick_effect(EffectField& effect) {
                 }
             } break;
             case EffectId::PsiStormPersistent: {
-                tick_psi_storm_damage(effect, update_period, tick_scalar_hp);
+                tick_psi_storm_damage(effect, update_period, u32(tick_scalar_hp));
             } break;
             case EffectId::HallucinatingField: {
                 for (Unit* unit : g_unit_search.search_ex(effect, FilterIncludingSelf)) {
-                    bw::apply_hallucinating(unit, effect.player, 3 * 24 + 1);
+                    bw::apply_hallucinating(unit, effect.player, 3secs + 1);
                 }
             } break;
             case EffectId::Irradiate: {
@@ -271,18 +271,18 @@ static void tick_effect(EffectField& effect) {
             case EffectId::MorningstarGroundZero: {
                 switch (effect.tick) {
                     case 0: {
-                        g_iquare_globals->create_effect(EffectId::Irradiate, 20 * 24 - elapsed, effect.position, 1.5 * 32, SpriteId::MorningstarRadiationField, 5, effect.player, effect.source);
+                        g_iquare_globals->create_effect(EffectId::Irradiate, 20secs - elapsed, effect.position, 1.5tiles, SpriteId::MorningstarRadiationField, 5, effect.player, effect.source);
                     } break;
                     case 1:
                     case 2: {
-                        fp32 distance = effect.tick * 2 * 32_fp32;
+                        fp32 distance{effect.tick * 2tiles};
                         u32 count = effect.tick * 8;
 
                         Point16 pos = effect.position;
                         pos.x += static_cast<u16>(distance);
                         for (u32 i = 0; i < count; i++) {
                             pos = bw::rotate_point((Point16)effect.position, pos, (360.0 / count));
-                            g_iquare_globals->create_effect(EffectId::Irradiate, 20 * 24 - elapsed, pos, 1.5 * 32, SpriteId::MorningstarRadiationField, 5, effect.player, effect.source);
+                            g_iquare_globals->create_effect(EffectId::Irradiate, 20secs - elapsed, pos, 1.5tiles, SpriteId::MorningstarRadiationField, 5, effect.player, effect.source);
                         }
                     } break;
                 }
@@ -328,13 +328,13 @@ static void tick_effect(EffectField& effect) {
                 });
             } break;
             case EffectId::IsthrathalethPlagueField: {
-                for (Unit* target : g_unit_search.radial(effect.position, 1.5 * 32)) {
+                for (Unit* target : g_unit_search.radial(effect.position, 1.5tiles)) {
                     helper::plague_proc(target, 0);
                     target->ext().units[UnitPlagueSource] = effect.origin;
                 }
             } break;
             case EffectId::MiasmaPlagueField: {
-                for (Unit* target : g_unit_search.radial(effect.position, 1.5 * 32)) {
+                for (Unit* target : g_unit_search.radial(effect.position, 1.5tiles)) {
                     hooks::plague_proc_internal(target, 0, true);
                     target->ext().units[UnitPlagueSource] = effect.origin;
                 }
@@ -354,7 +354,7 @@ static void tick_effect(EffectField& effect) {
             case EffectId::VilgolethHeal: {
                 for (Unit* target : g_unit_search.search_ex(effect, FilterIncludingSelf | FilterNoAir)) {
                     UnitExt* target_ext = get_unit_ext(target);
-                    target_ext->timers[TimerNathreliskMitosalFog] = 24;
+                    target_ext->timers[TimerNathreliskMitosalFog] = 1secs;
                 }
             } break;
             case EffectId::CyclopsRecursionRound: {
@@ -1079,7 +1079,7 @@ bool is_slowed(Unit* unit) {
 void do_deconstruction_damage(Unit* unit, u16 weapon_id, bool play_sound) {
     // Deconstruction - Pazuzu passive
     UnitExt* unit_ext = get_unit_ext(unit);
-    f64 self_damage = (unit_ext->values[ValueDeconstruction] * 0.05 * (f64)(weapons_dat::damage_amount[weapon_id] * 256.0));
+    fp32 self_damage = (unit_ext->values[ValueDeconstruction] * 0.05fp * fp32(weapons_dat::damage_amount[weapon_id] * 256.0fp));
     Unit* deconstruction_target = unit;
     if (units_dat::base_property[unit->id] & UnitProperty::Subunit) {
         deconstruction_target = unit_ext->units[UnitTurretParentLink]; // TODO: port as unit
@@ -1087,7 +1087,7 @@ void do_deconstruction_damage(Unit* unit, u16 weapon_id, bool play_sound) {
             return;
         }
     }
-    deconstruction_target->inflict_damage(std::lround(self_damage), deconstruction_target, deconstruction_target->player, 0);
+    deconstruction_target->inflict_damage(s32(round(self_damage)), deconstruction_target, deconstruction_target->player, 0);
     if (play_sound) {
         helper::play_sound_from_unit(SoundId::PazuzuDeconstructionDamage, unit, 1, 0);
     }

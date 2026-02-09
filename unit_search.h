@@ -241,8 +241,8 @@ public:
         return self;
     }
 
-    auto take_fraction(this auto&& self, f32 fraction) {
-        return self.take(self.count() * fraction);
+    auto take_fraction(this auto&& self, fp32 fraction) {
+        return self.take(u32(self.count() * fraction));
     }
 
     T* first(auto&& filter_func) {
@@ -410,7 +410,7 @@ public:
                     x * CellPxSize + CellPxSize / 2,
                     y * CellPxSize + CellPxSize / 2
                 };
-                bool is_fully_covered = bw::distance_between(center, tile_center) + CellPxSize * 1.414 <= radius;
+                bool is_fully_covered = bw::distance_between(center, tile_center) + CellPxSize * 1.414fp <= fp32(radius);
 
                 for (Entry* entry = m_grid[x][y]; entry; entry = entry->next) {
                     if (is_fully_covered || bw::distance_between(center, entry->position) <= radius) {

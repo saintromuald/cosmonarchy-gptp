@@ -619,7 +619,7 @@ struct BulletExt {
     u32 damage_override = 0;
     u32 hit_count;
 
-    f32 t;
+    fp32 t;
     Vec32f displacement;
 
     u32 fire_index;

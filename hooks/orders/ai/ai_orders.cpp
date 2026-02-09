@@ -1132,7 +1132,7 @@ namespace hooks {
             u8 minerals_percentage = 0;
             u8 gas_percentage = 0;
             helper::ai_resource_need_split(&gas_percentage, town_player, &minerals_percentage);
-            u32 gas_count = u32(gas_percentage * town->worker_count / 100.0_fp32);
+            u32 gas_count = u32(gas_percentage * town->worker_count / 100.0fp);
 
             u32 worker_count = 0;
             // TODO: Add support for custom races. -Pr0nogo
@@ -1424,7 +1424,7 @@ namespace hooks {
 
         for (u32 i = 0; i < PlayerLimit; ++i) {
             for (Unit* unit = first_player_unit->unit[i]; unit; unit = unit->player_link.next) {
-                fp32 distance = bw::distance_between(area->position, unit->position) / 32.0_fp32;
+                fp32 distance = bw::distance_between(area->position, unit->position) / 32.0fp;
                 if (player == i) {
                     own_count++;
                     average_own_distance += distance;
@@ -1437,7 +1437,7 @@ namespace hooks {
                 }
             }
             if (player != i && first_player_unit->unit[i]) {
-                fp32 distance = bw::distance_between(area->position, g_start_positions[i]) / 32.0_fp32;
+                fp32 distance = bw::distance_between(area->position, g_start_positions[i]) / 32.0fp;
                 start_location_count++;
                 average_start_location_distance += distance;
             }
@@ -1934,7 +1934,7 @@ namespace hooks {
             }
 
             fp32 distance{helper::get_path_distance_to(unit, region_center)};
-            fp32 score = distance >= 1_fp32 ? force / distance : fp32(force);
+            fp32 score = distance >= 1fp ? force / distance : fp32(force);
             if (score > best_score) {
                 best_score = score;
                 best_unit = unit;

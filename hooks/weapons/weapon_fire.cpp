@@ -4,7 +4,6 @@
 #include <BW/api.h>
 #include "BW/UnitFinder.h"
 #include "hooks/cosmonarchy_finder.h"
-#include "math_utils.h"
 #include "hooks/byte_operations_utils.h"
 #include "globals.h"
 #include "hooks/unit_stats/weapon_range.h"
@@ -529,14 +528,14 @@ namespace hooks {
             if (auto storm = g_iquare_globals->get_effect(unit_ext.current_storm)) {
                 storm->move_target = target_pos;
             } else {
-                unit_ext.current_storm = g_iquare_globals->create_effect(EffectId::PsiStorm, UINT_MAX, target_pos, Point16{4 * 32, 4 * 32}, // smh I thought it's rectangular, turns out that wasn't needed...
-                    SpriteId::Psionic_Storm, 20, unit->player, unit, {.move_target = target_pos, .move_speed = u32(1.5 * 32)});
+                unit_ext.current_storm = g_iquare_globals->create_effect(EffectId::PsiStorm, UINT_MAX, target_pos, Point16{4tiles, 4tiles}, // smh I thought it's rectangular, turns out that wasn't needed...
+                    SpriteId::Psionic_Storm, 20, unit->player, unit, {.move_target = target_pos, .move_speed = 1.5tiles});
             }
             return;
         }
 
         if (unit->id == UnitId::ProtossManifold) {
-            unit_ext.timers[TimerManifoldConcurringChorus] = 25;
+            unit_ext.timers[TimerManifoldConcurringChorus] = 1secs + 1;
         }
 
         if (weapons_dat::flingy_id[weapon_id] != 0) {
@@ -591,7 +590,7 @@ namespace hooks {
                         unit->sprite->create_top_overlay(ImageId::MaverickStimpackInject);
                         unit_ext.values[ValueMadcapFullChargeRead] = 1;
                     }
-                    unit_ext.values[ValueMadcapStacks] = Clamp(stacks + TerranMadcap::PassiveDecayTime, 0, TerranMadcap::PassiveMaxStacks * TerranMadcap::PassiveDecayTime);
+                    unit_ext.values[ValueMadcapStacks] = std::clamp<u32>(stacks + TerranMadcap::PassiveDecayTime, 0, TerranMadcap::PassiveMaxStacks * TerranMadcap::PassiveDecayTime);
                 }
 
                 if (unit->order_target.unit) {
@@ -833,10 +832,10 @@ namespace hooks {
     static Box32 get_line_search_area(Bullet* bullet, Point16 old_position) {
         u32 search_margin = 20 * 32;
         Box32 search_area = {};
-        search_area.left   = Min(old_position.x, bullet->position.x) - search_margin;
-        search_area.top    = Min(old_position.y, bullet->position.y) - search_margin;
-        search_area.right  = Max(old_position.x, bullet->position.x) + search_margin;
-        search_area.bottom = Max(old_position.y, bullet->position.y) + search_margin;
+        search_area.left   = std::min(old_position.x, bullet->position.x) - search_margin;
+        search_area.top    = std::min(old_position.y, bullet->position.y) - search_margin;
+        search_area.right  = std::max(old_position.x, bullet->position.x) + search_margin;
+        search_area.bottom = std::max(old_position.y, bullet->position.y) + search_margin;
         return search_area;
     }
 
@@ -1011,8 +1010,8 @@ namespace hooks {
         Point16 old_position = bullet->position;
         BulletExt* bullet_ext = get_bullet_ext(bullet);
 
-        f32 prev_t = bullet_ext->t;
-        bullet_ext->t += 1.0 / 24;
+        fp32 prev_t = bullet_ext->t;
+        bullet_ext->t += 1.0fp / 24;
 
         f32 z_climb = 0;
         switch (bullet->weapon_id) {

@@ -22,7 +22,7 @@ using namespace magic_enum::bitwise_operators;
 #include "bwutils.h"
 #include "CM/cm.h"
 #include "utility.h"
-#include "math_utils.h"
+#include "interpolation.h"
 
 // Text colors
 #define BWTC_RESET		"\002"
@@ -35,8 +35,8 @@ using namespace magic_enum::bitwise_operators;
 
 constexpr auto PI = std::numbers::pi_v<f64>;
 
-#define HarvestTimer static_cast<u32>(1.75 * 24)
-#define HarvestTimerDepleted static_cast<u32>(3.75 * 24)
+#define HarvestTimer 1.75secs
+#define HarvestTimerDepleted 3.75secs
 #define OrderQueueTimer 0
 
 #define UnloadDelay 4

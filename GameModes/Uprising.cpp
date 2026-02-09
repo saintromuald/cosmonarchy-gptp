@@ -3,7 +3,7 @@
 #include "trigger_system/trigger_system.h"
 #include "hooks/limits/sfx_extender.h"
 #include "ai_layouts.h"
-#include "maths.h"
+#include "interpolation.h"
 #include "hooks/tactical_ai.h"
 
 // Originally Pr0 proposed camps expanding with more structures, defenses, etc
@@ -18,7 +18,7 @@ static u32 get_spawner_train_time(UnitId::Enum unit_id) {
         case UnitId::ZergRililisk:  time = 8 * 24; break;
         case UnitId::ZergRilirokor: time = 12 * 24; break;
     }
-    return Map(g_elapsed_time_frames, 0, 40 * 60 * 24, time * 2, time / 2, true);
+    return u32(utils::map<fp32>(g_elapsed_time_frames, 0, 40 * 60 * 24, time * 2, time / 2));
 }
 
 static UnitId::Enum get_next_unit_to_train(UprisingSpawner& spawner) {
@@ -154,7 +154,7 @@ void UprisingGameMode::on_unit_tick(Unit* unit) {
 
     Unit* order_target = unit->order_target.unit;
     if (unit->main_order_id == OrderId::AttackUnit) {
-        if (!order_target || bw::distance_between(unit->position, order_target->position) > unit->get_sight_range() * 32 * 1.5) {
+        if (!order_target || bw::distance_between(unit->position, order_target->position) > u32(unit->get_sight_range() * 1.5tiles)) {
             unit->order_to_idle();
         }
     }
@@ -209,6 +209,6 @@ void UprisingCreator::tick(std::vector<UprisingSpawner>& spawners) {
         unit->play_iscript_animation(IscriptAnimation::IsWorking);
     }
     if (!m_timer.running()) {
-        m_timer.start(Map(g_elapsed_time_frames, 0, 40 * 60 * 24, m_default_timer, m_default_timer / 4, true) / bw::active_player_count());
+        m_timer.start(u32(utils::map<fp32>(g_elapsed_time_frames, 0, 40 * 60 * 24, m_default_timer, m_default_timer / 4) / bw::active_player_count()));
     }
 }

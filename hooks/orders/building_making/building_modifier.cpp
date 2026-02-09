@@ -4,7 +4,7 @@
 
 namespace cm {
 BuildingModifier advance_building_modifier(Unit* unit, const ProgressBuildOptions& options) {
-	BuildingModifier modifier{.factor = 1_fp32, .integer_step = 1};
+	BuildingModifier modifier{.factor = 1fp, .integer_step = 1};
 
 	assert(unit);
     auto& unit_ext = unit->ext();
@@ -13,11 +13,11 @@ BuildingModifier advance_building_modifier(Unit* unit, const ProgressBuildOption
         if (options.is_constructing && options.is_askosi) {
             auto askosi_builder_count = unit_ext.unit_vectors[UnitVectorAskosiBuilders].size();
             if (askosi_builder_count > 1) {
-                fp32 increase = (askosi_builder_count - 1) * 0.20_fp32;
-                modifier.factor *= 1_fp32 + increase;
+                fp32 increase = (askosi_builder_count - 1) * 0.20fp;
+                modifier.factor *= 1fp + increase;
             }
             if (builder && builder->id == UnitId::AskosiDyad) {
-                modifier.factor *= 1.3_fp32;
+                modifier.factor *= 1.3fp;
             }
         }
 
@@ -29,7 +29,7 @@ BuildingModifier advance_building_modifier(Unit* unit, const ProgressBuildOption
 			}
 		}
 		if (crucible_active) {
-			modifier.factor *= 1.5_fp32;
+			modifier.factor *= 1.5fp;
 		}
 
 		if (unit->player < PlayerLimit) {

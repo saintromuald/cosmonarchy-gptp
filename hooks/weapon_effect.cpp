@@ -63,19 +63,20 @@ namespace hooks {
 			// Create effect fields
 			switch (weapon_id) {
 				case WeaponId::DiademIonCannon: {
-					g_iquare_globals->create_effect(EffectId::DiademIonField, 10 * 24, pos, 3 * 32, SpriteId::IonField, 5, bullet->player, unit);
+					// Extra 1 tick makes total damage perfect with fp32
+					g_iquare_globals->create_effect(EffectId::DiademIonField, 10secs, pos, 3tiles, SpriteId::IonField, 5, bullet->player, unit);
 				} break;
 				case WeaponId::AionLazarusSalvo: {
-					g_iquare_globals->create_effect(EffectId::ReclamationField, 36, pos, 2 * 32, SpriteId::CausticDischarge, 5, bullet->player, unit);
+					g_iquare_globals->create_effect(EffectId::ReclamationField, 1.5secs, pos, 2tiles, SpriteId::CausticDischarge, 5, bullet->player, unit);
 				} break;
 				case WeaponId::SalamanderPerditionBarrage: {
-					g_iquare_globals->create_effect(EffectId::SalamanderFire, 5 * 24, pos, 0.5 * 32, SpriteId::SalamanderImpact, 5, bullet->player, unit);
+					g_iquare_globals->create_effect(EffectId::SalamanderFire, 5secs, pos, 0.5tiles, SpriteId::SalamanderImpact, 5, bullet->player, unit);
 				} break;
 				case WeaponId::CantavisHallucinationCast: {
-					g_iquare_globals->create_effect(EffectId::HallucinatingField, 10 * 24, pos, 1.5 * 32, SpriteId::ProtossHallucinationEffect, 5, bullet->player, unit);
+					g_iquare_globals->create_effect(EffectId::HallucinatingField, 10secs, pos, 1.5tiles, SpriteId::ProtossHallucinationEffect, 5, bullet->player, unit);
 				} break;
 				case WeaponId::KeskathalorScreamingVenom: {
-					g_iquare_globals->create_effect(EffectId::KeskathalorCausticDischarge, 5 * 24, pos, 1.5 * 32, SpriteId::CausticDischarge, 5, bullet->player, unit);
+					g_iquare_globals->create_effect(EffectId::KeskathalorCausticDischarge, 5secs, pos, 1.5tiles, SpriteId::CausticDischarge, 5, bullet->player, unit);
 				} break;
 			}
 

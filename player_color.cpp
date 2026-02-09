@@ -178,7 +178,7 @@ static PlayerColor get_best_color(std::vector<ColorMatch>& matches, bool return_
     }
     if (matches.size()) {
         // We are only interested in the better portion of the colors, unless we have no distance data (e.g. first melee randomization)
-        u32 cap = any_distance ? Max(matches.size() / 8, 1) : matches.size();
+        u32 cap = any_distance ? std::max<u32>(matches.size() / 8, 1) : matches.size();
         best_match = matches[bw::random() % cap];
     }
     // bw::printf("Returning color match %s with min distance %u", player_color_names[best_match.color], best_match.min_distance);

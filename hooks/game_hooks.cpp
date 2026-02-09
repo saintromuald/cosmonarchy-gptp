@@ -28,7 +28,6 @@
 #include "ai_layouts.h"
 #include "trigger_system/trigger_system.h"
 #include "trigger_system/trigger_parser.h"
-#include "math_utils.h"
 #include "graphics/Bitmap.h"
 #include "data_ext.h"
 #include "config.h"
@@ -1519,8 +1518,8 @@ namespace hooks {
                 if (!unit->is_burrowed() && !unit_ext.timers[TimerKaiserRampageTimeout]) {
                     u32 radius = 1 * 32;
                     for (Thingy* corpse : g_corpse_search.radial(unit->position, radius)) {
-                        unit_ext.timers[TimerKaiserRampageTimeout] = 0.5 * 24;
-                        unit_ext.timers[TimerKaiserRampage] = 1 + (2 * 24);
+                        unit_ext.timers[TimerKaiserRampageTimeout] = 0.5secs;
+                        unit_ext.timers[TimerKaiserRampage] = 2secs + 1;
                         should_update_speed = true;
 
                         bw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
@@ -1685,7 +1684,7 @@ namespace hooks {
 
                 // Star Sovereign - Grief of All Gods
                 if (unit_ext.timers[TimerStarSovereignGriefOfAllGodsChannel] == 1) {
-                    g_iquare_globals->create_effect(EffectId::StarSovereignTheGriefOfAllGods, 360, unit->position, 8 * 32, SpriteId::None, unit->sprite->elevation, unit->player, unit, { .origin = unit });
+                    g_iquare_globals->create_effect(EffectId::StarSovereignTheGriefOfAllGods, 15secs, unit->position, 8tiles, SpriteId::None, unit->sprite->elevation, unit->player, unit, { .origin = unit });
                     bw::play_sound(SoundId::StarSovereignGriefOfAllGodsBlast, unit);
                 }
 
@@ -1867,7 +1866,7 @@ namespace hooks {
                 if (!unit_ext.timers[TimerBulwarkAstralSplendor]) {
                     u32 cooldown{ProtossBulwark::AstralSplendorCooldown};
                     if (unit_ext.unit_vectors[UnitVectorCrucibles].size()) {
-                        cooldown = static_cast<u32>(cooldown / 1.5_fp32);
+                        cooldown = static_cast<u32>(cooldown / 1.5fp);
                     }
                     unit_ext.timers[TimerBulwarkAstralSplendor] = cooldown;
 
@@ -2723,7 +2722,7 @@ namespace hooks {
                         effect->destroy();
                     }
                     unit_ext.current_storm = 0;
-                    unit->spell_cooldown = u8(get_modified_weapon_cooldown(unit, WeaponId::PsiStorm) * 1.25_fp32);
+                    unit->spell_cooldown = u8(get_modified_weapon_cooldown(unit, WeaponId::PsiStorm) * 1.25fp);
                 }
             } break;
             case UnitId::ProtossAmaranth: {
@@ -2731,7 +2730,7 @@ namespace hooks {
                 if (unit_ext.values[ValueAmaranthHealAmount] && target && !bw::are_mutual_allies(unit->player, target->player)) {
                     if (unit_ext.damage_taken_timer > 2 * 24) {
                         unit_ext.values[ValueAmaranthHealAmount] = 0;
-                    } else if (unit_ext.values[ValueAmaranthHealAmount] > 100 * 256 && unit->get_max_hp_raw() > s32(units_dat::max_hitpoints[unit->id] * 0.8_fp32)) {
+                    } else if (unit_ext.values[ValueAmaranthHealAmount] > 100 * 256 && unit->get_max_hp_raw() > s32(units_dat::max_hitpoints[unit->id] * 0.8fp)) {
                         unit_ext.values[ValueAmaranthHealAmount] = 0;
                         play_unit_banter(target, UnitId::ProtossAmaranth);
                     }
@@ -2998,13 +2997,13 @@ namespace hooks {
                 u32 vespene_cost = units_dat::vespene_cost[target->id];
                 u32 time = units_dat::time_cost[target->id] / 2;
                 target_ext.salvage_time += 1;
-                target_ext.salvage_minerals += mineral_cost * 0.50_fp32 / time;
-                while (target_ext.salvage_minerals > 1_fp32) {
+                target_ext.salvage_minerals += mineral_cost * 0.50fp / time;
+                while (target_ext.salvage_minerals > 1fp) {
                     target_ext.salvage_minerals -= 1;
                     resources->minerals[unit->player] += 1;
                 }
-                target_ext.salvage_gas += vespene_cost * 0.50_fp32 / time;
-                while (target_ext.salvage_gas > 1_fp32) {
+                target_ext.salvage_gas += vespene_cost * 0.50fp / time;
+                while (target_ext.salvage_gas > 1fp) {
                     target_ext.salvage_gas -= 1;
                     resources->gas[unit->player] += 1;
                 }
@@ -3016,12 +3015,12 @@ namespace hooks {
                 }
 
                 if (!(unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving) && !unit_ext.timers[TimerTalosAnimationSubtimer]) {
-                    u32 width = u32(units_dat::building_dimensions[target->id].x * 0.75_fp32);
-                    u32 height = u32(units_dat::building_dimensions[target->id].y * 0.75_fp32);
+                    u32 width = u32(units_dat::building_dimensions[target->id].x * 0.75fp);
+                    u32 height = u32(units_dat::building_dimensions[target->id].y * 0.75fp);
                     s32 x_offset = bw::random() % width - width / 2;
                     s32 y_offset = bw::random() % height - height / 2;
-                    x_offset = Clamp(x_offset, -127, 128);
-                    y_offset = Clamp(y_offset, -127, 128);
+                    x_offset = std::clamp<s32>(x_offset, -127, 128);
+                    y_offset = std::clamp<s32>(y_offset, -127, 128);
 
                     Unit* final_target = target;
                     if (target->subunit && target->subunit->is_subunit()) {
@@ -3035,20 +3034,20 @@ namespace hooks {
                     Point16 pos = target->sprite->position;
                     switch (bw::random() % 4) {
                     case 0: {
-                        pos.x -= u16(units_dat::unit_bounds[target->id].left * 0.75_fp32);
-                        pos.y -= u16(units_dat::unit_bounds[target->id].top * 0.75_fp32);
+                        pos.x -= u16(units_dat::unit_bounds[target->id].left * 0.75fp);
+                        pos.y -= u16(units_dat::unit_bounds[target->id].top * 0.75fp);
                     } break;
                     case 1: {
-                        pos.x += u16(units_dat::unit_bounds[target->id].right * 0.75_fp32);
-                        pos.y -= u16(units_dat::unit_bounds[target->id].top * 0.75_fp32);
+                        pos.x += u16(units_dat::unit_bounds[target->id].right * 0.75fp);
+                        pos.y -= u16(units_dat::unit_bounds[target->id].top * 0.75fp);
                     } break;
                     case 2: {
-                        pos.x -= u16(units_dat::unit_bounds[target->id].left * 0.75_fp32);
-                        pos.y += u16(units_dat::unit_bounds[target->id].bottom * 0.75_fp32);
+                        pos.x -= u16(units_dat::unit_bounds[target->id].left * 0.75fp);
+                        pos.y += u16(units_dat::unit_bounds[target->id].bottom * 0.75fp);
                     } break;
                     case 3: {
-                        pos.x += u16(units_dat::unit_bounds[target->id].right * 0.75_fp32);
-                        pos.y += u16(units_dat::unit_bounds[target->id].bottom * 0.75_fp32);
+                        pos.x += u16(units_dat::unit_bounds[target->id].right * 0.75fp);
+                        pos.y += u16(units_dat::unit_bounds[target->id].bottom * 0.75fp);
                     } break;
                     }
                     helper::set_move_target_xy(unit, pos.x, pos.y);
@@ -3504,14 +3503,14 @@ namespace hooks {
         }
 
         if (unit->is_addon() && !unit->is_completed() && unit->connected_unit && !unit->connected_unit->is_frozen() && !unit_ext.timers[TimerAddonAnimation]) {
-            u32 width  = u32(units_dat::building_dimensions[unit->id].x * 0.5_fp32);
-            u32 height = u32(units_dat::building_dimensions[unit->id].y * 0.5_fp32);
+            u32 width  = u32(units_dat::building_dimensions[unit->id].x * 0.5fp);
+            u32 height = u32(units_dat::building_dimensions[unit->id].y * 0.5fp);
 
             s32 x_offset = bw::random() % width - width / 2;
             s32 y_offset = bw::random() % height - height / 2;
 
-            x_offset = Clamp(x_offset, -127, 128);
-            y_offset = Clamp(y_offset, -127, 128);
+            x_offset = std::clamp<s32>(x_offset, -127, 128);
+            y_offset = std::clamp<s32>(y_offset, -127, 128);
 
             unit->sprite->create_overlay(ImageId::AddonWeldOverlay, x_offset, y_offset);
             bw::play_sound({SoundId::AddonConstruction01, SoundId::AddonConstruction04}, unit);
