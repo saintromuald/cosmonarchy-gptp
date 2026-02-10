@@ -1724,6 +1724,11 @@ static const char* faction_identifiers[] = { // This array needs to the same siz
 };
 static_assert(std::size(faction_identifiers) == (size_t)Faction::Count);
 
+enum TriggerFlags : u32 {
+    // Others currently unknown. -Pr0nogo
+    AlwaysDisplay          = 0x0000004,
+};
+
 enum OptionsFlags : u32 {
     UnitSpeech              = 0x0000001,
     UnitAcknowledgements    = 0x0000002,

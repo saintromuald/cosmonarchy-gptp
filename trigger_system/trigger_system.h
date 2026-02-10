@@ -243,6 +243,7 @@ struct Globals {
     DesyncState desync_state;
     bool had_desync = false;
     bool forbid_replay_auto_upload = false;
+    bool disable_transmission_waits = false;
     std::unordered_map<TriggerAction*, TriggerExt> trigger_exts;
     std::vector<SoundReplacement> sound_replacements;
     std::vector<SpriteReplacement> sprite_replacements;

@@ -230,79 +230,72 @@ namespace hooks {
     }
 
     // Hooked to improve functionality and to use in our own dialogue system. -Pr0nogo
-    s32 trigact_transmission(TriggerAction* trigger) { // 004C7890
-        TriggerAction* trigger_var = trigger;
-        if (!(LOBYTE(trigger->source_location))) // Based on this, IDA's struct is just wrong, and we have a second field here. Guessing lobyte = location id based on context. -Pr0nogo
-        {
-            return 1;
-        }
-        if ((LOBYTE(trigger->source_location)) > 0xFFu) {
-            return 1;
+    bool trigact_transmission(TriggerAction* trigger) { // 004C7890
+        if (trigger->source_location_id == 0 || trigger->source_location_id > 255) {
+            return true;
         }
         u32 player_id = *g_current_trigger_player_id;
         u8 player_type = g_player_table[player_id].type;
-        if (player_type == PlayerType::Computer
-        ||  player_type == PlayerType::Rescuable
-        ||  player_type == PlayerType::UnusedRescueActive
-        ||  player_type == PlayerType::Neutral)
-        {
-            return 1;
+        if (player_type == PlayerType::Computer || player_type == PlayerType::Rescuable || player_type == PlayerType::UnusedRescueActive || player_type == PlayerType::Neutral) {
+            return true;
         }
-        if (!g_is_executing_wait[*g_current_trigger_player_id]) {
-            char trigger_flags = trigger->flags;
-            if (trigger_flags & 1) {
-                trigger->flags = trigger_flags & 0xFE;
-                return 1;
-            }
-            if (g_current_trigger_node->trigger.flags & 0x10) {
-                return 1;
-            }
-            u32 trigger_modifier = trigger->modifier - 7;
-            u32 trigger_time = trigger_var->time;
-            if (trigger_var->modifier == 7) {
-                trigger_time = trigger_var->extra;
-            } else {
-                u32 trigger_modifier_2 = trigger_modifier - 1;
-                if (trigger_modifier_2) {
-                    if (trigger_modifier_2 == 1) {
-                        u32 trigger_extra = trigger_var->extra;
-                        if (trigger_extra <= trigger_time) {
-                            trigger_time -= trigger_extra;
-                        } else {
-                            trigger_time = 0;
-                        }
-                    }
+        if (!g_globals->disable_transmission_waits && g_is_executing_wait[player_id]) {
+            return false;
+        }
+        u8 trigger_flags = trigger->flags;
+        if (trigger_flags & 1) {
+            trigger->flags = trigger_flags & ~1;
+            return true;
+        }
+        if (g_current_trigger_node->trigger.flags & 0x10) {
+            return true;
+        }
+
+        u32 trigger_time = trigger->time;
+        switch (trigger->modifier) {
+            case 7: {
+                trigger_time = trigger->extra;
+            } break;
+            case 8: {
+                trigger_time += trigger->extra;
+            } break;
+            case 9: {
+                if (trigger->extra <= trigger_time) {
+                    trigger_time -= trigger->extra;
                 } else {
-                    trigger_time += trigger_var->extra;
+                    trigger_time = 0;
                 }
-            }
-            trigger_var->flags = trigger_flags | 1;
+            } break;
+        }
+
+        if (!g_globals->disable_transmission_waits) {
+            trigger->flags = trigger_flags | 1;
             u32 multiplayer_time = g_multiplayer_mode ? trigger_time : -1;
             g_trigger_wait[player_id] = multiplayer_time;
             g_is_executing_wait[player_id] = 1;
-            if (player_id == g_local_nation_id) {
-                helper::trigact_play_wav(trigger_var);
-                Unit* doodad = helper::get_doodad_for_unit_state(LOBYTE(trigger_var->source_location) - 1, trigger_var->type, 17);
-                Unit* doodad_var = doodad; // Probably not necessary. -Pr0nogo
-                if (doodad) {
-                    doodad->sprite->selection_timer = 45;
-                    helper::minimap_ping(doodad->sprite->position.x, doodad->sprite->position.y, 17);
-                    helper::game_talking_portrait(doodad_var->sprite->position.x, trigger_time, trigger_var->type, doodad_var->sprite->position.y);
+        }
+
+        if (player_id == g_local_nation_id) {
+            helper::trigact_play_wav(trigger);
+            Unit* speaker = helper::get_doodad_for_unit_state(trigger->source_location_id - 1, trigger->type, 17);
+            if (speaker) {
+                speaker->sprite->selection_timer = 45;
+                helper::minimap_ping(speaker->sprite->position.x, speaker->sprite->position.y, 17);
+                helper::game_talking_portrait(speaker->sprite->position.x, trigger_time, trigger->type, speaker->sprite->position.y);
+            } else {
+                helper::game_talking_portrait(-1, trigger_time, trigger->type, -1);
+            }
+            if (g_options_list->flags & OptionsFlags::Subtitles || trigger->flags & TriggerFlags::AlwaysDisplay) {
+                char* string = helper::get_chk_string(trigger->text_string);
+                u32 display_time = helper::get_text_display_time(string);
+                if (trigger_time > display_time) {
+                    helper::create_text_message_with_timer(string, trigger_time);
                 } else {
-                    helper::game_talking_portrait(-1, trigger_time, trigger_var->type, -1);
-                }
-                if (g_options_list->flags & 0x400 || trigger_var->flags & 4) {
-                    char* string = helper::get_chk_string(trigger_var->text_string);
-                    if (trigger_time > helper::get_text_display_time(string)) {
-                        helper::create_text_message_with_timer(string, trigger_time);
-                        return 0;
-                    }
-                    u32 display_time = helper::get_text_display_time(string);
                     helper::create_text_message_with_timer(string, display_time);
                 }
             }
         }
-        return 0;
+        return g_globals->disable_transmission_waits;
     }
 
     // Hooked to add features and color Vespene Ridges cyan. -Pr0nogo

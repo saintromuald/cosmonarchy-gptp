@@ -1407,7 +1407,7 @@ struct TriggerCondition {
 C_ASSERT(sizeof(TriggerCondition) == 20);
 
 struct TriggerAction {
-    u32 source_location;		// 0x00
+    u32 source_location_id;		// 0x00
     u32 text_string;			// 0x04
     u32 wav_string;				// 0x08
     u32 time;					// 0x0C

@@ -98,7 +98,7 @@ namespace {
     }
 
     void __declspec(naked) trigact_transmission_wrapper() { // 004C7890
-        static u32 result;
+        static b32 result;
         static TriggerAction* trigger;
         __asm {
             MOV trigger, ECX
@@ -678,7 +678,7 @@ namespace hooks {
         jump_patch(queue_game_command_wrapper,			0x00485BD0, 4);
         jump_patch(check_hotkey_char_wrapper,				0x004588C0, 3);
     //	jump_patch(create_upgrade_level_tooltip_wrapper,	            0x00459150, 3);
-    //	jump_patch(trigact_transmission_wrapper,			            0x004C7890, 0);
+    	jump_patch(trigact_transmission_wrapper,			0x004C7890, 0);
         jump_patch(draw_minimap_unit_box_wrapper,			0x004A4650, 4);
         jump_patch(draw_all_minimap_boxes_wrapper,		0x004A4AC0, 0);
         jump_patch(get_cursor_type_wrapper,				0x004D1460, 0);
