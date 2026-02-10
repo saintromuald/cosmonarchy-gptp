@@ -49,7 +49,7 @@ namespace IconId {
         /*002C*/	Geszithalor                         = 44,
         /*002D*/	Matraleth                           = 45,
         /*002E*/	Isthrathaleth                       = 46,
-        /*002F*/	Skryrokor                           = 47,
+        /*002F*/	Gosvileth                           = 47,
         /*0030*/	Torrarsque_Ultralisk                = 48,
         /*0031*/	Matriarch_Queen                     = 49,
         /*0032*/	Infested_Terran                     = 50,
@@ -412,6 +412,7 @@ namespace IconId {
 
         Zobriolisk                                      = 423,
 
+        Skryrokor                                       = 665,
         SavantDiscoidRifle                              = 666,
         KineticPenetration                              = 667,
         Hijack                                          = 668,

@@ -1089,7 +1089,8 @@ void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 positi
     u32 remove_timer = 0;
     switch (unit_id) {
         case UnitId::ZergRililisk:
-        case UnitId::ZergRilirokor: {
+        case UnitId::ZergRilirokor:
+        case UnitId::ZergSkryrokor: {
             remove_timer = Broodspawn::LifeTimer;
         } break;
     }
@@ -1120,7 +1121,13 @@ void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 positi
         switch (unit_id) {
             case UnitId::ZergRilirokor:
             case UnitId::ZergRililisk: {
-                helper::play_sound_from_unit(SoundId::BroodspawnSpawnProc, unit, 1, 0);
+                bw::play_sound(SoundId::BroodspawnSpawnProc, unit);
+                if (unit->remove_timer == 0 || unit->remove_timer > remove_timer) {
+                    unit->remove_timer = remove_timer;
+                }
+            } break;
+            case UnitId::ZergSkryrokor: {
+                bw::play_sound(SoundId::Zerg_AVENGER_ZAvRdy00_WAV, unit);
                 if (unit->remove_timer == 0 || unit->remove_timer > remove_timer) {
                     unit->remove_timer = remove_timer;
                 }
