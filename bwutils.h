@@ -101,7 +101,8 @@ namespace SpriteId {
             case SpriteId::Corpse_Proselyte:
             case SpriteId::Corpse_Malkothrokor:
             case SpriteId::Corpse_Zethalor:
-            case SpriteId::Corpse_Thaumalogue: {
+            case SpriteId::Corpse_Thaumalogue:
+            case SpriteId::Corpse_MaverickUpstart: {
                 return true;
             } break;
         }

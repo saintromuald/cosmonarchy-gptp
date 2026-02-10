@@ -1356,6 +1356,7 @@ UnitId::Enum get_trap_id(Unit* unit) {
         case UnitId::TerranVulture:        return UnitId::TerranLobotomyMine;
         case UnitId::TerranVultureHecaton: return UnitId::TerranTartarusMine;
         case UnitId::AskosiProselyte:      return UnitId::AskosiEyelet;
+        case UnitId::TerranVultureUpstart: return UnitId::TerranGoremast;
     }
     return UnitId::None;
 }
@@ -1466,18 +1467,24 @@ bool unit_id_is_available_without_an_addon(u16 id) {
         || id == UnitId::TerranMagnetar
 
         || id == UnitId::TerranHotshot
-        || id == UnitId::TerranHarakanGolden
-        || id == UnitId::TerranCohort
-        || id == UnitId::TerranCannibal
         || id == UnitId::TerranVultureHecaton
         || id == UnitId::TerranArhaun
-        || id == UnitId::TerranAspirant
-        || id == UnitId::TerranSouthpaw
-        || id == UnitId::TerranPhiloc
-        || id == UnitId::TerranWendigo
         || id == UnitId::TerranValkyrieHecaton
+        || id == UnitId::TerranQilin
+
+        || id == UnitId::TerranPhiloc
         || id == UnitId::TerranQuadriga
-        || id == UnitId::TerranQilin;
+
+        || id == UnitId::TerranHarakanGolden
+        || id == UnitId::TerranAspirant
+
+        || id == UnitId::TerranCohort
+
+        || id == UnitId::TerranMaverickUpstart
+        || id == UnitId::TerranCannibal
+        || id == UnitId::TerranVultureUpstart
+        || id == UnitId::TerranSouthpaw
+        || id == UnitId::TerranWendigo;
 }
 
 void apply_hallucinating(Unit* unit, u8 player, u32 time) {
@@ -3371,6 +3378,7 @@ u32 get_fore_castle_armor_bonus(Unit* unit) {
     u32 bonus = 0;
     switch (unit->id) {
         case UnitId::TerranMatadorTankMode:
+        case UnitId::TerranBroadside:
         case UnitId::TerranMinotaur: {
             bonus += 2;
         }
@@ -3851,7 +3859,7 @@ void draw_weapon_range(Unit* unit, u8 weapon_id, u8 color) {
         bounds_wy
     };
 
-    if (weapon_id != WeaponId::LobotomyMineExplosion) {
+    if (weapon_id != WeaponId::SpiderMines) {
         draw_shape(20, hooks::get_max_weapon_range(unit, weapon_id, nullptr, true) / 256.0f, offset, color);
 
         if (weapons_dat::min_range[weapon_id]) {

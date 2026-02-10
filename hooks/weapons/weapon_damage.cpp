@@ -487,6 +487,16 @@ namespace hooks {
         if (data.attacker) {
             switch (data.weapon_id) {
                 // @TODO: Extend weapons and remove these
+                case WeaponId::SentinelCerberusRailgun: {
+                    if (data.attacker->id == UnitId::TerranCutlass|| data.attacker->id == UnitId::TerranCutlassTurret) {
+                        data.damage -= 9 * 256;
+                    }
+                } break;
+                case WeaponId::PhalanxArcliteCannon: {
+                    if (data.attacker->id == UnitId::TerranBroadside || data.attacker->id == UnitId::TerranBroadsideTurret) {
+                        data.damage -= 5 * 256;
+                    }
+                } break;
                 case WeaponId::ZealotPhaseBlades: {
                     if (data.attacker->id == UnitId::ProtossCicatus) {
                         data.damage -= 3 * 256;
@@ -623,10 +633,6 @@ namespace hooks {
             case WeaponId::ValkyrieHecatonLogiRockets: {
                 target_ext.values[ValueIncineratePlayer] = data.attacking_player_id;
                 target_ext.timers[TimerIncinerateDamage] = HecatonAuriel::IncinerateTimer;
-            } break;
-            case WeaponId::TartarusMineApollyoidConflagration: {
-                target_ext.values[ValueIncineratePlayer] = data.attacking_player_id;
-                target_ext.timers[TimerIncinerateDamage] = TerranMine::IncinerateTimer;
             } break;
             case WeaponId::CyclopsBrontesPayload: {
                 data.target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
@@ -1566,7 +1572,7 @@ namespace hooks {
 
     void apply_ensnare(Unit* unit) { // 004F45E0
         // Overlay
-        if (!(unit->ensnare_timer) && !(unit->status & UnitStatus::Burrowed)) {
+        if (!(unit->ensnare_timer) && !unit->is_burrowed()) {
             bw::add_unit_overlay(unit, ImageId::EnsnareOverlay_Small + bw::get_overlay_offset(unit->id));
         }
 
@@ -1576,8 +1582,7 @@ namespace hooks {
     }
 
     u16 get_spores_overlay_id(Unit* target) {
-        UnitExt* target_ext = get_unit_ext(target);
-        u32 stacks = target_ext->values[ValueCorrosiveTouchStacks];
+        u32 stacks = target->ext().values[ValueCorrosiveTouchStacks];
         u32 overlay_multiplier = 0;
         if (stacks > 18) {
             overlay_multiplier++;

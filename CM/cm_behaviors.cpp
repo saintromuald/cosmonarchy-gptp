@@ -588,7 +588,7 @@ void tick_psi_storm_damage(EffectField& effect, u32 update_period, u32 tick_scal
 	}
 }
 
-void apply_lobotomy_slow(Point16 position, u32 timer) {
+void apply_lobotomy_effect(Point16 position, u32 timer, bool do_stun) {
 	for (Unit* victim : g_unit_search.radial(position, TerranMine::DetonationRange)) {
 		if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false) || victim->is_invincible()) {
 			continue;
@@ -596,6 +596,48 @@ void apply_lobotomy_slow(Point16 position, u32 timer) {
 		auto& victim_ext = victim->ext();
 		if (victim_ext.timers[TimerLobotomySlow] < timer) {
 			victim_ext.timers[TimerLobotomySlow] = timer;
+		}
+		if (do_stun) {
+			if (victim->lockdown_timer == 0) {
+				u32 image_id = ImageId::LockdownField_Small + bw::get_overlay_offset(victim->id);
+				Unit* overlay_unit = victim->subunit ? victim->subunit : victim;
+				overlay_unit->sprite->create_top_overlay(image_id, 0, 0, 0);
+			}
+			if (victim->lockdown_timer < TerranMine::LobotomyTimerVanilla) {
+				victim->lockdown_timer = TerranMine::LobotomyTimerVanilla;
+			}
+			helper::disable_unit(victim);
+		}
+	}
+}
+
+void apply_goremast_effect(Point16 position, u32 timer, bool do_damage) {
+	for (Unit* victim : g_unit_search.radial(position, TerranMine::DetonationRange)) {
+		if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false) || victim->is_invincible()) {
+			continue;
+		}
+		auto& victim_ext = victim->ext();
+		if (victim_ext.timers[TimerGoremastSlow] < timer) {
+			victim_ext.timers[TimerGoremastSlow] = timer;
+		}
+		if (do_damage) {
+			victim->damage_with_custom(15 * 256);
+		}
+	}
+}
+
+void apply_tartarus_effect(Point16 position, u32 timer, bool do_damage, u8 attacking_player) {
+	for (Unit* victim : g_unit_search.radial(position, TerranMine::DetonationRange)) {
+		if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false) || victim->is_invincible()) {
+			continue;
+		}
+		auto& victim_ext = victim->ext();
+		if (victim_ext.timers[TimerIncinerateArmor] < TerranMine::TartarusTimer) {
+			victim_ext.timers[TimerIncinerateArmor] = TerranMine::TartarusTimer;
+		}
+		if (do_damage) {
+			victim_ext.values[ValueIncineratePlayer] = attacking_player;
+			victim_ext.timers[TimerIncinerateDamage] = TerranMine::TartarusTimer;
 		}
 	}
 }

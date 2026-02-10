@@ -415,6 +415,7 @@ void set_up_mines(Unit* unit) {
     switch (unit->id) {
         case UnitId::TerranVulture:        unit->mine_carrier.mine_count = 3; break;
         case UnitId::TerranVultureHecaton: unit->mine_carrier.mine_count = 3; break;
+        case UnitId::TerranVultureUpstart: unit->mine_carrier.mine_count = 3; break;
         case UnitId::TerranClericFuturist: unit->mine_carrier.mine_count = 1; break;
         case UnitId::AskosiProselyte:      unit->mine_carrier.mine_count = 1; break;
     }
@@ -436,12 +437,13 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         } break;
         case Faction::TerranFuturistFederation: {
             switch (unit_id) {
-                case UnitId::TerranMaverick:  return UnitId::TerranMaverickFuturist;
-                case UnitId::TerranCleric:    return UnitId::TerranClericFuturist;
-                case UnitId::TerranMadcap:    return UnitId::TerranBlackguard;
-                case UnitId::TerranCyclops:   return UnitId::TerranCyclopsFuturist;
-                case UnitId::TerranBlackjack: return UnitId::TerranTiangou;
-                case UnitId::TerranWraith:    return UnitId::TerranPhiloc;
+                case UnitId::TerranMaverick:        return UnitId::TerranMaverickFuturist;
+                case UnitId::TerranCleric:          return UnitId::TerranClericFuturist;
+                case UnitId::TerranMadcap:          return UnitId::TerranBlackguard;
+                case UnitId::TerranCyclops:         return UnitId::TerranCyclopsFuturist;
+                case UnitId::TerranBlackjack:       return UnitId::TerranTiangou;
+                case UnitId::TerranMatadorTankMode: return UnitId::TerranCutlass;
+                case UnitId::TerranWraith:          return UnitId::TerranPhiloc;
             }
         } break;
         case Faction::TerranGoldenRepublic: {
@@ -462,9 +464,12 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         } break;
         case Faction::TerranUpstart: {
             switch (unit_id) {
-                case UnitId::TerranCyprian: return UnitId::TerranCannibal;
-                case UnitId::TerranGoliath: return UnitId::TerranSouthpaw;
-                case UnitId::TerranAncile:  return UnitId::TerranWendigo;
+                case UnitId::TerranMaverick:        return UnitId::TerranMaverickUpstart;
+                case UnitId::TerranCyprian:         return UnitId::TerranCannibal;
+                case UnitId::TerranVulture:         return UnitId::TerranVultureUpstart;
+                case UnitId::TerranGoliath:         return UnitId::TerranSouthpaw;
+            //  case UnitId::TerranPhalanxTankMode: return UnitId::TerranBroadside;
+                case UnitId::TerranAncile:          return UnitId::TerranWendigo;
             }
         } break;
         case Faction::ProtossKhalendricKnights: {
@@ -490,6 +495,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         } break;
         case Faction::ProtossAstralOmen: {
             switch (unit_id) {
+            //  case UnitId::ProtossEcclesiast:  return UnitId::ProtossEcclesiastAstral;
             //  case UnitId::ProtossHerald:      return UnitId::ProtossWarlock;
                 case UnitId::ProtossSimulacrum:  return UnitId::ProtossSimulacrumAstral;
             }
@@ -535,6 +541,10 @@ u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id) {
         damage += unit_ext.unar_solitary_focus_stacks;
     }
     switch (unit->id) {
+        case UnitId::TerranCutlass:           damage -= 9; break;
+        case UnitId::TerranCutlassTurret:     damage -= 9; break;
+        case UnitId::TerranBroadside:         damage -= 5; break;
+        case UnitId::TerranBroadsideTurret:   damage -= 5; break;
         case UnitId::ProtossCicatus:          damage -= 3; break;
         case UnitId::ProtossSimulacrumAstral: damage -= 2; break;
         case UnitId::ZergGarvrokor:           damage += 1; break;
@@ -800,7 +810,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::LegionnairePhaseSpear:               return "Phase Spear";
         case WeaponId::AkistrokorHarryingTalons:            return "Harrying Talons";
         case WeaponId::SavantDiscoidRailgun:                return "Discoid Railgun";
-        case WeaponId::LobotomyMineExplosion:               return unit_id == UnitId::TerranVulture ? "Lobotomy Mines" : "Electromagnetic Explosion";
+        case WeaponId::CutlassCortoRailgun:                 return "Corto Railgun"; // unused
         case WeaponId::StarSovereignCelestialCannon:        return "Celestial Cannons";
         case WeaponId::StarSovereignInterventionMissiles:   return "Intervention Missiles";
         case WeaponId::SovrolethSpores:                     return "Sovrol Spores";
@@ -858,7 +868,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::ArtisanNeutronSaber:                 return "Neutron Saber";
         case WeaponId::KagraliskRepeatingVenom:             return "Venemous Contagion";
         case WeaponId::EvigriliskBrutishTendrils:           return "Brutish Tendrils";
-        case WeaponId::SentinelCerberusRailgun:             return "Cerberus Railgun";
+        case WeaponId::SentinelCerberusRailgun:             return unit_id == UnitId::TerranSentinel ? "Cerberus Railgun" : "Corto Railgun";
         case WeaponId::VagrantVapidBlaster:                 return "Vapid Blaster";
         case WeaponId::MatrixKhaydarinRay:                  return "Khaydarin Ray";
         case WeaponId::SundogBlindsideRockets:              return "Blindside Rockets";

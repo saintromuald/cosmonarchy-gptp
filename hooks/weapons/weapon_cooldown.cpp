@@ -25,8 +25,10 @@ namespace hooks {
 
 		// @TODO: Extend weapon ids and remove this
 		switch (unit->id) {
-			case UnitId::ProtossRenesair: armor_pen += 1; break;
-			case UnitId::ZergZethalor:    armor_pen -= 3; break;
+			case UnitId::TerranCutlass:       armor_pen -= 1; break;
+			case UnitId::TerranCutlassTurret: armor_pen -= 1; break;
+			case UnitId::ProtossRenesair:	  armor_pen += 1; break;
+			case UnitId::ZergZethalor:		  armor_pen -= 3; break;
 		}
 
 		return armor_pen;
@@ -47,9 +49,26 @@ namespace hooks {
 			case UnitId::AskosiIconoclast:			cooldown /= 1.13fp; break;
 		}
 
+		// @TODO: Extend weapon ids and remove this
+		switch (unit->id) {
+			case UnitId::TerranCutlass:				  cooldown /= 1.35fp; break;
+			case UnitId::TerranCutlassTurret:		  cooldown /= 1.35fp; break;
+			case UnitId::TerranBroadsideTurret:		  cooldown /= 1.06fp; break;
+			case UnitId::ProtossCicatus:		      cooldown /= 1.13fp; break;
+			case UnitId::ProtossRenesair:		      cooldown *= 1.10fp; break;
+			case UnitId::ProtossSimulacrumAstral:     cooldown /= 1.20fp; break;
+			case UnitId::AskosiAvatar:				  cooldown *= 3.00fp; break;
+			case UnitId::AskosiPhontis:		          cooldown *= 1.33fp; break;
+			case UnitId::AskosiIconoclast:		      cooldown /= 1.13fp; break;
+		}
+
 		// Stimpack
 		if (unit->stim_timer) {
-			cooldown /= 2.5fp;
+			switch (unit->id) {
+				case UnitId::TerranMaverick:        cooldown /= 2.5fp; break;
+				case UnitId::TerranMaverickUpstart: cooldown /= 2;   break;
+				default:							cooldown /= 2.5fp; break;
+			}
 		}
 
 		// Ensnare
@@ -89,6 +108,29 @@ namespace hooks {
 
 		if (unit_ext.timers[TimerNewDominion]) {
 			cooldown /= 1.33fp;
+		}
+
+		if (unit_ext.values[ValueReassemblyActive]) {
+			switch (unit->id) {
+				case UnitId::AskosiScepter: {
+					cooldown /= 1.33fp;
+				} break;
+				case UnitId::AskosiTirade: {
+					cooldown *= 2;
+				} break;
+			}
+		}
+
+		if (unit_ext.timers[TimerRetaliationAssembly]) {
+			cooldown /= 2;
+		}
+
+		if (unit_ext.timers[TimerNewDominion]) {
+			cooldown /= 1.33fp;
+		}
+
+		if (unit_ext.timers[TimerGoremastSlow]) {
+			cooldown *= 1.33fp;
 		}
 
 		if (unit_ext.values[ValueIsShade]) {

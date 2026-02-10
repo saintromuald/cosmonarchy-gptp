@@ -233,18 +233,13 @@ void unit_on_death_behaviors(Unit* unit) {
                 }
             } break;
             case UnitId::TerranLobotomyMine: {
-                apply_lobotomy_slow(unit->position, TerranMine::LobotomyTimer);
+                apply_lobotomy_effect(unit->position, TerranMine::LobotomyTimer, false);
             } break;
             case UnitId::TerranTartarusMine: {
-                for (Unit* victim : g_unit_search.radial(unit->position, TerranMine::DetonationRange)) {
-                    if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false) || victim->is_invincible()) {
-                        continue;
-                    }
-                    auto& victim_ext = victim->ext();
-                    if (victim_ext.timers[TimerIncinerateArmor] < TerranMine::IncinerateTimer) {
-                        victim_ext.timers[TimerIncinerateArmor] = TerranMine::IncinerateTimer;
-                    }
-                }
+                apply_tartarus_effect(unit->position, TerranMine::TartarusTimer, false, 0);
+            } break;
+            case UnitId::TerranGoremast: {
+                apply_goremast_effect(unit->position, TerranMine::GoremastTimer, false);
             } break;
             case UnitId::ProtossHerald: {
                 ascend_corpses_in_area(unit->position, 4u * 32, unit->player);

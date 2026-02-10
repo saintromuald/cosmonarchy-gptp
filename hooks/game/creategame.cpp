@@ -65,6 +65,7 @@ namespace hooks {
 			case UnitId::TerranSpiderMine:
 			case UnitId::TerranLobotomyMine:
 			case UnitId::TerranTartarusMine:
+			case UnitId::TerranGoremast:
 			case UnitId::ProtossSteward:
 			case UnitId::ProtossPlasmaShell:
 			case UnitId::AskosiEyelet: {

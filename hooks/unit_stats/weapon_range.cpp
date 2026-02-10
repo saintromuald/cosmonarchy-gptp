@@ -78,6 +78,10 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
     // @TODO: Extend weapon ids and remove this
     switch (unit->id) {
         case UnitId::TerranBlackjackGolden:       final_range -= 1; break;
+        case UnitId::TerranCutlass:               final_range -= 4; break;
+        case UnitId::TerranCutlassTurret:         final_range -= 4; break;
+        case UnitId::TerranBroadside:             final_range -= 2; break;
+        case UnitId::TerranBroadsideTurret:       final_range -= 2; break;
         case UnitId::ProtossEcclesiastKhalendric: final_range -= 1; break;
         case UnitId::ProtossRenesair:             final_range += 1; break;
         case UnitId::ZergZethalor:                final_range -= 6; break;
@@ -100,13 +104,17 @@ u32 get_base_weapon_range(u8 weapon_id, u16 unit_id) {
     }
     // @TODO: Extend weapons and remove these
     switch (unit_id) {
-        case UnitId::TerranBlackjackGolden:       final_range -= 1 * 32; break;
-        case UnitId::ProtossEcclesiastKhalendric: final_range -= 1 * 32; break;
-        case UnitId::ProtossRenesair:             final_range += 1 * 32; break;
-        case UnitId::ZergZethalor:                final_range -= 6 * 32; break;
-        case UnitId::AskosiAvatar:                final_range -= 1 * 32; break;
-        case UnitId::AskosiPhontis:               final_range += 1 * 32; break;
-        case UnitId::AskosiIconoclast:            final_range -= 2 * 32; break;
+        case UnitId::TerranBlackjackGolden:       final_range -= 1tiles; break;
+        case UnitId::TerranCutlass:               final_range -= 4tiles; break;
+        case UnitId::TerranCutlassTurret:         final_range -= 4tiles; break;
+        case UnitId::TerranBroadside:             final_range -= 2tiles; break;
+        case UnitId::TerranBroadsideTurret:       final_range -= 2tiles; break;
+        case UnitId::ProtossEcclesiastKhalendric: final_range -= 1tiles; break;
+        case UnitId::ProtossRenesair:             final_range += 1tiles; break;
+        case UnitId::ZergZethalor:                final_range -= 6tiles; break;
+        case UnitId::AskosiAvatar:                final_range -= 1tiles; break;
+        case UnitId::AskosiPhontis:               final_range += 1tiles; break;
+        case UnitId::AskosiIconoclast:            final_range -= 2tiles; break;
     }
     if (weapon_id == WeaponId::OlympianTitansFist) {
         final_range = 30;
@@ -176,13 +184,17 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
         final_range = unit_ext.values[ValueTriggerWeaponRangeBaseAmount];
     } else {
         switch (unit->id) {
-            case UnitId::TerranBlackjackGolden:       final_range -= 1 * 32; break;
-            case UnitId::ProtossEcclesiastKhalendric: final_range -= 1 * 32; break;
-            case UnitId::ProtossRenesair:             final_range += 1 * 32; break;
-            case UnitId::ZergZethalor:                final_range -= 6 * 32; break;
-            case UnitId::AskosiAvatar:                final_range -= 1 * 32; break;
-            case UnitId::AskosiPhontis:               final_range += 1 * 32; break;
-            case UnitId::AskosiIconoclast:            final_range -= 2 * 32; break;
+            case UnitId::TerranBlackjackGolden:       final_range -= 1tiles; break;
+            case UnitId::TerranCutlass:               final_range -= 4tiles; break;
+            case UnitId::TerranCutlassTurret:         final_range -= 4tiles; break;
+            case UnitId::TerranBroadside:             final_range -= 2tiles; break;
+            case UnitId::TerranBroadsideTurret:       final_range -= 2tiles; break;
+            case UnitId::ProtossEcclesiastKhalendric: final_range -= 1tiles; break;
+            case UnitId::ProtossRenesair:             final_range += 1tiles; break;
+            case UnitId::ZergZethalor:                final_range -= 6tiles; break;
+            case UnitId::AskosiAvatar:                final_range -= 1tiles; break;
+            case UnitId::AskosiPhontis:               final_range += 1tiles; break;
+            case UnitId::AskosiIconoclast:            final_range -= 2tiles; break;
         }
     }
 

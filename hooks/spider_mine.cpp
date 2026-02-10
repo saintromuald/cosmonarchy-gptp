@@ -119,7 +119,7 @@ namespace hooks {
 				unit->order_target.pt.y = unit->sprite->position.y;
 				current_image = unit->sprite->images.head;
 				IscriptAnimation::Enum anim = IscriptAnimation::SpecialState1;
-				if (unit->id == UnitId::TerranLobotomyMine || unit->id == UnitId::TerranTartarusMine) {
+				if (unit->id == UnitId::TerranLobotomyMine || unit->id == UnitId::TerranTartarusMine || unit->id == UnitId::TerranGoremast) {
 					anim = IscriptAnimation::Unused2;
 				}
 

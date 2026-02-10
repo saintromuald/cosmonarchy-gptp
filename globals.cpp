@@ -741,8 +741,8 @@ void refresh_debuffs(Unit* unit) {
         unit_ext->timers[TimerSignify] = 3 * 24 + 1;
     }
 
-    unit_ext->timers[TimerIncinerateArmor] = unit_ext->timers[TimerIncinerateArmor] ? TerranMine::IncinerateTimer : 0;
-    unit_ext->timers[TimerIncinerateDamage] = unit_ext->timers[TimerIncinerateDamage] ? TerranMine::IncinerateTimer : 0;
+    unit_ext->timers[TimerIncinerateArmor] = unit_ext->timers[TimerIncinerateArmor] ? TerranMine::TartarusTimer : 0;
+    unit_ext->timers[TimerIncinerateDamage] = unit_ext->timers[TimerIncinerateDamage] ? TerranMine::TartarusTimer : 0;
 
 
     //was hardcoded in original code
