@@ -168,6 +168,9 @@ namespace UnitId {
         TerranVultureUpstart                                = 570,
         TerranCutlass                                       = 571,
         TerranCutlassTurret                                 = 572,
+        TerranMaverickUpstart                               = 573,
+        TerranEidolonUpstart                                = 575,
+        TerranAjax                                          = 576,
 
     // Terran-Building
         TerranVestry										= 119,		// Starbase / Terran Unused 1
@@ -264,6 +267,7 @@ namespace UnitId {
         ProtossManifoldStarbound                            = 437,
         ProtossSimulacrumAstral                             = 522,
         ProtossWarlock                                      = 523,
+        ProtossEcclesiastAstral                             = 574,
 
     // Protoss-Building
         ProtossAutomatonRegister							= 158,		// Unused Protoss 1

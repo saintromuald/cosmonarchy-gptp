@@ -561,5 +561,7 @@ namespace IconId {
         AdherentPhaseBlade                              = 868,
 
         BloodyRain                                      = 894,
+        AkrenoBioticWingblades                          = 895,
+        Goremast                                        = 896,
     };
 }

@@ -24,6 +24,14 @@ namespace hooks {
             }
         }
 
+        if (unit->stim_timer) {
+            switch (unit->id) {
+                case UnitId::TerranMaverick:        speed *= 1.75fp; break;
+                case UnitId::TerranMaverickUpstart: speed *= 1.5fp;  break;
+                default:                            speed *= 1.75fp; break;
+            }
+        }
+
         // Zerg - Adrenal Frenzy - speed
         if (unit_ext.timers[TimerZergAdrenalFrenzy] > 1) {
             speed *= 1.25fp;
@@ -157,6 +165,10 @@ namespace hooks {
             speed *= 0.66fp;
         }
 
+        if (unit_ext.timers[TimerGoremastSlow]) {
+            speed *= 0.66fp;
+        }
+
         // Shade - speed steroid
         if (unit_ext.values[ValueIsShade]) {
             speed *= 1.5fp;
@@ -224,11 +236,13 @@ namespace hooks {
             case UnitId::ProtossScribe:
             case UnitId::ZergDroleth:
             case UnitId::TerranMaverick:
+            case UnitId::TerranMaverickUpstart:
             case UnitId::TerranHotshot:
             case UnitId::TerranCleric:
             case UnitId::TerranClericFuturist:
             case UnitId::TerranEidolon:
             case UnitId::TerranApostle:
+            case UnitId::TerranCutlass:
             case UnitId::TerranCataphract:
             case UnitId::ProtossDracadin:
             case UnitId::ZergQuazrokor:
@@ -330,7 +344,7 @@ namespace hooks {
             return 1;
         }
 
-        s32 increase = (unit->stim_timer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
+        s32 increase = unit->status & UnitStatus::SpeedUpgrade ? 1 : 0;
         switch (unit->id) {
             case UnitId::ProtossPanoptus: {
                 // Leftover movement speed code
@@ -414,15 +428,11 @@ namespace hooks {
             do {
                 Image* loop_image = unit->sprite->main_graphic;
                 *g_active_iscript_unit = unit;
-            //	helper::iscript_opcode_cases(loop_image, *g_temp_iscript_header, 1, (u32)&opcode_value); // This is probably wrong, compare to IDA (our helper has 1 less arg)
-                u8 stim_timer = unit->stim_timer;
+             	helper::iscript_opcode_cases(loop_image, g_temp_iscript_header, 1, (u32)&opcode_value);
                 u32 opcode_value_final = opcode_value;
 
                 u32 buff_or_debuff = 0;
                 *g_active_iscript_unit = active_unit;
-                if (stim_timer) {
-                    buff_or_debuff = 1;
-                }
                 if (unit->status & UnitStatus::SpeedUpgrade) {
                     ++buff_or_debuff;
                 }

@@ -324,7 +324,8 @@ bool unit_id_can_do_controlled_demolition(u32 unit_id) {
         || unit_id == UnitId::TerranReservoir
         || unit_id == UnitId::TerranWellbore
         || unit_id == UnitId::TerranLobotomyMine
-        || unit_id == UnitId::TerranTartarusMine;
+        || unit_id == UnitId::TerranTartarusMine
+        || unit_id == UnitId::TerranGoremast;
 }
 
 UnitId::Enum unit_id_to_siege_mode(UnitId::Enum unit_id) {
@@ -424,6 +425,10 @@ bool unit_id_is_factional(u16 unit_id) {
         || unit_id == UnitId::TerranMaverickFuturist
         || unit_id == UnitId::TerranBlackguard
         || unit_id == UnitId::TerranArhaun
+        || unit_id == UnitId::TerranMaverickUpstart
+        || unit_id == UnitId::TerranVultureUpstart
+        || unit_id == UnitId::TerranBroadside
+        || unit_id == UnitId::TerranCutlass
         
         || unit_id == UnitId::ProtossPrudence
         || unit_id == UnitId::ProtossAdherent
@@ -719,7 +724,6 @@ bool weapon_id_can_proc_onhits(u32 weapon_id) {
     // * Analogue Empathy Core
     // * Custom trigger damage overrides
     return weapon_id != WeaponId::SpiderMines
-        && weapon_id != WeaponId::LobotomyMineExplosion
         && weapon_id != WeaponId::Irradiate
         && weapon_id != WeaponId::YamatoGun
         && weapon_id != WeaponId::PsiStorm
@@ -1308,6 +1312,7 @@ bool unit_id_is_trap(u32 unit_id) {
     return unit_id == UnitId::TerranSpiderMine
         || unit_id == UnitId::TerranLobotomyMine
         || unit_id == UnitId::TerranTartarusMine
+        || unit_id == UnitId::TerranGoremast
         || unit_id == UnitId::AskosiEyelet;
 }
 
@@ -1489,6 +1494,7 @@ bool unit_id_is_tiny_unit(u32 unit_id) {
     return unit_id == UnitId::TerranPietyWard
         || unit_id == UnitId::TerranLobotomyMine
         || unit_id == UnitId::TerranTartarusMine
+        || unit_id == UnitId::TerranGoremast
         || unit_id == UnitId::ZergRilirokor
         || unit_id == UnitId::AskosiEyelet;
 }
@@ -1526,6 +1532,7 @@ bool weapon_id_can_self_splash(u32 weapon_id) {
 bool unit_id_is_mine_layer(UnitId::Enum unit_id) {
     return unit_id == UnitId::TerranVulture
         || unit_id == UnitId::TerranVultureHecaton
+        || unit_id == UnitId::TerranVultureUpstart
         || unit_id == UnitId::TerranClericFuturist
         || unit_id == UnitId::AskosiProselyte;
 }
@@ -1657,6 +1664,7 @@ SpriteId::Enum get_corpse_sprite_id(UnitId::Enum unit_id) {
         case UnitId::TerranHypnagogue:                   return SpriteId::Corpse_Hypnagogue;
         case UnitId::TerranVulture:                      return SpriteId::Corpse_Vulture;
         case UnitId::TerranVultureHecaton:               return SpriteId::Corpse_Vulture;
+        case UnitId::TerranVultureUpstart:               return SpriteId::Corpse_Vulture;
         case UnitId::TerranCyclops:                      return SpriteId::Corpse_Cyclops;
         case UnitId::TerranCyclopsFuturist:              return SpriteId::Corpse_Cyclops;
         case UnitId::TerranGoliath:                      return SpriteId::Corpse_Goliath;

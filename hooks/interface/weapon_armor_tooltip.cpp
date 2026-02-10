@@ -424,6 +424,7 @@ namespace hooks {
 		add_status(statuses, "Retaliation Protocol", -1, 1, unit_ext.timers[TimerRetaliationAssembly], TimerType::Gptp);
 		add_status(statuses, "New Dominion", -1, 1, unit_ext.timers[TimerNewDominion], TimerType::Gptp);
 		add_status(statuses, "Imploded", -1, 1, unit_ext.timers[TimerScrapworldImplosion], TimerType::Gptp);
+		add_status(statuses, "Crippled", -1, 1, unit_ext.timers[TimerGoremastSlow], TimerType::Gptp);
 
 		// GPTP Value
 		add_status(statuses, "Ensnaring Brood", unit_ext.timers[TimerEnsnaringBrood], 1);
@@ -609,12 +610,15 @@ namespace hooks {
 			case UnitId::TerranSpiderMine:
 			case UnitId::TerranLobotomyMine:
 			case UnitId::TerranTartarusMine:
-			case UnitId::AskosiEyelet: {
+			case UnitId::AskosiEyelet:
+			case UnitId::TerranGoremast: {
 				switch (unit->id) {
-					case UnitId::TerranClericFuturist: return get_damage_tootlip_string(WeaponId::LobotomyMineExplosion, unit, 1363); // "Lobotomy Mines"
-					case UnitId::TerranVulture:        return get_damage_tootlip_string(WeaponId::LobotomyMineExplosion, unit, 1363); // "Lobotomy Mines"
-					case UnitId::TerranVultureHecaton: return get_damage_tootlip_string(WeaponId::TartarusMineApollyoidConflagration, unit, 1363); // "Lobotomy Mines"
-					default:                           return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);			  // "Spider Mines"
+					case UnitId::TerranClericFuturist: return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 318);  // "Piety Wards"
+					case UnitId::TerranVulture:        return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 1363); // "Lobotomy Mines"
+					case UnitId::TerranVultureHecaton: return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 1363); // "Tartarus Mines"
+					case UnitId::TerranVultureUpstart: return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 317);  // "Goremasts"
+					case UnitId::AskosiProselyte:      return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 1070); // "Eyelet"
+					default:                           return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);  // "Mines"
 				}
 			}
 			case UnitId::TerranMorningstar: {

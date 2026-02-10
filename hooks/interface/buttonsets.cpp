@@ -766,7 +766,7 @@ namespace hooks {
                                 }
                             } break;
                             case TechId::SpiderMines: {
-                                if (unit->id == UnitId::TerranVultureHecaton) {
+                                if (unit->id == UnitId::TerranVultureHecaton || unit->id == UnitId::TerranVultureUpstart) {
                                     current_button_state = unit->mine_carrier.mine_count ? Button_State::Enabled : Button_State::Invisible;
                                 }
                             } break;
@@ -987,6 +987,33 @@ namespace hooks {
                         switch (unit->id) {
                             case UnitId::TerranStockade: {
                                 switch (current_button->requirement_var) {
+                                    case UnitId::TerranMaverick: {
+                                        if (faction != Faction::TerranHecatonCoalition && faction != Faction::TerranFuturistFederation && faction != Faction::TerranUpstart) {
+                                            if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else {
+                                                current_button_state = Button_State::Enabled;
+                                            }
+                                        }
+                                    } break;
+                                    case UnitId::TerranMaverickFuturist: {
+                                        if (faction == Faction::TerranFuturistFederation) {
+                                            if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else {
+                                                current_button_state = Button_State::Enabled;
+                                            }
+                                        }
+                                    } break;
+                                    case UnitId::TerranMaverickUpstart: {
+                                        if (faction == Faction::TerranUpstart) {
+                                            if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else {
+                                                current_button_state = Button_State::Enabled;
+                                            }
+                                        }
+                                    } break;
                                     case UnitId::TerranHarakan: {
                                         if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction == Faction::TerranGoldenRepublic) {
                                             current_button_state = Button_State::Invisible;
@@ -1134,7 +1161,7 @@ namespace hooks {
                             case UnitId::TerranFulcrum: {
                                 switch (current_button->requirement_var) {
                                     case UnitId::TerranVulture: {
-                                        if (faction == Faction::TerranHecatonCoalition) {
+                                        if (faction == Faction::TerranHecatonCoalition || faction == Faction::TerranUpstart) {
                                             current_button_state = Button_State::Invisible;
                                         }
                                     } break;
@@ -1143,13 +1170,20 @@ namespace hooks {
                                             current_button_state = Button_State::Invisible;
                                         }
                                     } break;
-                                    case UnitId::TerranCyclops: {
-                                        if (faction == Faction::TerranFuturistFederation) {
+                                    case UnitId::TerranVultureUpstart: {
+                                        if (faction != Faction::TerranUpstart) {
                                             current_button_state = Button_State::Invisible;
                                         }
                                     } break;
+                                    case UnitId::TerranCyclops: {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction == Faction::TerranFuturistFederation) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
                                     case UnitId::TerranCyclopsFuturist: {
-                                        if (faction != Faction::TerranFuturistFederation) {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranFuturistFederation) {
                                             current_button_state = Button_State::Invisible;
                                         } else {
                                             current_button_state = Button_State::Enabled;
@@ -1210,7 +1244,8 @@ namespace hooks {
                                             current_button_state = Button_State::Invisible;
                                         }
                                     } break;
-                                    case UnitId::TerranTiangou: {
+                                    case UnitId::TerranTiangou:
+                                    case UnitId::TerranCutlass: {
                                         if (faction == Faction::TerranFuturistFederation) {
                                             if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
                                                 current_button_state = Button_State::Invisible;
@@ -1224,16 +1259,20 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::TerranMatadorTankMode: {
-                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
-                                            current_button_state = Button_State::Invisible;
-                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranScrapyard)) {
-                                            current_button_state = Button_State::Disabled;
+                                        if (faction != Faction::TerranFuturistFederation) {
+                                            if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranScrapyard)) {
+                                                current_button_state = Button_State::Disabled;
+                                            } else {
+                                                current_button_state = Button_State::Enabled;
+                                            }
                                         } else {
-                                            current_button_state = Button_State::Enabled;
+                                            current_button_state = Button_State::Invisible;
                                         }
                                     } break;
                                     case UnitId::TerranPhalanxTankMode: {
-                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction == Faction::TerranNydusTrinity) {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction == Faction::TerranNydusTrinity || faction == Faction::TerranUpstart) {
                                             current_button_state = Button_State::Invisible;
                                         } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranPalladium)) {
                                             current_button_state = Button_State::Disabled;
@@ -1243,6 +1282,15 @@ namespace hooks {
                                     } break;
                                     case UnitId::TerranTarasque: {
                                         if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranNydusTrinity) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranPalladium)) {
+                                            current_button_state = Button_State::Disabled;
+                                        } else {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::TerranBroadside: {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranUpstart) {
                                             current_button_state = Button_State::Invisible;
                                         } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranPalladium)) {
                                             current_button_state = Button_State::Disabled;
@@ -3016,6 +3064,11 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::TerranGoremast: {
+                                    if (current_button->icon_id == IconId::Goremast) { // Shrapnel Strike
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::TerranCyclops:
                                 case UnitId::TerranCyclopsFuturist: {
                                     if (current_button->icon_id == IconId::RecursionRounds) {
@@ -3035,6 +3088,12 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::TerranCutlass:
+                                case UnitId::TerranRamesses: {
+                                    if (current_button->icon_id == IconId::KineticPenetration) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::TerranPhalanxTankMode: {
                                     if (current_button->icon_id == IconId::TerranVehiclePlating) { // Babylon Plating
                                         current_button_state = Button_State::Enabled;
@@ -3043,6 +3102,11 @@ namespace hooks {
                                 case UnitId::TerranPhalanxSiegeMode: {
                                     if (current_button->icon_id == IconId::TerranVehiclePlating) { // Babylon Plating
                                         current_button_state = Button_State::Disabled;
+                                    }
+                                } break;
+                                case UnitId::TerranBroadside: {
+                                    if (current_button->icon_id == IconId::TerranShipPlating) { // Fore Castle
+                                        current_button_state = Button_State::Enabled;
                                     }
                                 } break;
                                 case UnitId::TerranMadrigalImperiosoMode: {
@@ -3058,11 +3122,6 @@ namespace hooks {
                                 case UnitId::TerranMadrigalFuriaMode:
                                 case UnitId::TerranMadrigalHecatonFuriaMode: {
                                     if (current_button->icon_id == IconId::GeminiMissiles) { // Furia Salvo
-                                        current_button_state = Button_State::Enabled;
-                                    }
-                                } break;
-                                case UnitId::TerranRamesses: {
-                                    if (current_button->icon_id == IconId::KineticPenetration) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

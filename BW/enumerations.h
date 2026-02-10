@@ -1497,21 +1497,21 @@ enum AdvisorEvent {
 };
 
 enum AdvisorMessageId {
-    AdvisorMessageId_NoMinerals = 850,
-    AdvisorMessageId_NoVespene = 851,
-    AdvisorMessageId_NoEnergy = 864,
-    AdvisorMessageId_NoEnergy2 = 865,
-    AdvisorMessageId_NoEnergy3 = 866,
-    AdvisorMessageId_NoBuildResources = 852,
-    AdvisorMessageId_NoBuildOffMap = 854,
-    AdvisorMessageId_NoBuildMapEdge = 855,
-    AdvisorMessageId_NoBuildStandard = 856,
-    AdvisorMessageId_NoBuildExplore = 857,
-    AdvisorMessageId_NoBuildGeyser = 859,
-    AdvisorMessageId_NoBuildZerg = 860,
-    AdvisorMessageId_NoBuildProtoss = 861,
+    AdvisorMessageId_NoMinerals          = 850,
+    AdvisorMessageId_NoVespene           = 851,
+    AdvisorMessageId_NoEnergy            = 864,
+    AdvisorMessageId_NoEnergy2           = 865,
+    AdvisorMessageId_NoEnergy3           = 866,
+    AdvisorMessageId_NoBuildResources    = 852,
+    AdvisorMessageId_NoBuildOffMap       = 854,
+    AdvisorMessageId_NoBuildMapEdge      = 855,
+    AdvisorMessageId_NoBuildStandard     = 856,
+    AdvisorMessageId_NoBuildExplore      = 857,
+    AdvisorMessageId_NoBuildGeyser       = 859,
+    AdvisorMessageId_NoBuildZerg         = 860,
+    AdvisorMessageId_NoBuildProtoss      = 861,
     AdvisorMessageId_NoBuildCouldntReach = 862,
-    AdvisorMessageId_NoLanding = 863,
+    AdvisorMessageId_NoLanding           = 863,
 };
 
 enum DialogEventType : u16 {

@@ -299,7 +299,7 @@ enum ExtTimerId {
     TimerNemeanReactors,
     TimerAutovitalityClone,
     TimerEnsnaringBrood,
-    TimerIncineration,
+    TimerGoremastSlow,
     TimerAugurGimmick,
     TimerObservanceOverlay,
     TimerNaniteField,

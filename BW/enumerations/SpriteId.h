@@ -956,6 +956,8 @@ namespace SpriteId {
         Corpse_Thaumalogue              = 1108,
         Corpse_Zethalor                 = 1109,
 
+        Corpse_MaverickUpstart          = 1117,
+
         Corpse_ZergBuildingSmall	    = 186,
         Corpse_ZergBuildingLarge	    = 187,
     };

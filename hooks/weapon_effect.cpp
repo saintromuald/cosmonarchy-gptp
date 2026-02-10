@@ -413,8 +413,16 @@ namespace hooks {
 				}
 			}
 		} else if (bullet->attack_target.unit) {
-			hooks::lockdown_hit(bullet->attack_target.unit, TerranMine::LobotomyTimerVanilla, bullet);
-			apply_lobotomy_slow(bullet->attack_target.pt, TerranMine::LobotomyTimer * 2);
+			u32 lockdown_timer = TerranMine::LobotomyTimerVanilla;
+			u32 slow_timer     = TerranMine::LobotomyTimer * 2;
+			switch (weapon_id) {
+				case WeaponId::TritonLobotomyWarhead: {
+					lockdown_timer = TerranTriton::LobotomyWarheadStunTimer;
+					slow_timer     = TerranTriton::LobotomyWarheadSlowTimer;
+				} break;
+			}
+			hooks::lockdown_hit(bullet->attack_target.unit, lockdown_timer, bullet);
+			apply_lobotomy_effect(bullet->attack_target.pt, slow_timer, false);
 		}
 	}
 

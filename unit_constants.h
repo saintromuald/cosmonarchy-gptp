@@ -92,8 +92,9 @@ inline constexpr s32 SeekRange = 576;
 inline constexpr s32 DetonateRange = 30;
 inline constexpr s32 LobotomyTimerVanilla = 9; // 3 seconds
 inline constexpr s32 LobotomyTimer = 3secs + 1;
-inline constexpr s32 IncinerateTimer = 5secs + 1;
-inline constexpr s32 DetonationRange = 2secs;
+inline constexpr s32 GoremastTimer = 3secs + 1;
+inline constexpr s32 TartarusTimer = 5secs + 1;
+inline constexpr s32 DetonationRange = 2tiles;
 }
 
 namespace Madrigal {
@@ -174,6 +175,7 @@ inline constexpr s32 StackCap = 3;
 namespace Terran {
 inline constexpr s32 ControlledDemolitionTimer = 10secs + 1;
 inline constexpr s32 SublimeShepherdRange = 6tiles;
+inline constexpr s32 StimpackMinimumHP = 5 * 256;
 }
 
 // PROTOSS \\

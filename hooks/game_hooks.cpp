@@ -2662,7 +2662,8 @@ namespace hooks {
                 }
             } break;
             case UnitId::TerranVulture:
-            case UnitId::TerranVultureHecaton: {
+            case UnitId::TerranVultureHecaton:
+            case UnitId::TerranVultureUpstart: {
                 if (unit->mine_carrier.mine_count > 3) {
                     unit->mine_carrier.mine_count = 3;
                 }
@@ -2916,14 +2917,21 @@ namespace hooks {
             case UnitId::TerranLobotomyMine: {
                 if (unit->order_signal & 32) {
                     unit->order_signal &= ~32;
-                    fire_bullet(unit, WeaponId::LobotomyMineExplosion, unit->order_target);
+                    apply_lobotomy_effect(unit->position, (TerranMine::LobotomyTimer * 2) - 1, true);
                     unit->ground_weapon_cooldown = hooks::get_modified_cooldown(unit, 1, false);
                 }
             } break;
             case UnitId::TerranTartarusMine: {
                 if (unit->order_signal & 32) {
                     unit->order_signal &= ~32;
-                    fire_bullet(unit, WeaponId::TartarusMineApollyoidConflagration, unit->order_target);
+                    apply_tartarus_effect(unit->position, TerranMine::TartarusTimer, true, unit->player);
+                    unit->ground_weapon_cooldown = hooks::get_modified_cooldown(unit, 1, false);
+                }
+            } break;
+            case UnitId::TerranGoremast: {
+                if (unit->order_signal & 32) {
+                    unit->order_signal &= ~32;
+                    apply_goremast_effect(unit->position, TerranMine::GoremastTimer, true);
                     unit->ground_weapon_cooldown = hooks::get_modified_cooldown(unit, 1, false);
                 }
             } break;
@@ -4031,7 +4039,7 @@ namespace hooks {
                     unit->damage_with_custom(256);
                 }
             }
-            if (unit_ext.timers[TimerIncinerateDamage] == 1) {
+            if (unit_ext.timers[TimerIncinerateDamage] == 1 || unit_ext.timers[TimerIncinerateArmor] == 1) {
                 bw::remove_unit_overlay(unit, image_id);
             }
         }
@@ -4078,7 +4086,7 @@ namespace hooks {
         }
 
         // Claymore - Kelvin Munitions - Create overlays
-        if ((unit_ext.timers[TimerKelvinMunitions] > 1 || unit_ext.timers[TimerLobotomySlow] > 1 || unit_ext.timers[TimerBoomingBlast] > 1)) {
+        if ((unit_ext.timers[TimerKelvinMunitions] > 1 || unit_ext.timers[TimerLobotomySlow] > 1 || unit_ext.timers[TimerBoomingBlast] > 1 || unit_ext.timers[TimerGoremastSlow] > 1)) {
             should_update_speed = true;
             bw::zap_overlay(unit);
         }

@@ -203,7 +203,6 @@ namespace WeaponId {
         PenumbraErebolShockCannon			= 39,
         PazuzuJupiterDriver					= 51,
         SavantDiscoidRailgun				= 88,
-        LobotomyMineExplosion				= 89,
         CyclopsFlakCannons					= 93,
         PhobosArgosLaserBatteries			= 94,
         SirenCharybdalRifle					= 96,
@@ -346,6 +345,7 @@ namespace WeaponId {
         DyadTwintorch						= 57,
         MissionaryAruoTwinshot              = 77, // was Didact weapon, hardcode beware
         CardinalInoaTwinaxe                 = 82, // was Accantor weapon, hardcode beware
+        CutlassCortoRailgun				    = 89, // unused
         VicarOspoTwinshard                  = 122,
         RoveElreScaleshot                   = 126,
         ObjectOrliMallet                    = 127,
