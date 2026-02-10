@@ -3449,8 +3449,7 @@ namespace hooks {
         
         // Incubation
         if (unit_ext.timers[TimerIncubationArm] == 1) {
-            bw::create_unit_from_ability(unit_ext.values[ValueIncubationUnitId], unit_ext.values[ValueIncubationCount],
-                unit_ext.values[ValueIncubationPlayer], unit->position);
+            bw::create_unit_from_ability(unit_ext.values[ValueIncubationUnitId], unit_ext.values[ValueIncubationCount], unit_ext.values[ValueIncubationPlayer], unit->position);
         }
 
         // Disruption Field - clear status

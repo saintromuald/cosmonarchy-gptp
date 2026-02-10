@@ -700,9 +700,13 @@ namespace hooks {
                 }
             } break;
             case UnitId::ZergZoryusthaleth: {
-                // Zoryusthaleth - Incubate on damage taken
                 if (!bw::is_allied_to(data.target->player, data.attacking_player_id)) {
                     incubate(data.target, 1, UnitId::ZergRilirokor, data.target->player);
+                }
+            } break;
+            case UnitId::ZergVithrilisk: {
+                if (!bw::is_allied_to(data.target->player, data.attacking_player_id)) {
+                    incubate(data.target, 1, UnitId::ZergSkryrokor, data.target->player);
                 }
             } break;
             case UnitId::ZergVilgorokor:

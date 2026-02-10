@@ -3694,8 +3694,8 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergVithrilisk: {
-                                    if (current_button->icon_id == IconId::VenomUnused				// Corrosive Touch
-                                    ||  current_button->icon_id == IconId::SuicideInfestedTerran) { // Critical Mass
+                                    if (current_button->icon_id == IconId::CorrosiveTouch
+                                    ||  current_button->icon_id == IconId::Skryrokor) { // Avenging Mitosis
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

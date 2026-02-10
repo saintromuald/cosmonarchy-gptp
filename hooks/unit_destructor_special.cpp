@@ -138,8 +138,8 @@ void unit_on_death_behaviors(Unit* unit) {
                     continue;
                 }
                 auto& victim_ext = victim->ext();
-                if (victim_ext.timers[TimerIncinerateArmor] < TerranMine::IncinerateTimer) {
-                    victim_ext.timers[TimerIncinerateArmor] = TerranMine::IncinerateTimer;
+                if (victim_ext.timers[TimerIncinerateArmor] < TerranMine::TartarusTimer) {
+                    victim_ext.timers[TimerIncinerateArmor] = TerranMine::TartarusTimer;
                 }
             }
         } break;
