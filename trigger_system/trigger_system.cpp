@@ -922,6 +922,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
         // Global Flag
         } else if (parser.equals("forbid_replay_auto_upload") && is_local_player) {
             g_globals->forbid_replay_auto_upload = true;
+        } else if (parser.equals("set_transmission_waits") && is_local_player) {
+            bool state = parser.get_s32();
+            g_globals->disable_transmission_waits = state;
         // Gameplay Actions
         } else if (parser.equals("set_mineral_yields")) {
             u32 depleted_yield = parser.get_s32();

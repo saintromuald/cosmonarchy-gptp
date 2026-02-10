@@ -37,7 +37,7 @@ void queue_game_command(u8* data, u32 size);
 
 b32 check_hotkey_char(BinDlg* dialog, char hotkey);
 char create_upgrade_level_tooltip(char* text);
-s32 trigact_transmission(TriggerAction* trigger);																		// 004C7890
+bool trigact_transmission(TriggerAction* trigger);																		// 004C7890
 void draw_minimap_unit_box(u32 player);																					// 004A4650
 void draw_all_minimap_boxes();																							// 004A4AC0
 u32 get_cursor_type();																									// 004D1460
