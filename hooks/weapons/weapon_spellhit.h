@@ -3,7 +3,7 @@
 #include <BW/structures/Bullet.h>
 #include "BW\api.h"
 
-// Hooks could be confirmed thanks to 0048B770 CBullet_Damage that call almost all of them
+// Hooks could be confirmed thanks to 0048B770 CBullet_Damage that calls almost all of them.
 // Hit features not supported by these hooks may be hardcoded in that function (like the Matraleth Parasite hit effect)
 // -GPTP
 
@@ -12,7 +12,7 @@ namespace hooks {
 	void irradiate_hit_internal(Unit* attacker, Point16 target, u8 attacking_player_id);
 	void optical_flare_hit(Unit* target, u32 attacking_player_id, Bullet* bullet);	// 00455170
 	void restore_hit(Unit* target, Bullet* bullet);									// 00455230
-	void lockdown_hit(Unit* target, u8 previousLockdownTimer, Bullet* bullet);		// 00455380
+	void lockdown_hit(Unit* target, u8 timer, Bullet* bullet);						// 00455380
 	void iscript_attackmelee(Unit* attacker);										// 00479B40
 	void weapon_bullet_hit(Bullet* bullet, Unit* target, u32 damage_divisor);		// 00479AE0
 	void emp_shockwave_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet);			// 00492BA0

@@ -129,7 +129,7 @@ namespace hooks {
 			disable_unit(target);
 		}
 		auto& target_ext = target->ext();
-		target_ext.timers[TimerLobotomySlow] = 6 * 24 + 1;
+		target_ext.timers[TimerLobotomySlow] = TerranMine::LobotomyTimer * 2;
 	}
 
 	void weapon_bullet_hit(Bullet* bullet, Unit* target, u32 damage_divisor) { // 00479AE0

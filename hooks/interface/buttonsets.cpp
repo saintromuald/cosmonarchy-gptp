@@ -2608,12 +2608,12 @@ namespace hooks {
                                 switch (current_button->requirement_var) {
                                     case UnitId::AskosiLandlock:
                                     case UnitId::AskosiArch:
-                                    case UnitId::AskosiGrandstand:
-                                    case UnitId::AskosiChantry:
                                     case UnitId::AskosiRadix:
                                     case UnitId::AskosiFunction: {
                                         current_button_state = Button_State::Enabled;
                                     } break;
+                                    case UnitId::AskosiGrandstand:
+                                    case UnitId::AskosiChantry:
                                     case UnitId::AskosiCipher:
                                     case UnitId::AskosiGauntlet:
                                     case UnitId::AskosiCosmoscope: {
@@ -3033,7 +3033,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranOlympian: {
-                                    if (current_button->icon_id == IconId::OcularImplants) { // Dishonorable Discharge
+                                    if (current_button->icon_id == IconId::DishonorableDischarge) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3302,7 +3302,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ProtossZealot: {
-                                    if (current_button->icon_id == IconId::PlasmaShields) { // Imperious March
+                                    if (current_button->icon_id == IconId::DeathlessProcession) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3319,8 +3319,8 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ProtossAdherent: {
-                                    if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon	// Eternal Service
-                                    ||	current_button->icon_id == IconId::LegEnhancements) {			// Deathless Procession
+                                    if (current_button->icon_id == IconId::EternalService
+                                    ||	current_button->icon_id == IconId::DeathlessProcession) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3346,7 +3346,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ProtossAmaranth: {
-                                    if (current_button->icon_id == IconId::DidactPhaseDisruptorCannon) { // Eternal Service
+                                    if (current_button->icon_id == IconId::EternalService) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3628,7 +3628,7 @@ namespace hooks {
                                 case UnitId::ZergLiiralisk:
                                 case UnitId::ZergMutalisk:
                                 case UnitId::ZergSpirtithCesiant: {
-                                    if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Lithe Organelle
+                                    if (current_button->icon_id == IconId::LitheOrganelle) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3705,18 +3705,18 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ZergEvigrilisk: {
-                                    if (current_button->icon_id == IconId::RilirokorToxicSpores) { // Lashing Limbs
+                                    if (current_button->icon_id == IconId::LashingLimbs) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
                                 case UnitId::ZergCherbrathalor: {
                                     if (current_button->icon_id == IconId::Miasma
-                                    ||  current_button->icon_id == IconId::GeszithalorAcidSpore) {
+                                    ||  current_button->icon_id == IconId::CrushingTide) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
                                 case UnitId::ZergOkrimnilisk: {
-                                    if (current_button->icon_id == IconId::Antennae) { // Endless Limbs
+                                    if (current_button->icon_id == IconId::EndlessLimbs) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3800,7 +3800,7 @@ namespace hooks {
                                 } break;
                                 case UnitId::ZergKonvilisk: {
                                     if (current_button->icon_id == IconId::SurkithCesiantSubterraneanTentacle // Fertile Spines
-                                    ||	current_button->icon_id == IconId::GeszithalorAcidSpore) {			// Crushing Tide
+                                    ||	current_button->icon_id == IconId::CrushingTide) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

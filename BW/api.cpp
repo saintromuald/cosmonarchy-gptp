@@ -2567,7 +2567,7 @@ u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit) {
         case WeaponId::CohortGaussPistols:
         case WeaponId::ZealotPhaseBlades:
         case WeaponId::AmaranthPsiCleaver:
-        case WeaponId::GolemBloodlessAssault:
+        case WeaponId::GolemPhaseLances:
         case WeaponId::IdolPrismaticBlaster:
         case WeaponId::PariahIconoclastBlades:
         case WeaponId::StarSovereignCelestialCannon:
@@ -4190,6 +4190,7 @@ u32 get_weapon_fire_sound(u32 weapon_id, Unit* unit) {
 u32 get_weapon_hit_sound(WeaponId::Enum weapon_id, Unit* unit) {
     switch (weapon_id) {
         case WeaponId::EidolonCoronerRifle:               return bw::rand_between(SoundId::EidolonWeaponhit01, SoundId::EidolonWeaponhit03);
+        case WeaponId::BlackguardAsoniCarbine:            return bw::rand_between(SoundId::BlackguardWeaponhit01, SoundId::BlackguardWeaponhit03);
         case WeaponId::AutocratEminenceRifle:             return SoundId::Bullet_LASRHIT3_wav;
         case WeaponId::RamessesPharoahCannons:            return SoundId::RamessesWeaponhit01;
         case WeaponId::CataphractLonginiusCannons:        return bw::rand_between(SoundId::CataphractWeaponhit01, SoundId::CataphractWeaponhit03);

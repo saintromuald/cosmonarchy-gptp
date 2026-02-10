@@ -182,7 +182,7 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
         }
     } else if (g_current_map_name == "Sanctuary Lost"sv) {
         switch (portrait_id) {
-            case PortraitId::PlasmaShellUnused: {
+            case PortraitId::Zeratul: {
                 portrait_id = PortraitId::AnadThyron;
             } break;
             case PortraitId::Prudence: {
@@ -230,7 +230,7 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
             case PortraitId::Prudence: {
                 portrait_id = PortraitId::Terimanok;
             } break;
-            case PortraitId::PlasmaShellUnused: {
+            case PortraitId::Zeratul: {
                 portrait_id = PortraitId::Joran;
             } break;
         }
@@ -245,7 +245,7 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
             case PortraitId::Morningstar: {
                 portrait_id = PortraitId::Medley; // Sprinia; Temporary
             } break;
-            case PortraitId::PlasmaShellUnused: {
+            case PortraitId::Zeratul: {
                 portrait_id = PortraitId::Trodin; // Scintor; Temporary
             } break;
             case PortraitId::Prudence: {
@@ -260,11 +260,23 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
             case PortraitId::Morningstar: {
                 portrait_id = PortraitId::Claymore; // Redmond; Temporary
             } break;
-            case PortraitId::PlasmaShellUnused: {
+            case PortraitId::Zeratul: {
                 portrait_id = PortraitId::Madrigal; // Braverman; Temporary
             } break;
             case PortraitId::Prudence: {
                 portrait_id = PortraitId::Hippogriff; // Prentat; Temporary
+            } break;
+        }
+    } else if (g_current_map_name == "Amber Word"sv) {
+        switch (portrait_id) {
+            case PortraitId::ScannerSweep: {
+                portrait_id = PortraitId::Cikralisk; // Retoro; Temporary
+            } break;
+            case PortraitId::Morningstar: {
+                portrait_id = PortraitId::AdvisorInoa; // Pilgrim; Temporary
+            } break;
+            case PortraitId::Zeratul: {
+                portrait_id = PortraitId::Avatar; // Onor; Temporary
             } break;
         }
     }
@@ -468,7 +480,8 @@ void dialog_music_fade(u32 music_id) { // 004A6310
     if (!g_direct_sound_handle || !g_music_playing) {
         switch (music_id) {
             case MusicId_TRdyRoom: {
-                if (!strcmp(g_current_map_name, "Anad's Greatsword")) {
+                if (g_current_map_name == "Sunset Mission"sv
+                ||  g_current_map_name == "Amber Word"sv) {
                     // Temporary, for mapcrap
                     music_id = MusicId_None;
                 }

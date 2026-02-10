@@ -1353,8 +1353,6 @@ namespace hooks {
             switch (unit_id) {
                 case UnitId::AskosiLandlock:
                 case UnitId::AskosiArch:
-                case UnitId::AskosiGrandstand:
-                case UnitId::AskosiChantry:
                 case UnitId::AskosiRadix:
                 case UnitId::AskosiFunction: {
                     return true;
@@ -3593,12 +3591,12 @@ namespace hooks {
                 switch (unit_id) {
                     case UnitId::AskosiLandlock:
                     case UnitId::AskosiArch:
-                    case UnitId::AskosiGrandstand:
-                    case UnitId::AskosiChantry:
                     case UnitId::AskosiRadix:
                     case UnitId::AskosiFunction: {
                         return TECH_ACTIVE;
                     }
+                    case UnitId::AskosiGrandstand:
+                    case UnitId::AskosiChantry:
                     case UnitId::AskosiCipher:
                     case UnitId::AskosiGauntlet:
                     case UnitId::AskosiCosmoscope: {

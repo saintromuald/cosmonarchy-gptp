@@ -343,7 +343,14 @@ void rescue_unit(Unit* unit, u32 player) {
     // Audiovisuals
     if (!bw::in_replay_or_witness()) {
         unit->sprite->selection_timer = 45;
-        helper::play_sound_from_unit(g_console_index + 32, unit, 1, 0);
+        u32 sound_id = SoundId::Misc_TRescue_wav; // Default
+        switch (g_console_index) {
+            case RaceId::Zerg:    sound_id = SoundId::Misc_ZRescue_wav; break;
+            case RaceId::Terran:  sound_id = SoundId::Misc_TRescue_wav; break;
+            case RaceId::Protoss: sound_id = SoundId::Misc_PRescue_wav; break;
+            case RaceId::Askosi:  sound_id = SoundId::AskosiRescue01;   break;
+        }
+        bw::play_sound(sound_id, unit->position);
     }
     bw::refresh_console();
 }
@@ -834,7 +841,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::AlmaksaliskPiercingSpines:           return "Piercing Spines";
         case WeaponId::CabalistWarpBlades:                  return "Warp Blades";
         case WeaponId::IdolPrismaticBlaster:                return "Prismatic Blaster";
-        case WeaponId::GolemBloodlessAssault:               return "Phase Lances";
+        case WeaponId::GolemPhaseLances:                    return "Phase Lances";
         case WeaponId::BarghestRayOfAgony:                  return "Ray of Agony";
         case WeaponId::PariahIconoclastBlades:              return "Iconoclast's Flurry";
         case WeaponId::AutocratEminenceRifle:               return "Eminence Rifle";

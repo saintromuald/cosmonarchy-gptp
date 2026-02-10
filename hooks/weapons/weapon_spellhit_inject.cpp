@@ -66,18 +66,18 @@ namespace {
 
 	void __declspec(naked) lockdown_hit_wrapper() { // 00455380
 		static Unit* target;
-		static u8 previousLockdownTimer;
+		static u8 timer;
 		static Bullet* bullet;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV target, EDI
 			MOV AL, [EBP + 0x08]
-			MOV previousLockdownTimer, AL
+			MOV timer, AL
 			MOV bullet, EBX
 			PUSHAD
 		}
-		hooks::lockdown_hit(target, previousLockdownTimer, bullet);
+		hooks::lockdown_hit(target, timer, bullet);
 		__asm {
 			POPAD
 			POP EBP
