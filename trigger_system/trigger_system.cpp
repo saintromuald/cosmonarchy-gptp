@@ -497,7 +497,10 @@ static bool parse_condition(Parser& parser) {
         } else if (parser.equals("player_race")) {
             u32 player = parser.get_player();
             Quota op = parser.get_quota(QuotaType_Equal);
-            const auto race = parser.get_enum(race_names, std::size(race_names));
+            auto race = parser.get_enum(race_names, std::size(race_names));
+            if (race == 3) {
+                race = RaceId::Askosi;
+            }
             if (player) {
                 player -= 1;
                 switch (op.type) {
