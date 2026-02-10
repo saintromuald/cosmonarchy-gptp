@@ -1900,7 +1900,11 @@ namespace hooks {
 
                     u32 range = unit->id == UnitId::TerranShamanVisionaryMode ? Shaman::NaniteFieldVisionaryRange : Shaman::NaniteFieldSupportRange;
                     for (Unit* target : g_unit_search.radial(unit->position, range).add_units_from_connected_transport(unit).filter(unit, FilterAlly | FilterNoBuilding)) {
-                        nanite_field_proc(unit, Shaman::NaniteFieldHealAmount, target);
+                        auto& target_ext = target->ext();
+                        if (!target_ext.timers[TimerNaniteFieldLockout]) {
+                            target_ext.timers[TimerNaniteFieldLockout] = Shaman::NaniteFieldDuration;
+                            nanite_field_proc(unit, Shaman::NaniteFieldHealAmount, target);
+                        }
                     }
                 }
             } break;
@@ -2952,7 +2956,7 @@ namespace hooks {
                 }
             } break;
             case UnitId::AskosiMimic: {
-                if (unit->can_use_passive_ability()) {
+                if (unit->can_use_passive_ability() && !unit_ext.timers[TimerCorpseConsumptionDelay]) {
                     for (Unit* ally : g_unit_search.radial(unit->position, AskosiMimic::MimicryRange).filter(unit, FilterAlly | FilterCombatant)) {
                         ally->ext().timers[TimerMimicryCheck] = 3;
                         if (ally->subunit && ally->subunit->is_subunit()) {

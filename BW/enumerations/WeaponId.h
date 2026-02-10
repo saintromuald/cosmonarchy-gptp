@@ -262,7 +262,7 @@ namespace WeaponId {
         DemiurgeGalacticWeaver				= 106,
         CantavisHallucinationCast			= 107, // Ability targeting
         IdolPrismaticBlaster				= 112,
-        GolemBloodlessAssault				= 113,
+        GolemPhaseLances				    = 113,
         BarghestRayOfAgony					= 114,
         PariahIconoclastBlades				= 115,
         ManifoldPhaseBlaster				= 118,

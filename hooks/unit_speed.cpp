@@ -111,6 +111,11 @@ namespace hooks {
             speed *= 1.33fp;
         }
 
+        if (unit_ext.timers[TimerImpactDissipation] > 1) {
+            speed *= 1.33fp;
+            bw::add_unit_overlay(unit, ImageId::ImpactDissipationSmall + bw::get_overlay_offset(unit->id, true));
+        }
+
         // Tyranny of the Sun
         if (unit_ext.values[ValueMindControllerUnitId]) {
             auto targets = g_unit_search
@@ -122,6 +127,10 @@ namespace hooks {
                 // TODO: might need to remove the overlay externally
                 break;
             }
+        }
+
+        if (unit_ext.timers[TimerSegmentedExpansion]) {
+            speed /= 2;
         }
 
         if (unit_ext.units[UnitHiveTissue]) {

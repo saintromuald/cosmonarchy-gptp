@@ -569,7 +569,7 @@ bool weapon_id_accelerates(u32 weapon_id) {
 
 bool weapon_id_is_melee_aoe(u32 weapon_id) {
     return weapon_id == WeaponId::SycophantSparringSaber
-        || weapon_id == WeaponId::GolemBloodlessAssault
+        || weapon_id == WeaponId::GolemPhaseLances
         || weapon_id == WeaponId::QuazrokorQuazrokSpray
         || weapon_id == WeaponId::MortothrokorWickedIncisors
         || weapon_id == WeaponId::GorgrokorSerratedCleavers
@@ -642,7 +642,7 @@ bool weapon_is_melee_with_aoe(Bullet* bullet, u32 weapon_id) {
     if (bullet && bullet->source_unit) {
         switch (weapon_id) {
             case WeaponId::SycophantSparringSaber:
-            case WeaponId::GolemBloodlessAssault:
+            case WeaponId::GolemPhaseLances:
             case WeaponId::QuazrokorQuazrokSpray:
             case WeaponId::MortothrokorWickedIncisors:
             case WeaponId::GorgrokorSerratedCleavers:

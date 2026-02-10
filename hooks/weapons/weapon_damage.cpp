@@ -56,12 +56,38 @@ bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_diviso
         && (damage_divisor == 1 || weapon_id == WeaponId::GeszithalorAcidSpore)
         && !weapon_id_is_flamethrower(weapon_id)
         && weapon_id != WeaponId::LakiziliskSubterraneanSpines
+        && weapon_id != WeaponId::OlympianTitansFist
         && weapon_id != WeaponId::Plague
         && weapon_id != WeaponId::Custom;
 }
 
 bool irradiate_target(Unit* unit) {
     return true; // Originally prohibited targeting eggs
+}
+
+static void corrosive_pathogen_proc(Unit* attacker, Unit* target) {
+    u32 search_margin = Zerg::CorrosivePathogenRange;
+    Box32 search_area = {};
+    search_area.left = target->position.x - search_margin;
+    search_area.top = target->position.y - search_margin;
+    search_area.right = target->position.x + search_margin;
+    search_area.bottom = target->position.y + search_margin;
+    for (Unit* unit : g_unit_search.rect(search_area).filter(attacker, FilterEnemy | FilterIncludingSelf)) {
+        helper::apply_corrosive_spores(unit);
+        Thingy* thingy = helper::create_thingy(SpriteId::Corrosive_Acid_Hit, unit->get_x(), unit->get_y(), 11);
+        if (thingy) {
+            thingy->sprite->elevation = unit->sprite->elevation + 1;
+            helper::set_thingy_visibility_flags(thingy);
+        }
+    }
+}
+
+static void swarming_omen_proc(Unit* target, u32 attacking_player_id) {
+    auto& target_ext = target->ext();
+    if (!bw::is_allied_to(attacking_player_id, target->player)) {
+        target_ext.timers[TimerSwarmingOmenDebuff] = 1secs + 1;
+        target_ext.values[ValueSwarmingOmenPlayer] = attacking_player_id;
+    }
 }
 
 namespace hooks {
@@ -215,8 +241,8 @@ namespace hooks {
             return;
         }
 
-        UnitExt* target_ext = get_unit_ext(data.target);
-        if (target_ext->values[ValueMindControllerUnitId]) {
+        auto& target_ext = data.target->ext();
+        if (target_ext.values[ValueMindControllerUnitId]) {
             data.damage = static_cast<s32>(data.damage * 1.5fp);
         }
 
@@ -263,14 +289,11 @@ namespace hooks {
             // Object, Petract - Shouldered Burden
             if (data.target->id != UnitId::AskosiObject && data.target->id != UnitId::AskosiPetract && data.target->player != 11) {
                 auto shoulders = g_unit_search
-                    .radial_ex(data.target, 4tiles, FilterNotSelf | FilterAlly, {UnitId::AskosiObject, UnitId::AskosiPetract})
+                    .radial_ex(data.target, 4tiles, FilterNotSelf | FilterAlly | FilterEnabled, {UnitId::AskosiObject, UnitId::AskosiPetract})
                     .sort_by_distance(data.target->position);
 
                 for (Unit* shoulder : shoulders) {
                     if (shoulder == data.attacker) {
-                        continue;
-                    }
-                    if (shoulder->is_frozen()) {
                         continue;
                     }
 
@@ -357,8 +380,8 @@ namespace hooks {
         }
 
         // Mind Tyrant - Villanous Fervor - Reduce Mind Tyrant energy first
-        if (target_ext->values[ValueIsMalefactor] == 2) {
-            Unit* mind_tyrant = target_ext->units[UnitMindTyrantLink];
+        if (target_ext.values[ValueIsMalefactor] == 2) {
+            Unit* mind_tyrant = target_ext.units[UnitMindTyrantLink];
             if (mind_tyrant) {
                 s32 energy_reduce_amount = std::min(data.damage, (s32)mind_tyrant->energy);
                 mind_tyrant->spend_energy(energy_reduce_amount);
@@ -1142,28 +1165,14 @@ namespace hooks {
                     } break;
                     case WeaponId::VithriliskCorrosiveSpores:
                     case WeaponId::SkryrokorPlasmaMetamorphosis: {
-                        // Corrosive Pathogen
-                        u32 search_margin  = Zerg::CorrosivePathogenRange;
-                        Box32 search_area  = {};
-                        search_area.left   = data.target->position.x - search_margin;
-                        search_area.top    = data.target->position.y - search_margin;
-                        search_area.right  = data.target->position.x + search_margin;
-                        search_area.bottom = data.target->position.y + search_margin;
-                        for (Unit* unit : g_unit_search.rect(search_area).filter(data.attacker, FilterEnemy | FilterIncludingSelf)) {
-                            helper::apply_corrosive_spores(unit);
-                            Thingy* thingy = helper::create_thingy(SpriteId::Corrosive_Acid_Hit, unit->get_x(), unit->get_y(), 11);
-                            if (thingy) {
-                                thingy->sprite->elevation = unit->sprite->elevation + 1;
-                                helper::set_thingy_visibility_flags(thingy);
-                            }
-                        }
+                        corrosive_pathogen_proc(data.attacker, data.target);
                     } break;
+                    case WeaponId::OgroszalethAcidBarrage: {
+                        corrosive_pathogen_proc(data.attacker, data.target);
+                        swarming_omen_proc(data.target, data.attacking_player_id);
+                    }
                     case WeaponId::ZoryusthalethMonstrousMaw: {
-                        // Zoryusthaleth - Swarming Omen
-                        if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
-                            target_ext.timers[TimerSwarmingOmenDebuff] = 1secs + 1;
-                            target_ext.values[ValueSwarmingOmenPlayer] = data.attacking_player_id;
-                        }
+                        swarming_omen_proc(data.target, data.attacking_player_id);
                     } break;
                     case WeaponId::KonviliskSowingSpines: {
                         // Fertile Spines - incubate

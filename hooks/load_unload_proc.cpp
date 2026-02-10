@@ -104,6 +104,16 @@ static bool fix_unload_pos(Unit* unit, Point16* pos) {
     }
 }
 
+static SoundId::Enum get_transport_sound_id(Unit* transport) {
+    switch (transport->get_race()) {
+        case RaceId::Terran:  return SoundId::Misc_TDrTra00_wav;
+        case RaceId::Protoss: return SoundId::Misc_PShTra00_wav;
+        case RaceId::Zerg:    return SoundId::Misc_ZOvTra00_wav;
+        case RaceId::Askosi:  return SoundId::Misc_PShTra00_wav;
+    }
+    return SoundId::None;
+}
+
 void load_unit_proc(Unit* transport, Unit* cargo_unit) { // 004E78E0
     s32 counter = 0;
     auto& transport_ext = transport->ext();
@@ -119,7 +129,7 @@ void load_unit_proc(Unit* transport, Unit* cargo_unit) { // 004E78E0
     u8 unit_race_id = transport->get_race();
     bw::decloak_passive_proc(transport);
     bw::decloak_passive_proc(cargo_unit);
-    helper::play_sound_from_unit(SoundId::Misc_ZOvTra00_wav + unit_race_id, transport, 1, 0);
+    bw::play_sound(get_transport_sound_id(transport), transport->position);
     if (UnitId::is_terran_worker(static_cast<UnitId::Enum>(cargo_unit->id))) {
         if (cargo_unit->unit_ai) {
             AiTown* town = cargo_unit->unit_ai->worker_ai.town;
@@ -638,30 +648,29 @@ void unload_unit_ext(Unit* cargo, u32 transport_died) { // 004E7E10
         if (cargo_index <= UnitLimit) {
             target_order_shifted = cargo_index | (cargo->unique_id << 12);
         }
-        Unit* connected_unit = cargo->connected_unit;
-        UnitExt* connected_unit_ext = get_unit_ext(connected_unit);
+        Unit* transport = cargo->connected_unit;
+        auto& transport_ext = transport->ext();
         u32 iterations = 0;
         u32 iterations_2 = 0;
-        if (units_dat::space_provided[connected_unit->id]) {
-            u16* index = &connected_unit_ext->loaded_unit[0].value;
+        if (units_dat::space_provided[transport->id]) {
+            u16* index = &transport_ext.loaded_unit[0].value;
             do {
                 if (*index == target_order_shifted) {
                     break;
                 }
                 ++iterations;
                 ++index;
-            } while (iterations < units_dat::space_provided[connected_unit->id]);
+            } while (iterations < units_dat::space_provided[transport->id]);
             iterations_2 = iterations;
         }
         if (transport_died) {
-            helper::move_unit_duplicate(cargo, connected_unit->sprite->position.x, connected_unit->sprite->position.y);
+            helper::move_unit_duplicate(cargo, transport->sprite->position.x, transport->sprite->position.y);
         } else {
-            u8 sound_offset = connected_unit->get_race();
-            helper::play_sound_from_unit(SoundId::Misc_ZOvTra01_wav + sound_offset, connected_unit, 1, 0);
+            bw::play_sound(get_transport_sound_id(transport), transport->position);
             helper::show_and_enable_unit(cargo);
             iterations = iterations_2;
         }
-        connected_unit_ext->loaded_unit[iterations].value = 0;
+        transport_ext.loaded_unit[iterations].value = 0;
         cargo->connected_unit = 0;
         cargo->status &= 0xFFFFFFBF;
         helper::toggle_unit_pathing_properties(cargo);

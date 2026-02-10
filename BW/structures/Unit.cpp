@@ -1427,9 +1427,6 @@ bool Unit::can_attack_transport_checks() {
     }
 
     if (this->is_garrisoned() && this->connected_unit) {
-        if (this->connected_unit->id == UnitId::TerranTencendur) {
-            return true;
-        }
         if (this->connected_unit->is_in_air()) {
             return false;
         }

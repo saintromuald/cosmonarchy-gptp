@@ -286,9 +286,10 @@ namespace PortraitId {
         ScannerSweep                = 278,
         Aurora                      = 279,
         Iziralisk                   = 280,
-        Avatar                      = 201,
-        Ecclesiast_Khalendric       = 202,
-        Ecclesiast_Astral           = 203,
+        Avatar                      = 281,
+        Ecclesiast_Khalendric       = 282,
+        Ecclesiast_Astral           = 283,
+        Pr0nogo                     = 284,
 
         None						= 0xFFFF
     };

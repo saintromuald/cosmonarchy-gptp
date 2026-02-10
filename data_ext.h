@@ -414,7 +414,7 @@ enum ExtTimerId {
     TimerTranquilityArray,
     TimerCriticality,
     TimerOscilliantBindingPlasma,
-    TimerCohortCorpseDelay,
+    TimerCorpseConsumptionDelay,
     TimerVengefulMarch,
     TimerMalefactorTyrannize,
     TimerMalefactorStun,
@@ -459,7 +459,6 @@ enum ExtTimerId {
     TimerWarringWindsCooldown,
     TimerScrapworldImplosion,
     TimerVitalRemainsArmorPen,
-    TimerCorpseConsumptionDelay,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,
