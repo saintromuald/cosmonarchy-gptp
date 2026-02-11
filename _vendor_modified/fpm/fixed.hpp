@@ -136,7 +136,7 @@ public:
     template <typename I, typename std::enable_if<std::is_integral<I>::value>::type* = nullptr>
     inline fixed& operator+=(I y) noexcept
     {
-        m_value += y * FRACTION_MULT;
+        m_value += static_cast<BaseType>(y) * FRACTION_MULT;
         return *this;
     }
 
@@ -149,7 +149,7 @@ public:
     template <typename I, typename std::enable_if<std::is_integral<I>::value>::type* = nullptr>
     inline fixed& operator-=(I y) noexcept
     {
-        m_value -= y * FRACTION_MULT;
+        m_value -= static_cast<BaseType>(y) * FRACTION_MULT;
         return *this;
     }
 
@@ -171,7 +171,7 @@ public:
     template <typename I, typename std::enable_if<std::is_integral<I>::value>::type* = nullptr>
     inline fixed& operator*=(I y) noexcept
     {
-        m_value *= y;
+        m_value *= static_cast<BaseType>(y);
         return *this;
     }
 
@@ -194,7 +194,7 @@ public:
     template <typename I, typename std::enable_if<std::is_integral<I>::value>::type* = nullptr>
     inline fixed& operator/=(I y) noexcept
     {
-        m_value /= y;
+        m_value /= static_cast<BaseType>(y);
         return *this;
     }
 
