@@ -187,7 +187,8 @@ namespace hooks {
                             dy = units_dat::unit_bounds[worker_id].bottom + units_dat::unit_bounds[worker_id].top + 1;
                         }
 
-                        for (s32 worker_count = 0; worker_count < 6; worker_count++) {
+                        u32 worker_cap = is_omnipresence ? 8 : 6;
+                        for (s32 worker_count = 0; worker_count < worker_cap; worker_count++) {
                             pos.x += dx;
                             pos.y -= dy;
 
@@ -204,6 +205,10 @@ namespace hooks {
                                     case 4:
                                     case 5: {
                                         worker_id = UnitId::ZergDroleth;
+                                    } break;
+                                    case 6:
+                                    case 7: {
+                                        worker_id = UnitId::AskosiPilgrim;
                                     } break;
                                 }
                             }
