@@ -246,7 +246,7 @@ void load_textbox() { //004f37c0
 
 void load_statlb() { // 004bed70
     bool is_standard_melee = (g_game_data.victory_condition == VictoryCondition::Default &&
-        g_game_data.starting_units == 0 &&
+        g_game_data.starting_units == StartingUnits::MapUnits &&
         g_game_data.tournament_mode_enabled == 0);
 
     bool should_show_statlb = !g_multiplayer_mode ||

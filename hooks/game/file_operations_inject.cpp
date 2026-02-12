@@ -36,7 +36,7 @@ namespace {
 }
 
 namespace hooks {
-	void injectFileOperationsHooks() {
+	void inject_file_operations_hooks() {
 		jump_patch(open_map_file_wrapper,	0x0045A290, 4);
 		jump_patch(load_map_wrapper,		0x004BF520, 4);
 	}

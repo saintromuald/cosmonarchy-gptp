@@ -15,8 +15,7 @@ namespace hooks {
         }
 
         if (g_custom_singleplayer) {
-            if (game_data->victory_condition != VictoryCondition::Default || game_data->starting_units || game_data->use_standard_unit_stats)
-            {
+            if (game_data->victory_condition != VictoryCondition::Default || game_data->starting_units != StartingUnits::MapUnits || game_data->use_standard_unit_stats) {
                 *g_initial_random_seed = time(0);
                 g_last_random_number = *g_initial_random_seed;
                 srand(*g_initial_random_seed);

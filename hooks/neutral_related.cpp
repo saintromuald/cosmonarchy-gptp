@@ -3,7 +3,7 @@
 
 namespace hooks {
 	bool unit_is_not_neutral(CHKUnit* unit) { // 004CBE20
-		if (!game_data->starting_units) {
+		if (game_data->starting_units == StartingUnits::MapUnits) {
 			return false;
 		}
 		if (unit->player != 11) {
@@ -14,4 +14,4 @@ namespace hooks {
 		}
 		return false;
 	}
-}
+} // namespace hooks
