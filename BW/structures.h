@@ -195,7 +195,7 @@ struct GameData { // taken from IDA and from https://gist.githubusercontent.com/
     u8		resource_type;			  // 0x76
     u8		use_standard_unit_stats;  // 0x77
     u8		fog_of_war;				  // 0x78
-    u8		starting_units;			  // 0x79
+    StartingUnits starting_units;	  // 0x79
     u8		use_fixed_positions;	  // 0x7A
     u8		restriction_flags;		  // 0x7B
     u8		allies_enabled;			  // 0x7C

@@ -36,7 +36,7 @@ GameRunner::Result GameRunner::create_singleplayer_game(const char* map_path, u1
         }
     }
 
-    if (game_data->victory_condition == VictoryCondition::Default && game_data->starting_units == 0
+    if (game_data->victory_condition == VictoryCondition::Default && game_data->starting_units == StartingUnits::MapUnits
         && game_data->tournament_mode_enabled == 0 && g_is_in_replay == 0 && !melee) {
         g_gl_glues_mode = race_ready_room(g_player_table[0].race);
     } else {

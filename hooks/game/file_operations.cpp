@@ -51,8 +51,7 @@ namespace hooks
 		return result;
 	}
 
-	s32 load_map(s32 a1, char* a2, s32 a3) // 004BF520
-	{
+	s32 load_map(s32 a1, char* a2, s32 a3) { // 004BF520
 		s32 v3; // esi
 		void* v4; // edi
 		s32 result; // eax
@@ -65,21 +64,17 @@ namespace hooks
 			v4 = scenario_chk;
 			v7 = 0;
 			result = readMapChunks(0, (s32)scenario_chk, (s32*)&v7, *g_scenario_chk_size);
-			if (result)
-			{
-				if (game_data->victory_condition != VictoryCondition::Default || game_data->starting_units || game_data->tournament_mode_enabled)
+			if (result) {
+				if (game_data->victory_condition != VictoryCondition::Default || game_data->starting_units != StartingUnits::MapUnits || game_data->tournament_mode_enabled) {
 					v6 = &stru_500574[5 * v7];
-				else
+				} else {
 					v6 = &stru_50057C[5 * v7];
+				}
 				result = readChunkNodes(v6->chk_struct_count, v3, v6->chk_struct, v4, 0);
 			}
-		}
-		else if (g_current_map_filename[0])
-		{
+		} else if (g_current_map_filename[0]) {
 			result = unkNetworkFunc(g_current_map_filename, a2, a3) != 0;
-		}
-		else
-		{
+		} else {
 			result = 0;
 		}
 		return result;

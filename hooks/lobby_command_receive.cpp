@@ -30,7 +30,7 @@ static bool is_all_cpu_force(u8 force) {
 
 static bool mode_allows_change(u8 player_index) {
     if (g_game_data.victory_condition != VictoryCondition::Default) return true;
-    if (g_game_data.starting_units) return true;
+    if (g_game_data.starting_units != StartingUnits::MapUnits) return true;
     if (g_game_data.tournament_mode_enabled) return true;
     if (g_player_force[player_index]) return true;
     return false;
@@ -240,7 +240,7 @@ static void process_change_slot_command(const Command_MoveToForce* command, u32 
     if (!g_is_host) return;
     if (g_game_state < GameState::InLobby) return;
     if (g_game_data.victory_condition != VictoryCondition::Default) return;
-    if (g_game_data.starting_units || g_game_data.tournament_mode_enabled) return;
+    if (g_game_data.starting_units != StartingUnits::MapUnits || g_game_data.tournament_mode_enabled) return;
     if (command->force == 0 || command->force > 4) return;
     auto current_slot = index_to_slot_id(player_id);
     if (current_slot > 7) return;

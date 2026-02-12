@@ -18,12 +18,9 @@ namespace hooks {
         if (!is_computer_player && (is_omnipresence || is_duopoly)) {
             building_id = UnitId::Omnivale;
         }
-        s32 building_size_x, building_size_y;
-        Box16 search_box;
-        Unit* created_unit;
 
-        building_size_x = units_dat::building_dimensions[building_id].x;
-        building_size_y = units_dat::building_dimensions[building_id].y;
+        s16 building_size_x = units_dat::building_dimensions[building_id].x;
+        s16 building_size_y = units_dat::building_dimensions[building_id].y;
         if (building_size_x < 0) {
             building_size_x++;
         }
@@ -31,14 +28,15 @@ namespace hooks {
             building_size_y++;
         }
 
-        search_box.left = (g_start_positions[player].x - (s16)(building_size_x / 2)) & 0xFFE0;
-        search_box.top = (g_start_positions[player].y - (s16)(building_size_y / 2)) & 0xFFE0;
-        search_box.bottom = building_size_y / 2 + ((g_start_positions[player].y - (s16)(building_size_y / 2)) & 0xFFE0) + building_size_y / 2 - 1;
-        search_box.right = building_size_x / 2 + ((g_start_positions[player].x - (s16)(building_size_x / 2)) & 0xFFE0) + building_size_x / 2 - 1;
+        Box16 search_box = {
+            search_box.left = (g_start_positions[player].x - (s16)(building_size_x / 2)) & 0xFFE0,
+            search_box.top = (g_start_positions[player].y - (s16)(building_size_y / 2)) & 0xFFE0,
+            search_box.bottom = building_size_y / 2 + ((g_start_positions[player].y - (s16)(building_size_y / 2)) & 0xFFE0) + building_size_y / 2 - 1,
+            search_box.right = building_size_x / 2 + ((g_start_positions[player].x - (s16)(building_size_x / 2)) & 0xFFE0) + building_size_x / 2 - 1,
+        };
 
-        // yes, the return value is unused for some reason
         helper::find_best_unit(&search_box, 0x0049D640);
-        created_unit = helper::create_unit(building_id,
+        Unit* created_unit = helper::create_unit(building_id,
                 ((g_start_positions[player].x - (building_size_x / 2)) & 0xFFE0) + building_size_x / 2,
                 ((g_start_positions[player].y - (building_size_y / 2)) & 0xFFE0) + building_size_y / 2,
                 player);
@@ -58,25 +56,20 @@ namespace hooks {
         return x < 0.0fp ? -1.0fp : x > 0.0fp ? 1.0fp : 0.0fp;
     }
 
-    static Point16 find_worker_spawn_positions(s32 townhallId, const u16& startX, const u16& startY, bool& horizontal) {
+    static Point16 find_worker_spawn_positions(s32 town_center_id, const u16& start_x, const u16& start_y, bool& horizontal) {
         s32 sum_x = 0;
         s32 sum_y = 0;
         u32 count = 0;
 
         bw::UnitFinder unit_finder;
-        unit_finder.search(
-            startX - 10 * 32,
-            startY - 10 * 32,
-            startX + 10 * 32,
-            startY + 10 * 32
-        );
-        u8 cliff_level = bw::get_active_tile_at_coords(startX, startY)->ground_height;
+        unit_finder.search(start_x - 10 * 32, start_y - 10 * 32, start_x + 10 * 32, start_y + 10 * 32);
+        u8 cliff_level = bw::get_active_tile_at_coords(start_x, start_y)->ground_height;
         unit_finder.for_each([&](Unit* unit) {
             if (unit_id_is_minerals(unit->id) && bw::get_active_tile_at_coords(unit->position.x, unit->position.y)->ground_height == cliff_level)
             {
                 Point16 pos = unit->position;
-                sum_x += pos.x - startX;
-                sum_y += pos.y - startY;
+                sum_x += static_cast<s32>(pos.x) - static_cast<s32>(start_x);
+                sum_y += static_cast<s32>(pos.y) - static_cast<s32>(start_y);
                 count += 1;
             }
         });
@@ -87,27 +80,35 @@ namespace hooks {
             sum_y = 1;
         }
 
-        const auto averageX = fp32(sum_x) / count;
-        const auto averageY = fp32(sum_y) / count;
-        const auto distance = pow(pow(averageX, 2) + pow(averageY, 2), 0.5fp);
+        const auto average_x = fp32(sum_x) / (fp32)count;
+        const auto average_y = fp32(sum_y) / (fp32)count;
+        const auto distance = fpm::hypot(average_x, average_y);
 
-        auto offset_x = averageX / distance;
-        auto offset_y = averageY / distance;
+        fp32 offset_x{0};
+        fp32 offset_y{0};
+        if (distance == 0.0fp) {
+            // Default to bottom horizontal for symmetrical minerals edge case
+            offset_x = 0.0fp;
+            offset_y = 1.0fp;
+        } else {
+            offset_x = average_x / distance;
+            offset_y = average_y / distance;
+        }
 
         const fp32 distance_multiplier{1.4};
         auto width = distance_multiplier;
         auto height = distance_multiplier;
 
         if (offset_x < 0fp) {
-            width *= units_dat::unit_bounds[townhallId].left;
+            width *= units_dat::unit_bounds[town_center_id].left;
         } else {
-            width *= units_dat::unit_bounds[townhallId].right;
+            width *= units_dat::unit_bounds[town_center_id].right;
         }
 
         if (offset_y < 0fp) {
-            height *= units_dat::unit_bounds[townhallId].top;
+            height *= units_dat::unit_bounds[town_center_id].top;
         } else {
-            height *= units_dat::unit_bounds[townhallId].bottom;
+            height *= units_dat::unit_bounds[town_center_id].bottom;
         }
 
         offset_x = offset_x * width;
@@ -122,160 +123,157 @@ namespace hooks {
         }
 
         if (force_horizontal || abs(offset_x) < abs(offset_y)) {
-            offset_x = -units_dat::unit_bounds[townhallId].left * distance_multiplier;
+            offset_x = -units_dat::unit_bounds[town_center_id].left * distance_multiplier;
             offset_y = sign(offset_y) * height;
             horizontal = true;
         } else {
             offset_x = sign(offset_x) * width;
-            offset_y = units_dat::unit_bounds[townhallId].bottom * distance_multiplier * 1.5fp;
+            offset_y = units_dat::unit_bounds[town_center_id].bottom * distance_multiplier * 1.5fp;
             horizontal = false;
         }
-
-        return Point16{(u16)(startX + offset_x), (u16)(startY + offset_y)};
+        return Point16{(u16)(start_x + offset_x), (u16)(start_y + offset_y)};
     }
 
-    void create_initial_melee_units() {
-        u32 player = 8;
+    void create_initial_melee_units() { // 0049DA40
+        u32 player = PlayerLimit;
         u8* race_id_offset = (u8*)0x0057F009;
 
         while (race_id_offset != (u8*)0x0057EEE9) {
             race_id_offset -= 0x24;
             player--;
+            if (*(race_id_offset - 1) != 2 && *(race_id_offset - 1) != 1) {
+                continue;
+            }
+            
+            StartingUnits starting_units = g_game_data.starting_units;
+            const auto race_id = g_player_table[player].race;
+            if (g_game_data.victory_condition == VictoryCondition::Default && starting_units == StartingUnits::MapUnits
+            && !g_game_data.tournament_mode_enabled && player < PlayerLimit && (g_player_force[player]) != 0) {
+                starting_units = StartingUnits::WorkersTownCenter;
+            }
 
-            if (*(race_id_offset - 1) == 2 || *(race_id_offset - 1) == 1) {
-                // 0 is use map settings, 1 is Workers, 2 is Workers + Main Building
-                StartingUnits starting_units = (StartingUnits)g_starting_units;
-                auto race_id = g_player_table[player].race;
+            if (g_globals->players[player].no_starting_units == true) {
+                starting_units = StartingUnits::MapUnits;
+            }
 
-                if (g_victory_conditions == 0 && starting_units == StartingUnits::MapUnits && g_tournament_mode == 0 && player < PlayerLimit && (g_player_force[player]) != 0) {
-                    // race selected instead of using map settings?
-                    starting_units = StartingUnits::WorkersTownCenter;
-                }
+            if (starting_units == StartingUnits::WorkersTownCenter) {
+                create_initial_melee_buildings(race_id, player);
+            }
 
-                if (g_globals->players[player].no_starting_units == true) {
-                    starting_units = StartingUnits::MapUnits;
-                }
+            if (starting_units == StartingUnits::MapUnits) {
+                continue;
+            }
+            GameKind game_kind = bw::get_game_kind();
+            bool is_computer_player = g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot;
+            bool is_omnipresence = game_kind == GameKind::Omnipresence;
+            bool is_duopoly = game_kind == GameKind::Duopoly;
+            u32 worker_id = get_racial_worker_id(race_id);
+            u8 townhall_id = get_racial_town_center_id(race_id);
+            if (!is_computer_player && (is_omnipresence || is_duopoly)) {
+                townhall_id = UnitId::Omnivale;
+            }
 
-                if (starting_units == StartingUnits::WorkersTownCenter) {
-                    create_initial_melee_buildings(race_id, player);
-                    if (race_id == RaceId::Zerg) {
-                        create_initial_ovileth(player);
+            if (worker_id == UnitId::None) {
+                continue;
+            }
+            Point16 start_pos = g_start_positions[player];
+            bool horizontal = true;
+            Point16 pos = find_worker_spawn_positions(townhall_id, start_pos.x, start_pos.y, horizontal);
+
+            s32 dx = 0;
+            s32 dy = 0;
+            if (horizontal) {
+                dx = units_dat::unit_bounds[worker_id].left + units_dat::unit_bounds[worker_id].right + 1;
+            } else {
+                dy = units_dat::unit_bounds[worker_id].bottom + units_dat::unit_bounds[worker_id].top + 1;
+            }
+
+            u32 worker_cap = is_omnipresence ? 8 : 6;
+            for (u32 worker_count = 0; worker_count < worker_cap; worker_count++) {
+                pos.x += dx;
+                pos.y -= dy;
+
+                if (is_omnipresence && !is_computer_player) {
+                    switch (worker_count) {
+                        case 0:
+                        case 1: {
+                            worker_id = UnitId::TerranMason;
+                        } break;
+                        case 2:
+                        case 3: {
+                            worker_id = UnitId::ProtossScribe;
+                        } break;
+                        case 4:
+                        case 5: {
+                            worker_id = UnitId::ZergDroleth;
+                        } break;
+                        case 6:
+                        case 7: {
+                            worker_id = UnitId::AskosiPilgrim;
+                        } break;
                     }
                 }
 
-                if (starting_units == StartingUnits::WorkersOnly || starting_units == StartingUnits::WorkersTownCenter) {
-                    GameKind game_kind = bw::get_game_kind();
-                    bool is_computer_player = g_player_table[player].type == PlayerType::Computer || g_player_table[player].type == PlayerType::ComputerSlot;
-                    bool is_omnipresence = game_kind == GameKind::Omnipresence;
-                    bool is_duopoly = game_kind == GameKind::Duopoly;
-                    u32 worker_id = get_racial_worker_id(race_id);
-                    u8 townhall_id = get_racial_town_center_id(race_id);
-                    if (!is_computer_player && (is_omnipresence || is_duopoly)) {
-                        townhall_id = UnitId::Omnivale;
+                if (is_duopoly && !is_computer_player) {
+                    switch (g_player_table[player].race) {
+                        case RaceId::Terran: {
+                            switch (worker_count) {
+                                case 0:
+                                case 1:
+                                case 2: {
+                                    worker_id = UnitId::TerranMason;
+                                } break;
+                                case 3:
+                                case 4:
+                                case 5: {
+                                    worker_id = UnitId::ProtossScribe;
+                                } break;
+                            }
+                        } break;
+                        case RaceId::Protoss: {
+                            switch (worker_count) {
+                                case 0:
+                                case 1:
+                                case 2: {
+                                    worker_id = UnitId::ProtossScribe;
+                                } break;
+                                case 3:
+                                case 4:
+                                case 5: {
+                                    worker_id = UnitId::ZergDroleth;
+                                } break;
+                            }
+                        } break;
+                        case RaceId::Zerg: {
+                            switch (worker_count) {
+                                case 0:
+                                case 1:
+                                case 2: {
+                                    worker_id = UnitId::TerranMason;
+                                } break;
+                                case 3:
+                                case 4:
+                                case 5: {
+                                    worker_id = UnitId::ZergDroleth;
+                                } break;
+                            }
+                        } break;
                     }
+                }
 
-                    if (worker_id != UnitId::None) {
-                        Point16 start_pos = g_start_positions[player];
-                        bool horizontal = true;
-                        Point16 pos = find_worker_spawn_positions(townhall_id, start_pos.x, start_pos.y, horizontal);
-
-                        s32 dx = 0;
-                        s32 dy = 0;
-                        if (horizontal) {
-                            dx = units_dat::unit_bounds[worker_id].left + units_dat::unit_bounds[worker_id].right + 1;
-                        } else {
-                            dy = units_dat::unit_bounds[worker_id].bottom + units_dat::unit_bounds[worker_id].top + 1;
-                        }
-
-                        u32 worker_cap = is_omnipresence ? 8 : 6;
-                        for (s32 worker_count = 0; worker_count < worker_cap; worker_count++) {
-                            pos.x += dx;
-                            pos.y -= dy;
-
-                            if (is_omnipresence && !is_computer_player) {
-                                switch (worker_count) {
-                                    case 0:
-                                    case 1: {
-                                        worker_id = UnitId::TerranMason;
-                                    } break;
-                                    case 2:
-                                    case 3: {
-                                        worker_id = UnitId::ProtossScribe;
-                                    } break;
-                                    case 4:
-                                    case 5: {
-                                        worker_id = UnitId::ZergDroleth;
-                                    } break;
-                                    case 6:
-                                    case 7: {
-                                        worker_id = UnitId::AskosiPilgrim;
-                                    } break;
-                                }
-                            }
-
-                            if (is_duopoly && !is_computer_player) {
-                                switch (g_player_table[player].race) {
-                                    case RaceId::Terran: {
-                                        switch (worker_count) {
-                                            case 0:
-                                            case 1:
-                                            case 2: {
-                                                worker_id = UnitId::TerranMason;
-                                            } break;
-                                            case 3:
-                                            case 4:
-                                            case 5: {
-                                                worker_id = UnitId::ProtossScribe;
-                                            } break;
-                                        }
-                                    } break;
-                                    case RaceId::Protoss: {
-                                        switch (worker_count) {
-                                            case 0:
-                                            case 1:
-                                            case 2: {
-                                                worker_id = UnitId::ProtossScribe;
-                                            } break;
-                                            case 3:
-                                            case 4:
-                                            case 5: {
-                                                worker_id = UnitId::ZergDroleth;
-                                            } break;
-                                        }
-                                    } break;
-                                    case RaceId::Zerg: {
-                                        switch (worker_count) {
-                                            case 0:
-                                            case 1:
-                                            case 2: {
-                                                worker_id = UnitId::TerranMason;
-                                            } break;
-                                            case 3:
-                                            case 4:
-                                            case 5: {
-                                                worker_id = UnitId::ZergDroleth;
-                                            } break;
-                                        }
-                                    } break;
-                                }
-                            }
-
-                            Unit* created_unit = helper::create_unit(worker_id, pos.x, pos.y, player);
-                            if (created_unit) {
-                                bw::teleport_to_point(created_unit, pos);
-                                helper::update_unit_stats_and_finish_building(created_unit);
-                                if (helper::show_finished_unit(created_unit) != 0) {
-                                    helper::update_unit_strength(created_unit);
-                                }
-                            }
-                        }
+                Unit* created_unit = helper::create_unit(worker_id, pos.x, pos.y, player);
+                if (created_unit) {
+                    bw::teleport_to_point(created_unit, pos);
+                    helper::update_unit_stats_and_finish_building(created_unit);
+                    if (helper::show_finished_unit(created_unit) != 0) {
+                        helper::update_unit_strength(created_unit);
                     }
                 }
             }
         }
     }
         
-    void create_initial_ovileth(u8 player) {
+    void create_initial_ovileth(u8 player) { // 0049D6C0
         return; // Ovileth no longer spawns
 
         static u16* const max_box_right_value = (u16*)0x00628450;
@@ -400,7 +398,7 @@ namespace hooks {
 
     // Hooked to add more cases. -Pr0nogo
     bool chkunit_invalid_for_melee(CHKUnit* chkunit) { // 004CBE20
-        if ((StartingUnits)g_starting_units != StartingUnits::MapUnits) {
+        if (g_starting_units != StartingUnits::MapUnits) {
             if (chkunit->player == 11) {
                 return false;
             }
