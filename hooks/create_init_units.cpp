@@ -28,12 +28,11 @@ namespace hooks {
             building_size_y++;
         }
 
-        Box16 search_box = {
-            search_box.left = (g_start_positions[player].x - (s16)(building_size_x / 2)) & 0xFFE0,
-            search_box.top = (g_start_positions[player].y - (s16)(building_size_y / 2)) & 0xFFE0,
-            search_box.bottom = building_size_y / 2 + ((g_start_positions[player].y - (s16)(building_size_y / 2)) & 0xFFE0) + building_size_y / 2 - 1,
-            search_box.right = building_size_x / 2 + ((g_start_positions[player].x - (s16)(building_size_x / 2)) & 0xFFE0) + building_size_x / 2 - 1,
-        };
+        Box16 search_box;
+        search_box.left = (g_start_positions[player].x - (s16)(building_size_x / 2)) & 0xFFE0;
+        search_box.top = (g_start_positions[player].y - (s16)(building_size_y / 2)) & 0xFFE0;
+        search_box.bottom = building_size_y / 2 + ((g_start_positions[player].y - (s16)(building_size_y / 2)) & 0xFFE0) + building_size_y / 2 - 1;
+        search_box.right = building_size_x / 2 + ((g_start_positions[player].x - (s16)(building_size_x / 2)) & 0xFFE0) + building_size_x / 2 - 1;
 
         helper::find_best_unit(&search_box, 0x0049D640);
         Unit* created_unit = helper::create_unit(building_id,
@@ -60,7 +59,6 @@ namespace hooks {
         s32 sum_x = 0;
         s32 sum_y = 0;
         u32 count = 0;
-
         bw::UnitFinder unit_finder;
         unit_finder.search(start_x - 10 * 32, start_y - 10 * 32, start_x + 10 * 32, start_y + 10 * 32);
         u8 cliff_level = bw::get_active_tile_at_coords(start_x, start_y)->ground_height;
