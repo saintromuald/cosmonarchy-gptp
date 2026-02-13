@@ -19,8 +19,8 @@ namespace hooks {
             building_id = UnitId::Omnivale;
         }
 
-        s16 building_size_x = units_dat::building_dimensions[building_id].x;
-        s16 building_size_y = units_dat::building_dimensions[building_id].y;
+        s32 building_size_x = units_dat::building_dimensions[building_id].x;
+        s32 building_size_y = units_dat::building_dimensions[building_id].y;
         if (building_size_x < 0) {
             building_size_x++;
         }
