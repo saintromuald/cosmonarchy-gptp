@@ -499,7 +499,7 @@ fixed<B, I, F, R> sqrt(fixed<B, I, F, R> x) noexcept
 template <typename B, typename I, unsigned int F, bool R>
 fixed<B, I, F, R> hypot(fixed<B, I, F, R> x, fixed<B, I, F, R> y) noexcept
 {
-    assert(x != 0 || y != 0);
+    assert(x || y);
     return sqrt(x*x + y*y);
 }
 
