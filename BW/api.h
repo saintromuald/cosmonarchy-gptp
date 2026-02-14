@@ -835,12 +835,7 @@ void refresh_screen(s32 left, s32 top, s32 right, s32 bottom);
 /// Refreshes the entire screen.
 void refresh_screen();
 
-#define MaxRandom 32767.0
-/// Generates a pseudorandom number between 0 and 32767, inclusive. This is
-/// identical to the function used internally by StarCraft, and is guaranteed to
-/// generate the same sequence in a replay.
-u16 random(std::source_location src = std::source_location::current());
-f32 random_float(std::source_location src = std::source_location::current());
+// random and random_float was moved to common.h to avoid circular include
 
 //////////////////////////////////////////////////////////////// @}
 

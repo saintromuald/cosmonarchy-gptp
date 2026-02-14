@@ -2,6 +2,9 @@
 
 #pragma once
 #include "../../types.h"
+#include "../../interpolation.h"
+#include <algorithm>
+#include <source_location>
 #pragma pack(1)
 
 struct Point8 {
@@ -56,6 +59,147 @@ struct Vec32f {
 	operator bool() const { return *this != Vec32f{}; }
 	operator Point16() const { return Point16{u16(x), u16(y)}; }
 };
+
+// Implemented in api.cpp, declaration moved here to avoid circular include
+namespace bw {
+#define MaxRandom 32767.0
+/// Generates a pseudorandom number between 0 and 32767, inclusive. This is
+/// identical to the function used internally by StarCraft, and is guaranteed to
+/// generate the same sequence in a replay.
+u16 random(std::source_location src = std::source_location::current());
+
+template <utils::FloatLike F = f32> // TODO: remove f32
+F random_float(std::source_location src = std::source_location::current()) {
+    return F(random()) / F(MaxRandom);
+}
+}; // namespace bw
+
+namespace detail {
+using utils::FloatLike;
+
+inline const u16& g_map_tile_width  = *(u16*)0x0057F1D4;
+inline const u16& g_map_tile_height = *(u16*)0x0057F1D6;
+
+template <typename T, FloatLike DefaultFloat = T>
+struct v2 {
+	T x{};
+	T y{};
+
+	constexpr v2() = default;
+	constexpr v2(T x, T y) : x{x}, y{y} {}
+	constexpr v2(Point16 p) : x(p.x), y(p.y) {}
+	constexpr v2(Vec32f v) : x(v.x), y(v.y) {}
+	
+	template <typename Y>
+	explicit constexpr v2(v2<Y> v) : x(v.x), y(v.y) {}
+
+	constexpr bool operator==(const v2<T>& b) const { return x == b.x && y == b.y; }
+	constexpr operator bool() const { return *this != v2<T>{}; }
+	constexpr operator Point16() const { return Point16{u16(x), u16(y)}; }
+
+	constexpr v2<T> operator+(v2<T> b) const { return v2<T>{x + b.x, y + b.y}; }
+	constexpr v2<T> operator-(v2<T> b) const { return v2<T>{x - b.x, y - b.y}; }
+	constexpr v2<T> operator*(T b) const { return v2<T>{x * b, y * b}; }
+	constexpr v2<T> operator/(T b) const { return v2<T>{x / b, y / b}; }
+	template <FloatLike F = DefaultFloat> constexpr v2<F> operator*(F b) const { return v2<F>{x * b, y * b}; }
+	template <FloatLike F = DefaultFloat> constexpr v2<F> operator/(F b) const { return v2<F>{x / b, y / b}; }
+
+	constexpr v2<T>& operator+=(v2<T> b) { return *this = *this + b; }
+	constexpr v2<T>& operator-=(v2<T> b) { return *this = *this - b; }
+	constexpr v2<T>& operator*=(T b) { return *this = *this + b; }
+	constexpr v2<T>& operator/=(T b) { return *this = *this - b; }
+	template <FloatLike F = DefaultFloat> constexpr v2<F>& operator*=(F b) { return *this = *this + b; }
+	template <FloatLike F = DefaultFloat> constexpr v2<F>& operator/=(F b) { return *this = *this - b; }
+
+	template <FloatLike F = DefaultFloat>
+	inline F distance() const {
+		return fpm::hypot(F{x}, F{y});
+	}
+
+	template <FloatLike F = DefaultFloat>
+	inline F distance_to(v2<T> b) const {
+		return fpm::hypot(F{b.x - x}, F{b.y - y});
+	}
+
+	template <FloatLike F = DefaultFloat>
+	inline v2<F> normalize() const {
+		return *this / distance<F>();
+	}
+
+	constexpr inline v2<T> vector_to(v2<T> b) const {
+		return (b - *this);
+	}
+
+	template <FloatLike F = DefaultFloat>
+	inline v2<F> dir_to(v2<T> b) const {
+		return vector_to(b).normalize<F>();
+	}
+
+	constexpr inline T dot(v2<T> b) const {
+		return x * b.x + y * b.y;
+	}
+
+	template <FloatLike F = DefaultFloat>
+	inline F dot_norm(v2<T> b) const {
+		return normalize<F>().dot(b.normalize<F>());
+	}
+
+	constexpr inline T determinant(v2<T> b) const {
+		return x * b.y - y * b.x;
+	}
+
+	template <FloatLike F = DefaultFloat>
+	inline F determinant_norm(v2<T> b) const {
+		return normalize<F>().determinant(b.normalize<F>());
+	}
+
+	constexpr inline v2<T> perpendicular() const {
+		return {-y, x};
+	}
+
+	constexpr inline v2<T> reversed() const {
+		return {-x, -y};
+	}
+
+	template <FloatLike F = DefaultFloat>
+	inline v2<T> rotate(v2<T> anchor, F angle_degrees) const {
+        F x1 = x - anchor.x;
+        F y1 = y - anchor.y;
+		F radians = angle_degrees / F{57.296};
+        F x2 = x1 * fpm::cos(radians) - y1 * fpm::sin(radians);
+        F y2 = x1 * fpm::sin(radians) + y1 * fpm::cos(radians);
+        return {T(x2 + anchor.x), T(y2 + anchor.y)};
+	}
+
+	template <FloatLike F = DefaultFloat>
+	inline v2<T> polar_point(F angle_degrees, F distance) const {
+		F rads = angle_degrees / F{57.296};
+        return {
+            T(x + fpm::cos(rads) * distance),
+            T(y + fpm::sin(rads) * distance),
+        };
+    }
+
+	template <FloatLike F = DefaultFloat>
+    inline v2<T> random_polar_point(F max_distance) const {
+        return polar_point<F>(bw::random_float<F>() * 360, max_distance * fpm::sqrt(bw::random_float<F>()));
+    }
+
+	constexpr inline v2<T> clamp_to_map_bounds() const {
+		return {
+			std::clamp<T>(x, T{0}, T(g_map_tile_width * 32)),
+			std::clamp<T>(y, T{0}, T(g_map_tile_height * 32)),
+		};
+	}
+};
+
+}; // namespace detail
+
+// using Point16 = detail::v2<u16, fp32>;
+// using Vec32 = detail::v2<u32, fp32>;
+using v2  = detail::v2<fp32>;
+using v2d = detail::v2<fp64>;
+// using Vec32f = v2; // TODO: Remove this later
 
 union Quad {
 	struct {
