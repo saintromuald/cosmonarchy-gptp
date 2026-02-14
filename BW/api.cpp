@@ -1045,10 +1045,6 @@ u16 random(std::source_location src) {
     return 0;
 }
 
-f32 random_float(std::source_location src) {
-    return random() / MaxRandom;
-}
-
 void refresh_console() { // 004C36C0
     g_force_button_refresh = 1;
     g_portrait_redraw = 1;
