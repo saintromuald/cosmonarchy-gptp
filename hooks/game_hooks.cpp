@@ -2297,19 +2297,20 @@ namespace hooks {
             case UnitId::AskosiCardinal:
             case UnitId::AskosiRove:
             case UnitId::AskosiPetract: {
-                // Askosi units - Rapid Rendezvous
-                auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
-                if (try_cast && (unit->main_order_id != OrderId::AskosiRapidRendezvous || unit->is_frozen())) {
-                    try_cast = false;
+                // Askosi units - Rematerialize
+                bool is_air_unit = unit->is_in_air();
+                auto& ref_try_cast = unit_ext.values[ValueTryCastCustomSpell];
+                if (ref_try_cast && (unit->main_order_id != OrderId::AskosiRapidRendezvous || unit->is_frozen())) {
+                    ref_try_cast = false;
                 }
-                if (try_cast && !unit_ext.timers[TimerTryCastCustomSpell]) {
+                if (ref_try_cast && !unit_ext.timers[TimerTryCastCustomSpell]) {
                     Unit* target = unit->order_target.unit;
                     if (!target || !bw::are_mutual_allies(unit->player, target->player) || target->is_in_air()) {
                         unit->order_to_idle();
                         // TODO: add error handling
                     } else {
-                        Point16 target_pos = {unit->order_target.unit->get_x(), unit->order_target.unit->get_y()};
-                        u32 range = Askosi::RapidRendezvousCastRange;
+                        Point16 target_pos{unit->order_target.unit->get_x(), unit->order_target.unit->get_y()};
+                        u32 range = Askosi::RematerializeCastRange;
                         if (!helper::is_target_within_min_range(unit, range, target)) {
                             if (unit->order_target.unit) {
                                 helper::spell_order_move_towards_target(unit, range);
@@ -2328,7 +2329,7 @@ namespace hooks {
                                     ally->ext().timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
                                     ally->update_speed();
                                 }
-                                try_cast = false;
+                                ref_try_cast = false;
                             }
                         }
                     }

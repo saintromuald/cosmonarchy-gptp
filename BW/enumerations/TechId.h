@@ -31,7 +31,6 @@ namespace TechId {
         MalkothrokorHiveTissue              = 45,
         StroluumSkryspawn					= 51,
 
-        LarvalSubmenuSelectShared			= 9,  // Cloaking Field Wraith
         LarvalSubmenuSelectControl			= 28, // Dark Archon Meld
         LarvalSubmenuSelectSwarm			= 33, // Unused Tech 33
         LarvalSubmenuSelectAssault			= 38, // Unused Tech 38
