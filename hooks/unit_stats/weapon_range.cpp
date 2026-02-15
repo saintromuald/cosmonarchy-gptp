@@ -63,15 +63,15 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
 
     u32 final_range = units_dat::seek_range[unit->id];
     if (unit_ext.values[ValueTriggerWeaponRangeBaseSet]) {
-        final_range = unit_ext.values[ValueTriggerWeaponRangeBaseAmount];
+        final_range = std::max<u8>(final_range, unit_ext.values[ValueTriggerWeaponRangeBaseAmount]);
     }
     if (target && target->is_in_air()) {
         u32 weapon_id = unit->get_air_weapon();
         if (unit_id_has_custom_air_weapon(unit->id)) {
             weapon_id = bw::get_custom_secondary_weapon_from_unit_id(unit->id);
         }
-        if (weapon_id != WeaponId::None && weapons_dat::max_range[weapon_id] / 32 < final_range) {
-            final_range = weapons_dat::max_range[weapon_id] / 32;
+        if (weapon_id != WeaponId::None) {
+            final_range = std::max<u8>(final_range, weapons_dat::max_range[weapon_id] / 32);
         }
     }
 
