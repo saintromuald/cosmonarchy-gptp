@@ -44,6 +44,9 @@ namespace hooks {
 				} break;
 			}
 		}
+		if (unit_ext.timers[TimerMechanicalRage] > 1) {
+			armor_modifier += 10;
+		}
 		return armor_modifier;
 	}
 

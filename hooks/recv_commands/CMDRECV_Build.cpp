@@ -206,21 +206,13 @@ namespace hooks {
 				if (max_volume > 10) {
 					u32 error_id = SoundId::None;
 					switch (g_player_table[player].race) {
-						case RaceId::Terran: {
-							error_id = SoundId::ErrorTerran;
-						} break;
-						case RaceId::Protoss: {
-							error_id = SoundId::ErrorProtoss;
-						} break;
-						case RaceId::Zerg: {
-							error_id = SoundId::ErrorZerg;
-						} break;
-						case RaceId::Askosi: {
-							error_id = SoundId::ErrorTerran;
-						} break;
+						case RaceId::Terran:  error_id = SoundId::ErrorTerran;  break;
+						case RaceId::Protoss: error_id = SoundId::ErrorProtoss; break;
+						case RaceId::Zerg:    error_id = SoundId::ErrorZerg;    break;
+						case RaceId::Askosi:  error_id = SoundId::ErrorTerran;  break;
 					}
 					helper::play_sound_global(error_id);
-					if (!bw::has_custom_advisor(player) || !g_globals->advisor_state.cooldown) {
+					if (!g_globals->advisor_state.cooldown) {
 						if (!g_globals->advisor_state.play_timer) {
 							u32 timer = 6;
 							switch (g_player_table[player].race) {
@@ -231,9 +223,7 @@ namespace hooks {
 							}
 							g_globals->advisor_state.play_timer = timer;
 							g_globals->advisor_state.sound_id = sound_id;
-							if (bw::has_custom_advisor(player)) {
-								g_globals->advisor_state.cooldown = 54; // TODO: Replace with length of sound converted into w/e units
-							}
+							g_globals->advisor_state.cooldown = 54; // TODO: Replace with length of sound converted into w/e units
 						}
 					}
 				}

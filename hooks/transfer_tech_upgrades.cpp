@@ -16,7 +16,7 @@ namespace {
 		{UnitId::TerranMaverick, TechId::Stimpacks, TechId::None},
 		{UnitId::TerranHarakan, TechId::Stimpacks, TechId::None},
 		{UnitId::TerranCleric, TechId::Healing, TechId::Restoration, TechId::None},
-		{UnitId::TerranVulture, TechId::SpiderMines, TechId::None},
+		{UnitId::TerranVulture, TechId::TerranMines, TechId::None},
 		{UnitId::TerranPhalanxTankMode, TechId::TankSiegeMode, TechId::None},
 		{UnitId::TerranPhalanxSiegeMode, TechId::TankSiegeMode, TechId::None},
 		{UnitId::TerranWraith, TechId::CloakingField, TechId::None},

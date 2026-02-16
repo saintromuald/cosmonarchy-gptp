@@ -1742,74 +1742,42 @@ namespace hooks {
                     Unit* unit_to_order_1 = 0;
                     u32 max_distance = 9999999;
                     Unit* unit_2 = *first_player_unit[victim->player].unit;
-                    if (unit) {
-                        do {
-                            if (unit->sprite) {
-                                u8 first_order_id = unit->main_order_id;
-                                if (first_order_id) {
-                                    switch (unit->id) {
-                                        case UnitId::TerranSeraph:
-                                        case UnitId::ProtossWitness:
-                                        case UnitId::ZergOvileth:
-                                        case UnitId::ZergIroleth: {
-                                            if (helper::is_unit_loaded(unit)) {
-                                                break;
-                                            }
-                                            if (!unit->is_blind
-                                            &&  (first_order_id == OrderId::ComputerAI
-                                                || first_order_id == OrderId::ComputerReturn
-                                                || first_order_id == OrderId::GuardPost
-                                                || first_order_id == OrderId::AIPatrol)) {
-                                                u32 distance = helper::get_distance_fast(victim->sprite->position.x, unit->sprite->position.x, victim->sprite->position.y, unit->sprite->position.y);
-                                                if (distance < max_distance) {
-                                                    unit_to_order_1 = unit;
-                                                    max_distance = distance;
-                                                }
-                                            }
-                                        } break;
-                                        case UnitId::TerranComsatStation:
-                                        {
-                                            if (!(unit->status & UnitStatus::Completed)) {
-                                                break;
-                                            }
-                                            // TODO: Add check to see if victim is already detected / if there's a detector in the box?
-                                            if (!unit_id_is_garrison(victim->id) || !helper::is_unit_loaded(victim)) {
-                                                if (!helper::ai_unit_can_attack(victim) || victim->is_worker()) {
-                                                    break;
-                                                }
-                                            }
-                                            if (unit->energy >= techdata_dat::energy_cost[TechId::ScannerSweep] * 256 || unit->main_order_id == OrderId::PlaceScanner) {
-                                                break;
-                                            }
-                                            helper::assign_order_with_target(unit, threat, OrderId::PlaceScanner);
-                                            return;
-                                        } break;
-                                    }
+                    if (!unit) {
+                        return;
+                    }
+                    do {
+                        u8 first_order_id = unit->main_order_id;
+                        if (unit->sprite && first_order_id != OrderId::Die && unit->is_detector() && !helper::is_unit_loaded(unit) && !unit->is_blind) {
+                            if (first_order_id == OrderId::ComputerAI || first_order_id == OrderId::ComputerReturn || first_order_id == OrderId::GuardPost || first_order_id == OrderId::AIPatrol) {
+                                u32 distance = helper::get_distance_fast(victim->sprite->position.x, unit->sprite->position.x, victim->sprite->position.y, unit->sprite->position.y);
+                                if (distance < max_distance) {
+                                    unit_to_order_1 = unit;
+                                    max_distance = distance;
                                 }
                             }
-                            unit = unit->player_link.next;
-                            unit_2 = unit;
-                        } while (unit);
-                        if (unit_to_order_1) {
-                            Point16 victim_pos = {};
-                            victim_pos.x = victim->sprite->position.x;
-                            victim_pos.y = victim->sprite->position.y;
-                            unit_to_order_1->user_action_flags |= 1;
-                            if (unit_to_order_1->main_order_id) {
-                                while (1) {
-                                    Order* tail_order_1 = unit_to_order_1->order_queue_tail;
-                                    if (!tail_order_1) {
-                                        break;
-                                    }
-                                    if (!orders_dat::can_be_interrupted[tail_order_1->order_id] && tail_order_1->order_id != OrderId::ComputerReturn) {
-                                        break;
-                                    }
-                                    helper::remove_order_from_unit_queue(tail_order_1, unit_to_order_1);
-                                }
-                                helper::perform_another_order(OrderId::ComputerReturn, 0, unit_to_order_1, UnitId::None, victim_pos, 0);
-                            }
-                            helper::do_next_queued_order(unit_to_order_1);
                         }
+                        unit = unit->player_link.next;
+                        unit_2 = unit;
+                    } while (unit);
+                    if (unit_to_order_1) {
+                        Point16 victim_pos = {};
+                        victim_pos.x = victim->sprite->position.x;
+                        victim_pos.y = victim->sprite->position.y;
+                        unit_to_order_1->user_action_flags |= 1;
+                        if (unit_to_order_1->main_order_id) {
+                            while (1) {
+                                Order* tail_order_1 = unit_to_order_1->order_queue_tail;
+                                if (!tail_order_1) {
+                                    break;
+                                }
+                                if (!orders_dat::can_be_interrupted[tail_order_1->order_id] && tail_order_1->order_id != OrderId::ComputerReturn) {
+                                    break;
+                                }
+                                helper::remove_order_from_unit_queue(tail_order_1, unit_to_order_1);
+                            }
+                            helper::perform_another_order(OrderId::ComputerReturn, 0, unit_to_order_1, UnitId::None, victim_pos, 0);
+                        }
+                        helper::do_next_queued_order(unit_to_order_1);
                     }
                     return;
                 }
@@ -1848,7 +1816,8 @@ namespace hooks {
             || g_completed_unit_count_table[UnitId::ZergOvileth].player[player_id]
             || g_completed_unit_count_table[UnitId::ZergYblyleth].player[player_id]
             || g_completed_unit_count_table[UnitId::ZergIroleth].player[player_id]
-            || g_completed_unit_count_table[UnitId::ZergOthstoleth].player[player_id];
+            || g_completed_unit_count_table[UnitId::ZergOthstoleth].player[player_id]
+            || g_completed_unit_count_table[UnitId::AskosiEmissary].player[player_id];
     }
 
     u32 request_military_to(u16* defense_ptr, AiRegion* ai_region, u32 against_air)	{ // 0043E760

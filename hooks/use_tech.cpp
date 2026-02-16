@@ -88,8 +88,11 @@ namespace hooks {
             case TechId::EmergencyDetonation: {
                 queue_generic_ability(RustId::CastEmergencyDetonation, 1);
             } break;
-            case TechId::ScannerSweep: {
-                helper::issue_tri_target_order(OrderId::PlaceScanner, 0, 0);
+            case TechId::AskosiRemoteHijack: {
+                helper::issue_tri_target_order(OrderId::AskosiRemoteHijack, 0, 0);
+            } break;
+            case TechId::AskosiPreylock: {
+                helper::issue_tri_target_order(OrderId::AskosiPreylock, 0, 0);
             } break;
             case TechId::ApostleLazarusAgent: {
                 if (can_play_local_sound) {
@@ -101,7 +104,7 @@ namespace hooks {
             case TechId::HypnagogueThroughTheLookingGlass: {
                 helper::issue_tri_target_order(OrderId::CastThroughTheLookingGlass, 0, 0);
             } break;
-            case TechId::SpiderMines: {
+            case TechId::TerranMines: {
                 helper::issue_tri_target_order(OrderId::PlaceMine, 0, 0);
             } break;
             case TechId::GoskaLobotomyGrenade: {
@@ -132,9 +135,6 @@ namespace hooks {
                 if (!unit->is_in_air()) {
                     queue_generic_ability(RustId::CastPryingEyes, 1);
                 }
-            } break;
-            case TechId::Consume: {
-                helper::issue_tri_target_order(OrderId::Consume, 0, 0);
             } break;
             case TechId::TargetGround: {
                 helper::issue_tri_target_order(OrderId::TargetGroundNew, 0, 0);

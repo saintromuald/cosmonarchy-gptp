@@ -1430,7 +1430,7 @@ bool Unit::can_attack_transport_checks() {
         if (this->connected_unit->is_in_air()) {
             return false;
         }
-        return true;
+        return this->connected_unit->is_valid_garrison();
     }
     return false;
 }
@@ -1466,7 +1466,7 @@ void Unit::count_connected_larva() {
 }
 
 Faction Unit::faction() {
-	return player < PlayerLimit ? g_globals->players[player].faction : Faction::None;
+    return player < PlayerLimit ? g_globals->players[player].faction : Faction::None;
 }
 
 f32 Unit::total_cost() {
@@ -1893,4 +1893,265 @@ bool Unit::is_valid_garrison() {
         return false;
     }
     return true;
+}
+
+void Unit::rematerialize_cast() {
+    auto& unit_ext = this->ext();
+    auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
+    if (try_cast && (this->main_order_id != OrderId::AskosiRematerialize || this->is_frozen())) {
+        try_cast = false;
+    }
+    if (!try_cast || unit_ext.timers[TimerTryCastCustomSpell]) {
+        return;
+    }
+    Unit* target = this->order_target.unit;
+    if (!target) {
+        this->order_to_idle();
+        return;
+    }
+    if (!bw::are_mutual_allies(this->player, target->player) || target->is_building()) {
+        this->order_to_idle();
+        helper::display_error_message_id_with_sfx(this->player, 968, get_racial_error_sfx(RaceId::Enum(g_player_table[this->player].race)));
+        return;
+    }
+    Point16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
+    u32 range = Askosi::RematerializeCastRange;
+    if (!helper::is_target_within_min_range(this, range, target)) {
+        if (this->order_target.unit) {
+            helper::spell_order_move_towards_target(this, range);
+        } else {
+            helper::set_move_target_xy(this, target_pos.x, target_pos.y);
+        }
+        unit_ext.timers[TimerTryCastCustomSpell] = 3;
+        return;
+    }
+    u16 energy_cost = 0;
+    if (helper::spell_order(this, TechId::AskosiRematerialize, &energy_cost, range, 1330)) {
+        this->spend_energy(energy_cost);
+        bw::teleport_to_unit(target, this, 24, {.check_distance = false}, SpriteId::LegionnaireTeleportEffect);
+        target->ext().timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
+        target->update_speed();
+        try_cast = false;
+    }
+}
+
+bool Unit::rapid_rendezvous_cast() {
+    auto& unit_ext = this->ext();
+    auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
+    if (try_cast && (this->main_order_id != OrderId::AskosiRapidRendezvous || this->is_frozen())) {
+        try_cast = false;
+    }
+    if (!try_cast || unit_ext.timers[TimerTryCastCustomSpell]) {
+        return false;
+    }
+    Unit* target = this->order_target.unit;
+    if (!target) {
+        this->order_to_idle();
+        return false;
+    }
+    if (!bw::are_mutual_allies(this->player, target->player) || target->is_in_air()) {
+        this->order_to_idle();
+        helper::display_error_message_id_with_sfx(this->player, 969, get_racial_error_sfx(RaceId::Enum(g_player_table[this->player].race)));
+        return false;
+    }
+    Point16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
+    u32 range = Askosi::RapidRendezvousCastRange;
+    if (!helper::is_target_within_min_range(this, range, target)) {
+        if (this->order_target.unit) {
+            helper::spell_order_move_towards_target(this, range);
+        } else {
+            helper::set_move_target_xy(this, target_pos.x, target_pos.y);
+        }
+        unit_ext.timers[TimerTryCastCustomSpell] = 3;
+        return false;
+    }
+    u16 energy_cost = 0;
+    if (helper::spell_order(this, TechId::AskosiRapidRendezvous, &energy_cost, range, 1330)) {
+        this->spend_energy(energy_cost);
+        bw::teleport_to_unit(this, target, 24, {.check_distance = false}, SpriteId::LegionnaireTeleportEffect);
+        unit_ext.timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
+        for (Unit* ally : g_unit_search.radial_ex(target, Askosi::RapidRendezvousBuffRange, FilterAlly | FilterIncludingSelf)) {
+            ally->ext().timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
+            ally->update_speed();
+        }
+        try_cast = false;
+        return true;
+    }
+}
+
+void Unit::hijack_cast() {
+    auto& unit_ext = this->ext();
+    auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
+    if (try_cast && (this->main_order_id != OrderId::AskosiHijack || this->is_frozen()) || unit_ext.units[UnitHijackTarget]) {
+        try_cast = false;
+    }
+    if (!try_cast || unit_ext.timers[TimerTryCastCustomSpell]) {
+        return;
+    }
+    Unit* target = this->order_target.unit;
+    if (!target) {
+        this->order_to_idle();
+        return;
+    }
+    if (target->is_building() || (bw::are_mutual_allies(this->player, target->player) && !target->is_askosi_embedded())) {
+        this->order_to_idle();
+        helper::display_error_message_id_with_sfx(this->player, 970, get_racial_error_sfx(RaceId::Enum(g_player_table[this->player].race)));
+        return;
+    }
+    Point16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
+    u32 range = Askosi::HijackCastRange;
+    if (!helper::is_target_within_min_range(this, range, target)) {
+        if (this->order_target.unit) {
+            helper::spell_order_move_towards_target(this, range);
+        } else {
+            helper::set_move_target_xy(this, target_pos.x, target_pos.y);
+        }
+        unit_ext.timers[TimerTryCastCustomSpell] = 3;
+        return;
+    }
+    auto& target_ext = target->ext();
+    if (target_ext.units[UnitHijacker]) {
+        this->order_to_idle();
+        try_cast = false;
+        helper::display_error_message_id_with_sfx(this->player, 971, get_racial_error_sfx(RaceId::Enum(g_player_table[this->player].race)));
+        return;
+    }
+    u16 energy_cost = 0;
+    if (helper::spell_order(this, TechId::AskosiHijack, &energy_cost, range, 1330)) {
+        this->status |= UnitStatus::NoCollide;
+        this->status |= UnitStatus::CanNotReceiveOrders;
+        bw::teleport_to_unit(this, target, 24, {.check_distance = false}, SpriteId::LegionnaireTeleportEffect);
+        target_ext.timers[TimerIsBeingHijacked] = Askosi::HijackTimer;
+        target_ext.units[UnitHijacker] = this;
+        unit_ext.units[UnitHijackTarget] = target;
+        try_cast = false;
+    }
+}
+
+void Unit::remote_hijack_cast() {
+    auto& unit_ext = this->ext();
+    auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
+    if (try_cast && (this->main_order_id != OrderId::AskosiRemoteHijack || this->is_frozen())) {
+        try_cast = false;
+    }
+    if (!try_cast || unit_ext.timers[TimerTryCastCustomSpell]) {
+        return;
+    }
+    Unit* target = this->order_target.unit;
+    if (!target) {
+        this->order_to_idle();
+        return;
+    }
+    if (target->is_building() || (bw::are_mutual_allies(this->player, target->player) && !target->is_askosi_embedded())) {
+        this->order_to_idle();
+        helper::display_error_message_id_with_sfx(this->player, 970, get_racial_error_sfx(RaceId::Enum(g_player_table[this->player].race)));
+        return;
+    }
+    Point16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
+    u32 range = Askosi::RemoteHijackCastRange;
+    if (!helper::is_target_within_min_range(this, range, target)) {
+        if (this->order_target.unit) {
+            helper::spell_order_move_towards_target(this, range);
+        } else {
+            helper::set_move_target_xy(this, target_pos.x, target_pos.y);
+        }
+        unit_ext.timers[TimerTryCastCustomSpell] = 3;
+        return;
+    }
+    auto& target_ext = target->ext();
+    if (target_ext.units[UnitHijacker]) {
+        this->order_to_idle();
+        try_cast = false;
+        helper::display_error_message_id_with_sfx(this->player, 971, get_racial_error_sfx(RaceId::Enum(g_player_table[this->player].race)));
+        return;
+    }
+    u16 energy_cost = 0;
+    if (helper::spell_order(this, TechId::AskosiRemoteHijack, &energy_cost, range, 1330)) {
+        this->spend_energy(energy_cost);
+        fire_bullet(this, WeaponId::RemoteHijack, this->order_target);
+        this->order_to_idle();
+        try_cast = false;
+    }
+}
+
+void Unit::preylock_cast() {
+    auto& unit_ext = this->ext();
+    auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
+    if (try_cast && (this->main_order_id != OrderId::AskosiPreylock || this->is_frozen())) {
+        try_cast = false;
+    }
+    if (!try_cast || unit_ext.timers[TimerTryCastCustomSpell]) {
+        return;
+    }
+    Unit* target = this->order_target.unit;
+    if (!target) {
+        this->order_to_idle();
+        return;
+    }
+    if (bw::are_mutual_allies(this->player, target->player) || target->is_building()) {
+        this->order_to_idle();
+        helper::display_error_message_id_with_sfx(this->player, 967, get_racial_error_sfx(RaceId::Enum(g_player_table[this->player].race)));
+        return;
+    }
+    Point16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
+    u32 range = Askosi::PreylockCastRange;
+    if (!helper::is_target_within_min_range(this, range, target)) {
+        if (this->order_target.unit) {
+            helper::spell_order_move_towards_target(this, range);
+        } else {
+            helper::set_move_target_xy(this, target_pos.x, target_pos.y);
+        }
+        unit_ext.timers[TimerTryCastCustomSpell] = 3;
+        return;
+    }
+    u16 energy_cost = 0;
+    if (helper::spell_order(this, TechId::AskosiPreylock, &energy_cost, range, 1330)) {
+        this->spend_energy(energy_cost);
+        bw::teleport_to_unit(target, this, 24, {.check_distance = false}, SpriteId::LegionnaireTeleportEffect);
+        try_cast = false;
+    }
+}
+
+void Unit::lobotomy_warhead_cast() {
+    auto& unit_ext = this->ext();
+    auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
+    if (try_cast && (this->main_order_id != OrderId::LobotomyWarhead || this->is_frozen())) {
+        try_cast = false;
+    }
+    if (!try_cast || unit_ext.timers[TimerTryCastCustomSpell]) {
+        return;
+    }
+    Unit* target = this->order_target.unit;
+    if (!target) {
+        try_cast = false;
+        return;
+    }
+    Point16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
+    u32 range = TerranTriton::LobotomyWarheadRange;
+    if (!helper::is_target_within_min_range(this, range, target)) {
+        if (this->order_target.unit) {
+            helper::spell_order_move_towards_target(this, range);
+        } else {
+            helper::set_move_target_xy(this, target_pos.x, target_pos.y);
+        }
+        unit_ext.timers[TimerTryCastCustomSpell] = 3;
+        return;
+    }
+    u16 energy_cost = 0;
+    if (helper::spell_order(this, TechId::TritonLobotomyWarhead, &energy_cost, range, 1330)) {
+        this->spend_energy(energy_cost);
+        fire_bullet(this, WeaponId::TritonLobotomyWarhead, this->order_target);
+        try_cast = false;
+    }
+}
+
+void Unit::hijack(Unit* hijacker) {
+    this->set_hitpoints(100 * 256);
+    auto& unit_ext = this->ext();
+    unit_ext.values[ValueHijackOriginalPlayer] = this->player;
+    this->give_to(hijacker->player);
+    helper::hide_and_disable_unit(hijacker);
+    // TODO: Own audiovisuals
+    bw::play_sound({SoundId::AskosiDeploy01, SoundId::AskosiDeploy03}, this->position);
+    this->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
 }

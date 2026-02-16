@@ -29,6 +29,7 @@ namespace hooks {
 			case UnitId::TerranCutlassTurret: armor_pen -= 1; break;
 			case UnitId::ProtossRenesair:	  armor_pen += 1; break;
 			case UnitId::ZergZethalor:		  armor_pen -= 3; break;
+			case UnitId::AskosiParaclete:     armor_pen += 1; break;
 		}
 
 		return armor_pen;
@@ -41,12 +42,21 @@ namespace hooks {
 
 		// @TODO: Extend weapon ids and remove this
 		switch (unit->id) {
-			case UnitId::ProtossCicatus:			cooldown /= 1.13fp; break;
-			case UnitId::ProtossRenesair:			cooldown *= 1.10fp; break;
-			case UnitId::ProtossSimulacrumAstral:	cooldown /= 1.20fp; break;
-			case UnitId::AskosiAvatar:				cooldown *= 3.00fp; break;
-			case UnitId::AskosiPhontis:				cooldown *= 1.33fp; break;
-			case UnitId::AskosiIconoclast:			cooldown /= 1.13fp; break;
+			case UnitId::TerranCutlass:				  cooldown /= 1.35fp; break;
+			case UnitId::TerranCutlassTurret:		  cooldown /= 1.35fp; break;
+			case UnitId::TerranBroadsideTurret:		  cooldown /= 1.06fp; break;
+			case UnitId::ProtossCicatus:		      cooldown /= 1.13fp; break;
+			case UnitId::ProtossRenesair:		      cooldown *= 1.10fp; break;
+			case UnitId::ProtossSimulacrumAstral:     cooldown /= 1.20fp; break;
+			case UnitId::AskosiAvatar:				  cooldown *= 3.00fp; break;
+			case UnitId::AskosiPhontis:		          cooldown *= 1.33fp; break;
+			case UnitId::AskosiIconoclast:		      cooldown /= 1.13fp; break;
+			case UnitId::AskosiParaclete:		      cooldown *= 1.33fp; break;
+			case UnitId::AskosiZonguard: {
+				if (cooldown != 24fp) {
+					cooldown *= 1.56fp;
+				}
+			} break;
 		}
 
 		// @TODO: Extend weapon ids and remove this
@@ -74,7 +84,7 @@ namespace hooks {
 		// Ensnare
 		if (unit->ensnare_timer) {
 			switch (unit_ext.values[ValueEnsnareFactor]) {
-				case 1: cooldown += cooldown / 3;   break;
+				case 1: cooldown += cooldown / 3fp;   break;
 				case 2: cooldown += cooldown / 1.5fp; break;
 			}
 		}
@@ -225,8 +235,15 @@ namespace hooks {
 	/// @return	the modified cooldown value.
 	u32 get_modified_weapon_cooldown(Unit* unit, u8 weapon_id) {
 		auto cooldown = weapons_dat::cooldown[weapon_id];
-		if (unit->id == UnitId::AskosiMimic) {
-			cooldown /= weapons_dat::damage_factor[weapon_id];
+		switch (unit->id) {
+			case UnitId::AskosiMimic: {
+				cooldown /= weapons_dat::damage_factor[weapon_id];
+			} break;
+			case UnitId::AskosiZonguard: { // TODO: Extend weapons and remove this
+				if (weapon_id == WeaponId::GrandstandArteDriver) {
+					cooldown = 24;
+				}
+			}
 		}
 		return get_modified_cooldown(unit, cooldown, true);
 	}

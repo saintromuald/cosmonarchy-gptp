@@ -417,6 +417,14 @@ namespace AskosiChantry {
 inline constexpr s32 SermonSalveRange = 8tiles;
 }
 
+namespace AskosiBounty {
+inline constexpr s32 GoldVeinRange = 8tiles;
+}
+
+namespace AskosiDorminge {
+inline constexpr s32 CrushingDeliveryRange = 8tiles;
+}
+
 namespace AskosiCardinal {
 inline constexpr s32 SustainingSermonRange = 3tiles;
 inline constexpr s32 SustainingSermonHeal = 5 * 256;
@@ -434,6 +442,10 @@ namespace AskosiThaumalogue {
 inline constexpr s32 RetaliationAssemblyDuration = 3secs;
 }
 
+namespace AskosiZonguard {
+inline constexpr s32 MechanicalRageDuration = 2secs + 1;
+}
+
 namespace Askosi {
 inline constexpr s32 ScrapworldGoldRushTimer = 2secs;
 
@@ -441,12 +453,14 @@ inline constexpr s32 BoomingBlastTimer = 2secs + 1;
 inline constexpr s32 PowerOverloadTimer = 1secs;
 
 inline constexpr s32 HijackCastRange = 2tiles;
+inline constexpr s32 HijackTimer = 5secs + 1;
 
 inline constexpr s32 ImpactDissipationDuration = 2secs + 1;
 
 inline constexpr s32 RematerializeCastRange = 6tiles;
 
 inline constexpr s32 RapidRendezvousCastRange = 5tiles;
+inline constexpr s32 RapidRendezvousBuffRange = 3tiles;
 
 inline constexpr s32 VitalRemainsHeal = 10 * 256;
 inline constexpr s32 VitalRemainsRange = 5tiles;
@@ -464,4 +478,6 @@ inline constexpr s32 WarringWindsRange = 8tiles;
 
 inline constexpr s32 ScrapworldImplosionRange = 6tiles;
 inline constexpr s32 ScrapworldImplosionSlowDuration = 5secs + 1;
+
+inline constexpr s32 RemoteHijackCastRange = 6tiles;
 }

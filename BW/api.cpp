@@ -2579,6 +2579,9 @@ u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit) {
         case WeaponId::VicarOspoTwinshard: {
             return 2;
         }
+        case WeaponId::IntendentErsaDriver: {
+            return unit->id == UnitId::AskosiIntendent ? 1 : 2;
+        }
         case WeaponId::StarSovereignInterventionMissiles: {
             return 1;
         }
@@ -4445,6 +4448,7 @@ bool unit_id_blocked_in_dark_ages(UnitId::Enum unit_id) {
         case UnitId::AskosiConstituent:
         case UnitId::AskosiEmissary:
         case UnitId::AskosiInkblot:
+        case UnitId::AskosiAuxine:
             return false;
 
         // Disable Useless Production

@@ -437,6 +437,9 @@ namespace UnitId {
         AskosiBestiary                                      = 561,
         AskosiConduit                                       = 562,
         AskosiObelisk                                       = 563,
+        AskosiDorminge                                      = 577,
+        AskosiLotiro                                        = 578,
+        AskosiDomain                                        = 579,
 
     // Special-Unit
         ExtTerranCivilian									= 332,

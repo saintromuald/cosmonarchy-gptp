@@ -560,6 +560,13 @@ u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id) {
         case UnitId::AskosiPhontis:           damage += 2; break;
         case UnitId::AskosiAkreno:            damage += 6; break;
         case UnitId::AskosiIconoclast:        damage += 1; break;
+        case UnitId::AskosiParaclete:         damage += 3; break;
+        case UnitId::AskosiZonguard: {
+            switch (weapon_id) {
+                case WeaponId::UltrokorKaiserBlades: damage -= 5; break;
+                case WeaponId::GrandstandArteDriver: damage -= 3; break;
+            }
+        } break;
     }
     return damage;
 }
@@ -720,6 +727,16 @@ Faction get_random_faction(RaceId::Enum race) {
     return Faction::None;
 }
 
+SoundId::Enum get_racial_error_sfx(RaceId::Enum race) {
+    switch (race) {
+        case RaceId::Terran:  return SoundId::Misc_Buzz_wav_1;
+        case RaceId::Protoss: return SoundId::Misc_PError_WAV;
+        case RaceId::Zerg:    return SoundId::Zerg_Drone_ZDrErr00_WAV;
+        case RaceId::Askosi:  return SoundId::Misc_Buzz_wav_1;
+        default:              return SoundId::Misc_Buzz_wav_1;
+    }
+}
+
 namespace WeaponId {
 // TODO: YAML
 const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
@@ -768,7 +785,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::NathrokorVestigialStrike:            return "Vestigial Strike";
         case WeaponId::HydraliskNeedleSpines:               return "Needle Spines";
         case WeaponId::PenumbraErebolShockCannon:           return "Erebol Shock Cannon";
-        case WeaponId::UltrokorKaiserBlades:                return "Kaiser Blades";
+        case WeaponId::UltrokorKaiserBlades:                return unit_id == UnitId::ZergUltrokor ? "Kaiser Blades" : "Azgok Beastblades";
         case WeaponId::KeskathalorScreamingVenom:           return "Screaming Venom";
         case WeaponId::RilirokorToxicSpores:                return "Toxic Spores";
         case WeaponId::DrolethSpines:                       return "Spines";
@@ -850,7 +867,13 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::ArchitectDispersiveSalvo:            return "Dispersive Salvo";
         case WeaponId::ClaymoreHarpoonRailgun:              return "Harpoon Railgun";
         case WeaponId::LuminaryAuralAssault:                return "Aural Assault";
-        case WeaponId::VicarOspoTwinshard:                  return "Ospo Twinshard";
+        case WeaponId::VicarOspoTwinshard: {
+            switch (unit_id) {
+                case UnitId::AskosiIconoclast:              return "Onji Driver";
+                case UnitId::AskosiParaclete:               return "Ognirrius Beaststick";
+                case UnitId::AskosiVicar:                   return "Ospo Twinshard";
+            }
+        }
         case WeaponId::OlympianTitansFist:                  return "Titan's Fist";
         case WeaponId::OlympianMountainGun:                 return "Mountain Gun";
         case WeaponId::WyvernJacksonCannon:                 return "Jackson Cannon";
@@ -910,7 +933,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::HelionUskoScrapray:                  return "Usko Scrapray";
         case WeaponId::SkortrithCesiantSkortraTendril:      return "Skortra Tentacle";
         case WeaponId::TiradeIktaDriver:                    return "Ikta Driver";
-        case WeaponId::GrandstandArteDriver:                return "Arte Driver";
+        case WeaponId::GrandstandArteDriver:                return unit_id == UnitId::AskosiGrandstand ? "Arte Driver" : "Agturrik Beaststick";
         case WeaponId::QuadrigaGodhandRockets:              return "Godhand Rockets";
         case WeaponId::SilvertongueWordsmithRailgun:        return "Wordsmith Railgun";
         case WeaponId::OptectonSunsplitBeam:                return "Sunsplit Beam";

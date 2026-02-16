@@ -237,109 +237,101 @@ namespace hooks {
         if (unit->unit_ai) {
             unit->status |= UnitStatus::IsGathering;
         }
-        bool is_askosi = unit->get_race() == RaceId::Askosi;
-        if (unit->main_order_state) {
-            if (unit->main_order_state == 1) {
-                if (unit->sprite->position.x == unit->move_target.pt.x
-                    && unit->sprite->position.y == unit->move_target.pt.y) {
-                    bool is_at_building_site = false;
-                    if (is_askosi) {
-                        u32 distance = bw::distance_between(unit->halt.x, unit->halt.y, unit->order_target.pt.x * 256, unit->order_target.pt.y * 256);
-                        u32 distance_wanted = get_worker_construction_distance(unit->build_queue[unit->build_queue_slot]);
-                        if (distance / 256 > distance_wanted) {
-                            if (unit->get_movable_state() != MovableState_NotReachedDestination) {
-                                helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
-                            }
-                        } else {
-                            helper::make_to_hold_position(unit);
-                            is_at_building_site = true;
-                        }
-                    } else {
-                        is_at_building_site = helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 128);
-                    }
-                    
-                    if (!(unit->status & UnitStatus::Unmovable) && is_at_building_site && helper::start_building(unit)) {
-                        auto& builder_ext = unit->ext();
-                        builder_ext.terran_build_pos = unit->position;
-
-                        Unit* built_unit = 0;
-                        unit->status &= ~UnitStatus::IsNormal;
-                        unit->sprite->elevation = units_dat::elevation[unit->id] + 1;
-
-                        if (unit->order_queue_head) {
-                            helper::prepend_order_targeting_nothing(unit, unit->order_queue_head, OrderId::ResetCollision1);
-                        } else {
-                            helper::add_order_targeting_nothing(unit, 0, OrderId::ResetCollision1);
-                            helper::add_order_targeting_nothing(unit, 0, units_dat::return_to_idle_order[unit->id]);
-                        }
-
-                        u16 build_id = unit->build_queue[unit->build_queue_slot];
-                        if (unit_id_is_capped_gas_node(build_id)) {
-                            unit->secondary_order_pos = unit->position;
-                            built_unit = helper::begin_gas_building(unit, build_id);
-                        } else {
-                            unit->secondary_order_pos = { 0, 0 };
-                            built_unit = helper::create_unit(build_id, unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
-                        }
-
-                        unit->build_queue[unit->build_queue_slot] = UnitId::None;
-                        if (built_unit) {
-                            spread_debuffs(unit, built_unit);
-                            builder_ext.values[ValueTerranConstruction] = built_unit->id;
-                            built_unit->create_origin = unit->id;
-                            if (is_askosi) {
-                                auto& vec = built_unit->ext().unit_vectors[UnitVectorAskosiBuilders];
-                                if (std::find(vec.begin(), vec.end(), unit) == vec.end()) {
-                                    vec.push_back(unit);
-                                }
-                            } else {
-                                built_unit->connected_unit = unit;
-                            }
-                            built_unit->sprite->player = unit->sprite->player; // Player color inheritance.
-                            unit->main_order_id = OrderId::ConstructingBuilding;
-                            unit->main_order_state = 3;
-                            unit->order_target.unit = built_unit;
-
-                            if (g_is_placing_building) {
-                                if (!helper::can_still_place_building()) {
-                                    helper::refresh_layers_3_and_4();
-                                    helper::end_building_placement();
-                                }
-                            }
-
-                            bw::refresh_console();
-                            built_unit->order_computer(OrderId::BuildSelf1);
-                            helper::ai_training_overlord(built_unit, unit);
-                            if (unit_id_is_tech_tier_structure(built_unit->id)) {
-                                replay_witness_event(built_unit, SpectatorEvent_Tech);
-                            }
-                            bw::play_sound(SoundId::TerranConstructionStart01, built_unit->position);
-                        } else {
-                            helper::refund_unit_train_cost(build_id, unit->player);
-                            helper::display_last_network_error_for_player(unit->player);
-                            unit->order_computer(units_dat::return_to_idle_order[unit->id]);
-                        }
-                    } else {
-                        unit->order_to_idle();
-                    }
+        switch (unit->main_order_state) {
+            case 0: {
+                bw::refresh_console();
+                if (unit->order_target.unit) {
+                    unit->order_target.pt.x = (unit->order_target.unit)->sprite->position.x;
+                    unit->order_target.pt.y = (unit->order_target.unit)->sprite->position.y;
                 }
-            }
-        } else {
-            bw::refresh_console();
-            if (unit->order_target.unit) {
-                unit->order_target.pt.x = (unit->order_target.unit)->sprite->position.x;
-                unit->order_target.pt.y = (unit->order_target.unit)->sprite->position.y;
-            }
+                bool move_target_result = helper::set_move_target_xy(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+                if ((unit->order_target.pt.x != unit->next_target_waypoint.x || unit->order_target.pt.y != unit->next_target_waypoint.y)
+                    && !(unit->order_target.pt.x == 0 && unit->order_target.pt.y == 0)) {
+                    unit->next_target_waypoint.x = unit->order_target.pt.x;
+                    unit->next_target_waypoint.y = unit->order_target.pt.y;
+                }
+                if (move_target_result) {
+                    unit->main_order_state = 1;
+                }
+            } break;
+            case 1: {
+                bool is_askosi = unit->get_race() == RaceId::Askosi;
+                if (unit->position != unit->move_target.pt && !is_askosi) {
+                    return;
+                }
+                u32 distance = is_askosi ? get_worker_construction_distance(unit->build_queue[unit->build_queue_slot]) : 4tiles;
+                bool is_at_building_site = helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, distance);
+                if (!is_at_building_site) {
+                    return;
+                }
+                if (!(unit->status & UnitStatus::Unmovable) && helper::start_building(unit)) {
+                    auto& builder_ext = unit->ext();
+                    builder_ext.terran_build_pos = unit->position;
 
-            bool move_target_result = helper::set_move_target_xy(unit, unit->order_target.pt.x, unit->order_target.pt.y);
-            if ((unit->order_target.pt.x != unit->next_target_waypoint.x || unit->order_target.pt.y != unit->next_target_waypoint.y)
-                && !(unit->order_target.pt.x == 0 && unit->order_target.pt.y == 0)) {
-                unit->next_target_waypoint.x = unit->order_target.pt.x;
-                unit->next_target_waypoint.y = unit->order_target.pt.y;
-            }
-            if (move_target_result) {
-                unit->main_order_state = 1;
-            }
+                    Unit* built_unit = 0;
+                    unit->status &= ~UnitStatus::IsNormal;
+                    unit->sprite->elevation = units_dat::elevation[unit->id] + 1;
+
+                    if (is_askosi) {
+                        helper::make_to_hold_position(unit);
+                    }
+                    if (unit->order_queue_head) {
+                        helper::prepend_order_targeting_nothing(unit, unit->order_queue_head, OrderId::ResetCollision1);
+                    } else {
+                        helper::add_order_targeting_nothing(unit, 0, OrderId::ResetCollision1);
+                        helper::add_order_targeting_nothing(unit, 0, units_dat::return_to_idle_order[unit->id]);
+                    }
+
+                    u16 build_id = unit->build_queue[unit->build_queue_slot];
+                    if (unit_id_is_capped_gas_node(build_id)) {
+                        unit->secondary_order_pos = unit->position;
+                        built_unit = helper::begin_gas_building(unit, build_id);
+                    } else {
+                        unit->secondary_order_pos = {0, 0};
+                        built_unit = helper::create_unit(build_id, unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
+                    }
+
+                    unit->build_queue[unit->build_queue_slot] = UnitId::None;
+                    if (built_unit) {
+                        spread_debuffs(unit, built_unit);
+                        builder_ext.values[ValueTerranConstruction] = built_unit->id;
+                        built_unit->create_origin = unit->id;
+                        if (is_askosi) {
+                            auto& vec = built_unit->ext().unit_vectors[UnitVectorAskosiBuilders];
+                            if (std::find(vec.begin(), vec.end(), unit) == vec.end()) {
+                                vec.push_back(unit);
+                            }
+                        } else {
+                            built_unit->connected_unit = unit;
+                        }
+                        built_unit->sprite->player = unit->sprite->player; // Player color inheritance.
+                        unit->main_order_id = OrderId::ConstructingBuilding;
+                        unit->main_order_state = 3;
+                        unit->order_target.unit = built_unit;
+
+                        if (g_is_placing_building) {
+                            if (!helper::can_still_place_building()) {
+                                helper::refresh_layers_3_and_4();
+                                helper::end_building_placement();
+                            }
+                        }
+
+                        bw::refresh_console();
+                        built_unit->order_computer(OrderId::BuildSelf1);
+                        helper::ai_training_overlord(built_unit, unit);
+                        if (unit_id_is_tech_tier_structure(built_unit->id)) {
+                            replay_witness_event(built_unit, SpectatorEvent_Tech);
+                        }
+                        bw::play_sound(SoundId::TerranConstructionStart01, built_unit->position);
+                    } else {
+                        helper::refund_unit_train_cost(build_id, unit->player);
+                        helper::display_last_network_error_for_player(unit->player);
+                        unit->order_computer(units_dat::return_to_idle_order[unit->id]);
+                    }
+                } else {
+                    unit->order_to_idle();
+                }
+            } break;
         }
     }
 

@@ -399,8 +399,10 @@ enum Enum {
 
     // Askosi
     AskosiRematerialize         = 12,   // Attack Tile              | Askosi ally pull ability
-    AskosiRapidRendezvous       = 13,   // Hover                    | Askosi leap to ally ability
+    AskosiRapidRendezvous   	= 13,   // Hover                    | Askosi leap to ally ability
+    AskosiPreylock              = 28,   // Infest2 (unused)         | Askosi enemy pull ability
     AskosiHijack     			= 122,  // EMP Shockwave            | Askosi asset seizure ability
+    AskosiRemoteHijack          = 139,  // Scanner Sweep            | Askosi remote asset seizure ability
     AskosiSalvage               = 184,  // Feedback                 | Askosi unit/structure salvage ability
 };
 }

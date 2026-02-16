@@ -425,6 +425,7 @@ namespace hooks {
 		add_status(statuses, "New Dominion", -1, 1, unit_ext.timers[TimerNewDominion], TimerType::Gptp);
 		add_status(statuses, "Imploded", -1, 1, unit_ext.timers[TimerScrapworldImplosion], TimerType::Gptp);
 		add_status(statuses, "Crippled", -1, 1, unit_ext.timers[TimerGoremastSlow], TimerType::Gptp);
+		add_status(statuses, "Mechanical Rage", -1, 1, unit_ext.timers[TimerMechanicalRage], TimerType::Gptp);
 
 		// GPTP Value
 		add_status(statuses, "Ensnaring Brood", unit_ext.timers[TimerEnsnaringBrood], 1);
@@ -447,6 +448,7 @@ namespace hooks {
 		add_status(statuses, "Segmented Expansion", unit_ext.values[ValueSegmentedExpansionStacks], 10);
 		add_status(statuses, "Vital Remains", unit_ext.timers[TimerVitalRemainsArmorPen], 1);
 		add_status(statuses, "Principal Augment", unit_ext.unit_vectors[UnitVectorScepters].size(), 0);
+		add_status(statuses, "Crushed", unit_ext.timers[TimerCrushingDelivery], 0);
 
 		add_status(statuses, "Decided Armor", unit_ext.values[ValueTriggerArmorBaseAmount]);
 		add_status(statuses, "Decided Reach", unit_ext.values[ValueTriggerWeaponRangeBaseAmount] / 32);
