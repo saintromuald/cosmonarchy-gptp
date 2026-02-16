@@ -1372,10 +1372,11 @@ BW_REF(BinDlg*, g_minimap_bin, 0x0059cb5c);
 BW_REF(DialogFadeInfo, g_dialog_fade_info, 0x006cef50);
 
 // For register_functions_and_background and change_menu
-BW_REF(u32, g_menu_alloc_counter, 0x0051c4b8);
-BW_REF(u8*, g_background_buffer, 0x0051c004);
-BW_REF(Point16, g_background_size, 0x0051c000);
+BW_REF(u32, g_menu_z_index, 0x0051c4b8);
+BW_REF(BinDlg*, g_current_menu_dlg, 0x0051c418);
+BW_REF(Bitmap, g_background, 0x0051c000);
 BW_REF(Palette, g_background_palette, 0x0051c008);
+BW_REF(Palette, g_init_palette, 0x005994e0);
 BW_ARRAY(MenuBackground, 27, g_menu_backgrounds, 0x004ffad4);
 
 // For console_index override

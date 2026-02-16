@@ -16218,6 +16218,17 @@ namespace helper {
         }
     }
     
+    void map_ui_colors_to_palette(Palette* palette, void* map_function) {
+        const u32 func_address = 0x0041e450;
+        __asm {
+            PUSHAD
+            MOV EBX, map_function
+            PUSH palette
+            CALL func_address
+            POPAD
+        }
+    }
+
     void set_fog_mask(u32 tile_flags, u32 x_tile, u32 y_tile, u32 x_final, u32 y_final) {
         const u32 func_address = 0x00472E50;
         __asm {
