@@ -3,7 +3,7 @@
 #include <time.h>
 
 #include "trigger_parser.h"
-#include "trigger_sound.h"
+#include "systems/audio_system.h"
 #include "trigger_recolor.h"
 #include "trigger_objectives.h"
 #include "trigger_spawn.h"
@@ -72,13 +72,12 @@ void init_trigger_system() {
     g_trigger.game_paused = false;
     g_action_table[47] = (ActionPointer)parse_comment_action;
     g_action_table[47] = (ActionPointer)parse_comment_action;
-
     init_auto_celebration();
     init_recolors();
     g_objectives.reset();
-    init_sound();
     init_spawn();
     g_trigger_vars.reset();
+    AudioSystem::instance().reset();
     init_trigger_events();
 }
 
@@ -201,8 +200,9 @@ void update_trigger_system(bool in_game) {
     }
 
     if (in_game) {
-        update_sound();
+        AudioSystem::instance().update();
     }
+
     bool paused = bw::is_game_paused();
     if (g_trigger.game_paused && !paused) {
         set_palette_recolor(recolor_system.current_recolor.set);
@@ -669,46 +669,33 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
         // Local Only Triggers
         } else if (parser.equals("play_music") && is_local_player) {
             Token filename = parser.get_string();
-            g_music_playback.next_music = get_sound(filename.string().c_str());
-            g_music_playback.target_fade = 0;
+            AudioSystem::instance().queue_music(filename.string());
         } else if (parser.equals("stop_music") && is_local_player) {
-            g_music_playback.target_fade = 0;
+            AudioSystem::instance().stop_music();
         } else if (parser.equals("pause_music") && is_local_player) {
-            g_music_playback.target_fade = 0;
-            g_music_playback.paused = true;
+            AudioSystem::instance().pause_music();
         } else if (parser.equals("resume_music") && is_local_player) {
-            g_music_playback.target_fade = 1;
-            g_music_playback.paused = false;
-            play_music(true);
+            AudioSystem::instance().resume_music();
         } else if (parser.equals("music_fade_in") && is_local_player) {
             f32 fade_in = parser.get_time_seconds();
-            g_music_playback.fade_in = fade_in;
+            AudioSystem::instance().set_music_fade_in(fade_in);
         } else if (parser.equals("music_fade_out") && is_local_player) {
             f32 fade_out = parser.get_time_seconds();
-            g_music_playback.fade_out = fade_out;
+            AudioSystem::instance().set_music_fade_out(fade_out);
         } else if (parser.equals("music_volume") && is_local_player) {
             f32 volume = parser.get_f32();
             f32 time = parser.get_time_seconds();
-            if (time == 0) {
-                g_music_playback.volume = 0;
-            }
-            g_music_playback.target_volume = volume;
-            g_music_playback.volume_time = time;
+            AudioSystem::instance().set_music_volume(volume, time);
         } else if (parser.equals("playlist_clear") && is_local_player) {
-            memset(&g_current_playlist, 0, sizeof(g_current_playlist));
+            AudioSystem::instance().clear_playlist();
         } else if (parser.equals("playlist_add") && is_local_player) {
             Token filename = parser.get_string();
-            if (g_current_playlist.size < MaxSound) {
-                SoundMainBuffer* music = get_sound(filename.string().c_str());
-                if (music) {
-                    g_current_playlist.tracks[g_current_playlist.size++] = music;
-                }
-            } else {
+            if (!AudioSystem::instance().add_to_playlist(filename.string())) {
                 bw::printf("Error: Playlist already full! (%s)", filename.string().c_str());
             }
         } else if (parser.equals("playlist_shuffle") && is_local_player) {
             s32 do_shuffle = parser.get_s32(); // 0 - false, 1 - true
-            g_current_playlist.shuffle = do_shuffle;
+            AudioSystem::instance().set_playlist_shuffle(do_shuffle != 0);
         } else if (parser.equals("set_player_name") && is_local_player) {
             u32 player = parser.get_player();
             Token name = parser.get_string();
@@ -879,7 +866,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                 sound_replacement.any_sound = true;
             }
             Token path = parser.get_string();
-            sound_replacement.new_sound = get_sound(path.string().c_str());
+            sound_replacement.new_sound = AudioSystem::instance().get_sound(path.string().c_str());
             sound_replacement.replace = parser.get_s32();
 
             parser.get_word();
@@ -897,7 +884,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
             if (trigger_player < PlayerLimit && players[trigger_player]) {
                 if (position.x == 0 && position.y == 0) {
-                    play_sound_ext(get_sound(path.string().c_str()), {.bw_volume = get_sound_volume()});
+                    AudioSystem::instance().play_sound(AudioSystem::instance().get_sound(path.string().c_str()), {.bw_volume = AudioSystem::instance().get_sound_volume()});
                 } else {
                     bool play = false;
                     ActiveTile* tile = bw::get_active_tile_at_coords(position.x, position.y);
@@ -915,7 +902,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                     }
 
                     if (play) {
-                        play_sound_ext(get_sound(path.string().c_str()), {.position = position});
+                        AudioSystem::instance().play_sound(AudioSystem::instance().get_sound(path.string().c_str()), {.position = position});
                     }
                 }
             }

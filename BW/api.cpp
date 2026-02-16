@@ -18,7 +18,7 @@
 #include "hooks/update_unit_sight.h"
 #include "hooks/rally_point.h"
 #include "hooks/interface/uifeatures/hotkeys.h"
-#include "trigger_system/trigger_sound.h"
+#include "systems/audio_system.h"
 #include "hooks/unit_stats/weapon_range.h"
 
 #define NOMINMAX
@@ -3134,22 +3134,22 @@ void set_unit_overlay(Unit* unit, ImageSet image_set, bool active, const Overlay
 
 PlayingSound play_sound(SoundSet sound_set, Point16 pos) {
     SoundId::Enum sound_id = sound_set.rand();
-    return play_sound_ext(sound_id, {.position = pos, .min_volume = sfx_dat::volume[sound_id]});
+    return AudioSystem::instance().play_sound(sound_id, {.position = pos, .min_volume = sfx_dat::volume[sound_id]});
 }
 
 PlayingSound play_sound(SoundSet sound_set, Unit* unit, bool force_globally) {
     SoundId::Enum sound_id = sound_set.rand();
-    return play_sound_ext(sound_id, {.position = force_globally ? Point16{} : unit->position, .unit = unit, .min_volume = sfx_dat::volume[sound_id], .force_globally = force_globally});
+    return AudioSystem::instance().play_sound(sound_id, {.position = force_globally ? Point16{} : unit->position, .unit = unit, .min_volume = sfx_dat::volume[sound_id], .force_globally = force_globally});
 }
 
 PlayingSound play_looping_sound(SoundSet sound_set, Point16 pos) {
     SoundId::Enum sound_id = sound_set.rand();
-    return play_sound_ext(sound_id, {.position = pos, .min_volume = sfx_dat::volume[sound_id], .looping = true});
+    return AudioSystem::instance().play_sound(sound_id, {.position = pos, .min_volume = sfx_dat::volume[sound_id], .looping = true});
 }
 
 PlayingSound play_looping_sound(SoundSet sound_set, Unit* unit, bool force_globally) {
     SoundId::Enum sound_id = sound_set.rand();
-    return play_sound_ext(sound_id, {.position = force_globally ? Point16{} : unit->position, .unit = unit, .min_volume = sfx_dat::volume[sound_id], .force_globally = force_globally, .looping = true});
+    return AudioSystem::instance().play_sound(sound_id, {.position = force_globally ? Point16{} : unit->position, .unit = unit, .min_volume = sfx_dat::volume[sound_id], .force_globally = force_globally, .looping = true});
 }
 
 void play_action_sound(u32 sound_id, Unit* unit) {

@@ -51,7 +51,7 @@
 #include "GameModes/TheTurning.h"
 #include "aise_signal.h"
 #include "Game.h"
-#include "trigger_system/trigger_sound.h"
+#include "systems/audio_system.h"
 #include "NewGameCommand.h"
 #include "hooks/race_randomization.h"
 
@@ -804,7 +804,7 @@ namespace hooks {
         *cpu_throttle = false;
 
         g_game->tick();
-        update_playing_sounds();
+        AudioSystem::instance().update_playing_sounds();
 
         s32* trigger_cooldown = (s32*)0x006509A0;
         *trigger_cooldown = 0; // Single frame hypertriggers
@@ -4230,7 +4230,7 @@ namespace hooks {
     }
 
     bool game_end() {
-        stop_playing_sounds();
+        AudioSystem::instance().stop_playing_sounds();
         end_threshold();
         g_graphics.reset_stat_res_graphics();
         for (u32 player = 0; player < PlayerLimit; player++) {

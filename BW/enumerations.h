@@ -1557,6 +1557,12 @@ enum DialogUserType {
     DialogUserType_AnimationDone     = 0x405,
 };
 
+enum class MusicType : u8 {
+    None = 0,
+    Loop = 1,
+    Playlist = 2, // Uses the "next_index" field to create a looping playlist
+};
+
 enum MusicId {
     MusicId_None           = 0,
     MusicId_Zerg1          = 1,

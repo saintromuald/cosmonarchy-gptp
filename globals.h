@@ -10,7 +10,7 @@
 #include "BW\api.h"
 #include "data_ext.h"
 #include "Utils.h"
-#include "trigger_system/trigger_sound.h"
+#include "systems/audio_system.h"
 
 #include <variant>
 

@@ -4,7 +4,7 @@
 #include <BW/bwdata.h>
 #include <hooks/byte_operations_utils.h>
 #include <hooks/limits/sfx_extender.h>
-#include "trigger_system/trigger_sound.h"
+#include "systems/audio_system.h"
 
 namespace hooks {
     // Hooked to allow more unit ids to have "annoyed" lines.
@@ -266,7 +266,7 @@ namespace hooks {
         if (!sound_id || !g_options_list->sfx || !play || !unit) {
             return false;
         }
-        return play_sound_ext(sound_id, PlaySoundSettings{.position = unit->position, .unit = unit,
+        return AudioSystem::instance().play_sound(sound_id, PlaySoundSettings{.position = unit->position, .unit = unit,
             .min_volume = min_volume, .force_globally = static_cast<bool>(sfx_dat::sound_flags[sound_id] & DatSoundFlags_UnitResponse)});
     }
 
@@ -275,6 +275,6 @@ namespace hooks {
         if (!sound_id || !g_options_list->sfx || !play) {
             return;
         }
-        play_sound_ext(sound_id, PlaySoundSettings{.position = pos, .min_volume = min_volume});
+        AudioSystem::instance().play_sound(sound_id, PlaySoundSettings{.position = pos, .min_volume = min_volume});
     }
 }
