@@ -124,6 +124,10 @@ namespace hooks {
                                 helper::stats_weapon_level(dialog, index, WeaponId::ZergBonesofReflection);
                                 index++;
                             } break;
+                            case UnitId::AskosiZonguard: {
+                                helper::stats_weapon_level(dialog, index, WeaponId::GrandstandArteDriver);
+                                index++;
+                            } break;
                         }
                     }
                 }
@@ -539,7 +543,7 @@ namespace hooks {
     // Hooked to correct string spacing. -Pr0nogo
     b32 stats_spidermine_count(BinDlg* dialog, u16 index) { // 00426300
         Unit* unit = *g_active_portrait_unit;
-        if (helper::tech_use_allowed(unit, TechId::SpiderMines, unit->player) != 1) {
+        if (helper::tech_use_allowed(unit, TechId::TerranMines, unit->player) != 1) {
             return 0;
         }
         sprintf_s(g_status_screen_info_button_unk[index], 8, "%d", unit->mine_carrier.mine_count);

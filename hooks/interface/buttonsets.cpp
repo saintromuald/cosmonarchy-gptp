@@ -719,7 +719,8 @@ namespace hooks {
                                 }
                             } break;
                             case TechId::HypnagogueThroughTheLookingGlass:
-                            case TechId::TritonLobotomyWarhead: {
+                            case TechId::TritonLobotomyWarhead:
+                            case TechId::AskosiRemoteHijack: {
                                 current_button_state = Button_State::Enabled;
                             } break;
                             case TechId::FacadePryingEyes: {
@@ -765,7 +766,7 @@ namespace hooks {
                                     current_button_state = Button_State::Enabled;
                                 }
                             } break;
-                            case TechId::SpiderMines: {
+                            case TechId::TerranMines: {
                                 if (unit->id == UnitId::TerranVultureHecaton || unit->id == UnitId::TerranVultureUpstart) {
                                     current_button_state = unit->mine_carrier.mine_count ? Button_State::Enabled : Button_State::Invisible;
                                 }
@@ -2248,6 +2249,8 @@ namespace hooks {
                                             } else {
                                                 current_button_state = Button_State::Disabled;
                                             }
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
                                         }
                                     } break;
                                     case UnitId::ZergVorvrokor: {
@@ -2625,6 +2628,7 @@ namespace hooks {
                                     } break;
                                     case UnitId::AskosiBounty:
                                     case UnitId::AskosiAbutment:
+                                    case UnitId::AskosiDorminge:
                                     case UnitId::AskosiProscenium:
                                     case UnitId::AskosiZylode: {
                                         if (player_has_completed_unit_id(unit->player, UnitId::AskosiCipher) && player_has_completed_unit_id(unit->player, UnitId::AskosiGauntlet)) {
@@ -2806,27 +2810,27 @@ namespace hooks {
                             } break;
                             case UnitId::AskosiAstrolabe: {
                                 switch (current_button->requirement_var) {
-                                case UnitId::AskosiAkreno:
-                                case UnitId::AskosiIconoclast: {
-                                    current_button_state = Button_State::Enabled;
-                                } break;
-                                case UnitId::AskosiCrematorium: {
-                                    if (player_has_completed_unit_id(unit->player, UnitId::AskosiConduit)) {
+                                    case UnitId::AskosiAkreno:
+                                    case UnitId::AskosiIconoclast: {
                                         current_button_state = Button_State::Enabled;
-                                    } else {
-                                        current_button_state = Button_State::Disabled;
-                                    }
-                                } break;
-                                case UnitId::AskosiParaclete: {
-                                    if (player_has_completed_unit_id(unit->player, UnitId::AskosiBestiary)) {
-                                        current_button_state = Button_State::Enabled;
-                                    } else {
-                                        current_button_state = Button_State::Disabled;
-                                    }
-                                } break;
-                                default: {
-                                    current_button_state = Button_State::Invisible;
-                                }
+                                    } break;
+                                    case UnitId::AskosiCrematorium: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiConduit)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    case UnitId::AskosiParaclete: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiBestiary)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    default: {
+                                        current_button_state = Button_State::Invisible;
+                                    } break;
                                 }
                             } break;
                         }
@@ -4065,6 +4069,11 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::AskosiDorminge: {
+                                    if (current_button->icon_id == IconId::SustainingSermon) { // Crushing Delivery
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::AskosiCipher: {
                                     if (current_button->icon_id == IconId::Mimic
                                     ||  current_button->icon_id == IconId::Scepter
@@ -4080,7 +4089,8 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::AskosiBounty: {
-                                    if (current_button->icon_id == IconId::FusionCutterHarvest) { // Scrapworld: Cornucopia
+                                    if (current_button->icon_id == IconId::FusionCutterHarvest // Scrapworld: Cornucopia
+                                     || current_button->icon_id == IconId::DestinationScrapworld) { // Scrapworld: Gold Vein
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

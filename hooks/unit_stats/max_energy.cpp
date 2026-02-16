@@ -11,6 +11,9 @@ namespace hooks {
 			case UnitId::AskosiVicar: {
 				energy = 50;
 			} break;
+			case UnitId::AskosiZonguard: {
+				energy = 75;
+			} break;
 			case UnitId::TerranPietyWard:
 			case UnitId::TerranPhobos:
 			case UnitId::TerranFacade:
@@ -19,13 +22,15 @@ namespace hooks {
 				energy = 100;
 			} break;
 			case UnitId::TerranAncile:
-			case UnitId::ProtossXenolith: {
+			case UnitId::ProtossXenolith:
+			case UnitId::AskosiParaclete: {
 				energy = 125;
 			} break;
 			case UnitId::TerranHypnagogue:
 			case UnitId::TerranSeraph:
 			case UnitId::TerranLuminary:
-			case UnitId::ProtossAnalogue: {
+			case UnitId::ProtossAnalogue:
+			case UnitId::AskosiProselyte: {
 				energy = 150;
 			} break;
 			case UnitId::TerranTriton: {

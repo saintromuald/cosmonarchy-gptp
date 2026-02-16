@@ -683,7 +683,8 @@ bool tech_id_has_custom_targeting(u32 tech_id) {
         && tech_id != TechId::RejoinderOfService
         && tech_id != TechId::AskosiSalvage
         && tech_id != TechId::AskosiHijack
-        && tech_id != TechId::AskosiRapidRendezvous;
+        && tech_id != TechId::AskosiRapidRendezvous
+        && tech_id != TechId::AskosiRemoteHijack;
 }
 
 bool image_id_is_powerup(u32 image_id) {
@@ -734,7 +735,8 @@ bool weapon_id_can_proc_onhits(u32 weapon_id) {
         && weapon_id != WeaponId::MatralethParasite
         && weapon_id != WeaponId::Plague
         && weapon_id != WeaponId::Custom
-        && weapon_id != WeaponId::NuclearMissile;
+        && weapon_id != WeaponId::NuclearMissile
+        && weapon_id != WeaponId::RemoteHijack;
 }
 
 WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
@@ -1822,12 +1824,15 @@ bool is_askosi(UnitId::Enum unit_id) {
         || unit_id == UnitId::AskosiCosmoscope
         || unit_id == UnitId::AskosiBounty
         || unit_id == UnitId::AskosiAbutment
+        || unit_id == UnitId::AskosiDorminge
         || unit_id == UnitId::AskosiProscenium
         || unit_id == UnitId::AskosiConduit
         || unit_id == UnitId::AskosiZylode
         || unit_id == UnitId::AskosiBestiary
         || unit_id == UnitId::AskosiAstrolabe
+        || unit_id == UnitId::AskosiDomain
         || unit_id == UnitId::AskosiPanoply
+        || unit_id == UnitId::AskosiLotiro
         || unit_id == UnitId::AskosiObelisk;
 }
 

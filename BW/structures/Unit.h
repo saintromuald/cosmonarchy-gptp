@@ -392,7 +392,7 @@ struct Unit : public UnitLayout {
     bool unit_is_training_or_morphing();
     bool is_queue_slot_active(int slot);
     u8 get_right_click_action_order();
-	Faction faction();
+    Faction faction();
     f32 total_cost();
 
     inline u32 get_strength() const { return std::max(this->ground_strength, this->air_strength); }
@@ -452,6 +452,13 @@ struct Unit : public UnitLayout {
     void tick_burrowed_cagra_spread();
     void booming_blast_proc(bool damage_self = true);
     bool is_valid_garrison();
+    void rematerialize_cast();
+    bool rapid_rendezvous_cast();
+    void hijack_cast();
+    void remote_hijack_cast();
+    void preylock_cast();
+    void lobotomy_warhead_cast();
+    void hijack(Unit* hijacker);
 };
 
 C_ASSERT(sizeof(Flingy) == 76);

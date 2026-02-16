@@ -578,6 +578,12 @@ namespace hooks {
                     case OrderId::AskosiHijack: {
                         bw::draw_aura_range(unit, Askosi::HijackCastRange / 32, 164);
                     } break;
+                    case OrderId::AskosiRemoteHijack: {
+                        bw::draw_aura_range(unit, Askosi::RemoteHijackCastRange / 32, 164);
+                    } break;
+                    case OrderId::AskosiPreylock: {
+                        bw::draw_aura_range(unit, Askosi::PreylockCastRange / 32, 164);
+                    } break;
                     default: {
                     } break;
                 }
@@ -2087,8 +2093,7 @@ namespace hooks {
                 if (unit->is_burrowed() && bw::unit_can_fire_secondary_weapon(unit)) {
                     if (fire_multiple(unit, WeaponId::ZobrioliskRapidSpinesAir, 1, FilterEnemy | FilterNoGround, {})) {
                         unit->sprite->create_top_overlay(ImageId::ZobrioliskBurrowWeaponfireOverlay);
-                    //  bw::play_sound({SoundId::DurendalSecondaryFire01, SoundId::DurendalSecondaryFire03}, unit->position);
-                        unit_ext.timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::DurendalPhilistineSalvo);
+                        unit_ext.timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::ZobrioliskRapidSpinesAir);
                     } else {
                         unit_ext.timers[TimerSecondaryWeaponCooldown] = 3;
                     }
@@ -2251,164 +2256,47 @@ namespace hooks {
                 if (!unit->ground_weapon_cooldown && !unit->ground_weapon_cooldown && unit->can_attack_transport_checks()) {
                     if (fire_multiple(unit, WeaponId::AgonistOnlaDrivers, 1, FilterEnemy, {})) {
                         unit->sprite->create_top_overlay(ImageId::DurendalWeaponfireOverlay);
-                        bw::play_sound({SoundId::DurendalSecondaryFire01, SoundId::DurendalSecondaryFire03}, unit->position);
+                        bw::play_sound({SoundId::AgonistWeaponfire01, SoundId::AgonistWeaponfire03}, unit->position);
                         unit->ground_weapon_cooldown = hooks::get_modified_weapon_cooldown(unit, WeaponId::AgonistOnlaDrivers);
                         unit->air_weapon_cooldown = hooks::get_modified_weapon_cooldown(unit, WeaponId::AgonistOnlaDrivers);
                     }
                 }
             } break;
+            case UnitId::AskosiZonguard: {
+                // Zonguard - Forward March
+                if (!unit->ground_weapon_cooldown && !unit->ground_weapon_cooldown && unit->can_attack_transport_checks()) {
+                    if (fire_multiple(unit, WeaponId::GrandstandArteDriver, 1, FilterEnemy, {})) {
+                        unit->sprite->create_top_overlay(ImageId::DurendalWeaponfireOverlay);
+                        bw::play_sound({SoundId::GrandstandWeaponfire01, SoundId::GrandstandWeaponfire03}, unit->position);
+                        unit->ground_weapon_cooldown = hooks::get_modified_weapon_cooldown(unit, WeaponId::GrandstandArteDriver);
+                        unit->air_weapon_cooldown = hooks::get_modified_weapon_cooldown(unit, WeaponId::GrandstandArteDriver);
+                    }
+                }
+                unit->preylock_cast();
+            } break;
             case UnitId::AskosiEyelet:
             case UnitId::AskosiVicar:
             case UnitId::AskosiEmissary: {
-                // Askosi units - Rematerialize
-                auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
-                if (try_cast && (unit->main_order_id != OrderId::AskosiRematerialize || unit->is_frozen())) {
-                    try_cast = false;
-                }
-                if (try_cast && !unit_ext.timers[TimerTryCastCustomSpell]) {
-                    Unit* target = unit->order_target.unit;
-                    if (!target || !bw::are_mutual_allies(unit->player, target->player) || target->is_building()) {
-                        unit->order_to_idle();
-                        // TODO: add error handling
-                    } else {
-                        Point16 target_pos = {unit->order_target.unit->get_x(), unit->order_target.unit->get_y()};
-                        u32 range = Askosi::RematerializeCastRange;
-                        if (!helper::is_target_within_min_range(unit, range, target)) {
-                            if (unit->order_target.unit) {
-                                helper::spell_order_move_towards_target(unit, range);
-                            } else {
-                                helper::set_move_target_xy(unit, target_pos.x, target_pos.y);
-                            }
-                            unit_ext.timers[TimerTryCastCustomSpell] = 3;
-                        } else {
-                            u16 energy_cost = 0;
-                            if (helper::spell_order(unit, TechId::AskosiRematerialize, &energy_cost, range, 1330)) {
-                                unit->spend_energy(energy_cost);
-                                bw::teleport_to_unit(target, unit, 24, {.check_distance = false}, SpriteId::LegionnaireTeleportEffect);
-                                target->ext().timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
-                                target->update_speed();
-                                try_cast = false;
-                            }
-                        }
-                    }
-                }
+                unit->rematerialize_cast();
             } break;
             case UnitId::AskosiProselyte:
             case UnitId::AskosiCardinal:
             case UnitId::AskosiRove:
             case UnitId::AskosiPetract: {
-                // Askosi units - Rematerialize
-                bool is_air_unit = unit->is_in_air();
-                auto& ref_try_cast = unit_ext.values[ValueTryCastCustomSpell];
-                if (ref_try_cast && (unit->main_order_id != OrderId::AskosiRapidRendezvous || unit->is_frozen())) {
-                    ref_try_cast = false;
-                }
-                if (ref_try_cast && !unit_ext.timers[TimerTryCastCustomSpell]) {
-                    Unit* target = unit->order_target.unit;
-                    if (!target || !bw::are_mutual_allies(unit->player, target->player) || target->is_in_air()) {
-                        unit->order_to_idle();
-                        // TODO: add error handling
-                    } else {
-                        Point16 target_pos{unit->order_target.unit->get_x(), unit->order_target.unit->get_y()};
-                        u32 range = Askosi::RematerializeCastRange;
-                        if (!helper::is_target_within_min_range(unit, range, target)) {
-                            if (unit->order_target.unit) {
-                                helper::spell_order_move_towards_target(unit, range);
-                            } else {
-                                helper::set_move_target_xy(unit, target_pos.x, target_pos.y);
-                            }
-                            unit_ext.timers[TimerTryCastCustomSpell] = 3;
-                        } else {
-                            u16 energy_cost = 0;
-                            if (helper::spell_order(unit, TechId::AskosiRapidRendezvous, &energy_cost, range, 1330)) {
-                                unit->spend_energy(energy_cost);
-                                bw::teleport_to_unit(unit, target, 24, {.check_distance = false}, SpriteId::LegionnaireTeleportEffect);
-                                unit_ext.timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
-                                should_update_speed = true;
-                                for (Unit* ally : g_unit_search.radial_ex(target, 3 * 32, FilterAlly | FilterIncludingSelf)) {
-                                    ally->ext().timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
-                                    ally->update_speed();
-                                }
-                                ref_try_cast = false;
-                            }
-                        }
-                    }
+                if (unit->rapid_rendezvous_cast()) {
+                    should_update_speed = true;
                 }
             } break;
+            case UnitId::AskosiAvatar:
             case UnitId::AskosiInkblot:
-            case UnitId::AskosiAvatar: {
-                // Askosi units - Hijack
-                auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
-                if (try_cast && (unit->main_order_id != OrderId::AskosiHijack || unit->is_frozen())) {
-                    try_cast = false;
-                }
-                if (try_cast && !unit_ext.timers[TimerTryCastCustomSpell]) {
-                    Unit* target = unit->order_target.unit;
-                    if (!target || target->is_building() || (bw::are_mutual_allies(unit->player, target->player) && !target->is_askosi_embedded())) {
-                        unit->order_to_idle();
-                        // TODO: add error handling
-                    } else {
-                        Point16 target_pos = {unit->order_target.unit->get_x(), unit->order_target.unit->get_y()};
-                        u32 range = Askosi::HijackCastRange;
-                        if (!helper::is_target_within_min_range(unit, range, target)) {
-                            if (unit->order_target.unit) {
-                                helper::spell_order_move_towards_target(unit, range);
-                            } else {
-                                helper::set_move_target_xy(unit, target_pos.x, target_pos.y);
-                            }
-                            unit_ext.timers[TimerTryCastCustomSpell] = 3;
-                        } else {
-                            auto& target_ext = target->ext();
-                            if (target_ext.units[UnitHijacker]) {
-                                unit->order_to_idle();
-                                try_cast = false;
-                                // TODO: Error handling
-                            } else {
-                                u16 energy_cost = 0;
-                                if (helper::spell_order(unit, TechId::AskosiHijack, &energy_cost, range, 1330)) {
-                                    unit->status |= UnitStatus::NoCollide;
-                                    unit->status |= UnitStatus::CanNotReceiveOrders;
-                                    bw::teleport_to_unit(unit, target, 24, {.check_distance = false}, SpriteId::LegionnaireTeleportEffect);
-                                    target_ext.timers[TimerIsBeingHijacked] = 5 * 24 + 1;
-                                    target_ext.units[UnitHijacker] = unit;
-                                    unit_ext.units[UnitHijackTarget] = target;
-                                    try_cast = false;
-                                }
-                            }
-                        }
-                    }
-                }
+            case UnitId::AskosiAuxine: {
+                unit->hijack_cast();
+            } break;
+            case UnitId::AskosiParaclete: {
+                unit->remote_hijack_cast();
             } break;
             case UnitId::TerranTriton: {
-                auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
-                if (try_cast && (unit->main_order_id != OrderId::LobotomyWarhead || unit->is_frozen())) {
-                    try_cast = false;
-                }
-                if (try_cast && !unit_ext.timers[TimerTryCastCustomSpell]) {
-                    Unit* target = unit->order_target.unit;
-                    if (!target) {
-                        try_cast = false;
-                        // TODO: add error handling
-                    } else {
-                        Point16 target_pos = { unit->order_target.unit->get_x(), unit->order_target.unit->get_y() };
-                        u32 range = TerranTriton::LobotomyWarheadRange;
-                        if (!helper::is_target_within_min_range(unit, range, target)) {
-                            if (unit->order_target.unit) {
-                                helper::spell_order_move_towards_target(unit, range);
-                            } else {
-                                helper::set_move_target_xy(unit, target_pos.x, target_pos.y);
-                            }
-                            unit_ext.timers[TimerTryCastCustomSpell] = 3;
-                        } else {
-                            u16 energy_cost = 0;
-                            if (helper::spell_order(unit, TechId::TritonLobotomyWarhead, &energy_cost, range, 1330)) {
-                                unit->spend_energy(energy_cost);
-                                fire_bullet(unit, WeaponId::TritonLobotomyWarhead, unit->order_target);
-                                try_cast = false;
-                            }
-                        }
-                    }
-                }
+                unit->lobotomy_warhead_cast();
             } break;
             case UnitId::TerranSerathiel: {
                 auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
@@ -2944,15 +2832,33 @@ namespace hooks {
                 if (unit->can_use_passive_ability()) {
                     const auto timer = unit_ext.timers[TimerSermonSalveOverlay];
                     if (!timer) {
-                        unit_ext.timers[TimerSermonSalveOverlay] = 24;
+                        unit_ext.timers[TimerSermonSalveOverlay] = 1secs;
                         bw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id));
                     }
-                    u32 range = AskosiChantry::SermonSalveRange;
-                    for (Unit* target : g_unit_search.radial(unit->position, range).filter(unit, FilterAlly)) {
+                    for (Unit* target : g_unit_search.radial(unit->position, AskosiChantry::SermonSalveRange).filter(unit, FilterAlly)) {
                         auto& target_ext = target->ext();
                         if (!target_ext.timers[TimerSermonSalve]) {
                             target_ext.timers[TimerSermonSalve] = 3;
                         }
+                    }
+                }
+            } break;
+            case UnitId::AskosiDorminge: {
+                if (unit->can_use_passive_ability()) {
+                    for (Unit* target : g_unit_search.radial(unit->position, AskosiDorminge::CrushingDeliveryRange).filter(unit, FilterEnemy)) {
+                        auto& target_ext = target->ext();
+                        if (!target_ext.timers[TimerCrushingDelivery]) {
+                            target_ext.timers[TimerCrushingDelivery] = 3;
+                        }
+                    }
+                }
+            } break;
+            case UnitId::AskosiBounty: {
+                if (unit->can_use_passive_ability() && !unit_ext.timers[TimerCorpseConsumptionDelay]) {
+                    for (Thingy* corpse : g_corpse_search.radial(unit->position, AskosiBounty::GoldVeinRange)) {
+                        salvage_corpse(corpse, unit->player);
+                        unit_ext.timers[TimerCorpseConsumptionDelay] = 1secs;
+                        break;
                     }
                 }
             } break;
@@ -2971,7 +2877,7 @@ namespace hooks {
                         corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
                         bw::play_sound({SoundId::AskosiScrap01, SoundId::AskosiScrap03}, corpse->sprite->position);
                         consumed = true;
-                        unit_ext.timers[TimerCorpseConsumptionDelay] = 24;
+                        unit_ext.timers[TimerCorpseConsumptionDelay] = 1secs;
                         break;
                     }
                     if (consumed) {
@@ -3321,6 +3227,7 @@ namespace hooks {
                 Unit* hijacker = unit_ext.units[UnitHijacker];
                 if (hijacker) {
                     hijacker->status &= ~UnitStatus::CanNotReceiveOrders;
+                    hijacker->order_to_idle();
                     hijacker->ext().units[UnitHijackTarget] = 0;
                     if (unit->player == hijacker->player && unit->is_askosi_embedded()) {
                         unit_ext.values[ValueReassemblyActive] = false;
@@ -3335,12 +3242,7 @@ namespace hooks {
                         }
                         unit_ext.units[UnitHijacker] = 0;
                     } else {
-                        unit_ext.values[ValueHijackOriginalPlayer] = unit->player;
-                        unit->give_to(hijacker->player);
-                        helper::hide_and_disable_unit(hijacker);
-                        // TODO: Own audiovisuals
-                        bw::play_sound({SoundId::AskosiDeploy01, SoundId::AskosiDeploy03}, unit->position);
-                        unit->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
+                        unit->hijack(hijacker);
                     }
                 }
             }

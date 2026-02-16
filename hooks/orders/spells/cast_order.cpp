@@ -91,18 +91,20 @@ namespace hooks {
 			case TechId::AskosiSalvage: {
 				return target && bw::are_mutual_allies(caster->player, target->player);
 			}
-			case TechId::AskosiHijack: {
+			case TechId::AskosiHijack:
+			case TechId::AskosiRemoteHijack: {
 				if (target) {
 					return bw::are_mutual_allies(caster->player, target->player) || (bw::are_mutual_allies(caster->player, target->player) && target->is_askosi_embedded());
 				}
 				return false;
 			}
 			case TechId::TritonLobotomyWarhead:
-			case TechId::RejoinderOfService: {
+			case TechId::RejoinderOfService:
+			case TechId::AskosiPreylock: {
 				return target != nullptr;
 			}
 			default: {
-				if (tech_id != TechId::SpiderMines) {
+				if (tech_id != TechId::TerranMines) {
 					bool has_target = false;
 					u16 error_stat_string = 0;
 					if (target) {
@@ -358,8 +360,7 @@ namespace hooks {
 				case OrderId::LobotomyWarhead:
 				case OrderId::StasisField:
 				case OrderId::AskosiRematerialize:
-				case OrderId::AskosiRapidRendezvous:
-				case OrderId::AskosiHijack: {
+				case OrderId::AskosiRapidRendezvous: {
 					if (!target || target->is_frozen()) {
 						return true;
 					}
@@ -367,6 +368,13 @@ namespace hooks {
 				case OrderId::AskosiSalvage: {
 					if (!target || target->ext().timers[TimerSalvageStun]) {
 						return true;
+					}
+				} break;
+				case OrderId::AskosiHijack:
+				case OrderId::AskosiRemoteHijack:
+				case OrderId::AskosiPreylock: {
+					if (!target) {
+						return false;
 					}
 				} break;
 				// Originally had Parasite code here
@@ -410,12 +418,14 @@ namespace hooks {
 			case TechId::AskosiRematerialize:
 			case TechId::AskosiRapidRendezvous:
 			case TechId::AskosiSalvage:
-			case TechId::AskosiHijack: {
+			case TechId::AskosiHijack:
+			case TechId::AskosiRemoteHijack:
+			case TechId::AskosiPreylock: {
 				return false;
 			} break;
 			default: {
 				b32 can_cast_on_tile = false;
-				if (tech_id == TechId::SpiderMines) {
+				if (tech_id == TechId::TerranMines) {
 					u32 order_target_x = unit->order_target.pt.x;
 					u32 order_target_y = unit->order_target.pt.y;
 					can_cast_on_tile = get_active_tile_flag(order_target_y, order_target_x, 0x410000, 0);

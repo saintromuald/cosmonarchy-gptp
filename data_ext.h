@@ -459,6 +459,8 @@ enum ExtTimerId {
     TimerWarringWindsCooldown,
     TimerScrapworldImplosion,
     TimerVitalRemainsArmorPen,
+    TimerMechanicalRage,
+    TimerCrushingDelivery,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,

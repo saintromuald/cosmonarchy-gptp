@@ -286,8 +286,8 @@ namespace hooks {
 				if (bullet) {
 					if (bullet->source_unit && weapon_id_bounces_caustic_fission(bullet->weapon_id)) {
 						divisor = 1;
-					} else if (WeaponId::bounces_power_breach(static_cast<WeaponId::Enum>(bullet->weapon_id))) {
-						divisor = 4 - bullet->remaining_bounces;
+					} else if (bullet->source_unit && WeaponId::bounces_power_breach(static_cast<WeaponId::Enum>(bullet->weapon_id))) {
+						divisor = bullet->source_unit->id == UnitId::AskosiIntendent ? 4 - bullet->remaining_bounces : 1; // TODO: Extend weapons and simplify this.
 					} else {
 						divisor = 2 - bullet->remaining_bounces;
 					}

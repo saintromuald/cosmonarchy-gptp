@@ -178,6 +178,10 @@ namespace hooks {
             speed *= 0.66fp;
         }
 
+        if (unit_ext.timers[TimerCrushingDelivery]) {
+            speed *= 0.66fp;
+        }
+
         // Shade - speed steroid
         if (unit_ext.values[ValueIsShade]) {
             speed *= 1.5fp;

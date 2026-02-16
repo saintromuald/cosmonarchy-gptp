@@ -6,20 +6,19 @@ namespace TechId {
 
     // Shared
         TargetGround						= 17, // Ensnare | used for: Wyvern Land Grab
-        CancelNewAbility					= 26, // Unused Tech 26 | used for: Wyvern Land Grab, Didact Dimensional Recall, Controlled Demolition
+        CancelNewAbility					= 26, // Unknown Tech 26 | used for: Wyvern Land Grab, Didact Dimensional Recall, Controlled Demolition
 
     // Terran
         GoskaLobotomyGrenade				=  1, // LobotomyGrenade
         ControlledDemolition				=  2, // EMP Shockwave
         DivineDiscipline                    = 10, // Ghost Personnel Cloaking
         RejoinderOfService                  = 12, // Infestation
-        SavantOnhitToggle					= 24, // Restoration
         ApostleLazarusAgent					= 32, // Lakizilisk Aspect
-        PaladinSkyfall						= 37, // Unused Tech 37
-        EmergencyDetonation					= 39, // Unused Tech 39
-        AzazelSublimeShepherd				= 40, // Unused Tech 40
-        HypnagogueThroughTheLookingGlass	= 42, // Unused Tech 42
-        TritonLobotomyWarhead   			= 46, // Unused Tech 46
+        PaladinSkyfall						= 37, // Unknown Tech 37
+        EmergencyDetonation					= 39, // Unknown Tech 39
+        AzazelSublimeShepherd				= 40, // Unknown Tech 40
+        HypnagogueThroughTheLookingGlass	= 42, // Unknown Tech 42
+        TritonLobotomyWarhead   			= 46, // Unknown Tech 46
         FacadePryingEyes                    = 47,
 
     // Protoss
@@ -27,26 +26,28 @@ namespace TechId {
 
     // Zerg
         MatralethEnsnaringBrood				= 13, // Spawn Broodlings
-        ZergBlissfulEmbrace					= 35, // Unused Tech 35
+        ZergBlissfulEmbrace					= 35, // Unknown Tech 35
         MalkothrokorHiveTissue              = 45,
         StroluumSkryspawn					= 51,
 
         LarvalSubmenuSelectControl			= 28, // Dark Archon Meld
-        LarvalSubmenuSelectSwarm			= 33, // Unused Tech 33
-        LarvalSubmenuSelectAssault			= 38, // Unused Tech 38
+        LarvalSubmenuSelectSwarm			= 33, // Unknown Tech 33
+        LarvalSubmenuSelectAssault			= 38, // Unknown Tech 38
 
     // Askosi
-        AskosiRapidRendezvous    			= 9,  // Wraith Cloaking Field
+        AskosiRapidRendezvous               = 9,  // Wraith Cloaking Field
+        AskosiRemoteHijack                  = 16, // Consume
+        AskosiPreylock					    = 24, // Restoration
         AskosiRematerialize     			= 23, // Archon Warp
-        AskosiHijack                        = 36, // Unused Tech 36
-        AskosiSalvage						= 41, // Unused Tech 41
+        AskosiHijack                        = 36, // Unknown Tech 36
+        AskosiSalvage						= 41, // Unknown Tech 41
 
         // Brood War \\
 
         Stimpacks				=  0,
     //  Lockdown				=  1,
     //  EMPShockwave			=  2,
-        SpiderMines				=  3,
+        TerranMines				=  3,
         ScannerSweep			=  4, // (default)
         TankSiegeMode			=  5,
         DefensiveMatrix			=  6, // (default)

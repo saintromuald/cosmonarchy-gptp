@@ -732,16 +732,16 @@ namespace hooks {
                     } break;
                     case WeaponId::QuazrokorQuazrokSpray: {
                         for (u32 i = 1; i <= 4; i++) {
-                            const auto polar_x = bw::get_polar_x(i * 15, unit->current_direction_1);
-                            const auto polar_y = bw::get_polar_y(i * 15, unit->current_direction_1);
+                            const auto polar_x = bw::get_polar_x(i * 18, unit->current_direction_1);
+                            const auto polar_y = bw::get_polar_y(i * 18, unit->current_direction_1);
                             unit->sprite->create_top_overlay(ImageId::GlaveWurm_SeekerSporesHit, polar_x, polar_y, unit->current_direction_1);
                         }
                         fire_bullet(unit, weapon_id, weapon_target);
                     } break;
                     case WeaponId::InzorthrokorInzorReflux: {
                         for (u32 i = 1; i <= 4; i++) {
-                            const auto polar_x = bw::get_polar_x(i * 15, unit->current_direction_1);
-                            const auto polar_y = bw::get_polar_y(i * 15, unit->current_direction_1);
+                            const auto polar_x = bw::get_polar_x(i * 18, unit->current_direction_1);
+                            const auto polar_y = bw::get_polar_y(i * 18, unit->current_direction_1);
                             unit->sprite->create_top_overlay(ImageId::GlaveWurm_SeekerSporesHit, polar_x, polar_y, unit->current_direction_1);
                         }
                         fire_bullet(unit, weapon_id, weapon_target);
@@ -1643,7 +1643,7 @@ namespace hooks {
                     default: {
                         if (weapon_id_bounces_crushing_tide(weapon_id)) {
                             bullet->remaining_bounces = 2;
-                        } else if (WeaponId::bounces_power_breach(static_cast<WeaponId::Enum>(bullet->weapon_id))) {
+                        } else if (WeaponId::bounces_power_breach(WeaponId::Enum(bullet->weapon_id))) {
                             if (bullet->source_unit && bullet->source_unit->id == UnitId::AskosiIntendent) {
                                 bullet->remaining_bounces = 4;
                             } else {

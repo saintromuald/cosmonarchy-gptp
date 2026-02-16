@@ -1366,6 +1366,7 @@ namespace hooks {
                 }
                 case UnitId::AskosiBounty:
                 case UnitId::AskosiAbutment:
+                case UnitId::AskosiDorminge:
                 case UnitId::AskosiProscenium:
                 case UnitId::AskosiZylode: {
                     if (player_has_completed_unit_id(player_id, UnitId::AskosiCipher) && player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet)) {
@@ -3607,6 +3608,7 @@ namespace hooks {
                     }
                     case UnitId::AskosiBounty:
                     case UnitId::AskosiAbutment:
+                    case UnitId::AskosiDorminge:
                     case UnitId::AskosiProscenium:
                     case UnitId::AskosiZylode:
                     case UnitId::AskosiAstrolabe: {

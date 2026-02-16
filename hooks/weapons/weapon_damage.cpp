@@ -429,6 +429,12 @@ namespace hooks {
             if (!weapon_damage_fatal(data)) { // Prevent attack if it wasn't fatal
                 data.damage = 0;
                 data.damage_type = DamageType::Independent;
+            } else if (data.attacker) {
+                switch (data.attacker->id) {
+                    case UnitId::AskosiZonguard: {
+                        data.attacker->ext().timers[TimerMechanicalRage] = AskosiZonguard::MechanicalRageDuration;
+                    } break;
+                }
             }
         }
 
@@ -550,6 +556,16 @@ namespace hooks {
                         data.damage -= 4 * 256;
                     }
                 } break;
+                case WeaponId::UltrokorKaiserBlades: {
+                    if (data.attacker->id == UnitId::AskosiZonguard) {
+                        data.damage -= 5 * 256;
+                    }
+                } break;
+                case WeaponId::GrandstandArteDriver: {
+                    if (data.attacker->id == UnitId::AskosiZonguard) {
+                        data.damage -= 3 * 256;
+                    }
+                } break;
                 case WeaponId::RoveElreScaleshot: {
                     if (data.attacker->id == UnitId::AskosiThaumalogue) {
                         data.damage += 2 * 256;
@@ -563,6 +579,9 @@ namespace hooks {
                 case WeaponId::VicarOspoTwinshard: {
                     if (data.attacker->id == UnitId::AskosiIconoclast) {
                         data.damage += 1 * 256;
+                    }
+                    if (data.attacker->id == UnitId::AskosiParaclete) {
+                        data.damage += 3 * 256;
                     }
                 } break;
                 case WeaponId::CrematoriumOkliQuadshard: {
@@ -712,6 +731,12 @@ namespace hooks {
                 target_ext.timers[TimerGoldRush] = Askosi::ScrapworldGoldRushTimer;
                 target_ext.values[ValueGoldRushPlayer] = data.attacking_player_id;
             } break;
+            case WeaponId::RemoteHijack: {
+                Unit* auxine = bw::create_unit_from_bullet(UnitId::AskosiAuxine, data.attacking_player_id, data.target->position, data.attacker);
+                target_ext.timers[TimerIsBeingHijacked] = 5secs + 1;
+                target_ext.units[UnitHijacker] = auxine;
+                auxine->ext().units[UnitHijackTarget] = data.target;
+            } break;
         }
 
         switch (data.target->id) {
@@ -745,15 +770,19 @@ namespace hooks {
             case UnitId::AskosiAgonist:
             case UnitId::AskosiEmissary:
             case UnitId::AskosiAkreno: {
-                target_ext.timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
-                data.target->update_speed();
-            } break;
-            case UnitId::AskosiThaumalogue: {
-                if (target_ext.values[ValueReassemblyActive]) {
-                    target_ext.timers[TimerRetaliationAssembly] = AskosiThaumalogue::RetaliationAssemblyDuration;
-                } else {
+                if (!bw::is_allied_to(data.target->player, data.attacking_player_id)) {
                     target_ext.timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
                     data.target->update_speed();
+                }
+            } break;
+            case UnitId::AskosiThaumalogue: {
+                if (!bw::is_allied_to(data.target->player, data.attacking_player_id)) {
+                    if (target_ext.values[ValueReassemblyActive]) {
+                        target_ext.timers[TimerRetaliationAssembly] = AskosiThaumalogue::RetaliationAssemblyDuration;
+                    } else {
+                        target_ext.timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
+                        data.target->update_speed();
+                    }
                 }
             } break;
         }
@@ -1087,6 +1116,9 @@ namespace hooks {
                         target_ext.timers[TimerKelvinMunitions] = 3secs + 1;
                     } break;
                     case WeaponId::VicarOspoTwinshard: {
+                        if (data.attacker->id == UnitId::AskosiParaclete) {
+                            break;
+                        }
                         if (!target_ext.timers[TimerBoomingBlast]) {
                             target_ext.timers[TimerBoomingBlast] = Askosi::BoomingBlastTimer;
                             target_ext.values[ValueBoomingBlastPlayer] = data.attacking_player_id;
@@ -1098,6 +1130,9 @@ namespace hooks {
                     } break;
                     case WeaponId::GrandstandArteDriver:
                     case WeaponId::IntendentErsaDriver: {
+                        if (data.attacker && data.attacker->id == UnitId::AskosiZonguard) {
+                            break;
+                        }
                         if (!target_ext.timers[TimerPowerOverload]) {
                             target_ext.timers[TimerPowerOverload] = Askosi::PowerOverloadTimer * hooks::get_armor_internal(data.target) + 1;
                         }
@@ -1263,19 +1298,19 @@ namespace hooks {
         switch (data.weapon_id) {
             case WeaponId::GhitorokorGnashingTendrils:
             case WeaponId::UltrokorKaiserBlades: {
-                // Broodspawn Death Cycle, Ghitorokor / Tethzorokor / Ultrokor Saber Siphon
+                if (data.attacker->id == UnitId::AskosiZonguard) {
+                    break;
+                }
                 hp_factor += 1;
             } break;
             case WeaponId::TethzorokorSaberArray: {
                 hp_factor += 1;
             } break;
             case WeaponId::MortothrokorWickedIncisors: {
-                // Mortothrokor Whetted Appetite
                 hp_factor += attacker_ext.values[ValueMortothrokorStacks] * 0.05fp;
             } break;
             case WeaponId::AdherentPhaseBlade:
             case WeaponId::AmaranthPsiCleaver: {
-                // Eternal Service - Amaranth behavior
                 shields_factor += 1;
             } break;
         }
@@ -1462,9 +1497,16 @@ namespace hooks {
                 }
             }
 
-            // Askosi Hijack - the hijacker escapes!
             Unit* hijacker = target_ext.units[UnitHijacker];
             if (hijacker) {
+                // Hijack target on fatal damage
+                if (target_ext.timers[TimerIsBeingHijacked] && !data.target->is_askosi_embedded()) {
+                    data.target->hijack(hijacker);
+                    target_ext.timers[TimerIsBeingHijacked] = 0;
+                    data.target->update_speed();
+                    return false;
+                }
+                // Hijacker escapes fallen target
                 helper::move_unit(hijacker, data.target->position.x, data.target->position.y);
                 helper::show_and_enable_unit(hijacker);
                 hijacker->status &= ~UnitStatus::NoCollide;
