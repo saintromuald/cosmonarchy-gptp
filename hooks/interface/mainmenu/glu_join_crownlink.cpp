@@ -255,8 +255,6 @@ u32 GluJoinCrownlinkContext::on_activate(BinDlg* dialog, DialogEvent* event) {
 }
 
 void GluJoinCrownlinkContext::on_init_children(BinDlg* dialog, DialogEvent* event) {
-    bindlg_load_background(dialog);
-
     std::map<GluJoinControls, BinDlgProc> interaction_functions{
         {GluJoinControls::GameListBox, dlgproc_glu_join_crownlink_listbox}, // join_listbox
         {GluJoinControls::GameTitle, (BinDlgProc)0x004b7ef0},   // Very generic but sets flag 0x40000000. Seems to make the text white.
@@ -270,9 +268,8 @@ void GluJoinCrownlinkContext::on_init_children(BinDlg* dialog, DialogEvent* even
 }
 
 void glu_join_crownlink() {
-    g_gl_glues_mode = MenuId::GlueGameSel;
+    g_gl_glues_mode = menu_with_theme(GluTheme::PalNl);
     g_glue_background_id = -1;
-    change_menu();
 
     if (!g_music_playing) helper::dialog_music_fade(MusicId::MusicId_Title);
 
@@ -282,26 +279,26 @@ void glu_join_crownlink() {
     }
 
     context = std::make_unique<GluJoinCrownlinkContext>();
-
+    // bindlg_load_background(context->get_dialog(), "glue\\join\\backgnd_cnlk.pcx");
     auto result = helper::glu_load_bin_dialog(context->get_dialog(), dlgproc_glu_join_crownlink);
 
     switch (static_cast<GluJoinControls>(result)) {
-    case GluJoinControls::OK: {
-        g_gl_glues_mode = MenuId::GlueChatroom;
-    } break;
-    case GluJoinControls::Cancel: {
-        g_gl_glues_mode = MenuId::GlueLogin;
-    } break;
-    case GluJoinControls::Create: {
-        g_gl_glues_mode = MenuId::GlueCreate;
-    } break;
-    case GluJoinControls::OtherProviders: {
-        helper::glu_login_leave_game();
-        g_gl_glues_mode = MenuId::GlueProviderSelectCrownlink;
-    } break;
-    default: {
-        g_gl_glues_mode = MenuId::GlueMainMenu;
-    }
+        case GluJoinControls::OK: {
+            g_gl_glues_mode = MenuId::GlueChatroom;
+        } break;
+        case GluJoinControls::Cancel: {
+            g_gl_glues_mode = MenuId::GlueLogin;
+        } break;
+        case GluJoinControls::Create: {
+            g_gl_glues_mode = MenuId::GlueCreate;
+        } break;
+        case GluJoinControls::OtherProviders: {
+            helper::glu_login_leave_game();
+            g_gl_glues_mode = MenuId::GlueProviderSelectCrownlink;
+        } break;
+        default: {
+            g_gl_glues_mode = MenuId::GlueMainMenu;
+        }
     }
     g_glue_background_id = -1;
     change_menu();

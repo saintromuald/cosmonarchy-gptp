@@ -163,7 +163,7 @@ s32 background_id(MenuId::Enum menu_id) {
     } else if (menu_id == MenuId::GlueOptions) {
         return background_id(MenuId::GlueSelConn);
     } else if (menu_id == MenuId::GlueJoinCrownlink) {
-        return background_id(MenuId::GlueLogin);
+        return background_id(MenuId::GlueGameSel);
     }
     return background_id(MenuId::GlueSelConn);
 }
@@ -187,20 +187,45 @@ void bindlg_load_background(BinDlg* dialog) {
     g_gl_glues_mode = original_glues;
 }
 
+MenuId::Enum menu_with_theme(GluTheme theme) {
+    switch (theme) {
+        case GluTheme::PalMm: return MenuId::GlueMainMenu;
+        case GluTheme::PalCs: return MenuId::GlueExCampaign;
+        case GluTheme::PalRt: return MenuId::GlueReadyT;
+        case GluTheme::PalRz: return MenuId::GlueReadyZ;
+        case GluTheme::PalRp: return MenuId::GlueReadyP;
+        case GluTheme::PalPd: return MenuId::GlueScorePd;
+        case GluTheme::PalPv: return MenuId::GlueScorePv;
+        case GluTheme::PalZd: return MenuId::GlueScoreZd;
+        case GluTheme::PalZv: return MenuId::GlueScoreZv;
+        case GluTheme::PalTd: return MenuId::GlueScoreTd;
+        case GluTheme::PalTv: return MenuId::GlueScoreTv;
+        case GluTheme::PalNl: return MenuId::GlueChatroom;
+    }
+    return MenuId::GlueChatroom;
+}
+
+void bindlg_load_background(BinDlg* dialog, const char* filename) {
+    if (dialog->bitmap.buffer) return;
+    load_pcx_to_bitmap(filename, dialog->bitmap, &g_init_palette);
+    g_background = dialog->bitmap;
+    g_background_palette = g_init_palette;
+    helper::register_menu_functions(0, dialog, 0, 0);
+}
+
 void change_menu(bool force_refresh) {
     if (force_refresh || g_glue_background_id != background_id((MenuId::Enum)g_gl_glues_mode)) {
-        if (g_background_buffer) {
-            SMemFree(g_background_buffer, __FILE__, __LINE__, 0);
+        if (g_background.buffer) {
+            SMemFree(g_background.buffer, __FILE__, __LINE__, 0);
         }
-        g_background_size = {};
-        g_background_buffer = 0;
+        g_background = {};
         g_background_palette = {};
         helper::glu_change_menu_palette(3);
         helper::refresh_cursor_0();
     }
     helper::refresh_region();
 
-    g_menu_alloc_counter = 0;
+    g_menu_z_index = 0;
 }
 
 void initialize_dialog(BinDlg* dialog, BinDlgProc dialogproc) { // 00419d20

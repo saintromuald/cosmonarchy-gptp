@@ -1963,5 +1963,7 @@ namespace helper {
     b32 game_is_team_game();                                                                        // 00484F50
     s32 is_cpu_force(u32 force_id_1, s8 force_id_2);                                                // 00484DF0
 
+    void map_ui_colors_to_palette(Palette* palette, void* map_function);                            // 0041e450
+
     void set_fog_mask(u32 tile_flags, u32 x_tile, u32 y_tile, u32 x_final, u32 y_final);            // 00472E50
 }

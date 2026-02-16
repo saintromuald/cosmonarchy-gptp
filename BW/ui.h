@@ -13,6 +13,21 @@
 #include <initializer_list>
 #include <vector>
 
+enum class GluTheme {
+    PalMm, // Main Menu
+    PalCs, // Campaign Select
+    PalRt, // Ready Terran
+    PalRz, // Ready Zerg
+    PalRp, // Ready Protoss
+    PalPd, // Protoss Defeat
+    PalPv, // Protoss Victory
+    PalZd, // Zerg Defeat
+    PalZv, // Zerg Victory
+    PalTd, // Terran Defeat
+    PalTv, // Terran Victory
+    PalNl, // Other Menus (Moon background)
+};
+
 template<typename T>
 concept EnumS16 = std::is_enum_v<T> && std::is_same_v<std::underlying_type_t<T>, s16>;
 
@@ -85,6 +100,8 @@ void load_pcx_to_bitmap(const char* filename, Bitmap& bitmap, Palette* palette);
 void bindlg_load_background_palette(BinDlg* dialog); // See dialog_swish_in 0x004de150
 void bindlg_load_image(const char* filename, Palette* palette, BinDlg* dialog, u8* (__stdcall* malloc_func)(u32));
 void bindlg_load_background(BinDlg* dialog);
+MenuId::Enum menu_with_theme(GluTheme theme);
+void bindlg_load_background(BinDlg* dialog, const char* filename);
 void change_menu(bool force_refresh = false);
 void initialize_dialog(BinDlg* dialog, BinDlgProc dialogproc); // 00419d20
 void quick_send_event(BinDlg* dialog, DialogUserType user_type, u16 param = 0);
