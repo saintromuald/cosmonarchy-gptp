@@ -834,7 +834,8 @@ namespace hooks {
                         if (current_button->icon_id == IconId::Move
                         ||  current_button->icon_id == IconId::Stop
                         ||  current_button->icon_id == IconId::Patrol
-                        ||  current_button->icon_id == IconId::Hold_Position) {
+                        ||  current_button->icon_id == IconId::Hold_Position
+                        ||  current_button->icon_id == IconId::Yblyleth) {
                             current_button_state = Button_State::Invisible;
                         }
                     }
@@ -2377,7 +2378,7 @@ namespace hooks {
                             } break;
                             case UnitId::ZergYblyleth: {
                                 if (current_button->requirement_var == UnitId::ZergScrylyleth) {
-                                    if (faction != Faction::ZergZorthosTendril) {
+                                    if (faction != Faction::ZergZorthosTendril || unit->is_burrowed()) {
                                         current_button_state = Button_State::Invisible;
                                     } else if (unit->get_first_loaded_unit()) {
                                         current_button_state = Button_State::Disabled;

@@ -281,7 +281,7 @@ void incubate(Unit* target, u32 count, u32 unit_id, u32 player) {
 	target_ext.values[ValueIncubationCount] = count; 
 	target_ext.values[ValueIncubationUnitId] = unit_id; 
 	target_ext.values[ValueIncubationPlayer] = player;
-	target_ext.timers[TimerIncubationArm] = 2 * 24 + 1;
+	target_ext.timers[TimerIncubationArm] = 2secs + 1;
 	bw::add_unit_overlay(target, ImageId::ParasiteOverlay);
 }
 

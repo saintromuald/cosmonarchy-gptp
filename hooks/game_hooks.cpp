@@ -798,7 +798,7 @@ namespace hooks {
         }
     }
 
-    /// This hook is called every frame
+    // This hook is called every frame
     bool next_frame() {
         // Force disable cpu throttling, since on modern CPU it hurts more than helps
         *cpu_throttle = false;
@@ -2080,10 +2080,15 @@ namespace hooks {
             } break;
             case UnitId::TerranAnticthon: {
                 // Revive status
-                if (!unit->is_frozen() && !unit_ext.timers[TimerReclaimInterval]) {
-                    unit_ext.timers[TimerReclaimInterval] = 24;
+                if (unit->can_use_passive_ability() && !unit_ext.timers[TimerReclaimInterval]) {
+                    unit_ext.timers[TimerReclaimInterval] = 3;
+                    if (unit->energy < TerranAnticthon::CounterProposalEnergyCost) {
+                        break;
+                    }
+                    unit_ext.timers[TimerReclaimInterval] = 1secs;
                     Thingy* corpse = get_closest_active_corpse(unit->position, 3 * 32);
                     if (corpse) {
+                        unit->spend_energy(TerranAnticthon::CounterProposalEnergyCost);
                         reclaim_corpse(corpse, unit->player);
                         break;
                     }

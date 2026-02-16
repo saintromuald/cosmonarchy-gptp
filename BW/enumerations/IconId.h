@@ -412,6 +412,8 @@ namespace IconId {
 
         Zobriolisk                                      = 423,
 
+        Yblyleth                                        = 596,
+
         Skryrokor                                       = 665,
         SavantDiscoidRifle                              = 666,
         KineticPenetration                              = 667,

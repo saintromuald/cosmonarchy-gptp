@@ -865,6 +865,10 @@ namespace hooks {
                     }
                 } break;
                 case WeaponId::AutocratEminenceRifle: {
+                    if (data.attacker->energy < Reclamation::FieldEnergyCost) {
+                        break;
+                    }
+                    data.attacker->spend_energy(Reclamation::FieldEnergyCost);
                     g_iquare_globals->create_effect(EffectId::ReclamationField, 1.5secs, data.target->position, 2tiles, SpriteId::CausticDischarge,
                         data.target->sprite->elevation + 1, data.attacker->player, data.attacker);
                 } break;
@@ -983,7 +987,7 @@ namespace hooks {
                 } break;
                 case UnitId::AskosiPhontis: {
                     // Warring Winds
-                    if (data.target != data.attacker && !target_ext.timers[TimerWarringWindsCooldown]) {
+                    if (data.target != data.attacker && !bw::are_mutual_allies(data.target->player, data.attacking_player_id) && !target_ext.timers[TimerWarringWindsCooldown]) {
                         target_ext.timers[TimerWarringWindsCooldown] = Askosi::WarringWindsCooldown;
                         target_ext.values[ValueWarringWindsStacks]++;
                         data.target->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
@@ -1231,16 +1235,28 @@ namespace hooks {
                     } break;
                     case WeaponId::ApostleCharonRifle: {
                         if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
-                            Thingy* corpse = get_closest_active_corpse(data.attacker->position, 3tiles);
-                            if (corpse) {
-                                reclaim_corpse(corpse, data.attacking_player_id);
+                            if (data.attacker->energy < TerranApostle::BloodTitheEnergyCost) {
+                                break;
                             }
-                            for (auto ally : g_unit_search.radial_ex(data.attacker, TerranApostle::BloodTitheRange, FilterAlly | FilterCompleted)) {
+                            bool healed = false;
+                            for (auto ally : g_unit_search.radial_ex(data.attacker, TerranApostle::BloodTitheRange, FilterIncludingSelf | FilterAlly | FilterCompleted)) {
                                 if (ally->hitpoints < ally->get_max_hp_raw()) {
                                     ally->heal_hp(TerranApostle::BloodTitheHeal, data.attacker);
                                     helper::add_overlay_below_main(ally->sprite, ImageId::HealingPulseUnderlay, 0, 0, 0);
+                                    healed = true;
                                 }
-                            };
+                            }
+                            if (healed) {
+                                data.attacker->spend_energy(TerranApostle::BloodTitheEnergyCost);
+                            }
+                            if (data.attacker->energy < TerranApostle::LazarusAgentEnergyCost) {
+                                break;
+                            }
+                            Thingy* corpse = get_closest_active_corpse(data.attacker->position, 3tiles);
+                            if (corpse) {
+                                reclaim_corpse(corpse, data.attacking_player_id);
+                                data.attacker->spend_energy(TerranApostle::LazarusAgentEnergyCost);
+                            }
                         }
                     } break;
                     case WeaponId::EcclesiastAstralBlaster:
@@ -1581,11 +1597,19 @@ namespace hooks {
                 }
             }
 
+            bool energy_spent = false;
             auto masters = g_unit_search
                 .radial_ex(data.target, 6tiles, 0, {UnitId::ProtossDemiurge})
-                .filter_by([&data](Unit* master) {
+                .filter_by([&data, &energy_spent](Unit* master) {
                     if (bw::is_allied_to(data.target->player, master->player)) {
                         return false;
+                    }
+                    if (master->energy < ProtossDemiurge::WorshipEnergyCost) {
+                        return false;
+                    }
+                    if (!energy_spent) {
+                        master->spend_energy(ProtossDemiurge::WorshipEnergyCost);
+                        energy_spent = true;
                     }
                     return true;
                 });
