@@ -67,6 +67,10 @@ namespace hooks {
 					g_iquare_globals->create_effect(EffectId::DiademIonField, 10secs, pos, 3tiles, SpriteId::IonField, 5, bullet->player, unit);
 				} break;
 				case WeaponId::AionLazarusSalvo: {
+					if (unit->energy < Reclamation::FieldEnergyCost) {
+						break;
+					}
+					unit->spend_energy(Reclamation::FieldEnergyCost);
 					g_iquare_globals->create_effect(EffectId::ReclamationField, 1.5secs, pos, 2tiles, SpriteId::CausticDischarge, 5, bullet->player, unit);
 				} break;
 				case WeaponId::SalamanderPerditionBarrage: {

@@ -1117,19 +1117,19 @@ void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 positi
         switch (unit_id) {
             case UnitId::ZergRilirokor:
             case UnitId::ZergRililisk: {
-                bw::play_sound(SoundId::BroodspawnSpawnProc, unit);
+                bw::play_sound(SoundId::BroodspawnSpawnProc, unit->position);
                 if (unit->remove_timer == 0 || unit->remove_timer > remove_timer) {
                     unit->remove_timer = remove_timer;
                 }
             } break;
             case UnitId::ZergSkryrokor: {
-                bw::play_sound(SoundId::Zerg_AVENGER_ZAvRdy00_WAV, unit);
+                bw::play_sound(SoundId::AvengingGestationProc, unit->position);
                 if (unit->remove_timer == 0 || unit->remove_timer > remove_timer) {
                     unit->remove_timer = remove_timer;
                 }
             } break;
             case UnitId::ZergVilgoleth: {
-                unit_ext.timers[TimerAutophagySpawn] = 24;
+                unit_ext.timers[TimerAutophagySpawn] = 1secs;
             } break;
         }
     }

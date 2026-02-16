@@ -70,11 +70,14 @@ constexpr s32 PassiveMaxStacks = 10;
 namespace TerranApostle {
 inline constexpr u32 BloodTitheRange = 3tiles;
 inline constexpr u32 BloodTitheHeal = 5 * 256;
+inline constexpr u32 BloodTitheEnergyCost = 5 * 256;
+inline constexpr u32 LazarusAgentEnergyCost = 20 * 256;
 }
 
 namespace Reclamation {
 inline constexpr u32 ReviveStunTimer = 3secs;
 inline constexpr u32 ReviveHealTimer = 10secs;
+inline constexpr u32 FieldEnergyCost = 25 * 256;
 }
 
 namespace HecatonAuriel {
@@ -111,6 +114,10 @@ inline constexpr s32 LobotomyWarheadSlowTimer = 8secs;
 namespace Cuirass {
 inline constexpr u32 SelfReviveHP = 50 * 256;
 inline constexpr s32 SelfHeal = 160; // (15 * 256) / 24 = 160
+}
+
+namespace TerranAnticthon {
+inline constexpr u32 CounterProposalEnergyCost = 25 * 256;
 }
 
 namespace UpstartWendigo {
@@ -228,6 +235,10 @@ inline constexpr s32 SplitSearchRadius = 3tiles;
 
 namespace ProtossEmpathyCore {
 inline constexpr s32 EnergyAmount = 5 * 256;
+}
+
+namespace ProtossDemiurge {
+inline constexpr u32 WorshipEnergyCost = 10 * 256;
 }
 
 namespace ProtossLanifect {

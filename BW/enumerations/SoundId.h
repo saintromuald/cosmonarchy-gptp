@@ -2788,5 +2788,14 @@ namespace SoundId {
         AkrenoPassiveProc01                                 = 4185,
         AkrenoPassiveProc02                                 = 4186,
         AkrenoPassiveProc03                                 = 4187,
+        SeraphIrradiateCast                                 = 4188,
+        BroadsideWeaponfire01                               = 4189,
+        BroadsideWeaponfire02                               = 4190,
+        BroadsideWeaponfire03                               = 4191,
+        CutlassWeaponfire01                                 = 4192,
+        CutlassWeaponfire02                                 = 4193,
+        CutlassWeaponfire03                                 = 4194,
+        CutlassWeaponfire04                                 = 4195,
+        AvengingGestationProc                               = 4196,
     };
 }
