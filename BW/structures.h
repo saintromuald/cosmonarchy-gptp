@@ -1724,12 +1724,12 @@ struct MTXM {
     u16 tile[1];
 };
 
-struct MusicStruct {
-    u32 file;
-    u8	type;
-    u8	flags;
-    u8	next_index;
-    u8	field_7;
+struct MusicTrack {
+    const char* file;
+    MusicType type;
+    bool fade_in;
+    u8 next_index;
+    u8 padding;
 };
 
 struct PingArray {

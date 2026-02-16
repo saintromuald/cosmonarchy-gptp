@@ -1,6 +1,6 @@
 #include "trigger_hooks.h"
 #include "trigger_system.h"
-#include "trigger_sound.h"
+#include "systems/audio_system.h"
 #include "hook_tools.h"
 #include "hooks/limits/sfx_extender.h"
 using namespace std::literals;
@@ -82,7 +82,7 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
             for (SoundReplacement& sound_replacement : g_globals->sound_replacements) {
                 if (sound_replacement_match(&sound_replacement, image, sound_id, unit)) {
                     if (index == target_index) {
-                        play_sound_ext(sound_replacement.new_sound, {.position = sprite->position});
+                        AudioSystem::instance().play_sound(sound_replacement.new_sound, {.position = sprite->position});
                         if (sound_replacement.replace) {
                             replace = true;
                         }
@@ -100,7 +100,7 @@ void iscript_play_sound(Image* image, u32 sound_id) { // 004D6610
 
 // Hooked to extend sound channels. -Pr0nogo
 s32 play_transmission_from_location(SoundId::Enum sound_id, s32 volume, s32 pan, Unit* unit) { // 004BBFD0
-    return play_sound_ext(sound_id, {.bw_volume = volume, .bw_pan = pan, .is_bw_hook = true, .unit = unit});
+    return AudioSystem::instance().play_sound(sound_id, {.bw_volume = volume, .bw_pan = pan, .is_bw_hook = true, .unit = unit});
 }
 
 // Hooked to debug sound related crashes (caused by invalid sound data init in sfx data)
@@ -121,22 +121,6 @@ void free_sound_buffer(u32 sound_id) {
         return;
     }
     *g_current_sound_memory -= sound_data->wav_data_size;
-}
-
-// Hooked to stop endless tick sound in scoreboard and other issues
-void stop_sounds_partial() {
-    for (u32 i = 0; i < g_loaded_sounds_count; ++i) {
-        SoundMainBuffer* sound = &g_loaded_sounds[i];
-        if (sound->ds_buffer) {
-            sound->ds_buffer->Stop();
-        }
-    }
-    for (u32 i = 0; i < MaxDupChannels; ++i) {
-        SoundDupBuffer* dup_channel = &g_dup_channels[i];
-        if (dup_channel->ds_buffer) {
-            dup_channel->ds_buffer->Stop();
-        }
-    }
 }
 
 u32 unit_is_at_height(Unit* unit, u32 height) { // 0045F8D0
@@ -489,7 +473,7 @@ void dialog_music_fade(u32 music_id) { // 004A6310
             } break;
         }
 
-        if (g_music_bank[music_id].flags) {
+        if (g_music_bank[music_id].fade_in) {
             u32 volume = g_music_volume;
             g_music_volume = -10000;
             helper::play_music(music_id);
@@ -634,12 +618,13 @@ void __declspec(naked) free_sound_buffer_wrapper() { // 004BB8E0
     }
 }
 
+// TODO: Move this somewhere that makes more sense then remove wrapper from trigger_sound.h
 void __declspec(naked) stop_sounds_partial_wrapper() { // 004BBF5C
     static const u32 func_address = 0x004015F0;
     __asm {
         PUSHAD
     }
-    stop_sounds_partial();
+    AudioSystem::instance().stop_all_sounds_partial();
     __asm {
         POPAD
         JMP func_address

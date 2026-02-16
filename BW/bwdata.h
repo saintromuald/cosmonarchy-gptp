@@ -96,6 +96,8 @@ BW_DATA(char**,			g_chk_string_table,				0x005993D4);
 BW_REF(HWND,			g_main_window,					0x0051BFB0);
 BW_REF(s32,				g_music_volume,					0x006D5BB4);
 BW_REF(b8,				g_music_playing,				0x006D5BBC);
+BW_REF(b8,              g_music_fade_out,               0x006D5BBD);
+
 
 //////////////////////////////////////////////////////////////// @}
 /// @name Data Variables and Constants
@@ -1260,7 +1262,7 @@ BW_DATA(u32*,				g_unk_portrait,						0x0068AC60);
 
 // For dialog_music_fade
 BW_REF(HANDLE*,				g_direct_sound_handle,				0x006D5BAC);
-BW_DATA(MusicStruct*,		g_music_bank,						0x00512BB8);
+BW_DATA(MusicTrack*,		g_music_bank,						0x00512BB8);
 BW_REF(u32,					g_big_music_volume,					0x006D5BB8);
 
 // For ignoring inputs in menu
