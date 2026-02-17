@@ -255,6 +255,7 @@ u32 GluJoinCrownlinkContext::on_activate(BinDlg* dialog, DialogEvent* event) {
 }
 
 void GluJoinCrownlinkContext::on_init_children(BinDlg* dialog, DialogEvent* event) {
+    bindlg_load_background(dialog);
     std::map<GluJoinControls, BinDlgProc> interaction_functions{
         {GluJoinControls::GameListBox, dlgproc_glu_join_crownlink_listbox}, // join_listbox
         {GluJoinControls::GameTitle, (BinDlgProc)0x004b7ef0},   // Very generic but sets flag 0x40000000. Seems to make the text white.
