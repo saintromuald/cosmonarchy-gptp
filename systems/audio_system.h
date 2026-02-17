@@ -119,21 +119,6 @@ struct SoundBuffer {
 		ds_buffer->GetStatus(&status);
 		return status & DSBSTATUS_PLAYING;
 	}
-
-	virtual bool is_blocking_play(SoundBuffer* primary) {
-		if (!last_play_time) {
-			return false;
-		}
-		if (auto pos = settings.get_updated_position()) {
-			static constexpr s32 ScreenW = 640;
-			static constexpr s32 ScreenH = 400;
-			if (pos.x < g_move_to_x || pos.x > g_move_to_x + ScreenW ||
-				pos.y < g_move_to_y || pos.y > g_move_to_y + ScreenH) {
-				return false;
-			}
-		}
-		return GetTickCount() - last_play_time < 80;
-	}
 };
 
 struct SoundMainBuffer : SoundBuffer {
@@ -141,16 +126,7 @@ struct SoundMainBuffer : SoundBuffer {
 	char path[MaxPath]{};
 };
 
-struct SoundDupBuffer : SoundBuffer {
-	SoundMainBuffer* parent_buffer = nullptr;
-
-	bool is_blocking_play(SoundBuffer* primary) override {
-		if (primary != parent_buffer) {
-			return false;
-		}
-		return SoundBuffer::is_blocking_play(primary);
-	}
-};
+struct SoundDupBuffer : SoundBuffer {};
 
 // Handle to a playing sound
 class PlayingSound {
