@@ -323,13 +323,7 @@ PlayingSound AudioSystem::play_sound(SoundMainBuffer* sound_buffer, PlaySoundSet
 		}
 	}
 
-	for (auto& sound : m_playing_sounds) {
-		if (auto* buffer = sound.GetBuffer()) {
-			if (buffer->is_blocking_play(sound_buffer)) {
-				return {};
-			}
-		}
-	}
+	if (sound_buffer->last_play_time && GetTickCount() - sound_buffer->last_play_time < 80) return {};
 
 	if (sound_id != SoundId::None) {
 		u32 flags = sfx_dat::sound_flags[sound_id];
@@ -407,7 +401,6 @@ PlayingSound AudioSystem::play_sound(SoundMainBuffer* sound_buffer, PlaySoundSet
 	dup_buffer->ds_buffer->SetPan(pan);
 	dup_buffer->ds_buffer->SetCurrentPosition(0);
 	dup_buffer->ds_buffer->Play(0, 0, settings.looping ? DSBPLAY_LOOPING : 0);
-	dup_buffer->parent_buffer = sound_buffer;
 	dup_buffer->settings = settings;
 	dup_buffer->generation++;
 	dup_buffer->last_play_time = GetTickCount();
