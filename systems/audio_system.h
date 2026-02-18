@@ -119,6 +119,21 @@ struct SoundBuffer {
 		ds_buffer->GetStatus(&status);
 		return status & DSBSTATUS_PLAYING;
 	}
+
+	virtual bool is_blocking_play(SoundBuffer* primary) {
+		if (!last_play_time) {
+			return false;
+		}
+		if (auto pos = settings.get_updated_position()) {
+			static constexpr s32 ScreenW = 640;
+			static constexpr s32 ScreenH = 400;
+			if (pos.x < g_move_to_x || pos.x > g_move_to_x + ScreenW ||
+				pos.y < g_move_to_y || pos.y > g_move_to_y + ScreenH) {
+				return false;
+			}
+		}
+		return GetTickCount() - last_play_time < 80;
+	}
 };
 
 struct SoundMainBuffer : SoundBuffer {
@@ -126,7 +141,16 @@ struct SoundMainBuffer : SoundBuffer {
 	char path[MaxPath]{};
 };
 
-struct SoundDupBuffer : SoundBuffer {};
+struct SoundDupBuffer : SoundBuffer {
+	SoundMainBuffer* parent_buffer = nullptr;
+
+	bool is_blocking_play(SoundBuffer* primary) override {
+		if (primary != parent_buffer) {
+			return false;
+		}
+		return SoundBuffer::is_blocking_play(primary);
+	}
+};
 
 // Handle to a playing sound
 class PlayingSound {
@@ -203,12 +227,12 @@ public:
 	void update_playing_sounds();
 	void stop_playing_sounds();
 	void stop_all_sounds_partial();  // Stops all sound buffers without clearing state (for scoreboard, etc.)
-	
+
 	void reset();  // Reset audio state except DirectSound
 
 	Playlist& get_playlist() { return m_playlist; }
 	const Playlist& get_playlist() const { return m_playlist; }
-	
+
 	MusicPlayback& get_music_playback() { return m_music_playback; }
 	const MusicPlayback& get_music_playback() const { return m_music_playback; }
 
@@ -235,7 +259,7 @@ private:
 	std::array<SoundDupBuffer, MaxDupChannels> m_dup_channels;
 	std::array<SoundMainBuffer, MaxSound> m_loaded_sounds;
 	u32 m_loaded_sounds_count = 0;
-	
+
 	std::unordered_map<std::string, SoundMainBuffer*> m_loaded_sounds_map;
 	std::vector<std::array<char, MAX_PATH>> m_sound_paths;
 	std::vector<PlayingSound> m_playing_sounds;
