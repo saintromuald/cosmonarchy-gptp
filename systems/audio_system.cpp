@@ -128,7 +128,7 @@ void AudioSystem::update() {
 	// Handle fade out
 	if (m_music_playback.target_fade == 0) {
 		if (m_music_playback.fade_out) {
-			m_music_playback.fade -= (1.0f / m_music_playback.fade_out) / TickRate;
+			m_music_playback.fade -= (1.0f / m_music_playback.fade_out) / 1secs;
 		} else {
 			m_music_playback.fade = 0;
 		}
@@ -166,7 +166,7 @@ void AudioSystem::update() {
 	// Handle fade in
 	if (m_music_playback.target_fade == 1) {
 		if (m_music_playback.fade_in) {
-			m_music_playback.fade += (1.0f / m_music_playback.fade_in) / TickRate;
+			m_music_playback.fade += (1.0f / m_music_playback.fade_in) / 1secs;
 		} else {
 			m_music_playback.fade = 1;
 		}
@@ -176,7 +176,7 @@ void AudioSystem::update() {
 	}
 
 	if (m_music_playback.volume_time) {
-		f32 music_volume_delta = (1.0f / m_music_playback.volume_time) / TickRate;
+		f32 music_volume_delta = (1.0f / m_music_playback.volume_time) / 1secs;
 		if (m_music_playback.volume < m_music_playback.target_volume) {
 			m_music_playback.volume += music_volume_delta;
 			if (m_music_playback.volume >= m_music_playback.target_volume) {
