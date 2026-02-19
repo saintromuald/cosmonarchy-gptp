@@ -10,8 +10,9 @@ template <typename T>
 concept FloatLike = std::floating_point<T> || fpm::is_fixed_v<T>;
 
 template <FloatLike T>
-constexpr T map(T value, T from_a, T from_b, T to_a, T to_b) {
+constexpr T map(T value, T from_a, T from_b, T to_a, T to_b, bool clamp = false) {
     T t = (value - from_a) / (from_b - from_a);
+    if (clamp) t = std::clamp(t, T{0}, T{1});
     return t * (to_b - to_a) + to_a;
 }
 
@@ -23,13 +24,6 @@ constexpr T normalize(T value, T a, T b) {
 template <FloatLike T>
 constexpr T lerp(T t, T a, T b) {
     return t * (b - a) + a;
-}
-
-template <FloatLike T>
-constexpr T clamp(T value, T a, T b) {
-    if (value < a) return a;
-    if (value > b) return b;
-    return value;
 }
 
 template <FloatLike T>

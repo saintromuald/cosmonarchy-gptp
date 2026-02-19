@@ -1,21 +1,22 @@
 #include "update_unit_state.h"
 #include "update_status_effects.h"
-#include <BW/api.h>
-#include <algorithm>
+#include "BW/api.h"
 #include "hooks/weapons/weapon_damage.h"
 #include "hooks/weapon_effect.h"
 #include "hooks/tactical_ai.h"
 #include "globals.h"
-#include "BW\UnitFinder.h"
+#include "BW/UnitFinder.h"
 #include "hooks/weapons/weapon_cooldown.h"
 #include "hooks/unit_destructor_special.h"
 #include "hooks/update_unit_sight.h"
-#include <hooks\unit_stats\supply_hooks.h>
+#include "hooks/unit_stats/supply_hooks.h"
+
+#include <algorithm>
 
 namespace hooks {
 	void update_unit_energy(Unit* unit) { // 004EB4B0
 		auto& unit_ext = unit->ext();
-		bool dont_regen = !unit->is_valid_caster() || !unit->is_completed() || unit_ext.energy_regen_timer <= 2 * 24 || unit->is_frozen();
+		bool dont_regen = !unit->is_valid_caster() || !unit->is_completed() || unit_ext.energy_regen_timer <= 2secs || unit->is_frozen();
 
 		// Behaviors code -Veeq7
 		// Block regen for channeling Facades
@@ -28,7 +29,7 @@ namespace hooks {
 
 		u32 overlay_id = ImageId::EnergyRegenOverlaySmall + bw::get_overlay_offset(unit->id, true);
 		if (!dont_regen && unit->energy < max_energy) {
-			unit->heal_energy(10 * 256 / 24, unit);
+			unit->heal_energy(10hp / 1secs, unit);
 			if (unit->energy > max_energy) {
 				unit->energy = max_energy;
 			}
@@ -187,7 +188,7 @@ namespace hooks {
 		// Flash shielding (regeneration)
 		if (units_dat::shields_enabled[unit->id] && unit->is_completed()) {
 			if (!unit_ext.values[ValueIsShade] && unit_id_has_flash_shielding(unit->id)) {
-				s32 max_shields = (s32)(units_dat::max_shield_points[unit->id]) * 256;
+				s32 max_shields = s32(units_dat::max_shield_points[unit->id]) * 1hp;
 
 				u32 overlay_id = ImageId::RechargeShields_Small;
 				switch (bw::get_overlay_offset(unit->id, true)) {
@@ -202,14 +203,14 @@ namespace hooks {
 					} break;
 				}
 
-				static constexpr u32 start_time = 2 * 24;
+				static constexpr u32 start_time = 2secs;
 				if (unit->shields < max_shields && unit->id != UnitId::ProtossPlasmaShell && unit_ext.shield_regen_timer > start_time && !unit->is_frozen()) {
-					static constexpr u32 start_heal_amount = 10 * 256 / 24;
-					static constexpr u32 end_heal_amount = 2 * 256 / 24;
-					static constexpr u32 change_duration = 5 * 24;
-					u32 heal_amount = u32(utils::map<fp32>(unit_ext.shield_regen_timer, start_time, start_time + change_duration, start_heal_amount, end_heal_amount));
+					static constexpr u32 start_heal_amount = 10hp / 1secs;
+					static constexpr u32 end_heal_amount = 2hp / 1secs;
+					static constexpr u32 change_duration = 5secs;
+					u32 heal_amount = u32(utils::map<fp32>(unit_ext.shield_regen_timer, start_time, start_time + change_duration, start_heal_amount, end_heal_amount, true));
 					if (!unit_ext.unit_vectors[UnitVectorCrucibles].empty()) {
-                        heal_amount *= 1.25;
+                        heal_amount *= 1.25fp;
 					}
 
 					unit->heal_shields(heal_amount, unit, false);
@@ -235,7 +236,7 @@ namespace hooks {
 					}
 				}
 			} else if (unit_id_has_shield_regeneration(unit->id)) {
-				if (unit_ext.damage_taken_timer > 2 * 24) {
+				if (unit_ext.damage_taken_timer > 2secs) {
 					unit->heal_shields(21, 0, false, false);
 				}
 			}
@@ -291,7 +292,7 @@ namespace hooks {
 			// Passive HP regeneration
 			if (bw::unit_regenerates_hp(unit) && unit->hitpoints > 0 && unit->hitpoints != unit->get_max_hp_raw()) {
 				u32 factor = bw::get_regeneration_factor(unit);
-				if (unit_ext.damage_taken_timer > 2 * 24) {
+				if (unit_ext.damage_taken_timer > 2secs) {
 					factor++;
 					if (unit->is_burrowed()) {
 						factor++;
@@ -300,12 +301,12 @@ namespace hooks {
 
 				s32 regen = 11 * factor; // 1 HP per second, before factor.
 				if (unit->id == UnitId::TerranEidolonNydus && unit->is_cloaked) {
-					regen *= 1.33;
+					regen *= 1.33fp;
 				}
 
-				bool has_crucible = unit_ext.unit_vectors[UnitVectorCrucibles].size() != 0;
-				regen *= 1 + (has_crucible * 0.25);
-				unit->heal_hp(regen, 0, false);
+				if (!unit_ext.unit_vectors[UnitVectorCrucibles].empty()) {
+					regen *= 1.25fp;
+				}
 			}
 
 			// Deliberate healing
@@ -323,7 +324,7 @@ namespace hooks {
 
 				// Azazel Defensive Matrix - heal over time
 				if (unit->defensive_matrix_hp != 0) {
-					if (unit->hitpoints > 0 && unit->hitpoints / 256 != unit->get_max_hp_ingame()) {
+					if (unit->hitpoints > 0 && unit->hitpoints / 1hp != unit->get_max_hp_ingame()) {
 						tick_heal += Azazel::DefensiveMatrixHeal;
 					}
 				}
@@ -340,7 +341,7 @@ namespace hooks {
 					unit->status |= UnitStatus::Invincible;
 					// TODO: unit search radial
 					auto match = cosmonarchy_finder_match(unit, Flags::Enemy, {});
-					const u32 radius = 64;
+					const u32 radius = 2tiles;
 					bw::UnitFinder(
 						unit->get_x() - radius,
 						unit->get_y() - radius,
@@ -348,16 +349,16 @@ namespace hooks {
 						unit->get_y() + radius
 					).for_each_in_match(match, [&](Unit* target) {
 						u32 dist = bw::distance_between(unit->position, target->position);
-						u32 damage = 25 * 256;
-						if (dist > 48) {
+						u32 damage = 25hp;
+						if (dist > 1.5tiles) {
 							damage /= 4;
-						} else if (dist > 32) {
+						} else if (dist > 1tiles) {
 							damage /= 2;
 						}
 						target->damage_with_custom(damage, -1, unit, unit->player);
 					});
 					unit->bwfunc_remove();
-					avenge_or_ascend_corpses_in_area(unit->position, 2 * 32, unit->player);
+					avenge_or_ascend_corpses_in_area(unit->position, 2tiles, unit->player);
 					stop_here = true;
 				}
 			}
@@ -371,7 +372,7 @@ namespace hooks {
 					// Manual handling of on-death behaviors. -Pr0nogo
 					if (unit->hitpoints <= 20 && unit_ext.timers[TimerInfesting]) {
 						blissful_embrace(unit, unit_ext.values[ValueInfestingPlayer]);
-						unit->set_hitpoints(100 * 256 + units_dat::max_hitpoints[unit->id] / 3);
+						unit->set_hitpoints(100hp + units_dat::max_hitpoints[unit->id] / 3);
 					} else {
 						unit->damage_hp(20, 0, unit->last_attacking_player, true);
 						if (unit->plague_timer && unit->hitpoints <= 256) {
@@ -754,7 +755,7 @@ namespace hooks {
 
 		switch (unit->id) {
 			case UnitId::AskosiBounty: {
-			    for (Unit* mineral : g_unit_search.radial(unit->position, 12 * 32)) {
+			    for (Unit* mineral : g_unit_search.radial(unit->position, 12tiles)) {
 			        if (unit_id_is_minerals(mineral->id)) {
 			            mineral->building.resource.resource_amount += 500;
 			            mineral->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
