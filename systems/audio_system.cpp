@@ -9,6 +9,34 @@
 #include <algorithm>
 #include <format>
 
+static constexpr s32 ScreenW = 640;
+static constexpr s32 ScreenH = 400;
+
+static bool is_on_screen(Point16 pos) {
+	return pos.x >= g_move_to_x && pos.x <= g_move_to_x + ScreenW
+		&& pos.y >= g_move_to_y && pos.y <= g_move_to_y + ScreenH;
+}
+
+bool SoundBuffer::is_blocking_play(SoundBuffer* other, Point16 other_pos) {
+	auto* main = get_root_buffer();
+	if (main != other->get_root_buffer()) return false;
+	if (!last_play_time) return false;
+
+	if (other_pos) {
+		if (auto pos = settings.get_updated_position()) {
+			if (abs(pos.x - other_pos.x) > ScreenW || abs(pos.y - other_pos.y) > ScreenH) {
+				return false;
+			}
+		} else {
+			if (is_on_screen(other_pos)) {
+				return false;
+			}
+		}
+	}
+
+	return is_playing() && GetTickCount() - last_play_time < 80;
+}
+
 // TODO: Move this to bwhelper or reimplement
 typedef int __cdecl getMusicVolume_Func();
 static getMusicVolume_Func* getMusicVolume = (getMusicVolume_Func*)0x004A5EF0;
@@ -323,10 +351,11 @@ PlayingSound AudioSystem::play_sound(SoundMainBuffer* sound_buffer, PlaySoundSet
 		}
 	}
 
+	const auto request_pos = settings.get_updated_position();
 	if (g_sc_main_state == MainState::Run) {
 		for (auto& sound : m_playing_sounds) {
 			if (auto* buffer = sound.GetBuffer()) {
-				if (buffer->is_blocking_play(sound_buffer)) {
+				if (buffer->is_blocking_play(sound_buffer, request_pos)) {
 					return {};
 				}
 			}
