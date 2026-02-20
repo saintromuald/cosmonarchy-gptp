@@ -98,6 +98,8 @@ struct PlaySoundSettings {
 	VolumePan calculate_volume_pan();
 };
 
+struct SoundMainBuffer;
+
 struct SoundBuffer {
 	LPDIRECTSOUNDBUFFER ds_buffer = nullptr;
 	u64 generation = 0;
@@ -120,36 +122,21 @@ struct SoundBuffer {
 		return status & DSBSTATUS_PLAYING;
 	}
 
-	virtual bool is_blocking_play(SoundBuffer* primary) {
-		if (!last_play_time) {
-			return false;
-		}
-		if (auto pos = settings.get_updated_position()) {
-			static constexpr s32 ScreenW = 640;
-			static constexpr s32 ScreenH = 400;
-			if (pos.x < g_move_to_x || pos.x > g_move_to_x + ScreenW ||
-				pos.y < g_move_to_y || pos.y > g_move_to_y + ScreenH) {
-				return false;
-			}
-		}
-		return GetTickCount() - last_play_time < 80;
-	}
+	virtual SoundMainBuffer* get_root_buffer() = 0;
+	bool is_blocking_play(SoundBuffer* other, Point16 other_pos);
 };
 
 struct SoundMainBuffer : SoundBuffer {
 	SoundMainBuffer* hash_next = nullptr;
 	char path[MaxPath]{};
+
+	SoundMainBuffer* get_root_buffer() override { return this; }
 };
 
 struct SoundDupBuffer : SoundBuffer {
 	SoundMainBuffer* parent_buffer = nullptr;
 
-	bool is_blocking_play(SoundBuffer* primary) override {
-		if (primary != parent_buffer) {
-			return false;
-		}
-		return SoundBuffer::is_blocking_play(primary);
-	}
+	SoundMainBuffer* get_root_buffer() override { return parent_buffer; }
 };
 
 // Handle to a playing sound
