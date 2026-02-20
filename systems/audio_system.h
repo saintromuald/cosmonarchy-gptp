@@ -123,7 +123,7 @@ struct SoundBuffer {
 	}
 
 	virtual SoundMainBuffer* get_root_buffer() = 0;
-	bool is_blocking_play(SoundBuffer* other, Point16 other_pos);
+	bool is_blocking_play(SoundBuffer* candidate, Point16 candidate_pos);
 };
 
 struct SoundMainBuffer : SoundBuffer {

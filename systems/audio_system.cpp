@@ -12,29 +12,37 @@
 static constexpr s32 ScreenW = 640;
 static constexpr s32 ScreenH = 400;
 
-static bool is_on_screen(Point16 pos) {
-	return pos.x >= g_move_to_x && pos.x <= g_move_to_x + ScreenW
-		&& pos.y >= g_move_to_y && pos.y <= g_move_to_y + ScreenH;
-}
-
-bool SoundBuffer::is_blocking_play(SoundBuffer* other, Point16 other_pos) {
-	auto* main = get_root_buffer();
-	if (main != other->get_root_buffer()) return false;
-	if (!last_play_time) return false;
-
-	if (other_pos) {
-		if (auto pos = settings.get_updated_position()) {
-			if (abs(pos.x - other_pos.x) > ScreenW || abs(pos.y - other_pos.y) > ScreenH) {
+static bool should_check_duplicate(Point16 existing_pos, Point16 candidate_pos) {
+	// | --------- | -------- | -------- |
+	// | Candidate | Existing | Check    |
+	// | --------- | -------- | -------- |
+	// | Local     | Local    | If close |
+	// | Global    | Local    | Never    |
+	// | Global    | Global   | Always   |
+	// | Local     | Global   | Always   |
+	// | --------- | -------- | -------- |
+	if (existing_pos) {
+		if (candidate_pos) {
+			// Candidate is local and existing is local, we skip the last time check if they are far away
+			if (abs(existing_pos.x - candidate_pos.x) > ScreenW || abs(existing_pos.y - candidate_pos.y) > ScreenH) {
 				return false;
 			}
 		} else {
-			if (is_on_screen(other_pos)) {
-				return false;
-			}
+			// Candidate is global and existing is local, we skip the check always
+			return false;
 		}
+	} // Else: if existing is global, we check always
+	return true;
+}
+
+bool SoundBuffer::is_blocking_play(SoundBuffer* candidate, Point16 candidate_pos) {
+	if (get_root_buffer() != candidate->get_root_buffer() || !last_play_time) {
+		return false;
 	}
 
-	return is_playing() && GetTickCount() - last_play_time < 80;
+	return should_check_duplicate(settings.get_updated_position(), candidate_pos)
+		&& is_playing()
+		&& GetTickCount() - last_play_time < 80;
 }
 
 // TODO: Move this to bwhelper or reimplement
