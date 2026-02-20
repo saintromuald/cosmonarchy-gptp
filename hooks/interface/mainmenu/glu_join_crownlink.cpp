@@ -5,18 +5,18 @@
 #include "magic_enum/magic_enum.hpp"
 
 namespace {
-std::unique_ptr<GluJoinCrownlinkContext> context;
+static std::unique_ptr<GluJoinCrownlinkContext> g_context;
 
-constexpr u16 timer_index = 0x2d;
-constexpr u32 timer_duration = 500;
-constexpr u32 password_max_length = 50;
+static constexpr u16 timer_index = 0x2d;
+static constexpr u32 timer_duration = 500;
+static constexpr u32 password_max_length = 50;
 
 static u32 __fastcall dlgproc_glu_join_crownlink_listbox(BinDlg* dialog, DialogEvent* event) {
     if (event->number_order == DialogEventType_Dialog) {
         switch (event->user) {
         case DialogUserType_Create: {
-            context->update_listbox(dialog);
-            context->load_selected_entry(dialog);
+            g_context->update_listbox(dialog);
+            g_context->load_selected_entry(dialog);
             if (dialog->flags & BinDlgFlags::UpdateNeeded) {
                 dialog->flags &= ~BinDlgFlags::UpdateNeeded;
                 helper::generic_combobox_update(dialog);
@@ -29,9 +29,9 @@ static u32 __fastcall dlgproc_glu_join_crownlink_listbox(BinDlg* dialog, DialogE
         } break;
         case DialogUserType_InitSelf: {
             if (event->param == timer_index) {
-                context->update_listbox(dialog);
-                context->load_selected_entry(dialog);
-                context->update_crownlink_status();
+                g_context->update_listbox(dialog);
+                g_context->load_selected_entry(dialog);
+                g_context->update_crownlink_status();
                 return 1;
             }
         } break;
@@ -40,7 +40,7 @@ static u32 __fastcall dlgproc_glu_join_crownlink_listbox(BinDlg* dialog, DialogE
         } break;
         case DialogUserType_SetSelectionIndex: {
             helper::generic_listbox_interact(dialog, event);
-            context->load_selected_entry(dialog);
+            g_context->load_selected_entry(dialog);
             return 1;
         } break;
         }
@@ -51,15 +51,15 @@ static u32 __fastcall dlgproc_glu_join_crownlink_listbox(BinDlg* dialog, DialogE
 static u32 __fastcall dlgproc_glu_join_crownlink(BinDlg* dialog, DialogEvent* event) {
     if (event->number_order == DialogEventType_Dialog) {
         switch (event->user) {
-        case DialogUserType_Create: {
-            context->on_create(dialog, event);
-        } break;
-        case DialogUserType_Activate: {
-            return context->on_activate(dialog, event);
-        } break;
-        case DialogUserType_InitChildren: {
-            context->on_init_children(dialog, event);
-        } break;
+            case DialogUserType_Create: {
+                g_context->on_create(dialog, event);
+            } break;
+            case DialogUserType_Activate: {
+                return g_context->on_activate(dialog, event);
+            } break;
+            case DialogUserType_InitChildren: {
+                g_context->on_init_children(dialog, event);
+            } break;
         }
     }
     return helper::generic_dialog_interact(dialog, event);
@@ -83,16 +83,16 @@ void GluJoinCrownlinkContext::update_crownlink_status() {
 
     if (provider_manager.get_crownlink_status(status)) {
         switch (status) {
-        case CrowServeState::Disconnected: {
-            label = std::format("{}Disconnected", (char)LobbyTextColor::Grey);
-        } break;
-        case CrowServeState::Connecting: {
-            label = std::format("{}Connecting{}", (char)LobbyTextColor::Red, std::string(m_ellipsis_counter % 4, '.'));
-            m_ellipsis_counter++;
-        } break;
-        case CrowServeState::Ready: {
-            label = std::format("{}Connected", (char)LobbyTextColor::Green);
-        } break;
+            case CrowServeState::Disconnected: {
+                label = std::format("{}Disconnected", (char)LobbyTextColor::Grey);
+            } break;
+            case CrowServeState::Connecting: {
+                label = std::format("{}Connecting{}", (char)LobbyTextColor::Red, std::string(m_ellipsis_counter % 4, '.'));
+                m_ellipsis_counter++;
+            } break;
+            case CrowServeState::Ready: {
+                label = std::format("{}Connected", (char)LobbyTextColor::Green);
+            } break;
         }
     }
     update_label(GluJoinControls::CrownLinkStatus, label.c_str());
@@ -147,12 +147,12 @@ u32 GluJoinCrownlinkContext::selected_adfile_index(BinDlg* dialog) const {
 
 std::string GluJoinCrownlinkContext::p2p_status_string(AdFileEx& adfile) const {
     switch (adfile.peer_state) {
-    case P2PState::Disconnected: return std::format("{}[-] ", (char)LobbyTextColor::Grey);
-    case P2PState::Connecting: return std::format("{}[...] ", (char)LobbyTextColor::Grey);
-    case P2PState::Failed: return std::format("{}[!!] ", (char)LobbyTextColor::Grey);
-    case P2PState::Relay: return "[R] ";
-    case P2PState::Radmin: return "[Radmin] ";
-    case P2PState::BadVersion: return std::format("{}[!Ver]{} ", (char)LobbyTextColor::Red, (char)LobbyTextColor::Revert);
+        case P2PState::Disconnected: return std::format("{}[-] ", (char)LobbyTextColor::Grey);
+        case P2PState::Connecting: return std::format("{}[...] ", (char)LobbyTextColor::Grey);
+        case P2PState::Failed: return std::format("{}[!!] ", (char)LobbyTextColor::Grey);
+        case P2PState::Relay: return "[R] ";
+        case P2PState::Radmin: return "[Radmin] ";
+        case P2PState::BadVersion: return std::format("{}[!Ver]{} ", (char)LobbyTextColor::Red, (char)LobbyTextColor::Revert);
     }
     return {};
 }
@@ -229,27 +229,27 @@ void GluJoinCrownlinkContext::on_create(BinDlg* dialog, DialogEvent* event) {
 
 u32 GluJoinCrownlinkContext::on_activate(BinDlg* dialog, DialogEvent* event) {
     switch (static_cast<GluJoinControls>(last_control_index)) {
-    case GluJoinControls::OK: {
-        disable_dialogs_with_index(dialog, GluJoinControls::OK);
-        if (helper::join_game(&m_gamedata)) {
-            helper::dialog_swish_out(dialog);
-        } else {
-            enable_dialogs_with_index(dialog, GluJoinControls::OK);
-        }
-        return 1;
-    } break;
-    case GluJoinControls::LobbyPasswordSet: {
-        auto disallowed_chars = g_string_empty;
-        char password[password_max_length + 5]{};
-        if (helper::glu_modal_string_prompt("Enter a new password", password, password_max_length, disallowed_chars) && password[0]) {
-            update_password(password);
-        }
-        return 1;
-    } break;
-    case GluJoinControls::LobbyPasswordClear: {
-        update_password("");
-        return 1;
-    } break;
+        case GluJoinControls::OK: {
+            disable_dialogs_with_index(dialog, GluJoinControls::OK);
+            if (helper::join_game(&m_gamedata)) {
+                helper::dialog_swish_out(dialog);
+            } else {
+                enable_dialogs_with_index(dialog, GluJoinControls::OK);
+            }
+            return 1;
+        } break;
+        case GluJoinControls::LobbyPasswordSet: {
+            auto disallowed_chars = g_string_empty;
+            char password[password_max_length + 5]{};
+            if (helper::glu_modal_string_prompt("Enter a new password", password, password_max_length, disallowed_chars) && password[0]) {
+                update_password(password);
+            }
+            return 1;
+        } break;
+        case GluJoinControls::LobbyPasswordClear: {
+            update_password("");
+            return 1;
+        } break;
     }
     return helper::generic_dialog_interact(dialog, event);
 }
@@ -278,9 +278,9 @@ void glu_join_crownlink() {
         SMemFree(scenario_chk, __FILE__, __LINE__, 0);
     }
 
-    context = std::make_unique<GluJoinCrownlinkContext>();
-    bindlg_load_background(context->get_dialog(), "glue\\join\\backgnd_cnlk.pcx");
-    auto result = helper::glu_load_bin_dialog(context->get_dialog(), dlgproc_glu_join_crownlink);
+    g_context = std::make_unique<GluJoinCrownlinkContext>();
+    bindlg_load_background(g_context->get_dialog(), "glue\\join\\backgnd_cnlk.pcx");
+    auto result = helper::glu_load_bin_dialog(g_context->get_dialog(), dlgproc_glu_join_crownlink);
 
     switch (static_cast<GluJoinControls>(result)) {
         case GluJoinControls::OK: {
@@ -303,5 +303,5 @@ void glu_join_crownlink() {
     g_glue_background_id = -1;
     change_menu();
 
-    context.reset();
+    g_context.reset();
 }
