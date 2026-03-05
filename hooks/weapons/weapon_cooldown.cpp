@@ -57,6 +57,8 @@ namespace hooks {
 					cooldown *= 1.56fp;
 				}
 			} break;
+			case UnitId::ForerunnerFerrum:		  cooldown *= 1.33fp; break;
+			case UnitId::ForerunnerChalyb:		  cooldown *= 1.33fp; break;
 		}
 
 		// @TODO: Extend weapon ids and remove this

@@ -526,6 +526,11 @@ namespace hooks {
                         data.damage -= 5 * 256;
                     }
                 } break;
+                case WeaponId::GorgonArtificeBattery: {
+                    if (data.attacker->id == UnitId::ForerunnerFerrum || data.attacker->id == UnitId::ForerunnerChalyb) {
+                        data.damage -= 3 * 256;
+                    }
+                } break;
                 case WeaponId::ZealotPhaseBlades: {
                     if (data.attacker->id == UnitId::ProtossCicatus) {
                         data.damage -= 3 * 256;
@@ -1146,6 +1151,9 @@ namespace hooks {
                         target_ext.timers[TimerCriticality] = 2secs + 1;
                     } break;
                     case WeaponId::GorgonArtificeBattery: {
+                        if (data.attacker->id == UnitId::ForerunnerFerrum || data.attacker->id == UnitId::ForerunnerChalyb) {
+                            break;
+                        }
                         // Petrification - Gorgon behavior
                         if (target_ext.values[ValuePetrificationStacks] < 20) {
                             target_ext.values[ValuePetrificationStacks] += 1;

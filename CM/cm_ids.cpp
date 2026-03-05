@@ -1836,6 +1836,13 @@ bool is_askosi(UnitId::Enum unit_id) {
         || unit_id == UnitId::AskosiObelisk;
 }
 
+bool is_forerunner(UnitId::Enum unit_id) {
+    return unit_id == UnitId::ForerunnerFerrum
+        || unit_id == UnitId::ForerunnerChalyb
+        || unit_id == UnitId::ForerunnerCircitor
+        || unit_id == UnitId::ForerunnerExigo;
+}
+
 SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {
     if (unit_id == UnitId::ProtossSteward || unit_id == UnitId::ProtossPlasmaShell) {
         return SoundId::None;
