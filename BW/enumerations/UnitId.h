@@ -22,6 +22,7 @@ namespace UnitId {
         Goska												= 500,
         Stroluum											= 501,
         Tuzor												= 502,
+        BigInfestedKerrigan                                 = 612,
 
     // Special
         Omnivale											= 383,
@@ -44,6 +45,7 @@ namespace UnitId {
         ForerunnerExigo                                     = 608,
         ForerunnerAthla                                     = 609,
         ForerunnerVicere                                    = 610,
+        ForerunnerMachinamentum                             = 611,
 
     // Neutral
         TownCenterMarker									= 192,		// Terran Marker
