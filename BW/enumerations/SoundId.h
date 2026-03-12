@@ -2811,8 +2811,11 @@ namespace SoundId {
         CloakZergOff                                        = 4202,
         CloakAskosiOn                                       = 4203,
         CloakAskosiOff                                      = 4204,
-        ForerunnerFerrumWeaponfire01                        = 4205,
-        ForerunnerFerrumWeaponfire02                        = 4206,
-        ForerunnerFerrumWeaponfire03                        = 4207,
+        FerrumWeaponfire01                                  = 4205,
+        FerrumWeaponfire02                                  = 4206,
+        FerrumWeaponfire03                                  = 4207,
+        InsurantWeaponfire01                                = 4208,
+        InsurantWeaponfire02                                = 4209,
+        InsurantWeaponfire03                                = 4210,
     };
 }
