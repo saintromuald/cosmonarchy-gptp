@@ -50,15 +50,17 @@ namespace hooks {
 			case UnitId::ProtossSimulacrumAstral:     cooldown /= 1.20fp; break;
 			case UnitId::AskosiAvatar:				  cooldown *= 3.00fp; break;
 			case UnitId::AskosiPhontis:		          cooldown *= 1.33fp; break;
-			case UnitId::AskosiIconoclast:		      cooldown /= 1.13fp; break;
-			case UnitId::AskosiParaclete:		      cooldown *= 1.33fp; break;
 			case UnitId::AskosiZonguard: {
 				if (cooldown != 24fp) {
 					cooldown *= 1.56fp;
 				}
 			} break;
-			case UnitId::ForerunnerFerrum:		  cooldown *= 1.33fp; break;
-			case UnitId::ForerunnerChalyb:		  cooldown *= 1.33fp; break;
+			case UnitId::AskosiElgird:		          cooldown *= 1.10fp; break;
+			case UnitId::AskosiAlacyne:		          cooldown /= 1.33fp; break;
+			case UnitId::AskosiIconoclast:		      cooldown /= 1.13fp; break;
+			case UnitId::AskosiParaclete:		      cooldown *= 1.33fp; break;
+			case UnitId::ForerunnerFerrum:		      cooldown *= 1.33fp; break;
+			case UnitId::ForerunnerChalyb:		      cooldown *= 1.33fp; break;
 		}
 
 		// @TODO: Extend weapon ids and remove this
