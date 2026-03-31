@@ -161,6 +161,13 @@ bool unit_id_is_combatant(u32 unit_id) {
     return false;
 }
 
+bool unit_id_is_military(u32 unit_id) {
+    if (units_dat::base_property[unit_id] & UnitProperty::Worker || skip_military_tracking_by_unit_id(unit_id)) {
+        return false;
+    }
+    return unit_id_is_combatant(unit_id);
+}
+
 bool unit_id_is_protoss_warp_factory(u32 unit_id) {
     return unit_id == UnitId::ProtossGateway
         || unit_id == UnitId::ProtossCenotaph
