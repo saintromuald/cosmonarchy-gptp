@@ -1080,6 +1080,19 @@ namespace hooks {
         return 0;
     }
 
+    static u32 find_closest_resarea_id(Point16 pos) {
+        u32 best_resarea = 0;
+        u32 best_distance = std::numeric_limits<u32>::max();
+        for (auto [i, resarea] : g_resource_areas->enumerate()) {
+            u32 distance = bw::distance_between(resarea.position, pos);
+            if (distance < best_distance) {
+                best_resarea = i;
+                best_distance = distance;
+            }
+        }
+        return best_resarea;
+    }
+
     // Hooked as part of the vespene overhaul. -Pr0nogo
     char ai_reassign_worker_resources(AiTown* town) { // 00435900, unused int arg
         u8 result = 0;
@@ -1087,7 +1100,7 @@ namespace hooks {
             if (!town->resarea) {
                 TownLayouts& layouts_town = g_ai_layouts.get_town_layouts(*town);
                 if (!layouts_town.inited || !layouts_town.wants_no_resarea) {
-                    town->resarea = helper::get_closest_base_from_startloc(town->player, town->position.x, town->position.y);
+                    town->resarea = find_closest_resarea_id(town->position);
                     town->resource_units_not_set = 1;
                 }
             }

@@ -1250,6 +1250,18 @@ struct ResourceAreaArray {
     ResourceArea areas[250];
     u32 count;
     u32 frames_till_update;
+
+    ResourceArea* begin() { return areas + 1; }
+    ResourceArea* end() { return areas + count; }
+    const ResourceArea* begin() const { return areas + 1; }
+    const ResourceArea* end() const { return areas + count; }
+
+    auto enumerate() {
+        return areas
+            | std::views::take(count)
+            | std::views::enumerate
+            | std::views::drop(1);
+    }
 };
 
 // From BWAPI Offsets.h, used in bwdata.h by g_unit_availability
