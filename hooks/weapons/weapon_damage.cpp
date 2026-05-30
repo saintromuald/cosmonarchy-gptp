@@ -1504,14 +1504,6 @@ namespace hooks {
                     fatal_deal_damage = false;
                 }
             } break;
-            case UnitId::ForerunnerMachinamentum: {
-                data.target->heal_hp(data.target->get_max_hp_raw());
-                if (data.target->player != data.attacking_player_id) {
-                    rescue_unit(data.target, data.attacking_player_id);
-                }
-                // TODO: Audiovisuals
-                return false;
-            } break;
         }
 
         if (fatal_deal_damage) {
