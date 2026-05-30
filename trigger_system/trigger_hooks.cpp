@@ -154,70 +154,115 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
     portrait_id = get_player_portrait_id_override(portrait_id, player);
     if (g_current_map_name == "Anad's Greatsword"sv) {
         switch (portrait_id) {
-            case PortraitId::Maverick:    portrait_id = PortraitId::AnadThyron;     break;
-            case PortraitId::Legionnaire: portrait_id = PortraitId::Kortar;         break;
-            case PortraitId::Apostle:     portrait_id = PortraitId::AdvisorZorthos; break;
+            case PortraitId::Maverick: {
+                portrait_id = PortraitId::AnadThyron;
+            } break;
+            case PortraitId::Legionnaire: {
+                portrait_id = PortraitId::Kortar;
+            } break;
+            case PortraitId::Apostle: {
+                portrait_id = PortraitId::AdvisorZorthos;
+            } break;
         }
     } else if (g_current_map_name == "Sanctuary Lost"sv) {
         switch (portrait_id) {
-            case PortraitId::Zeratul:  portrait_id = PortraitId::AnadThyron; break;
-            case PortraitId::Prudence: portrait_id = PortraitId::Kortar;     break;
+            case PortraitId::Zeratul: {
+                portrait_id = PortraitId::AnadThyron;
+            } break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Kortar;
+            } break;
         }
     } else if (g_current_map_name == "Further Notice"sv) {
         switch (portrait_id) {
-            case PortraitId::Prudence: portrait_id = PortraitId::Osina; break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Osina;
+            } break;
         }
     } else if (g_current_map_name == "The Initiate"sv) {
         switch (portrait_id) {
-            case PortraitId::Prudence:       portrait_id = PortraitId::Terimanok; break;
-            case PortraitId::ProtossAdvisor: portrait_id = PortraitId::Furen;     break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Terimanok;
+            } break;
+            case PortraitId::ProtossAdvisor: {
+                portrait_id = PortraitId::Furen;
+            } break;
         }
     } else if (g_current_map_name == "Autophagy"sv) {
         switch (portrait_id) {
-            case PortraitId::Anticthon: portrait_id = PortraitId::Daggoth;        break;
-            case PortraitId::Scribe:    portrait_id = PortraitId::OrganSenescent; break;
+            case PortraitId::Anticthon: {
+                portrait_id = PortraitId::Daggoth;
+            } break;
+            case PortraitId::Scribe: {
+                portrait_id = PortraitId::OrganSenescent;
+            } break;
         }
     } else if (g_current_map_name == "Waterwar"sv) {
         switch (portrait_id) {
-            case PortraitId::Prudence:       portrait_id = PortraitId::Sevenstep; break;
-            case PortraitId::ProtossAdvisor: portrait_id = PortraitId::Venammar;  break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Sevenstep;
+            } break;
+            case PortraitId::ProtossAdvisor: {
+                portrait_id = PortraitId::Venammar;
+            } break;
         }
     } else if (g_current_map_name == "Cellbound"sv) {
         switch (portrait_id) {
-            case PortraitId::Morningstar: portrait_id = PortraitId::Atreus;    break;
-            case PortraitId::Prudence:    portrait_id = PortraitId::Terimanok; break;
-            case PortraitId::Zeratul:     portrait_id = PortraitId::Joran;     break;
+            case PortraitId::Morningstar: {
+                portrait_id = PortraitId::Atreus; // TODO: Own portrait
+            } break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Terimanok;
+            } break;
+            case PortraitId::Zeratul: {
+                portrait_id = PortraitId::Joran;
+            } break;
         }
     } else if (g_current_map_name == "Mendacity"sv) {
         switch (portrait_id) {
-            case PortraitId::Anticthon:    portrait_id = PortraitId::Zasz;           break; // Ataltreth
-            case PortraitId::ScannerSweep: portrait_id = PortraitId::OrganSenescent; break; // Relgant
-            case PortraitId::Morningstar:  portrait_id = PortraitId::Medley;         break; // Sprinia
-            case PortraitId::Zeratul:      portrait_id = PortraitId::Trodin;         break; // Scintor
-            case PortraitId::Prudence:     portrait_id = PortraitId::Tazarain;       break;
+            case PortraitId::Anticthon: {
+                portrait_id = PortraitId::Zasz; // Ataltreth
+            } break;
+            case PortraitId::ScannerSweep: {
+                portrait_id = PortraitId::OrganSenescent; // Relgant; Temporary
+            } break;
+            case PortraitId::Morningstar: {
+                portrait_id = PortraitId::Medley; // Sprinia; Temporary
+            } break;
+            case PortraitId::Zeratul: {
+                portrait_id = PortraitId::Trodin; // Scintor; Temporary
+            } break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Tazarain;
+            } break;
         }
     } else if (g_current_map_name == "Sunset Mission"sv) {
         switch (portrait_id) {
             case PortraitId::ScannerSweep:
-            case PortraitId::AdvisorUpstartTerran: portrait_id = PortraitId::PILER;      break; // SCAPAL
-            case PortraitId::Morningstar:          portrait_id = PortraitId::Claymore;   break; // Redmond
-            case PortraitId::Zeratul:              portrait_id = PortraitId::Madrigal;   break; // Braverman
-            case PortraitId::Prudence:             portrait_id = PortraitId::Hippogriff; break; // Prentat
+            case PortraitId::AdvisorUpstartTerran: {
+                portrait_id = PortraitId::PILER; // SCAPAL; Temporary
+            } break;
+            case PortraitId::Morningstar: {
+                portrait_id = PortraitId::Claymore; // Redmond; Temporary
+            } break;
+            case PortraitId::Zeratul: {
+                portrait_id = PortraitId::Madrigal; // Braverman; Temporary
+            } break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Hippogriff; // Prentat; Temporary
+            } break;
         }
     } else if (g_current_map_name == "Amber Word"sv) {
         switch (portrait_id) {
-            case PortraitId::ScannerSweep: portrait_id = PortraitId::Cikralisk;   break; // Retoro
-            case PortraitId::Morningstar:  portrait_id = PortraitId::AdvisorInoa; break; // Pilgrim
-            case PortraitId::Zeratul:      portrait_id = PortraitId::Avatar;      break; // Onor
-        }
-    } else if (g_current_map_name == "The Arbiter"sv) {
-        switch (portrait_id) {
-            case PortraitId::ProtossAdvisor:    portrait_id = PortraitId::Prophet1;              break;
-            case PortraitId::DataDisc:          portrait_id = PortraitId::Prophet2;              break;
-            case PortraitId::ScannerSweep:      portrait_id = PortraitId::Ecclesiast_Khalendric; break; // Rtas
-            case PortraitId::Zeratul:           portrait_id = PortraitId::Tazarain;              break; // Arbiter
-            case PortraitId::Prudence:          portrait_id = PortraitId::Cicatus;               break; // Heretic Leader
-            case PortraitId::Morningstar:       portrait_id = PortraitId::Zealot_Starbound;      break; // Heretic Elite
+            case PortraitId::ScannerSweep: {
+                portrait_id = PortraitId::Cikralisk; // Retoro; Temporary
+            } break;
+            case PortraitId::Morningstar: {
+                portrait_id = PortraitId::AdvisorInoa; // Pilgrim; Temporary
+            } break;
+            case PortraitId::Zeratul: {
+                portrait_id = PortraitId::Avatar; // Onor; Temporary
+            } break;
         }
     }
     return portrait_id;
@@ -267,57 +312,96 @@ void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) { // 00
     u16 portrait_id = helper::get_unit_portrait_override(unit_id);
     if (strcmp(g_current_map_name, "Anad's Greatsword") == 0) {
         switch (portrait_id) {
-            case PortraitId::AdvisorOrionImperium: portrait_id = PortraitId::HADRAL;         break;
-            case PortraitId::Maverick:             portrait_id = PortraitId::AnadThyron;     break;
-            case PortraitId::Zealot:               portrait_id = PortraitId::Kortar;         break;
-            case PortraitId::Ovileth:              portrait_id = PortraitId::AdvisorZorthos; break;
+            case PortraitId::AdvisorOrionImperium: {
+                portrait_id = PortraitId::HADRAL;
+            } break;
+            case PortraitId::Maverick: {
+                portrait_id = PortraitId::AnadThyron;
+            } break;
+            case PortraitId::Zealot: {
+                portrait_id = PortraitId::Kortar;
+            } break;
+            case PortraitId::Ovileth: {
+                portrait_id = PortraitId::AdvisorZorthos;
+            } break;
         }
     } else if (strcmp(g_current_map_name, "Sanctuary Lost") == 0) {
         switch (portrait_id) {
-            case PortraitId::AdvisorOrionImperium: portrait_id = PortraitId::HADRAL;     break;
-            case PortraitId::PlasmaShellUnused:    portrait_id = PortraitId::AnadThyron; break;
-            case PortraitId::Prudence:             portrait_id = PortraitId::Kortar;     break;
+            case PortraitId::AdvisorOrionImperium: {
+                portrait_id = PortraitId::HADRAL;
+            } break;
+            case PortraitId::PlasmaShellUnused: {
+                portrait_id = PortraitId::AnadThyron;
+            } break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Kortar;
+            } break;
         }
     } else if (strcmp(g_current_map_name, "Further Notice") == 0) {
         switch (portrait_id) {
-            case PortraitId::Cyprian:  portrait_id = PortraitId::Hotshot; break;
-            case PortraitId::Prudence: portrait_id = PortraitId::Osina;   break;
+            case PortraitId::Cyprian: {
+                portrait_id = PortraitId::Hotshot;
+            } break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Osina;
+            } break;
         }
     } else if (strcmp(g_current_map_name, "The Initiate") == 0) {
         switch (portrait_id) {
-            case PortraitId::Prudence:       portrait_id = PortraitId::Terimanok; break;
-            case PortraitId::ProtossAdvisor: portrait_id = PortraitId::Furen;     break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Terimanok;
+            } break;
+            case PortraitId::ProtossAdvisor: {
+                portrait_id = PortraitId::Furen;
+            } break;
         }
     } else if (strcmp(g_current_map_name, "Autophagy") == 0) {
         switch (portrait_id) {
-            case PortraitId::Anticthon: portrait_id = PortraitId::Zasz;           break;
-            case PortraitId::Scribe:    portrait_id = PortraitId::OrganSenescent; break;
+            case PortraitId::Anticthon: {
+                portrait_id = PortraitId::Zasz;
+            } break;
+            case PortraitId::Scribe: {
+                portrait_id = PortraitId::OrganSenescent;
+            } break;
         }
     } else if (strcmp(g_current_map_name, "Waterwar") == 0) {
         switch (portrait_id) {
-            case PortraitId::Prudence:       portrait_id = PortraitId::Sevenstep; break;
-            case PortraitId::ProtossAdvisor: portrait_id = PortraitId::Venammar;  break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Sevenstep;
+            } break;
+            case PortraitId::ProtossAdvisor: {
+                portrait_id = PortraitId::Venammar;
+            } break;
         }
     } else if (strcmp(g_current_map_name, "Cellbound") == 0) {
         switch (portrait_id) {
-            case PortraitId::Morningstar:       portrait_id = PortraitId::Atreus;    break;
-            case PortraitId::Prudence:          portrait_id = PortraitId::Terimanok; break; // TODO: Own portrait
-            case PortraitId::PlasmaShellUnused: portrait_id = PortraitId::Joran;     break;
+            case PortraitId::Morningstar: {
+                portrait_id = PortraitId::Atreus;
+            } break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Terimanok; // TODO: Own portrait
+            } break;
+            case PortraitId::PlasmaShellUnused: {
+                portrait_id = PortraitId::Joran;
+            } break;
         }
-    } else if (strcmp(g_current_map_name, "Mendacity") == 0) {
+    }else if (strcmp(g_current_map_name, "Mendacity") == 0) {
         switch (portrait_id) {
-            case PortraitId::Anticthon:         portrait_id = PortraitId::Zasz;           break; // Ataltreth
-            case PortraitId::ScannerSweep:      portrait_id = PortraitId::OrganSenescent; break; // Relgant
-            case PortraitId::Morningstar:       portrait_id = PortraitId::Medley;         break; // Sprinia
-        }
-    } else if (g_current_map_name == "The Arbiter"sv) {
-        switch (portrait_id) {
-            case PortraitId::ProtossAdvisor:    portrait_id = PortraitId::Prophet1;              break;
-            case PortraitId::DataDisc:          portrait_id = PortraitId::Prophet2;              break;
-            case PortraitId::ScannerSweep:      portrait_id = PortraitId::Ecclesiast_Khalendric; break; // Rtas
-            case PortraitId::Zeratul:           portrait_id = PortraitId::Tazarain;              break; // Arbiter
-            case PortraitId::Prudence:          portrait_id = PortraitId::Cicatus;               break; // Heretic Leader
-            case PortraitId::Morningstar:       portrait_id = PortraitId::Zealot_Starbound;      break; // Heretic Elite
+            case PortraitId::Anticthon: {
+                portrait_id = PortraitId::Zasz; // Ataltreth
+            } break;
+            case PortraitId::ScannerSweep: {
+                portrait_id = PortraitId::OrganSenescent; // Relgant; Temporary
+            } break;
+            case PortraitId::Morningstar: {
+                portrait_id = PortraitId::Medley; // Sprinia; Temporary
+            } break;
+            case PortraitId::PlasmaShellUnused: {
+                portrait_id = PortraitId::Trodin; // Scintor; Temporary
+            } break;
+            case PortraitId::Prudence: {
+                portrait_id = PortraitId::Tazarain;
+            } break;
         }
     }
 
@@ -384,11 +468,6 @@ void dialog_music_fade(u32 music_id) { // 004A6310
                 if (g_current_map_name == "Sunset Mission"sv
                 ||  g_current_map_name == "Amber Word"sv) {
                     // Temporary, for mapcrap
-                    music_id = MusicId_None;
-                }
-            } break;
-            case MusicId_PRdyRoom: {
-                if (g_current_map_name == "The Arbiter"sv) {
                     music_id = MusicId_None;
                 }
             } break;

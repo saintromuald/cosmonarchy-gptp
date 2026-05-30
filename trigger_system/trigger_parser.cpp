@@ -774,8 +774,6 @@ UnitIdBitset Parser::get_unit_id_bitset() {
             parser.set([](u32 i) { return unit_id_is_race(i, RaceId::Askosi); });
 		} else if (iequals("combatants")) {
             parser.set([](u32 i) { return unit_id_is_combatant(i); });
-		} else if (iequals("military")) {
-            parser.set([](u32 i) { return unit_id_is_military(i); });
 		} else if (iequals("transports")) {
             parser.set([](u32 i) { return unit_id_is_transport(i); });
 		} else if (iequals("townhalls")) {

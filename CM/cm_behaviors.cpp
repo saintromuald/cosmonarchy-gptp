@@ -435,13 +435,11 @@ void empress_zombify(u32 player, Unit* source, Unit* target, u32 stacks) {
 	helper::play_sound_from_unit(sound_id, target);
 }
 
-void mind_control(u32 player, u32 mind_controller_unit_id, Unit* target, bool ignore_alliance) {
-	if (!target || player == target->player) {
+void mind_control(u32 player, u32 mind_controller_unit_id, Unit* target) {
+	if (!target || player == target->player || !is_hostile_or_neutral(player, target->player)) {
 		return;
 	}
-	if (!ignore_alliance && !is_hostile_or_neutral(player, target->player)) {
-		return;
-	}
+
 	auto& target_ext = target->ext();
 	if (!target_ext.values[ValueMindControlOriginalPlayer]) {
 		target_ext.values[ValueMindControlOriginalPlayer] = target->player + 1;
