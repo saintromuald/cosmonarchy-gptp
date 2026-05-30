@@ -1987,8 +1987,7 @@ namespace hooks {
                 fire_secondary_melee_weapon_if_needed(unit, WeaponId::OlympianTitansFist);
             } break;
             case UnitId::ZergMatraleth:
-            case UnitId::ExtInfestedKerrigan:
-            case UnitId::BigInfestedKerrigan: {
+            case UnitId::ExtInfestedKerrigan: {
                 // Matraleth - Ensnaring Brood
                 if (!unit->is_frozen()) {
                     for (Unit* target : g_unit_search.radial_ex(unit, 4 * 32, FilterAlly | FilterNoBuilding | FilterCompleted)) {

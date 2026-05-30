@@ -2834,22 +2834,6 @@ namespace hooks {
                                     } break;
                                 }
                             } break;
-
-                            case UnitId::ForerunnerMachinamentum: {
-                                switch (current_button->requirement_var) {
-                                    case UnitId::ForerunnerAthla:
-                                    case UnitId::ForerunnerFerrum:
-                                    case UnitId::ForerunnerChalyb:
-                                    case UnitId::ForerunnerCircitor:
-                                    case UnitId::ForerunnerExigo:
-                                    case UnitId::ForerunnerVicere: {
-                                        current_button_state = Button_State::Enabled;
-                                    } break;
-                                    default: {
-                                        current_button_state = Button_State::Invisible;
-                                    } break;
-                                }
-                            } break;
                         }
                     }
 
@@ -2914,8 +2898,7 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::ExtInfestedKerrigan:
-                                case UnitId::BigInfestedKerrigan: {
+                                case UnitId::ExtInfestedKerrigan: {
                                     if (current_button->icon_id == IconId::Ensnare) { // Ensnaring Brood
                                         current_button_state = Button_State::Enabled;
                                     }
@@ -4195,8 +4178,7 @@ namespace hooks {
                                 } break;
                                 case UnitId::ProtossCantavis:
                                 case UnitId::ExtTassadar:
-                                case UnitId::ExtInfestedKerrigan:
-                                case UnitId::BigInfestedKerrigan: {
+                                case UnitId::ExtInfestedKerrigan: {
                                     if (g_iquare_globals->get_effect(unit_ext->current_storm)) {
                                         can_cancel = true;
                                     }

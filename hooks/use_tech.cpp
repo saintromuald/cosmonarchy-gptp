@@ -163,7 +163,6 @@ namespace hooks {
                     switch ((*g_active_portrait_unit)->id) {
                         case UnitId::ExtTassadar:         action_sound = SoundId::Protoss_TASSADAR_UTaPss03_WAV; break;
                         case UnitId::ExtInfestedKerrigan: action_sound = SoundId::None; break;
-                        case UnitId::BigInfestedKerrigan: action_sound = SoundId::None; break;
                     }
                     bw::play_action_sound(action_sound, *g_active_portrait_unit);
                 }
@@ -239,8 +238,7 @@ namespace hooks {
                         } break;
                         case UnitId::ProtossCantavis:
                         case UnitId::ExtTassadar:
-                        case UnitId::ExtInfestedKerrigan:
-                        case UnitId::BigInfestedKerrigan: {
+                        case UnitId::ExtInfestedKerrigan: {
                             queue_generic_ability(RustId::CancelPsiStorm, 1);
                         } break;
                     }

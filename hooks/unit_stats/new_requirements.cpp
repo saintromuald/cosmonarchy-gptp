@@ -1382,30 +1382,6 @@ namespace hooks {
                 }
             }
         }
-
-        // FORERUNNER
-        // Units
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ForerunnerMachinamentum)) {
-            switch (unit_id) {
-                case UnitId::ForerunnerAthla:
-                case UnitId::ForerunnerFerrum:
-                case UnitId::ForerunnerChalyb:
-                case UnitId::ForerunnerCircitor:
-                case UnitId::ForerunnerExigo:
-                case UnitId::ForerunnerVicere: {
-                    return true;
-                }
-            }
-        }
-
-        // Structures
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ForerunnerAthla)) {
-            switch (unit_id) {
-                case UnitId::ForerunnerMachinamentum: {
-                    return true;
-                }
-            }
-        }
         return false;
     }
 
@@ -3663,6 +3639,7 @@ namespace hooks {
                         }
                     }
                 }
+                return TECH_HIDDEN;
             } break;
             case UnitId::AskosiGrandstandHoldout: {
                 if (unit->is_completed()) {
@@ -3675,6 +3652,7 @@ namespace hooks {
                         }
                     }
                 }
+                return TECH_HIDDEN;
             } break;
             case UnitId::AskosiGrandstandVision: {
                 if (unit->is_completed()) {
@@ -3687,21 +3665,7 @@ namespace hooks {
                         }
                     }
                 }
-            } break;
-
-            // Forerunner \\
-
-            case UnitId::ForerunnerMachinamentum: {
-                switch (unit_id) {
-                    case UnitId::ForerunnerAthla:
-                    case UnitId::ForerunnerFerrum:
-                    case UnitId::ForerunnerChalyb:
-                    case UnitId::ForerunnerCircitor:
-                    case UnitId::ForerunnerExigo:
-                    case UnitId::ForerunnerVicere: {
-                        return TECH_ACTIVE;
-                    }
-                }
+                return TECH_HIDDEN;
             } break;
 
             // Gamemodes \\ 
@@ -3714,6 +3678,7 @@ namespace hooks {
                         return TECH_ACTIVE;
                     }
                 }
+                return TECH_HIDDEN;
             }
         }
         return TECH_HIDDEN;
