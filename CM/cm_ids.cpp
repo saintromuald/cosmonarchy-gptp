@@ -1837,12 +1837,10 @@ bool is_askosi(UnitId::Enum unit_id) {
 }
 
 bool is_forerunner(UnitId::Enum unit_id) {
-    return unit_id == UnitId::ForerunnerAthla
-        || unit_id == UnitId::ForerunnerFerrum
+    return unit_id == UnitId::ForerunnerFerrum
         || unit_id == UnitId::ForerunnerChalyb
         || unit_id == UnitId::ForerunnerCircitor
-        || unit_id == UnitId::ForerunnerExigo
-        || unit_id == UnitId::ForerunnerVicere;
+        || unit_id == UnitId::ForerunnerExigo;
 }
 
 SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {

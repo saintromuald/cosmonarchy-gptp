@@ -42,8 +42,6 @@ namespace UnitId {
         ForerunnerChalyb                                    = 606,
         ForerunnerCircitor                                  = 607,
         ForerunnerExigo                                     = 608,
-        ForerunnerAthla                                     = 609,
-        ForerunnerVicere                                    = 610,
 
     // Neutral
         TownCenterMarker									= 192,		// Terran Marker
