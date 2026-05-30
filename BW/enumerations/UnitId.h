@@ -37,12 +37,6 @@ namespace UnitId {
         ScenarioUnit7                                       = 530,
         ScenarioUnit8                                       = 531,
 
-    // Forerunner -- for Marchcrap 2026
-        ForerunnerFerrum                                    = 605,
-        ForerunnerChalyb                                    = 606,
-        ForerunnerCircitor                                  = 607,
-        ForerunnerExigo                                     = 608,
-
     // Neutral
         TownCenterMarker									= 192,		// Terran Marker
         ResourceVespeneRidge								= 221,		// Mineral Cluster Type 2

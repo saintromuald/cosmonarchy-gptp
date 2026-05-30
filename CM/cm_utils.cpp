@@ -567,8 +567,6 @@ u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id) {
                 case WeaponId::GrandstandArteDriver: damage -= 3; break;
             }
         } break;
-        case UnitId::ForerunnerFerrum:     damage -= 3; break;
-        case UnitId::ForerunnerChalyb:     damage -= 3; break;
     }
     return damage;
 }
@@ -765,7 +763,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::BlackjackMonogun:                    return "Monogun";
         case WeaponId::WraithBurstLasers:                   return "Burst Lasers";
         case WeaponId::SalamanderPerditionBarrage:          return "Perdition Barrage";
-        case WeaponId::GorgonArtificeBattery:               return unit_id == UnitId::TerranGorgon ? "Artifice Battery" : "Sentinel Beam";
+        case WeaponId::GorgonArtificeBattery:               return "Artifice Battery";
         case WeaponId::MinotaurAsterionLaserBattery:        return "Asterion Laser Battery";
         case WeaponId::CohortGaussPistols:                  return "Gauss Pistols";
         case WeaponId::MadrigalFuriaMissiles:               return "Furia Missiles";
