@@ -212,17 +212,14 @@ namespace hooks {
 					if (!unit_ext.unit_vectors[UnitVectorCrucibles].empty()) {
                         heal_amount *= 1.25fp;
 					}
-					if (UnitId::is_forerunner(static_cast<UnitId::Enum>(unit->id))) {
-						heal_amount *= 2;
-					}
 
 					unit->heal_shields(heal_amount, unit, false);
 					if (unit->shields > max_shields) {
 						if (unit->shields > max_shields) {
 							unit->shields = max_shields;
 						}
-						if (unit->sprite->is_selected()) {
-							helper::set_all_image_group_flags_palette_11(unit->sprite); // If the unit is currently selected, redraw its graphics
+						if (unit->sprite->flags & SpriteFlags::Selected) { // If the unit is currently selected, redraw its graphics
+							helper::set_all_image_group_flags_palette_11(unit->sprite);
 						}
 					}
 
