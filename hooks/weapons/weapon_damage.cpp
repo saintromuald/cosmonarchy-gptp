@@ -1415,7 +1415,7 @@ namespace hooks {
                     } break;
                     case WeaponId::MagisterNeutronCannon: {
                         // Stellar Enforcement - Magister behavior
-                        if (!bw::is_allied_to(data.attacker->player, data.target->player) && !target_ext.timers[TimerStellarEnforcement]) {
+                        if (!bw::is_allied_to(data.attacker->player, data.target->player)) {
                             target_ext.timers[TimerStellarEnforcement] = 3secs + 1;
                             target_ext.timers[TimerStellarEnforcementOverlay] = 30;
                             bw::add_unit_overlay(data.target, ImageId::StellarEnforcementDebuff_Small + bw::get_overlay_offset(data.target->id, true));  // Inlined here because otherwise the unit would have the overlay 1 frame late! -Pr0nogo
