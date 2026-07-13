@@ -193,10 +193,6 @@ BW_DATA(u16*,		tooltip_p_supply_cost,		0x0068C1DA);
 BW_DATA(u16*,		tooltip_t_supply_cost,		0x0068C1DC);
 BW_DATA(u16*,		tooltip_z_supply_cost,		0x0068C1DE);
 
-struct Event;
-typedef bool __fastcall generic_interact_function(BinDlg*, Event*);
-BW_DATA(generic_interact_function**, generic_interact_functions, 0x005014AC);
-
 // Added from BWAPI Offsets.h
 BW_DATA(char*,		  g_current_map_filename, 0x0057FD3C);
 BW_DATA(char*,		  g_current_map_name,	  0x0057FE40);

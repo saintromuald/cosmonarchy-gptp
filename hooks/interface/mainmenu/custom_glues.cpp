@@ -11,7 +11,6 @@ void glu_main_switch() {
             glu_provider_select(false);
         } break;
         case (MenuId::GlueChatroom): {
-            //helper::glu_chat();
             glu_chat();
         } break;
         case (MenuId::GlueBattlenet): {

@@ -17,13 +17,69 @@ static void load_game_templates(){ // See: 004dbac5
     SMemFree(ums_data, __FILE__, __LINE__, 0);
 }
 
+static u32 __fastcall dlgproc_glu_main(BinDlg* dialog, DialogEvent* event) { // 004DB7A0
+    if (event->number_order == DialogEventType_Spacebar && event->virtual_key == VK_SPACE) {
+        return 1;
+    }
+    if (event->number_order == DialogEventType_Dialog) {
+        switch (event->user) {
+            case DialogUserType_Create: {
+                helper::glu_main_create(dialog);
+                helper::dialog_swish_in(dialog);
+                helper::generic_dialog_interact(dialog, event);
+                if (!g_music_playing) {
+                    helper::dialog_music_fade(MusicId::MusicId_Title);
+                }
+                return 1;
+            }
+            case DialogUserType_Destroy: {
+                auto version_label = get_first_child_by_index(dialog, GluMainControls::VersionLabel);
+                if (version_label) SMemFree((void*)version_label->text, __FILE__, __LINE__, 0);
+                return helper::generic_dialog_interact(dialog, event);
+            }
+            case DialogUserType_Activate: {
+                switch (static_cast<GluMainControls>(last_control_index)) {
+                    case GluMainControls::SinglePlayerButton: {
+                        if (*g_is_broodwar && helper::select_game_mode(0)) {
+                            return helper::dialog_swish_out(dialog);
+                        }
+                        return 1;
+                    } break;
+                    case GluMainControls::MultiPlayerButton: {
+                        if (*g_is_broodwar && helper::select_game_mode(1)) {
+                            return helper::dialog_swish_out(dialog);
+                        }
+                        return 1;
+                    } break;
+                    case GluMainControls::EditorButton: {
+                        helper::load_staredit_process(dialog);
+                        return 1;
+                    }
+                    default: {
+                        return helper::dialog_swish_out(dialog);
+                    }
+                }
+            }
+            case DialogUserType_InitChildren: {
+                helper::register_menu_functions((BinDlgProc)glu_main_functions, dialog, 0x2Cu, 0);
+                return helper::generic_dialog_interact(dialog, event);
+            }
+            default: {
+                return helper::generic_dialog_interact(dialog, event);
+            }
+        }
+    }
+
+    return helper::generic_dialog_interact(dialog, event);
+}
+
 void glu_main() {
     g_multiplayer_mode = false;
 
     safe_copy(g_version_string, std::format("Cosmonarchy build {}", bw::get_commit_hash()));
 
     BinFile dialog{"rez\\gluMain.bin"};
-    auto result = helper::glu_load_bin_dialog(dialog.bin_dlg(), (BinDlgProc)0x004db7a0);
+    auto result = helper::glu_load_bin_dialog(dialog.bin_dlg(), dlgproc_glu_main);
 
     switch (static_cast<GluMainControls>(result)) {
         case GluMainControls::ExitButton: {
@@ -38,6 +94,9 @@ void glu_main() {
             g_multiplayer_mode = true;
             g_gl_glues_mode = MenuId::GlueLogin;
             load_game_templates();
+        } break;
+        case GluMainControls::OptionsButton: {
+            g_gl_glues_mode = MenuId::GlueOptions;
         } break;
     }
     change_menu();

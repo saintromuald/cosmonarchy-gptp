@@ -10578,7 +10578,7 @@ namespace helper {
         return result;
     }
 
-    char status_screen_update_tooltip_mouse_held(BinDlg* dialog, Event* dialog_event) {
+    char status_screen_update_tooltip_mouse_held(BinDlg* dialog, DialogEvent* dialog_event) {
         static char result;
         const u32 func_address = 0x00457DE0;
         __asm {

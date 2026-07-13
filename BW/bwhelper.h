@@ -54,8 +54,9 @@ namespace helper {
     BW_FUNC(0x004b52a0, void __stdcall, glu_ex_campaign);
     BW_FUNC(0x004dcc90, void __stdcall, glu_generic);
 
-    // Generic menu functions by control type
-    BW_ARRAY(BinDlgProc, 15, g_default_dialogprocs, 0x005014ac);
+    // Default DlgProcs and UpdateFuncs indexed by DialogControlType
+    BW_ARRAY(BinDlgProc,       15, g_default_dialogprocs,    0x005014ac);
+    BW_ARRAY(DialogUpdateFunc, 15, g_default_dialog_updates, 0x00501504);
 
     BW_FUNC(0x004ab840, u32* __stdcall, glu_main_load_ums_templates);
     BW_FUNC(0x004c4680, void __stdcall, glu_login_leave_game);
@@ -77,6 +78,8 @@ namespace helper {
     BW_FUNC(0x004c4160, void __stdcall, update_game_mode, u32 open_slots);
 
     BW_FUNC(0x0041bc40, u32 __fastcall, generic_combobox_interact, BinDlg* dialog, DialogEvent* event);
+    BW_FUNC(0x004e1b50, u32 __fastcall, generic_checkbox_interact, BinDlg* dialog, DialogEvent* event);
+    BW_FUNC(0x004e1560, u32 __fastcall, generic_menu_button, BinDlg* dialog, DialogEvent* event);
     
     BW_FUNC(0x00450a60, u32 __fastcall, chat_race_combobox_interact, BinDlg* dialog, DialogEvent* event);
 
@@ -1364,7 +1367,7 @@ namespace helper {
     void do_unit_event_notification(Unit* unit, char event_type, u32 timer, bool ping, u32 message_id);		// 0045EFE0
 
     s32 stat_data_unit_wireframe_select_update(BinDlg* dialog, Event* event_arg);							// 00456F50
-    char status_screen_update_tooltip_mouse_held(BinDlg* dialog, Event* dialog_event);						// 00457DE0
+    char status_screen_update_tooltip_mouse_held(BinDlg* dialog, DialogEvent* dialog_event);				// 00457DE0
     u32 status_screen_button(BinDlg* dialog_1, BinDlg* dialog_2);											// 00458220
 
     void status_screen_draw_stat_button_border(BinDlg* dialog);												// 00456D30

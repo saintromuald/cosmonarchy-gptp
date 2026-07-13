@@ -37,7 +37,7 @@ void reset_tooltip_info();																														// 00459360 004593B0 004
 void set_tooltip_info(u32 mineral_cost, u32 vespene_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u32 z_supply);	// 00458800
 void set_tooltip_info_unit(u16 unit_id);																										// 004594B0 0045952F
 void draw_tooltip_with_icon(Box16* area);																										// 00458EF0
-s32 stat_data_unit_wireframe_selection(BinDlg* dialog, Event* event_arg);																		// 004583E0
+s32 stat_data_unit_wireframe_selection(BinDlg* dialog, DialogEvent* event_arg);	                                                                // 004583E0
 u16 get_last_queue_slot_id(Unit* unit);																											// 0047B270
 void unit_stat_action_transport(BinDlg* dialog);																								// 00427C90
 void unit_stat_act_egg(BinDlg* dialog);																											// 00427260
