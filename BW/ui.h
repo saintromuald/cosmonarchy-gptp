@@ -8,6 +8,7 @@
 
 #include <functional>
 #include <map>
+#include <memory>
 #include <concepts>
 #include <string>
 #include <initializer_list>
@@ -83,7 +84,7 @@ void update_dialog_text(BinDlg* dialog, T index, const char* text) {
 }
 
 template<EnumS16 T>
-void bindlg_load_interaction_functions(BinDlg* dialog, std::map<T, BinDlgProc>& functions) {
+void bindlg_load_interaction_functions(BinDlg* dialog, const std::map<T, BinDlgProc>& functions) {
     for (auto& [index, function] : functions) {
         auto children = get_children_by_index(dialog, index);
         for (auto child : children) {
@@ -149,11 +150,51 @@ public:
 	BinFile(const char* filename);
 	BinDlg* bin_dlg() { return reinterpret_cast<BinDlg*>(m_buffer.data()); };
 
-private:
-	void load_file(const char* filename);
+	BinFile(const BinFile&) = delete;
+	BinFile& operator=(const BinFile&) = delete;
+	BinFile(BinFile&&) noexcept = default;
+	BinFile& operator=(BinFile&&) noexcept = default;
 
 private:
 	std::vector<u8> m_buffer;
+};
+
+std::vector<BinDlg*> splice_children_into(BinDlg* dest, BinDlg* source,
+    s16 offset_x = 0, s16 offset_y = 0, s16 index_base = 0, bool bounds_are_ltrb = true);
+
+// See usage in glu_options.cpp
+// Make sure and add all tabs before calling glu_load_bin_dialog
+class CompositeBinDlg {
+public:
+    struct Tab {
+        std::vector<BinDlg*> controls;
+        s16 index_base = 0;
+        s16 offset_x = 0;
+        s16 offset_y = 0;
+    };
+
+    explicit CompositeBinDlg(const char* main_filename);
+
+    CompositeBinDlg(const CompositeBinDlg&) = delete;
+    CompositeBinDlg& operator=(const CompositeBinDlg&) = delete;
+    CompositeBinDlg(CompositeBinDlg&&) noexcept = default;
+    CompositeBinDlg& operator=(CompositeBinDlg&&) noexcept = default;
+
+    u32 add_tab(const char* tab_filename, s16 offset_x = 0, s16 offset_y = 0, s16 index_base = 0);
+
+    BinDlg* bin_dlg() { return m_main.bin_dlg(); }
+
+    size_t tab_count() const { return m_tabs.size(); }
+    const Tab& tab(u32 i) const { return m_tabs[i]; }
+
+    void show_tab(u32 i);
+    void hide_tab(u32 i);
+    void show_only(u32 i);
+
+private:
+    BinFile m_main;
+    std::vector<std::unique_ptr<BinFile>> m_tab_bins;
+    std::vector<Tab> m_tabs;
 };
 
 // Only use this for bins whose dialogproc frees the allocated heap

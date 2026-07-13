@@ -69,12 +69,12 @@ public:
     RaceFlags race_flags() const { return m_race_flags; };
     void cleanup_and_reset();
     std::string& race_string(u32 index) { return m_player_race_strings[index]; }
+    void update_config() const;
 
 private:
     RaceRandomizer();
     
     void update_race_string(u32 index);
-    void save_config();
 
 private:
     std::vector<Player> m_randomized_players;

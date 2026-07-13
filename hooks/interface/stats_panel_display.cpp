@@ -683,34 +683,35 @@ namespace hooks {
     }
 
     // Hooked by accident. -Pr0nogo
-    s32 stat_data_unit_wireframe_selection(BinDlg* dialog, Event* event) { // 004583E0
+    // Fixed types, but this isn't actually injected so not refactoring for now -Jesse
+    s32 stat_data_unit_wireframe_selection(BinDlg* dialog, DialogEvent* event) { // 004583E0
         BinDlg* dialog_var = dialog;
-        if (event->type == 3) {
+        if (event->number_order == DialogEventType_MouseMove) {
             helper::status_screen_update_tooltip_mouse_held(dialog, event);
-        } else if (event->type == 14) {
-            switch (event->extended_command_type) {
-                case 0: {
+        } else if (event->number_order == DialogEventType_Dialog) {
+            switch (event->user) {
+                case DialogUserType_Create: {
                     dialog->fxn_update = helper::stat_data_unit_wireframe_select_update;
                     dialog->graphic = 0;
                     dialog->user = (u32*)helper::SMemAlloc(8, "Starcraft\\SWAR\\lang\\statdata.cpp", 775, 0);
                 } break;
-                case 1: {
+                case DialogUserType_Destroy: {
                     void* user = dialog->user;
                     if (user) {
                         helper::SMemFree(user, "Starcraft\\SWAR\\lang\\statdata.cpp", 780, 0);
                     }
                 } break;
-                case 2: {
+                case DialogUserType_Activate: {
                     helper::status_screen_button(dialog, dialog);
                     return 1;
                 } break;
-                case 4: {
+                case DialogUserType_MouseOver: {
                     if (!(dialog->flags & BinDlgFlags::Visible)) {
                         break;
                     }
                     return 1;
                 } break;
-                case 6: {
+                case DialogUserType_SelectNext: {
                     if (dialog == g_control_under_mouse) {
                         helper::refresh_selection_screen();
                         g_control_under_mouse = 0;
@@ -718,7 +719,7 @@ namespace hooks {
                 } break;
             }
         }
-        return generic_interact_functions[std::to_underlying(dialog_var->control_type)](dialog, event);
+        return helper::g_default_dialogprocs[std::to_underlying(dialog_var->control_type)](dialog, event);
     }
 
     // Hooked to correct errors and replace building morph id checks. -Pr0nogo

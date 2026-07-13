@@ -712,6 +712,10 @@ private:
 using BinDlgProc = u32(__fastcall*)(BinDlg*, DialogEvent*);
 using TimerCallback = void(__fastcall*)(BinDlg*, u16 index);
 
+// Jesse decomp note: this appears to be a __thiscall as it passes BinDlg* in ecx
+// Two stack arguments are passed but appear to be unused in any of the default functions I looked at so not sure what they are
+using DialogUpdateFunc = void(__thiscall*)(BinDlg*, int, int);
+
 struct BinDlg {
 /*0x00*/  BinDlg*   next;
 union {

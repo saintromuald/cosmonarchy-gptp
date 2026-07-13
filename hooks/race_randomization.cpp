@@ -115,7 +115,7 @@ void RaceRandomizer::update_race_string(u32 index) {
     string += "}";
 }
 
-void RaceRandomizer::save_config() {
+void RaceRandomizer::update_config() const {
     g_config.random_races.clear();
 
     if (m_race_flags == RaceFlags::All) {
@@ -130,8 +130,6 @@ void RaceRandomizer::save_config() {
     if (has_flag(m_race_flags, RaceFlags::Terran)) g_config.random_races.push_back("Terran");
     if (has_flag(m_race_flags, RaceFlags::Protoss)) g_config.random_races.push_back("Protoss");
     if (has_flag(m_race_flags, RaceFlags::Askosi)) g_config.random_races.push_back("Askosi");
-
-    save_config();
 }
 
 namespace hooks {

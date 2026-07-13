@@ -173,7 +173,7 @@ static u32 __fastcall dlgproc_ok_button_host_only(BinDlg* dialog, DialogEvent* e
 static u32 glu_chat_init_children(BinDlg* dialog, DialogEvent* event) {
     bindlg_load_background(dialog);
 
-    std::map<GluChatControls, BinDlgProc> interaction_functions{
+    static const std::map<GluChatControls, BinDlgProc> interaction_functions{
         {GluChatControls::OkImage, dlgproc_ok_button_host_only},
         {GluChatControls::MapPreview, (BinDlgProc)0x004e1560},          // menu_generic_button_interact
         {GluChatControls::OkButton, dlgproc_ok_button_host_only},

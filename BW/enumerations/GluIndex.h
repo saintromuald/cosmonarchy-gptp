@@ -187,6 +187,7 @@ enum class GluMainControls : s16 {
     WelcomeToButton = 8,
     CosmonarchyBWButton = 9,
     VersionLabel = 10,
+    OptionsButton = 11,
 };
 
 enum class GluLoginControls : s16 {
@@ -216,4 +217,62 @@ enum class GluConnControls : s16 {
     GatewayListbox = 12,
     GatewayInfoLabel = 13,
     GatewayLabel = 14,
+};
+
+enum class GluOptionsControls : s16 {
+    OK = 5,
+    Cancel = 6,
+    MiscTabButton = 7,
+    UiTabButton = 8,
+    HotkeysTabButton = 9,
+    ColorsTabButton = 10,
+    
+    MiscTabHighlight = 15,
+    UiTabHighlight = 16,
+    HotkeysTabHighlight = 17,
+    ColorsTabHighlight = 18,
+
+    // Misc Tab
+    RandomZCheck = 101,
+    RandomTCheck = 102,
+    RandomPCheck = 103,
+    RandomACheck = 104,
+
+    LaunchDisableWmodePrompt = 110,
+    LaunchWmodePrefer = 111,
+    SupressWindowsKey = 112,
+
+    Celebrations = 120,
+
+    ReplayAutoSave = 130,
+    ReplaySanitize = 131,
+
+    DebugVerbose = 140,
+    DebugRandoms = 141,
+
+    // UI Tab
+    ExtendedCameraHotkeys = 201,
+    ShowTimer = 202,
+    ShowAPM = 203,
+    AlwaysShowExtendedTooltips = 204,
+
+    ShowReplayProgressBar = 210,
+
+    ShowRallyLines = 220,
+    ShowOrderLines = 221,
+    ShowQueuedOrderLines = 222,
+    ShowUniqueGasOrderLines = 223,
+    ShowAuraCircles = 224,
+    ShowAbilityRanges = 225,
+    AlwaysCondensedSelection = 226,
+    AltForSelectionUi = 227,
+
+    ShowMinimapCameras = 240,
+    AllowMinimapTerrainToggle = 241,
+
+    ShowTeamUi = 250,
+    ShowTeamUiApm = 251,
+    ShowTeamUiNames = 252,
+    ShowTeamUiSelf = 253,
+    ShowGlobalQueue = 254,
 };

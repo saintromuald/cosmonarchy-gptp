@@ -64,10 +64,6 @@ void disable_dialogs_with_index(BinDlg* dialog, s16 index) {
 }
 
 BinFile::BinFile(const char* filename) {
-    load_file(filename);
-}
-
-void BinFile::load_file(const char* filename) {
     HANDLE file_handle;
     if (!SFileOpenFileEx(0, filename, 0, &file_handle)) {
         auto error = SErrGetLastError();
@@ -100,7 +96,7 @@ void BinFile::load_file(const char* filename) {
     }
 
     SFileCloseFile(file_handle);
-    
+
     bin_dlg()->flags |= 4;
     helper::fixup_and_init_dialog_data(bin_dlg(), helper::alloc_background_image, __FILE__, __LINE__);
 }
@@ -299,5 +295,71 @@ void hide_bin_dialog(BinDlg* dialog) {
             dialog->flags |= BinDlgFlags::Highlighted;
             helper::update_dialog(dialog);
         }
+    }
+}
+
+std::vector<BinDlg*> splice_children_into(BinDlg* dest, BinDlg* source,
+    s16 offset_x, s16 offset_y, s16 index_base, bool bounds_are_ltrb) {
+    std::vector<BinDlg*> out;
+    if (!dest || !source) return out;
+
+    BinDlg* first = source->child_dialog;
+    if (!first) return out;
+
+    for (BinDlg* child = first; child; child = child->next) {
+        child->parent = dest;
+        if (bounds_are_ltrb) {
+            child->bounds.left   += offset_x;
+            child->bounds.right  += offset_x;
+            child->bounds.top    += offset_y;
+            child->bounds.bottom += offset_y;
+        } else {
+            child->bounds.x += offset_x;
+            child->bounds.y += offset_y;
+        }
+        child->index = static_cast<u16>(child->index + index_base);
+        out.push_back(child);
+    }
+
+    source->child_dialog = nullptr;
+
+    if (dest->child_dialog) {
+        BinDlg* tail = dest->child_dialog;
+        while (tail->next) tail = tail->next;
+        tail->next = first;
+    } else {
+        dest->child_dialog = first;
+    }
+
+    return out;
+}
+
+CompositeBinDlg::CompositeBinDlg(const char* main_filename)
+    : m_main(main_filename) {}
+
+u32 CompositeBinDlg::add_tab(const char* tab_filename, s16 offset_x, s16 offset_y, s16 index_base) {
+    auto tab_bin = std::make_unique<BinFile>(tab_filename);
+    auto controls = splice_children_into(m_main.bin_dlg(), tab_bin->bin_dlg(),
+        offset_x, offset_y, index_base, true);
+
+    m_tab_bins.push_back(std::move(tab_bin));
+    m_tabs.emplace_back(std::move(controls), index_base, offset_x, offset_y);
+    return m_tabs.size() - 1;
+}
+
+void CompositeBinDlg::show_tab(u32 i) {
+    if (i >= m_tabs.size()) return;
+    for (auto* c : m_tabs[i].controls) show_bin_dialog(c);
+}
+
+void CompositeBinDlg::hide_tab(u32 i) {
+    if (i >= m_tabs.size()) return;
+    for (auto* c : m_tabs[i].controls) hide_bin_dialog(c);
+}
+
+void CompositeBinDlg::show_only(u32 i) {
+    for (size_t t = 0; t < m_tabs.size(); ++t) {
+        if (t == i) show_tab(t);
+        else        hide_tab(t);
     }
 }

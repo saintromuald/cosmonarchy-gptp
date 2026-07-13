@@ -309,7 +309,7 @@ namespace {
     void __declspec(naked) stat_data_unit_wireframe_selection_wrapper() { // 004583E0
         static u32 result;
         static BinDlg* dialog;
-        static Event* event_arg;
+        static DialogEvent* event_arg;
         __asm {
             MOV event_arg, EDX
             MOV dialog, ECX
