@@ -1,7 +1,38 @@
 #include "custom_glues.h"
 #include "hooks/snp.h"
 
+static void update_window() {
+    if (!g_main_window) return;
+
+    static bool attempted = false;
+    if (attempted) return;
+
+    attempted = true;
+
+    SetWindowTextA(g_main_window, "Cosmonarchy");
+
+    auto icon_path = "icon.ico";
+
+    auto small_cx = GetSystemMetrics(SM_CXSMICON);
+    auto small_cy = GetSystemMetrics(SM_CYSMICON);
+    auto large_cx = GetSystemMetrics(SM_CXICON);
+    auto large_cy = GetSystemMetrics(SM_CYICON);
+
+    HICON small_icon = (HICON)LoadImageA(NULL, icon_path, IMAGE_ICON, small_cx, small_cy, LR_LOADFROMFILE);
+    HICON large_icon = (HICON)LoadImageA(NULL, icon_path, IMAGE_ICON, large_cx, large_cy, LR_LOADFROMFILE);
+
+    if (small_icon) {
+        SendMessageA(g_main_window, WM_SETICON, ICON_SMALL, (LPARAM)small_icon);
+        SetClassLongPtrA(g_main_window, GCLP_HICONSM, (LONG_PTR)small_icon);
+    }
+    if (large_icon) {
+        SendMessageA(g_main_window, WM_SETICON, ICON_BIG, (LPARAM)large_icon);
+        SetClassLongPtrA(g_main_window, GCLP_HICON, (LONG_PTR)large_icon);
+    }
+}
+
 void glu_main_switch() {
+    update_window();
     switch (g_gl_glues_mode) {
         case (MenuId::GlueMainMenu): {
             g_out_of_game = false;
