@@ -745,45 +745,6 @@ namespace hooks
 		helper::initialize_dialog((u32(__fastcall*)(BinDlg*, DialogEvent*))helper::title_dlg_proc, main_dlg);
 	}
 
-	// Hooked to change window name. -Pr0nogo
-	// Currently doesn't support Xenotron wmode...
-	void create_main_window() // 004E05B0
-	{
-	//	Sleep(3000); // For debugging.
-		WNDCLASSEXA wclass;
-		memset(&wclass, 0, sizeof(wclass));
-		wclass.cbSize = sizeof(wclass);
-		wclass.style = 8;
-		wclass.lpfnWndProc = (WNDPROC)helper::main_window_proc;
-		wclass.hInstance = *g_main_hinstance;
-		wclass.hIcon = LoadIconA(*g_main_hinstance, (LPCSTR)0x66);
-		wclass.hIconSm = (HICON)LoadImageA(*g_main_hinstance, (LPCSTR)0x66, 1, 16, 16, 0x8000);
-		wclass.hCursor = LoadCursorA(0, (LPCSTR)IDC_ARROW);
-		wclass.hbrBackground = (HBRUSH)GetStockObject(5);
-		wclass.lpszClassName = "SWarClass";
-		if (!RegisterClassExA(&wclass)) {
-			helper::fatal_error((char*)"RegisterClass");
-		}
-		HINSTANCE instance = *g_main_hinstance;
-		int height = GetSystemMetrics(SM_CYSCREEN);
-		int width = GetSystemMetrics(SM_CXSCREEN);
-		HWND hwnd = CreateWindowExA(0, "SWarClass", "Cosmonarchy", 0x90080000, 0, 0, width, height, NULL, NULL, instance, NULL);
-		g_main_window = hwnd;
-		if (!hwnd) {
-			helper::fatal_error((char*)"CreateWindowEx");
-			hwnd = g_main_window;
-		}
-		UpdateWindow(hwnd);
-		SetFocus(g_main_window);
-		SetCursor(NULL);
-		if (GetUserDefaultLangID() == 0x412) {
-			if (!*g_app_context) {
-				*g_app_context = helper::ImmGetContextBW(g_main_window);
-			}
-			*g_app_context = helper::ImmAssociateContextBW(g_main_window, 0);
-		}
-	}
-
 	// Hooked to set Scenario as the default game type. -Pr0nogo
 	// Currently defaults to Unranked... which is good enough for now, I guess!
 	void initialize_game_type_list(BinDlg* list) { // 004AF400
