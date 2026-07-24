@@ -56,16 +56,16 @@ void load_race_grp_and_sounds() {
     load_racial_sounds(true);
 
     switch (g_console_index) {
-    case (RaceId::Zerg): {
+    case RaceId::Zerg: {
         helper::dialog_grp_construct("dlgs\\zerg.grp", __FILE__, __LINE__);
         g_current_music_id = 1;
     } break;
-    case (RaceId::Protoss): {
+    case RaceId::Protoss: {
         helper::dialog_grp_construct("dlgs\\protoss.grp", __FILE__, __LINE__);
         g_current_music_id = 7;
     } break;
     default: // Temporary default for Askosi etc
-    case (RaceId::Terran): {
+    case RaceId::Terran: {
         helper::dialog_grp_construct("dlgs\\terran.grp", __FILE__, __LINE__);
         g_current_music_id = 4;
     } break;
@@ -132,7 +132,7 @@ static SurfaceContext* console_create_surface(u32 offset_x, u32 offset_y, Bitmap
     // TODO: Do we need error handling?
     STransCreateE(bitmap->buffer, bitmap->width, bitmap->height, 8, 0, 0x1000000, &surface_handle);
 
-    auto* surface_node = static_cast<SurfaceContext*>(SMemAlloc(sizeof(SurfaceContext), __FILE__, __LINE__, '\b'));
+    auto* surface_node = static_cast<SurfaceContext*>(helper::SMemAlloc(sizeof(SurfaceContext), __FILE__, __LINE__, '\b'));
     if (surface_node) {
         surface_node->next = nullptr;
         surface_node->prev = nullptr;
@@ -300,7 +300,7 @@ void load_console() { // 004c3bb0
     helper::load_minimap();
 
     if (g_console_image.buffer) {
-        SMemFree(g_console_image.buffer, __FILE__, __LINE__, 0);
+        SMemFree(g_console_image.buffer);
         g_console_image.buffer = 0;
     }
 

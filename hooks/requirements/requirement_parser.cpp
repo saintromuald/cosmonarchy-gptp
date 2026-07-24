@@ -22,7 +22,7 @@ namespace
 			bw::printf_console("File is empty: %s", path);
 			return false;
 		}
-		char* filePointer = (char*)SMemAlloc(fileSize, "logfilename", 0, 0);
+		char* filePointer = (char*)helper::SMemAlloc(fileSize);
 		u32 bytesRead;
 		if (!SFileReadFile(fileHandle, filePointer, fileSize, &bytesRead, 0) || bytesRead != fileSize)
 		{
@@ -55,7 +55,7 @@ namespace
 		}
 
 		BOOL result = SFileCloseFile(fileHandle);
-		SMemFree(filePointer, "", 0, 0);
+		helper::SMemFree(filePointer);
 		return result;
 	}
 }

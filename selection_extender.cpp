@@ -12,7 +12,7 @@
 static u32 tmp;
 
 graphics::Font* grp_wire_Font;
-extern u8 tFontGame_ImageData[];
+extern u8 g_tfontgame_image_data[];
 void init_grp_wire_font(const char* font_name) {
     const u32 load_font = 0x0041FD10;
 
@@ -186,7 +186,7 @@ void __declspec(naked) stat_data_unit_wireframe_select_update_patch_57046() {
         MOV		ECX, grp_wire_Font
         CALL	SetFontHandle
 
-        LEA		EAX, [tFontGame_ImageData + 0x140]//Special grp_wire_Font color.
+        LEA		EAX, [g_tfontgame_image_data + 0x140]//Special grp_wire_Font color.
         MOV		ds:[0x006CE0C0], EAX//currentFontColor
         MOV		byte ptr ds:[0x006CE0C4], 0//Set font spacing to 0.
 

@@ -512,6 +512,43 @@ private:
     u8 m_raw_data[];
 };
 
+struct DialogTheme {
+    DialogTheme* next;
+    s32 list_offset;
+    char filename[260];
+    GrpFile* grp_handle;
+    u16 radiobutton_size;
+    u16 checkbox_size;
+    u16 hslider_endcap_w;
+    u16 vslider_width;
+    u16 hslider_height;
+    u16 vslider_endcap_h;
+    u16 vslider_segment_h;
+    u16 hslider_segment_w;
+    u16 slider_handle_w;
+    u16 slider_handle_h;
+    u16 combobox_default_closed_w;
+    u16 combobox_default_closed_h;
+    u16 combobox_default_border_w;
+    u16 combobox_default_border_h;
+    u16 combobox_default_open_w;
+    u16 combobox_default_open_h;
+    u16 combobox_default_arrow_w;
+    u16 combobox_alt_closed_w;
+    u16 combobox_alt_closed_h;
+    u16 combobox_alt_border_w;
+    u16 combobox_alt_border_h;
+    u16 combobox_alt_open_w;
+    u16 combobox_alt_open_h;
+    u16 combobox_alt_arrow_w;
+    u16 vslider_alt_segment_w;
+    u16 hslider_alt_handle_w;
+    u16 vslider_alt_handle_h;
+    u16 hslider_alt_segment_w;
+    u16 vslider_alt_segment_h;
+    u16 unk_small_icon;
+};
+
 // LO* file header
 struct LO_Header {
     u32 frame_count;
@@ -817,7 +854,7 @@ union {
         /*0x3A*/  u16       current;
         /*0x3C*/  u16       min;
         /*0x3E*/  u16       max;
-        /*0x40*/  u16       unk_40;
+        /*0x40*/  u16       cached_pixel_offset;
     } Slider;
 };
 

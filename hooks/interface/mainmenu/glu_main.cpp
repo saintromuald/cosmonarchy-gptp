@@ -14,7 +14,7 @@ static void load_game_templates(){ // See: 004dbac5
         destination[i * 2] = ums_data[i];
     }
 
-    SMemFree(ums_data, __FILE__, __LINE__, 0);
+    SMemFree(ums_data);
 }
 
 static u32 __fastcall dlgproc_glu_main(BinDlg* dialog, DialogEvent* event) { // 004DB7A0
@@ -34,7 +34,7 @@ static u32 __fastcall dlgproc_glu_main(BinDlg* dialog, DialogEvent* event) { // 
             }
             case DialogUserType_Destroy: {
                 auto version_label = get_first_child_by_index(dialog, GluMainControls::VersionLabel);
-                if (version_label) SMemFree((void*)version_label->text, __FILE__, __LINE__, 0);
+                if (version_label) SMemFree((void*)version_label->text);
                 return helper::generic_dialog_interact(dialog, event);
             }
             case DialogUserType_Activate: {

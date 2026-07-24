@@ -46,9 +46,9 @@ namespace helper {
         return (result != 0);
     }
 
-    s32 dialog_grp_construct(const char* filename, const char* log_filename, u32 log_line) {
+    DialogTheme* dialog_grp_construct(const char* filename, const char* log_filename, u32 log_line) {
         const u32 func_address = 0x004197B0;
-        static s32 result;
+        static DialogTheme* result;
         __asm {
             PUSHAD
             PUSH 0x004d2b30
@@ -76,6 +76,16 @@ namespace helper {
             POPAD
         }
         return result;
+    }
+
+    void apply_dialog_theme(DialogTheme* theme) {
+        const u32 func_address = 0x00419290;
+        __asm {
+            PUSHAD
+            MOV EAX, theme
+            CALL func_address
+            POPAD
+        }
     }
 
     s32 rand_func() {

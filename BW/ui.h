@@ -14,6 +14,8 @@
 #include <initializer_list>
 #include <vector>
 
+constexpr u32 TFontCopyCount = 48;  // 6 font styles * 8 shades
+
 enum class GluTheme {
     PalMm, // Main Menu
     PalCs, // Campaign Select
@@ -102,7 +104,8 @@ void bindlg_load_background_palette(BinDlg* dialog); // See dialog_swish_in 0x00
 void bindlg_load_image(const char* filename, Palette* palette, BinDlg* dialog, u8* (__stdcall* malloc_func)(u32));
 void bindlg_load_background(BinDlg* dialog);
 MenuId::Enum menu_with_theme(GluTheme theme);
-void bindlg_load_background(BinDlg* dialog, const char* filename);
+void bindlg_load_background_pcx(BinDlg* dialog, const char* filename, bool apply_dynamic_theme = false);
+
 void change_menu(bool force_refresh = false);
 void initialize_dialog(BinDlg* dialog, BinDlgProc dialogproc); // 00419d20
 void quick_send_event(BinDlg* dialog, DialogUserType user_type, u16 param = 0);
@@ -219,7 +222,7 @@ T* load_file_smemalloc(const char* filename, const char* log_filename = __FILE__
         return nullptr;
     }
 
-    T* buffer = static_cast<T*>(SMemAlloc(file_size, log_filename, log_line, '\0'));
+    T* buffer = static_cast<T*>(SMemAlloc(file_size));
 
     if (!buffer) {
         SFileCloseFile(file_handle);
@@ -230,7 +233,7 @@ T* load_file_smemalloc(const char* filename, const char* log_filename = __FILE__
     if (!SFileReadFile(file_handle, buffer, file_size, &bytes_read, 0)) {
         auto error = GetLastError();
         SFileCloseFile(file_handle);
-        SMemFree(buffer, __FILE__, __LINE__, 0);
+        SMemFree(buffer);
         if (error == ERROR_HANDLE_EOF) {
             helper::file_fatal(&file_handle, ERROR_BAD_LENGTH);
             return nullptr;
@@ -341,4 +344,29 @@ private:
 
 private:
     std::vector<u8> m_buffer;
+};
+
+class DynamicTheme {
+public:
+    static DynamicTheme& instance() {
+        static DynamicTheme dynamic_theme;
+        return dynamic_theme;
+    }
+
+    DynamicTheme(const DynamicTheme&) = delete;
+    DynamicTheme(DynamicTheme&&) = delete;
+    DynamicTheme& operator=(const DynamicTheme&) = delete;
+    DynamicTheme& operator=(DynamicTheme&&) = delete;
+    ~DynamicTheme();
+
+    void apply();
+
+private:
+    DynamicTheme();
+    DialogTheme* m_dialog_theme{};
+    LoadedFile<GrpFile> m_cursor_grp{"glue\\dynamic\\arrow.grp"};
+    // Currently unsure what tile.grp is used for, if anything
+    // Seems related to save games
+    // LoadedFile<GrpFile> m_tile_grp{"glue\\dynamic\\tile.grp"};
+    std::array<u8, TFontCopyCount> m_tfont_indices;
 };

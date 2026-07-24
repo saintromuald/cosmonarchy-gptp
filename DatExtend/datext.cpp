@@ -188,11 +188,11 @@ namespace DatExt {
 		techdata_dat_unpatch();
 	
 		if (g_unit_names_tbl) {
-			SMemFree(g_unit_names_tbl, __FILE__, __LINE__, 0);
+			helper::SMemFree(g_unit_names_tbl);
 			g_unit_names_tbl = nullptr;
 		}
 		if (g_unit_icons) {
-			SMemFree(g_unit_icons, __FILE__, __LINE__, 0);
+			helper::SMemFree(g_unit_icons);
 			g_unit_icons = nullptr;
 		}
 	}

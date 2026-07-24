@@ -54,17 +54,17 @@ static u32 dlgproc_tutorial_activate(BinDlg* dialog, DialogEvent* event) {
 static u32 __fastcall dlgproc_glu_tutorials(BinDlg* dialog, DialogEvent* event) {
     if (event->number_order == DialogEventType_Dialog) {
         switch (event->user) {
-        case (DialogUserType_Create): {
+        case DialogUserType_Create: {
             bindlg_load_background_palette(dialog);
             if (!g_music_playing) {
                 helper::dialog_music_fade(MusicId_Title);
             }
         } break;
-        case (DialogUserType_Activate): {
+        case DialogUserType_Activate: {
             return dlgproc_tutorial_activate(dialog, event);
             //return helper::dlgproc_glu_campaign_activate(dialog);
         } break;
-        case (DialogUserType_InitChildren): {
+        case DialogUserType_InitChildren: {
             bindlg_load_background(dialog);
 
             std::map<GluTutorialControls, BinDlgProc> interaction_functions{
@@ -96,25 +96,25 @@ void glu_singleplayer() {
     auto result = helper::glu_load_bin_dialog(dialog.bin_dlg(), dlgproc_glu_tutorials);
 
     switch (static_cast<GluExCampgnControls>(result)) {
-    case (GluExCampgnControls::LoadSavedButton): {
+    case GluExCampgnControls::LoadSavedButton: {
         g_gl_glues_mode = MenuId::GlueLoad;
     } break;
-    case (GluExCampgnControls::ProtossCampaignButton): {
+    case GluExCampgnControls::ProtossCampaignButton: {
         g_gl_glues_mode = MenuId::GlueReadyP;
     } break;
-    case (GluExCampgnControls::TerranCampaignButton): {
+    case GluExCampgnControls::TerranCampaignButton: {
         g_gl_glues_mode = MenuId::GlueReadyT;
     } break;
-    case (GluExCampgnControls::ZergCampaignButton): {
+    case GluExCampgnControls::ZergCampaignButton: {
         g_gl_glues_mode = MenuId::GlueReadyZ;
     } break;
-    case (GluExCampgnControls::CancelButton): {
+    case GluExCampgnControls::CancelButton: {
         g_gl_glues_mode = MenuId::GlueLogin;
     } break;
-    case (GluExCampgnControls::PlayCustomButton): {
+    case GluExCampgnControls::PlayCustomButton: {
         g_gl_glues_mode = MenuId::GlueCreate;
     } break;
-    case (GluExCampgnControls::LoadReplayButton): {
+    case GluExCampgnControls::LoadReplayButton: {
         g_gl_glues_mode = MenuId::GlueCreateMultiplayer;
     } break;
     default: {

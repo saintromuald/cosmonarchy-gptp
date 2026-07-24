@@ -69,7 +69,7 @@ static bool can_change_race(RaceId::Enum race, u8 player_index, u32 sender) {
 void broadcast_player_update(Player& player) {
     if (player.id >= 8) return;
     if (!g_lobby_commands_player_update[player.id]) {
-        g_lobby_commands_player_update[player.id] = (Command_PlayerUpdate*)SMemAlloc(sizeof(Command_PlayerUpdate), __FILE__, __LINE__, 0);
+        g_lobby_commands_player_update[player.id] = (Command_PlayerUpdate*)helper::SMemAlloc(sizeof(Command_PlayerUpdate));
     }
     g_lobby_commands_player_update[player.id]->command = GameCommand_PlayerUpdate;
     g_lobby_commands_player_update[player.id]->player_id = player.id;
@@ -83,7 +83,7 @@ template <typename T>
 static void send_and_free(T*& command) {
     if (command) {
         helper::queue_game_command(reinterpret_cast<u8*>(command), sizeof(*command));
-        SMemFree(command, __FILE__, __LINE__, 0);
+        SMemFree(command);
         command = nullptr;
     }
 }

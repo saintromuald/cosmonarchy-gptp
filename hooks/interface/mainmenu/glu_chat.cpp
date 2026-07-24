@@ -272,7 +272,7 @@ void glu_chat() {
         }
         g_is_in_replay = false;
         if (g_scenario_chk) {
-            SMemFree(g_scenario_chk, __FILE__, __LINE__, 0);
+            SMemFree(g_scenario_chk);
             g_scenario_chk = nullptr;
         }
     } else if (last_control != GluChatControls::StartGame) {
