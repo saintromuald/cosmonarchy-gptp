@@ -271,6 +271,7 @@ void GluJoinCrownlinkContext::on_init_children(BinDlg* dialog, DialogEvent* even
 void glu_join_crownlink() {
     g_gl_glues_mode = menu_with_theme(GluTheme::PalNl);
     g_glue_background_id = -1;
+    change_menu(true);
 
     if (!g_music_playing) helper::dialog_music_fade(MusicId::MusicId_Title);
 
