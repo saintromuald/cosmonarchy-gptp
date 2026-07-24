@@ -62,8 +62,16 @@ inline const StormStdCall<b32(HANDLE archive, const char* filename, u32 scope, H
 inline const StormStdCall<b32(HANDLE file, void* buffer, u32 to_read, u32* bytes_read, int unknown)> SFileReadFile{269};
 inline const StormStdCall<b32(const char* filename, Palette* palette, u8* buffer, u32 buffer_size, u32* width, u32* height, u32* bitdepth)> SBmpLoadimage{323};
 inline const StormStdCall <b32(const char* filename, Palette* palette, u8** buffer, u32* width, u32* height, u32, u32, u8* (__stdcall* malloc_function)(u32 size))> SBmpAllocLoadImage{325};
-inline const StormStdCall<void* (u32 size, const char* filename, u32 line, int unknown)> SMemAlloc{401};
-inline const StormStdCall<u32(void* ptr, const char* filename, u32 line, int unknown)> SMemFree{403};
+inline const StormStdCall<void* (u32 size, const char* filename, u32 line, int unknown)> SMemAllocOriginal{401};
+inline const StormStdCall<u32(void* pointer, const char* filename, u32 line, int unknown)> SMemFreeOriginal{403};
+
+inline void* SMemAlloc(u32 size) {
+    return SMemAllocOriginal(size, "", 0, 0);
+}
+
+inline u32 SMemFree(void* pointer) {
+    return SMemFreeOriginal(pointer, "", 0, 0);
+}
 
 // Surface Transformations
 inline const StormStdCall<b32(u8* bitmap_buffer, u32 width, u32 height, u32 color_depth, u32 unknown1, u32 unknown2, void** surface)> STransCreateE{445};

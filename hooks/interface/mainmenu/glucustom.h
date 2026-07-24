@@ -1,7 +1,7 @@
 #pragma once
 #include "BW/structures.h"
 
-u8 tFontGame_ImageData[328]; // Larger tfont.pcx buffer to fit the new colors.
+u8 g_tfontgame_image_data[328]; // Larger tfont.pcx buffer to fit the new colors.
 u16 display_text_color[11];
 namespace hooks {
     void display_establishing_shot();														// 004D9200, hooked by X405

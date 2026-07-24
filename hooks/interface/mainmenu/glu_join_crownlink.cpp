@@ -255,6 +255,7 @@ u32 GluJoinCrownlinkContext::on_activate(BinDlg* dialog, DialogEvent* event) {
 }
 
 void GluJoinCrownlinkContext::on_init_children(BinDlg* dialog, DialogEvent* event) {
+    bindlg_load_background_pcx(g_context->get_dialog(), "glue\\dynamic\\backgrounds\\crownlink.pcx", true);
     static const std::map<GluJoinControls, BinDlgProc> interaction_functions{
         {GluJoinControls::GameListBox, dlgproc_glu_join_crownlink_listbox}, // join_listbox
         {GluJoinControls::GameTitle, (BinDlgProc)0x004b7ef0},   // Very generic but sets flag 0x40000000. Seems to make the text white.
@@ -275,11 +276,10 @@ void glu_join_crownlink() {
 
     g_is_in_replay = false;
     if (scenario_chk) {
-        SMemFree(scenario_chk, __FILE__, __LINE__, 0);
+        SMemFree(scenario_chk);
     }
 
     g_context = std::make_unique<GluJoinCrownlinkContext>();
-    bindlg_load_background(g_context->get_dialog(), "glue\\join\\backgnd_cnlk.pcx");
     auto result = helper::glu_load_bin_dialog(g_context->get_dialog(), dlgproc_glu_join_crownlink);
 
     switch (static_cast<GluJoinControls>(result)) {

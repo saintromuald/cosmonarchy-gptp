@@ -178,7 +178,7 @@ static void apply_options(BinDlg* dialog) {
 static u32 __fastcall uibool_combobox_interact(BinDlg* dialog, DialogEvent* event) {
     if (event->number_order == DialogEventType_Dialog) {
         switch (event->user) {
-            case (DialogUserType_Create): {
+            case DialogUserType_Create: {
                 dialog->flags |= BinDlgFlags::UpdateNeeded;
                 for (auto name : ui_bool_names) {
                     auto index = helper::combobox_add_item(dialog, 0, name);
@@ -189,7 +189,7 @@ static u32 __fastcall uibool_combobox_interact(BinDlg* dialog, DialogEvent* even
                     helper::generic_combobox_update(dialog);
                 }
             } break;
-            case (DialogUserType_InitChildren): {
+            case DialogUserType_InitChildren: {
                 dialog->flags |= BinDlgFlags::RemoveStyles;
                 helper::generic_combobox_interact(dialog, event);
             } break;
@@ -214,12 +214,12 @@ static void highlight_tab(GluOptionsControls control) {
 }
 
 static void options_on_init_children(BinDlg* dialog, DialogEvent* event) {
-    bindlg_load_background(dialog);
     for (auto child = dialog->child_dialog; child; child = child->next) {
         if (child->control_type == DialogControlType::ComboBox) {
             child->interaction_function = uibool_combobox_interact;
         }
     }
+    bindlg_load_background_pcx(dialog, "glue\\dynamic\\backgrounds\\options.pcx", true);
 }
 
 static u32 options_on_activate(BinDlg* dialog, DialogEvent* event) {
@@ -241,19 +241,19 @@ static u32 options_on_activate(BinDlg* dialog, DialogEvent* event) {
 static u32 __fastcall dlgproc_glu_options(BinDlg* dialog, DialogEvent* event) {
     if (event->number_order == DialogEventType_Dialog) {
         switch (event->user) {
-        case (DialogUserType_Create): {
+        case DialogUserType_Create: {
             bindlg_load_background_palette(dialog);
             g_options_bin->show_only(misc_tab);
             highlight_tab(GluOptionsControls::MiscTabHighlight);
             load_options(dialog);
             return helper::generic_dialog_interact(dialog, event);
         } break;
-        case (DialogUserType_Activate): {
+        case DialogUserType_Activate: {
             return options_on_activate(dialog, event);
         } break;
-        case (DialogUserType_Destroy): {
+        case DialogUserType_Destroy: {
         } break;
-        case (DialogUserType_InitChildren): {
+        case DialogUserType_InitChildren: {
             options_on_init_children(dialog, event);
         } break;
         }
@@ -262,9 +262,6 @@ static u32 __fastcall dlgproc_glu_options(BinDlg* dialog, DialogEvent* event) {
 }
 
 void glu_options() {
-    g_gl_glues_mode = menu_with_theme(GluTheme::PalNl);
-    g_glue_background_id = -1;
-
     g_options_bin = std::make_unique<CompositeBinDlg>("rez\\gluoptions.bin");
 
     misc_tab = g_options_bin->add_tab("rez\\options\\tab-misc.bin", 55, 95, 0);

@@ -4,7 +4,7 @@
 #include "BW/structures.h"
 #include "hooks/unit_stats/supply_hooks.h"
 #include "graphics/Font.h"
-#include "hooks/interface/mainmenu/glucustom.h" // For tFontGame_ImageData
+#include "hooks/interface/mainmenu/glucustom.h" // For g_tfontgame_image_data
 #include "player_color.h"
 #include "hooks/interface/console/console.h"
 #include "trigger_system/trigger_system.h"
@@ -86,12 +86,12 @@ static void __fastcall statres_colortext_update(BinDlg* dialog, int, int, int) {
 
         if (dialog->non_user_value & 0x10000) { // use_player_color
             g_saved_font_color = g_current_font_color;
-            g_current_font_color = (u32)&tFontGame_ImageData[304];
+            g_current_font_color = (u32)&g_tfontgame_image_data[304];
             u32 player = dialog->non_user_value >> 24;
             u32 i_0 = 0;
 
             do {
-                tFontGame_ImageData[305 + i_0] = g_player_in_game_colors[player * ColorSetSize + i_0 * 2];
+                g_tfontgame_image_data[305 + i_0] = g_player_in_game_colors[player * ColorSetSize + i_0 * 2];
             } while (++i_0 < 4);
         } else {
             helper::get_color_handle(TextColor::Green);

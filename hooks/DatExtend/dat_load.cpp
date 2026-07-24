@@ -40,7 +40,7 @@ namespace hooks {
 			helper::fatal_file_not_found(24, filename);
 		}
 		
-		SMemFree(data, "Starcraft\\SWAR\\lang\\gamedata.cpp", 402, 0);
+		helper::SMemFree(data);
 		
 		// Apply Flingy Expand patch to default units.dat file, so that flingy datatype will be consistent whether DatExt is used or not
 		if (datTable == (DatLoad*)DatExt::LoadTable::Units_Dat) {

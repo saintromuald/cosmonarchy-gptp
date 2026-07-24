@@ -358,7 +358,7 @@ namespace hooks
 		__asm {
 			CMP		AL, 0x1
 			JNE		offset isNewColor
-			CMP		dword ptr ds: [0x006CE0E8], offset tFontGame_ImageData + 0x130 // Use saved font pColor if savedFontColor is also pColor.
+			CMP		dword ptr ds: [0x006CE0E8], offset g_tfontgame_image_data + 0x130 // Use saved font pColor if savedFontColor is also pColor.
 			JNE		offset skip_0
 			ADD		dword ptr ds: [0x006CE0E8], 8
 			skip_0:
@@ -390,7 +390,7 @@ namespace hooks
 
 		off_2:
 			DEC		AL
-			LEA		EAX, [EAX * 8 + tFontGame_ImageData] // Set new font color to currentFontColor.
+			LEA		EAX, [EAX * 8 + g_tfontgame_image_data] // Set new font color to currentFontColor.
 			MOV		ds: [0x006CE0C0], EAX
 			RETN
 
@@ -422,7 +422,7 @@ namespace hooks
 			MOV		ECX, ds: [0x006CE0C0] // Save currentFontColor to savedFontColor.
 			MOV		ds: [0x006CE0E8], ECX
 			PUSH	EDX
-			MOV		EDX, offset tFontGame_ImageData + 0x130 // Set player-colored font to currentFontColor.
+			MOV		EDX, offset g_tfontgame_image_data + 0x130 // Set player-colored font to currentFontColor.
 			MOV		ds: [0x006CE0C0], EDX
 			MOVZX	EAX, AL
 			LEA		EAX, [EAX * 8 + 0x00581D74] // Unit color table
@@ -435,7 +435,7 @@ namespace hooks
 			INC		EDX
 			MOV		BL, [EAX]
 			MOV[EDX], BL
-			CMP		EDX, offset tFontGame_ImageData + 0x134
+			CMP		EDX, offset g_tfontgame_image_data + 0x134
 			JNE		offset loop_0
 			POP		EBX
 			POP		EDX
@@ -464,7 +464,7 @@ namespace hooks
 			MOV		CL, ds: [0x006D5DE0] // dword_6D5DE0
 			TEST	CL, CL
 			JNE		offset off_2000A
-			CMP		dword ptr ds: [0x006CE0C0], offset tFontGame_ImageData[0x18] // Make grey color override subsequent tags.
+			CMP		dword ptr ds: [0x006CE0C0], offset g_tfontgame_image_data[0x18] // Make grey color override subsequent tags.
 			JE		off_2000A
 
 		off_4:

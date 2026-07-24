@@ -1462,6 +1462,8 @@ BW_ARRAY(GluChatEntry, 12, g_chat_slot_entries, 0x0068ecb0);
 
 BW_ARRAY(char, 260, g_version_string, 0x005122c8);
 
+BW_REF(GrpFile*, g_current_cursor, 0x00597394);
+
 #undef BW_DATA
 #undef BW_DATA_REF
 #pragma pack()

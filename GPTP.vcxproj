@@ -256,6 +256,7 @@
     <ClCompile Include="hooks\interface\mainmenu\custom_glues_inject.cpp" />
     <ClCompile Include="hooks\interface\mainmenu\glu_chat.cpp" />
     <ClCompile Include="hooks\interface\mainmenu\glu_connection.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\sample_custom_glu.cpp" />
     <ClCompile Include="hooks\interface\mainmenu\glu_join.cpp" />
     <ClCompile Include="hooks\interface\mainmenu\glu_join_crownlink.cpp" />
     <ClCompile Include="hooks\interface\mainmenu\glu_login.cpp" />

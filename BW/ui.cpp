@@ -1,5 +1,8 @@
 #include "ui.h"
 
+// For g_tfontgame_image_data
+#include "hooks/interface/mainmenu/glucustom.h"
+
 std::vector<BinDlg*> get_children_by_index(BinDlg* parent, s16 index) {
     std::vector<BinDlg*> output;
     if (!parent) return output;
@@ -201,18 +204,24 @@ MenuId::Enum menu_with_theme(GluTheme theme) {
     return MenuId::GlueChatroom;
 }
 
-void bindlg_load_background(BinDlg* dialog, const char* filename) {
+void bindlg_load_background_pcx(BinDlg* dialog, const char* filename, bool apply_dynamic_theme) {
     if (dialog->bitmap.buffer) return;
     load_pcx_to_bitmap(filename, dialog->bitmap, &g_init_palette);
     g_background = dialog->bitmap;
     g_background_palette = g_init_palette;
+    auto original_glues = g_gl_glues_mode;
+    g_gl_glues_mode = g_gl_glues_mode > 25 ? MenuId::GlueSelConn : g_gl_glues_mode;
     helper::register_menu_functions(0, dialog, 0, 0);
+    g_gl_glues_mode = original_glues;
+    if (apply_dynamic_theme) {
+        DynamicTheme::instance().apply();
+    }
 }
 
 void change_menu(bool force_refresh) {
     if (force_refresh || g_glue_background_id != background_id((MenuId::Enum)g_gl_glues_mode)) {
         if (g_background.buffer) {
-            SMemFree(g_background.buffer, __FILE__, __LINE__, 0);
+            SMemFree(g_background.buffer);
         }
         g_background = {};
         g_background_palette = {};
@@ -232,7 +241,7 @@ void initialize_dialog(BinDlg* dialog, BinDlgProc dialogproc) { // 00419d20
     }
 
     const auto area_size = dialog->DialogBoxDC_0x36.bitmap.width * dialog->DialogBoxDC_0x36.bitmap.height;
-    dialog->DialogBoxDC_0x36.bitmap.buffer = (u8*)SMemAlloc(area_size, __FILE__, __LINE__, 0);
+    dialog->DialogBoxDC_0x36.bitmap.buffer = reinterpret_cast<u8*>(SMemAlloc(area_size));
 
     dialog->index = 0;
 
@@ -362,4 +371,46 @@ void CompositeBinDlg::show_only(u32 i) {
         if (t == i) show_tab(t);
         else        hide_tab(t);
     }
+}
+
+DynamicTheme::DynamicTheme() {
+    // Based on 0x004ddf90 load_cursor() - converts relative frame offsets to absolute pointers
+    u8* data = reinterpret_cast<u8*>(m_cursor_grp.data());
+    u16 frame_count = *reinterpret_cast<u16*>(data) & 0x7fff;
+    for (u16 i = 0; i < frame_count; ++i) {
+        u32* data_off = reinterpret_cast<u32*>(data + 6 + i * 8 + 4);
+        *data_off = reinterpret_cast<u32>(data) + (*data_off & 0x7fffffff);
+    }
+    Bitmap bitmap{};
+    load_pcx_to_bitmap("glue\\dynamic\\tfont.pcx", bitmap, nullptr);
+    if (bitmap.width * bitmap.height != TFontCopyCount) {
+        helper::fatal_file_not_found(SErrGetLastError(), "glue\\dynamic\\tfont.pcx");
+    }
+    std::copy_n(bitmap.buffer, TFontCopyCount, m_tfont_indices.begin());
+    SMemFree(bitmap.buffer);
+}
+
+DynamicTheme::~DynamicTheme() {
+    if (m_dialog_theme && m_dialog_theme->grp_handle) {
+        SMemFree(m_dialog_theme->grp_handle);
+        m_dialog_theme->grp_handle = nullptr;
+    }
+    if (m_dialog_theme) {
+        SMemFree(m_dialog_theme);
+    }
+}
+
+void DynamicTheme::apply() {
+    if (!m_dialog_theme) {
+        m_dialog_theme = helper::dialog_grp_construct("glue\\dynamic\\dlg.grp", __FILE__, __LINE__);
+    } else {
+        helper::apply_dialog_theme(m_dialog_theme);
+    }
+
+    if (g_current_cursor != m_cursor_grp.data()) {
+        g_current_cursor = m_cursor_grp.data();
+        helper::refresh_cursor();
+    }
+
+    std::copy_n(m_tfont_indices.begin(), TFontCopyCount, g_tfontgame_image_data);
 }

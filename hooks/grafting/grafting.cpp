@@ -183,7 +183,7 @@ namespace hooks {
 		if (data) {
 			inject_grafting_data(data, GraftType::units_req);
 			if (units_req) {
-				SMemFree(units_req, "grafting.cpp", __LINE__, 0);
+				helper::SMemFree(units_req);
 			}
 			units_req = (REQ_SCRIPT*)data;
 		}
@@ -192,7 +192,7 @@ namespace hooks {
 		if (data) {
 			inject_grafting_data(data, GraftType::upgrades_req);
 			if (upgrades_req) {
-				SMemFree(upgrades_req, "grafting.cpp", __LINE__, 0);
+				helper::SMemFree(upgrades_req);
 			}
 			upgrades_req = (REQ_SCRIPT*)data;
 		}
@@ -201,7 +201,7 @@ namespace hooks {
 		if (data) {
 			inject_grafting_data(data, GraftType::research_req);
 			if (research_req) {
-				SMemFree(research_req, "grafting.cpp", __LINE__, 0);
+				helper::SMemFree(research_req);
 			}
 			research_req = (REQ_SCRIPT*)data;
 		}
@@ -210,7 +210,7 @@ namespace hooks {
 		if (data) {
 			inject_grafting_data(data, GraftType::tech_req);
 			if (tech_req) {
-				SMemFree(tech_req, "grafting.cpp", __LINE__, 0);
+				helper::SMemFree(tech_req);
 			}
 			tech_req = (REQ_SCRIPT*)data;
 		}
@@ -219,7 +219,7 @@ namespace hooks {
 		if (data) {
 			inject_grafting_data(data, GraftType::orders_req);
 			if (orders_req) {
-				SMemFree(orders_req, "grafting.cpp", __LINE__, 0);
+				helper::SMemFree(orders_req);
 			}
 			orders_req = (REQ_SCRIPT*)data;
 		}
@@ -255,7 +255,7 @@ namespace hooks {
 		memcpy(stat_info_new, stat_info, unit_stat_count * sizeof(UnitStatFuncArrayEntry));
 
 		// Remove file buffer
-		SMemFree(data, "grafting.cpp", __LINE__, 0);
+		helper::SMemFree(data);
 
 		// Convert function ID's to pointers
 		for (u32 i = 0; i < button_count; i++) {

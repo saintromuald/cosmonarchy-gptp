@@ -101,13 +101,16 @@ namespace helper {
     // Generic modal text entry with custom prompt
     BW_FUNC(0x004b6e50, BOOL __stdcall, glu_modal_string_prompt, const char* prompt, char* output, u32 output_size, const char* disallowed_chars);
 
+    BW_FUNC(0x004be120, void __stdcall, refresh_cursor);
+
     void glu_create(bool multiplayer); // 004af6d0
 
     bool has_money_can_make(Unit* builder, u32 unit_to_build);
 
     // Console functions
-    s32 dialog_grp_construct(const char* filename, const char* log_filename, u32 log_line);
+    DialogTheme* dialog_grp_construct(const char* filename, const char* log_filename, u32 log_line);
     void* load_graphic(const char* filename, u32* bytes_read, const char* log_filename, u32 log_line);
+    void apply_dialog_theme(DialogTheme* theme);
 
     s32 rand_func();
     bool unit_hp_below_33_percent(Unit* unit);
