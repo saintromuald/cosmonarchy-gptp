@@ -88,6 +88,7 @@ void upload_last_replay() {
     std::vector<char> replay{std::istreambuf_iterator<char>(replay_stream), std::istreambuf_iterator<char>()};
 
     std::vector<char> desync;
+    std::vector<char> randoms;
     if (g_globals->had_desync) {
         std::stringstream desync_file;
         for (const auto* logger : gptp::g_loggers) {
@@ -95,12 +96,15 @@ void upload_last_replay() {
             desync_file << logger->buffered_string();
             desync_file << "\n\n";
         }
-        std::string str = desync_file.str();
-        desync.assign(str.begin(), str.end());
+        std::string desync_str = desync_file.str();
+        desync.assign(desync_str.begin(), desync_str.end());
+
+        std::string randoms_str = bw::g_random_logger.buffered_string();
+        randoms.assign(randoms_str.begin(), randoms_str.end());
     }
 
-    std::async([replay = std::move(replay), desync = std::move(desync)] {
-        g_replay_kraken.upload_replay(g_globals->uuid_rand, bw::get_commit_hash(), replay, desync);
+    std::async([replay = std::move(replay), desync = std::move(desync), randoms = std::move(randoms)] {
+        g_replay_kraken.upload_replay(g_globals->uuid_rand, bw::get_commit_hash(), replay, desync, randoms);
     });
 }
 

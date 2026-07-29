@@ -13,6 +13,10 @@ struct UprisingSpawnerInfo {
 	std::vector<UprisingWaveUnits> repeating_waves;
 };
 
+inline std::ostream& operator<<(std::ostream& os, const UprisingSpawnerInfo& info) {
+    return os << info.name;
+}
+
 struct UprisingSpawner {
 	const UprisingSpawnerInfo* info;
 

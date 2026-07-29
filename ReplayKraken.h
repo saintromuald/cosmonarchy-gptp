@@ -10,12 +10,13 @@ using Json = nlohmann::json;
 
 struct InsertMatchRequest {
     // NOTE: camelCase required for macro to work as intended
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(InsertMatchRequest, matchUuid, gameVersion, replayFile, desyncFile);
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(InsertMatchRequest, matchUuid, gameVersion, replayFile, desyncFile, randomsFile);
 
     std::string matchUuid;
     std::string gameVersion;
     std::string replayFile;
     std::string desyncFile;
+    std::string randomsFile;
 };
 
 class ReplayKraken {
@@ -25,7 +26,7 @@ public:
     bool authenticate();
 
     bool upload_replay(const std::vector<char>& uuid_data, const std::string& game_version,
-        const std::vector<char>& replay_file, const std::vector<char>& desync_file);
+        const std::vector<char>& replay_file, const std::vector<char>& desync_file, const std::vector<char>& randoms_file);
 
     std::string token() const { return m_token; }
     std::string username() const { return m_username; }

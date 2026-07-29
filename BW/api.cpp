@@ -994,40 +994,6 @@ void refresh_screen() {
     memset(g_refresh_regions, 1, 1200);
 }
 
-static u32 log_random(gptp::GameLogger& logger, u32 value, std::source_location src, u32 old_last_random) {
-//  if (g_config.log_randoms) {
-//      logger << src.function_name() << "\n";
-//      logger << src.file_name() << ":" << src.line() << "\n";
-//      logger << "g_last_random_number was " << old_last_random << "\n";
-//      logger << "Randomized " << value << " on frame " << g_elapsed_time_frames << "\n\n";
-//  }
-    return value;
-}
-
-u32 rand_between(u32 min, u32 max, std::source_location src) {
-    assert(min <= max);
-    return min + ((max - min + 1) * random(src) >> 15);
-}
-
-u32 rand_between_local(u32 min, u32 max, std::source_location src) {
-    assert(min <= max);
-    struct LocalRandomContext {
-        std::random_device rd;
-        std::mt19937 mt{rd()};
-    };
-    static LocalRandomContext context;
-    return log_random(gptp::g_local_random_logger, context.mt() % (max - min + 1) + min, src, 3);
-}
-
-u16 random(std::source_location src) {
-    if (g_is_in_game_loop) {
-        u32 old_last_random = g_last_random_number;
-        g_last_random_number = 22695477 * g_last_random_number + 1;
-        return log_random(gptp::g_sync_random_logger, (g_last_random_number >> 16) % 32768, src, old_last_random);
-    }
-    return 0;
-}
-
 void refresh_console() { // 004C36C0
     g_force_button_refresh = 1;
     g_portrait_redraw = 1;
