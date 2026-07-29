@@ -7,8 +7,8 @@ namespace hooks {
     // that was validated through spells_recall_action_on_target_in_range.
     // Do the actual unit movement. -GPTP
     void spells_recall_action_on_valid_target_for_recall(Unit* target, Unit* caster) { // 004942D0
-        Point16 previous_pos = {};
-        Point16 new_pos = {};
+        v2u16 previous_pos = {};
+        v2u16 new_pos = {};
         previous_pos.x = target->sprite->position.x;
         previous_pos.y = target->sprite->position.y;
 
@@ -74,16 +74,16 @@ namespace hooks {
         u32 index = unit_ext.values[ValueDidactChannelIndex] % 8;
         unit_ext.values[ValueDidactChannelIndex] += 1;
 
-        Point16 source_origin = {unit->position.x, unit->position.y};
-        Point16 target_origin = unit_ext.recall_pos;
+        v2u16 source_origin = {unit->position.x, unit->position.y};
+        v2u16 target_origin = unit_ext.recall_pos;
 
-        Point16 source = source_origin;
-        Point16 target = target_origin;
+        v2u16 source = source_origin;
+        v2u16 target = target_origin;
         source.y -= 1 * 32;
         target.y -= 1 * 32;
 
-        source = bw::rotate_point(source_origin, source, index * (360 / 6));
-        target = bw::rotate_point(target_origin, target, index * (360 / 6));
+        source = source.rotate(source_origin, fp32(index * (360 / 6)));
+        target = target.rotate(target_origin, fp32(index * (360 / 6)));
 
         bw::create_and_init_thingy(SpriteId::Recall_Field, source.x, source.y, unit->player, unit->sprite->elevation - 1);
         bw::create_and_init_thingy(SpriteId::Recall_Field, target.x, target.y, unit->player, unit->sprite->elevation + 1);

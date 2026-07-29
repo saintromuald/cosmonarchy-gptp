@@ -28,9 +28,9 @@ namespace hooks {
 
     // Perform the Nydus teleport effect on an unit that validated the conditions within the orders_enter_nydus function
     void enter_nydus_effect(Unit* unit, Unit* nydus) { // 004EA180
-        Point16 old_pos = { unit->position.x, unit->position.y };
-        Point16 aimed_pos = {(nydus->building.nydus_exit)->position.x, (nydus->building.nydus_exit)->position.y};
-        Point16 final_pos = {};
+        v2u16 old_pos = { unit->position.x, unit->position.y };
+        v2u16 aimed_pos = {(nydus->building.nydus_exit)->position.x, (nydus->building.nydus_exit)->position.y};
+        v2u16 final_pos = {};
         bw::prepare_unit_move(unit, true);
         helper::move_unit(unit, aimed_pos.x, aimed_pos.y);
         if (bw::check_unit_collision_pos(unit, &aimed_pos, &final_pos, 0, false, 0)) {

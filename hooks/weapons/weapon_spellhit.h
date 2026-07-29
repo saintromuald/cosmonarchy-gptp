@@ -8,8 +8,8 @@
 // -GPTP
 
 namespace hooks {
-	void irradiate_hit(Unit* attacker, Point16 target, u8 attacking_player_id);		// 00454E00
-	void irradiate_hit_internal(Unit* attacker, Point16 target, u8 attacking_player_id);
+	void irradiate_hit(Unit* attacker, v2u16 target, u8 attacking_player_id);		// 00454E00
+	void irradiate_hit_internal(Unit* attacker, v2u16 target, u8 attacking_player_id);
 	void optical_flare_hit(Unit* target, u32 attacking_player_id, Bullet* bullet);	// 00455170
 	void restore_hit(Unit* target, Bullet* bullet);									// 00455230
 	void lockdown_hit(Unit* target, u8 timer, Bullet* bullet);						// 00455380
@@ -26,7 +26,7 @@ namespace hooks {
 	void maelstrom_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet);				// 004F6850
 	void mind_control_hit(Unit* attacker, Unit* target);							// 004F6910
 	void stasis_field_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet);			// 004F6A80
-	void stasis_field_hit_internal(Unit* attacker, Point16 position, Bullet* bullet);
+	void stasis_field_hit_internal(Unit* attacker, v2u16 position, Bullet* bullet);
 	void disruption_web_hit(u32 attacking_player_id, s32 x, s32 y, Bullet* bullet);	// 004F6AF0
 	Unit* create_disruption_web(u32 player, s32 x, s32 y);
 	s32 ensnare_proc(Unit* target, Unit* attacker);									// 004F46C0

@@ -55,7 +55,7 @@ namespace hooks {
         return x < 0.0fp ? -1.0fp : x > 0.0fp ? 1.0fp : 0.0fp;
     }
 
-    static Point16 find_worker_spawn_positions(s32 town_center_id, const u16& start_x, const u16& start_y, bool& horizontal) {
+    static v2u16 find_worker_spawn_positions(s32 town_center_id, const u16& start_x, const u16& start_y, bool& horizontal) {
         s32 sum_x = 0;
         s32 sum_y = 0;
         u32 count = 0;
@@ -65,7 +65,7 @@ namespace hooks {
         unit_finder.for_each([&](Unit* unit) {
             if (unit_id_is_minerals(unit->id) && bw::get_active_tile_at_coords(unit->position.x, unit->position.y)->ground_height == cliff_level)
             {
-                Point16 pos = unit->position;
+                v2u16 pos = unit->position;
                 sum_x += static_cast<s32>(pos.x) - static_cast<s32>(start_x);
                 sum_y += static_cast<s32>(pos.y) - static_cast<s32>(start_y);
                 count += 1;
@@ -129,7 +129,7 @@ namespace hooks {
             offset_y = units_dat::unit_bounds[town_center_id].bottom * distance_multiplier * 1.5fp;
             horizontal = false;
         }
-        return Point16{(u16)(start_x + offset_x), (u16)(start_y + offset_y)};
+        return v2u16{(u16)(start_x + offset_x), (u16)(start_y + offset_y)};
     }
 
     void create_initial_melee_units() { // 0049DA40
@@ -174,9 +174,9 @@ namespace hooks {
             if (worker_id == UnitId::None) {
                 continue;
             }
-            Point16 start_pos = g_start_positions[player];
+            v2u16 start_pos = g_start_positions[player];
             bool horizontal = true;
-            Point16 pos = find_worker_spawn_positions(townhall_id, start_pos.x, start_pos.y, horizontal);
+            v2u16 pos = find_worker_spawn_positions(townhall_id, start_pos.x, start_pos.y, horizontal);
 
             s32 dx = 0;
             s32 dy = 0;

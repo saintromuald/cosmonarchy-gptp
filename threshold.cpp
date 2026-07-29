@@ -499,13 +499,13 @@ struct FraudInfo {
 #define FraudRallyCap 100
 #define FraudUnitCap 20
 struct FraudSpawnSource {
-	Point16 pos;
+	v2u16 pos;
 	u32 rally_count;
-	Point16 rallies[FraudRallyCap];
+	v2u16 rallies[FraudRallyCap];
 };
 
 struct FraudSpawnLocation {
-	Point16 pos;
+	v2u16 pos;
 	u32 source_count;
 	FraudSpawnSource sources[FraudSourceCap];
 };
@@ -597,7 +597,7 @@ static FraudSpawnLocation* get_random_spawn() {
 	return &threshold.spawns[best_location];
 }
 
-static FraudSpawnLocation* get_closest_spawn(Point16 pos) {
+static FraudSpawnLocation* get_closest_spawn(v2u16 pos) {
 	FraudSpawnLocation* closest_loc = 0;
 	f32 lowest_distance = 999999999;
 	for (u32 i = 0; i < threshold.spawn_count; ++i) {
@@ -611,7 +611,7 @@ static FraudSpawnLocation* get_closest_spawn(Point16 pos) {
 	return closest_loc;
 }
 
-static FraudSpawnSource* get_closest_source(FraudSpawnLocation* location, Point16 pos) {
+static FraudSpawnSource* get_closest_source(FraudSpawnLocation* location, v2u16 pos) {
 	FraudSpawnSource* closest_loc = 0;
 	f32 lowest_distance = 999999999;
 	for (u32 i = 0; i < location->source_count; ++i) {
@@ -633,7 +633,7 @@ bool init_threshold_spawn(CHKUnit* unit, u32 flags) {
 		return false;
 	}
 
-	Point16 position = { unit->x, unit->y };
+	v2u16 position = { unit->x, unit->y };
 	switch (unit->unit_id) {
 		case UnitId::TownCenterMarker: {
 			if (!(flags & ChkUnitFlags_Cloaked)) {
@@ -665,7 +665,7 @@ bool init_threshold_spawn(CHKUnit* unit, u32 flags) {
 
 static void init_threshold_spawns() {
 	for (u32 i = 0; i < sources_positions.count; ++i) {
-		Point16 position = sources_positions.positions[i];
+		v2u16 position = sources_positions.positions[i];
 		FraudSpawnLocation* spawn = get_closest_spawn(position);
 		if (spawn) {
 			if (spawn->source_count < FraudSourceCap) {
@@ -676,7 +676,7 @@ static void init_threshold_spawns() {
 		}
 	}
 	for (u32 i = 0; i < rally_positions.count; ++i) {
-		Point16 position = rally_positions.positions[i];
+		v2u16 position = rally_positions.positions[i];
 		FraudSpawnLocation* spawn = get_closest_spawn(position);
 		if (spawn) {
 			FraudSpawnSource* source = get_closest_source(spawn, position);
@@ -1000,7 +1000,7 @@ static bool place_fraud(u32 player, u32 fraud_class, bool initial) {
 			clear_player_slot(player, false);
 
 			{
-				Point16 pos = threshold.sequence[player].location->pos;
+				v2u16 pos = threshold.sequence[player].location->pos;
 			//	Unit* augur = bw::create_unit_in_game(UnitId::ProtossAugur, player, pos.x, pos.y);
 			//	if (augur) {
 			//		augur->user_action_flags |= 4;
@@ -1352,8 +1352,8 @@ static void spawn_sequence_units() {
 					FraudSpawnUnit* spawn_unit = &sequence->spawn_array.units[sequence->unit_index];
 					u32 unit_id = spawn_unit->unit_id;
 					if (source->rally_count) {
-						Point16 source_pos = source->pos;
-						Point16 rally = source->rallies[sequence->rally_index % source->rally_count];
+						v2u16 source_pos = source->pos;
+						v2u16 rally = source->rallies[sequence->rally_index % source->rally_count];
 
 					//	Unit* augur = bw::create_unit_in_game(UnitId::ProtossAugur, player, source_pos.x, source_pos.y);
 					//	if (augur) {

@@ -10,7 +10,7 @@ bool range_match(Unit* unit, u32 r, u32 context, const std::vector<u16>& allowed
 	return a != nullptr;
 }
 
-u32 cosmonarchy_unit_count(Unit* unit, Point16 pos, s32 r, u32 flags, const std::vector<u16>& unit_ids) {
+u32 cosmonarchy_unit_count(Unit* unit, v2u16 pos, s32 r, u32 flags, const std::vector<u16>& unit_ids) {
 	auto condition = cosmonarchy_finder_match(unit, flags, unit_ids);
 	bw::UnitFinder units_in_splash(pos.x - r, pos.y - r,
 		pos.x + r, pos.y + r);
@@ -38,7 +38,7 @@ Unit* range_match_unit(Unit* unit, u32 r, u32 context, const std::vector<u16>& a
 	return a;
 }
 
-Unit* range_match_position(Vec32 position, u32 r, u32 context, const std::vector<u16>& allowed_ids) {
+Unit* range_match_position(v2s32 position, u32 r, u32 context, const std::vector<u16>& allowed_ids) {
 	bw::UnitFinder units_in_splash(position.x - r, position.y - r, position.x + r, position.x + r);
 	auto a = bw::UnitFinder::get_nearest_target(
 		position.x - r,

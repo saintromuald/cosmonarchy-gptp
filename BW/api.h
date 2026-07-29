@@ -33,8 +33,6 @@ using namespace magic_enum::bitwise_operators;
 #define BWTC_RED		"\006"
 #define BWTC_WHITE		"\004"
 
-constexpr auto PI = std::numbers::pi_v<f64>;
-
 #define HarvestTimer 1.75secs
 #define HarvestTimerDepleted 3.75secs
 #define OrderQueueTimer 0
@@ -314,15 +312,15 @@ bool is_zerg_building_morph_source(u16 id);
 bool is_larval_egg(Unit* unit);
 bool is_zerg_egg_new(Unit* unit, bool allow_larval_eggs = true, bool allow_larvae = true, u16 explicit_unit_id = UnitId::None);
 bool is_zerg_egg(u16 id, bool allow_normal_eggs = true, bool allow_larvae = true);
-Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt, Point16 origin_pt = {});
+Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, v2u16 target_pt, v2u16 origin_pt = {});
 Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, u16 x, u16 y);
 std::string read_samase_file(char* name);
-bool teleport_to_point(Unit* unit, Point16 target, u16 sprite_id = 0, bool preserve_order = false);
+bool teleport_to_point(Unit* unit, v2u16 target, u16 sprite_id = 0, bool preserve_order = false);
 bool teleport_to_unit(Unit* unit, Unit* target, u32 radius, const TeleportOptions& options, u16 sprite_id = 0);
 Thingy* create_and_init_thingy(u32 spriteId, s16 x, s16 y, u32 player = 11, s32 elevation_level = 11);
-Point16 rotate_point(Point16 anchor, Point16 point, f64 angle_degrees);
-Vec32 rotate_point(Vec32 anchor, Vec32 point, f64 angle_degrees);
-Vec32f rotate_point(Vec32f anchor, Vec32f point, f64 angle_degrees);
+v2u16 rotate_point(v2u16 anchor, v2u16 point, fp32 angle_degrees);
+v2s32 rotate_point(v2s32 anchor, v2s32 point, fp32 angle_degrees);
+v2 rotate_point(v2 anchor, v2 point, fp32 angle_degrees);
 
 /// @name Output functions
 //////////////////////////////////////////////////////////////// @{
@@ -404,28 +402,28 @@ u16 get_tech_user_error_message(Unit* target, u8 casting_player, u16 tech_id);
 /// (xStart, yStart) and ends at (xEnd, yEnd).
 s32 get_angle(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd);
 
-inline s32 get_angle(Point16 start, Point16 end) {
+inline s32 get_angle(v2u16 start, v2u16 end) {
     return get_angle(start.x, start.y, end.x, end.y);
 }
 
-inline s32 get_angle(Vec32 start, Vec32 end) {
+inline s32 get_angle(v2s32 start, v2s32 end) {
     return get_angle(start.x, start.y, end.x, end.y);
 }
 
-inline f64 bw_angle_to_normal(s32 bw_angle);
+inline fp32 bw_angle_to_normal(s32 bw_angle);
 /// StarCraft's internal function used to quickly calculate distances between
 /// two points (x1, y1) and (x2, y2;).
 /// Warning: This function is inaccurate for long distances.
 u32 distance_between(s32 x1, s32 y1, s32 x2, s32 y2);
 
-inline u32 distance_between(Point16 p1, Point16 p2) {
+inline u32 distance_between(v2u16 p1, v2u16 p2) {
     return distance_between(p1.x, p1.y, p2.x, p2.y);
 }
 
 /// Distance, but rectangular instead of circular (max of x dist and y dist)
 u32 distance_manhattan_between(s32 x1, s32 y1, s32 x2, s32 y2);
 
-inline u32 distance_manhattan_between(Point16 p1, Point16 p2) {
+inline u32 distance_manhattan_between(v2u16 p1, v2u16 p2) {
     return distance_manhattan_between(p1.x, p1.y, p2.x, p2.y);
 }
 
@@ -436,23 +434,6 @@ s32 get_polar_x(s32 distance, u8 angle);
 /// Calculates the Y Cartesian coordinate from the given polar coordinates
 /// (distance, angle), using StarCraft's internal data.
 s32 get_polar_y(s32 distance, u8 angle);
-
-Point16 polar_point(Point16 center, f32 rads, f32 distance);
-Point16 random_polar_point(Point16 center, f32 max_distance);
-
-inline Point16 clamp_point(Point16 point) {
-    return {
-        std::clamp<u16>(point.x, 0, g_map_tile_size->width * 32),
-        std::clamp<u16>(point.y, 0, g_map_tile_size->height * 32),
-    };
-}
-
-inline Point16 to_point16(Vec32f vec) {
-    return {
-        (u16)std::clamp<f32>(vec.x, 0, g_map_tile_size->width * 32),
-        (u16)std::clamp<f32>(vec.y, 0, g_map_tile_size->height * 32),
-    };
-}
 
 inline Box16 clamp_box16(Box16 rect) {
     return {
@@ -472,129 +453,60 @@ inline Box32 clamp_box32(Box32 rect) {
     };
 }
 
-inline Vec32f normalize(Vec32 vec) {
-    f32 dist = sqrt(pow(vec.x, 2) + pow(vec.y, 2));
-    if (!dist) {
-        return {};
-    }
-    return {vec.x / dist, vec.y / dist};
+inline v2 facing_dir(Unit* unit) {
+    return v2{
+        g_angle_distance[unit->current_direction_1].x / 256fp,
+        g_angle_distance[unit->current_direction_1].y / 256fp,
+    }.norm();
 }
 
-inline Vec32f normalize(Vec32f vec) {
-    f32 dist = sqrt(pow(vec.x, 2) + pow(vec.y, 2));
-    if (!dist) {
-        return {};
-    }
-    return {vec.x / dist, vec.y / dist};
+inline v2 facing_dir(Bullet* bullet) {
+    return v2{
+        g_angle_distance[bullet->current_direction_1].x / 256fp,
+        g_angle_distance[bullet->current_direction_1].y / 256fp,
+    }.norm();
 }
 
-inline Vec32 vec_between(Point16 source, Point16 target) {
-    return {
-        target.x - source.x,
-        target.y - source.y,
-    };
+inline fp32 deg_to_rad(fp32 degrees) {
+    return degrees * fp32::pi() / 180;
 }
 
-inline Vec32f vecf_between(Point16 source, Point16 target) {
-    return {
-        (f32)target.x - (f32)source.x,
-        (f32)target.y - (f32)source.y,
-    };
+inline fp32 rad_to_deg(fp32 radians) {
+    return radians * 180 / fp32::pi();
 }
 
-inline Vec32f vecf_between(Vec32f source, Vec32f target) {
-    return {
-        target.x - source.x,
-        target.y - source.y,
-    };
+inline fp32 deg_to_dot(fp32 angle) {
+    return fpm::cos(deg_to_rad(angle));
 }
 
-inline Vec32f dir_between(Point16 source, Point16 target) {
-    return normalize(vecf_between(source, target));
+inline fp32 dot_to_degree(fp32 dot) {
+    return rad_to_deg(fpm::acos(dot));
 }
 
-inline Vec32f dir_between(Vec32f source, Vec32f target) {
-    return normalize(vecf_between(source, target));
-}
-
-inline f32 distance_between(Vec32f a, Vec32f b) {
-    return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
-}
-
-inline Vec32f facing_dir(Unit* unit) {
-    return normalize(Vec32f{
-        g_angle_distance[unit->current_direction_1].x / 256.0f,
-        g_angle_distance[unit->current_direction_1].y / 256.0f,
-    });
-}
-
-inline Vec32f facing_dir(Bullet* bullet) {
-    return normalize(Vec32f{
-        g_angle_distance[bullet->current_direction_1].x / 256.0f,
-        g_angle_distance[bullet->current_direction_1].y / 256.0f,
-    });
-}
-
-inline f32 deg_to_rad(f32 degrees) {
-    return degrees * PI / 180;
-}
-
-inline f32 rad_to_deg(f32 radians) {
-    return radians * 180 / PI;
-}
-
-inline f32 deg_to_dot(f32 angle) {
-    return cosf(deg_to_rad(angle));
-}
-
-inline f32 dot_to_degree(f32 dot) {
-    return rad_to_deg(acosf(dot));
-}
-
-inline f32 dot_product(Vec32f a, Vec32f b) {
-    return a.x * b.x + a.y * b.y;
-}
-
-inline f32 dot_norm(Vec32f a, Vec32f b) {
-    return dot_norm(normalize(a), normalize(b));
-}
-
-inline f32 determinant(Vec32f a, Vec32f b) {
-    return a.x * b.y - a.y * b.x;
-}
-
-inline f32 determinant_norm(Vec32f a, Vec32f b) {
-    return determinant_norm(normalize(a), normalize(b));
-}
-
-inline Vec32f vec_perpendicular(Vec32f vec) {
+inline v2 vec_perpendicular(v2 vec) {
     return {-vec.y, vec.x};
 }
 
-inline Vec32f vec_reversed(Vec32f vec) {
+inline v2 vec_reversed(v2 vec) {
     return {-vec.x, -vec.y};
 }
 
-inline bool unit_is_facing(Unit* unit, Point16 position) {
-    Vec32f angle = facing_dir(unit);
-    Vec32f dir = dir_between(unit->position, position);
-    f32 dot = dot_product(angle, dir);
-    return dot >= deg_to_dot(120.0 / 2);
+inline bool unit_is_facing(Unit* unit, v2u16 position) {
+    v2 angle = facing_dir(unit);
+    v2 dir = unit->position.dir_to(position);
+    fp32 dot = angle.dot(dir);
+    return dot >= deg_to_dot(120fp / 2);
 }
 
-inline bool unit_is_exposed_to(Unit* unit, Point16 position) {
-    Vec32f angle = facing_dir(unit);
-    Vec32f dir = dir_between(unit->position, position);
-    f32 dot = dot_product(angle, dir);
-    return dot <= deg_to_dot(120.0 / 2);
+inline bool unit_is_exposed_to(Unit* unit, v2u16 position) {
+    v2 angle = facing_dir(unit);
+    v2 dir = unit->position.dir_to(position);
+    fp32 dot = angle.dot(dir);
+    return dot <= deg_to_dot(120fp / 2);
 }
 
-inline f32 vec_length(Vec32 vec) {
-    return sqrt(pow(vec.x, 2) + pow(vec.y, 2));
-}
-
-inline f32 vec_length(Vec32f vec) {
-    return sqrt(pow(vec.x, 2) + pow(vec.y, 2));
+inline fp32 vec_length(v2 vec) {
+    return vec.len();
 }
 
 //////////////////////////////////////////////////////////////// @}
@@ -730,7 +642,7 @@ inline ActiveTile* get_active_tile_at_coords(u32 x, u32 y) {
     return &(*g_active_tile_array)[(x / 32) + (y / 32) * g_map_tile_size->width];
 }
 
-inline ActiveTile* get_active_tile_at_coords(Point16 point) {
+inline ActiveTile* get_active_tile_at_coords(v2u16 point) {
     return get_active_tile_at_coords(point.x, point.y);
 }
 
@@ -742,7 +654,7 @@ inline ActiveTile& get_tile_at_coords(u32 x, u32 y) {
     return (*g_active_tile_array)[(x / 32) + (y / 32) * g_map_tile_size->width];
 }
 
-inline ActiveTile& get_tile_at_coords(Point16 point) {
+inline ActiveTile& get_tile_at_coords(v2u16 point) {
     return get_tile_at_coords(point.x, point.y);
 }
 
@@ -801,7 +713,7 @@ void prepare_unit_move_custom(Unit* unit);
 ///
 /// @return True if the unit does not collide with other units, or can be moved
 ///         to a nearby non-colliding position.
-bool check_unit_collision_pos(Unit* unit, const Point16* in_pos, Point16* out_pos, Box16* move_area = 0, bool hide_error_message = false, u32 some_flag = 0);
+bool check_unit_collision_pos(Unit* unit, const v2u16* in_pos, v2u16* out_pos, Box16* move_area = 0, bool hide_error_message = false, u32 some_flag = 0);
 
 /// Updates pathing data and various information related to the @p unit.
 /// Details not understood.  See the source for move_unit().
@@ -893,9 +805,9 @@ inline bool set_ingame_loop_state(bool new_state) {
 
 bool can_spawn_broodling(Unit* target);
 void clone_unit_traits(Unit* new_unit, Unit* old_unit);
-Unit* create_hidden_unit(UnitId::Enum unit_id, s32 count, u32 player, Point16 position, Unit* creator, bool clone = false);
-Unit* create_unit_from_bullet(UnitId::Enum unit_id, u32 player, Point16 position, Unit* reference = nullptr);
-void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 position, Unit* creator = nullptr);
+Unit* create_hidden_unit(UnitId::Enum unit_id, s32 count, u32 player, v2u16 position, Unit* creator, bool clone = false);
+Unit* create_unit_from_bullet(UnitId::Enum unit_id, u32 player, v2u16 position, Unit* reference = nullptr);
+void create_unit_from_ability(s32 unit_id, s32 count, u16 player, v2u16 position, Unit* creator = nullptr);
 u16 get_last_queue_slot_id(Unit* a1);
 s32 dir_saturate(s32 direction, s32 value);
 fp32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_to_max_bonus);
@@ -929,19 +841,19 @@ bool is_unit_isolated(Unit* unit);
 bool transport_is_full(Unit* transport);
 bool transport_is_empty(Unit* transport);
 
-inline u32 get_region_id(Point16 position) {
+inline u32 get_region_id(v2u16 position) {
     return helper::get_region_id(position.x, position.y);
 }
 
 inline u32 get_region_id(TileCoord tile) {
-    return get_region_id(Point16(tile.x * 32 + 16, tile.y * 32 + 16));
+    return get_region_id(v2u16(tile.x * 32 + 16, tile.y * 32 + 16));
 }
 
 inline AiRegion* get_ai_region(u32 player, u32 index) {
     return &g_ai_region_captains[player][index];
 }
 
-inline AiRegion* get_ai_region(u32 player, Point16 position) {
+inline AiRegion* get_ai_region(u32 player, v2u16 position) {
     return get_ai_region(player, get_region_id(position));
 }
 
@@ -949,33 +861,33 @@ inline Region* get_region(u32 index) {
     return &(*g_sai_paths)->regions[index];
 }
 
-inline Region* get_region(Point16 position) {
+inline Region* get_region(v2u16 position) {
     return get_region(get_region_id(position));
 }
 
 inline Region* get_region(TileCoord tile) {
-    return get_region(Point16(tile.x * 32 + 16, tile.y * 32 + 16));
+    return get_region(v2u16(tile.x * 32 + 16, tile.y * 32 + 16));
 }
 
-Point16 get_region_center(Region* region);
+v2u16 get_region_center(Region* region);
 Box32 get_region_area(Region* region);
 
 void set_ai_preference(u16 unit_id, u32 player);
 Box32 unit_area(Unit* unit);
 void clear_creep(Box32 area);
-u32 get_closest_resarea(Point16 position);
-AiTown* get_closest_town(u32 player, Point16 position);
+u32 get_closest_resarea(v2u16 position);
+AiTown* get_closest_town(u32 player, v2u16 position);
 u32 get_ai_region_military_count(AiRegion* region);
 void ai_defend(u32 player, u32 region_id);
 void ask_for_ai_help(Unit* victim, Unit* attacker);
 
-void spawn_custom_creep_at(Point16 pos, u32 unit_id, bool more_creep, bool is_building);
+void spawn_custom_creep_at(v2u16 pos, u32 unit_id, bool more_creep, bool is_building);
 void spawn_custom_creep(Unit* unit);
 void spread_custom_creep(Unit* unit);
 void update_custom_creep_disappearance(Unit* unit);
 AiScript* run_ai(u32 player, Box32 area, s32 name);
-AiScript* run_ai(u32 player, Point16 pos, s32 name);
-AiScript* run_default_ai(u32 player, Point16 pos);
+AiScript* run_ai(u32 player, v2u16 pos, s32 name);
+AiScript* run_default_ai(u32 player, v2u16 pos);
 void give_ai_ex(Unit* unit);
 u32 unit_get_creep_spreader_id(Unit* unit);
 bool unit_queue_full(Unit* unit);
@@ -984,34 +896,34 @@ bool unit_is_stunned(Unit* unit);
 u32 get_zerg_regression(UnitId::Enum unit_id, Faction faction, bool completed, bool from_gosvileth, bool from_agrileth);
 u32 get_zerg_regression(Unit* unit);
 bool unit_is_allied_or_detected(Unit* unit, u32 player);
-u32 get_ground_path_distance_tiles(Point16 a, Point16 b);
+u32 get_ground_path_distance_tiles(v2u16 a, v2u16 b);
 bool order_id_is_aggressive(u32 order_id);
 bool ai_unit_id_can_flee_three_quarters(u32 unit_id);
 bool ai_unit_id_can_flee_two_thirds(u32 unit_id);
 bool buttonset_id_is_submenu(u32 buttonset_id);
 u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id);
-void set_bullet_target(Bullet* bullet, Point16 target);
+void set_bullet_target(Bullet* bullet, v2u16 target);
 void set_bullet_target(Bullet* bullet, Unit* target);
 void set_bullet_target_follow(Bullet* bullet, Target target);
 void set_bullet_target_absolute(Bullet* bullet, Target target);
-void set_bullet_direction(Bullet* bullet, Point16 target);
+void set_bullet_direction(Bullet* bullet, v2u16 target);
 void set_bullet_direction(Bullet* bullet, Unit* target);
 bool move_unit_ai(Unit* unit, AiRegion* ai_region);
 void astral_blessing_proc(Unit* victim, u32 attacking_player_id, u32 weapon_id);
 void shield_heal_proc(Unit* healer, u32 heal_source_player, u32 range, u32 heal_amount);
 void heal_proc(Unit* heal_source, u32 heal_source_player, u32 range, u32 heal_amount);
 bool is_attack_region(AiRegion* ai_region);
-void prepare_building_area(Point16 pos, u32 unit_id, Unit* ignore = 0);
+void prepare_building_area(v2u16 pos, u32 unit_id, Unit* ignore = 0);
 void town_add_spending_request(AiTown& town, u32 count, u32 unit_id, u32 priority, bool request_base = true);
-void military_add_spending_request(u32 player, u32 unit_id, Point16 position, u32 priority, bool request_base = true);
+void military_add_spending_request(u32 player, u32 unit_id, v2u16 position, u32 priority, bool request_base = true);
 void guard_add_spending_request(u32 player, GuardAi* guard_ai, u32 priority, bool request_base = true);
-GuardAi* create_guard_ai(u32 player, u32 unit_id, Point16 position);
+GuardAi* create_guard_ai(u32 player, u32 unit_id, v2u16 position);
 u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit);
 void delete_ai_script(AiScript* ai_script);
 void delete_town(AiTown* ai_town);
 void delete_fow_sprite(Thingy* thingy);
 
-std::vector<Unit*> binding_plasma_find_targets(Point16 position, Unit* reference, u32 player, u32 stacks);
+std::vector<Unit*> binding_plasma_find_targets(v2u16 position, Unit* reference, u32 player, u32 stacks);
 bool binding_plasma_proc(Unit* victim, UnitId::Enum source_unit_id, const BindingPlasmaOptions& options);
 void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id, const BindingPlasmaOptions& options);
 
@@ -1023,37 +935,42 @@ bool is_team_game_map(const char* filename);
 Image* get_powerup_overlay(Sprite* sprite);
 Image* get_addon_connector_image(Unit* unit);
 PlayerColorCode get_player_color_code(u32 player, bool use_green_for_self);
-void move_camera(Point16 pos);
+void move_camera(v2u16 pos);
 bool are_mutual_allies(u32 player1, u32 player2);
 
 struct LineLineIntersect {
-    f32 t;
-    f32 u;
-    f32 clamped_t;
-    f32 clamped_u;
-    Vec32f cp;
-    Vec32f clamped_first_cp;
-    Vec32f clamped_second_cp;
+    fp32 t;
+    fp32 u;
+    fp32 clamped_t;
+    fp32 clamped_u;
+    v2 cp;
+    v2 clamped_first_cp;
+    v2 clamped_second_cp;
     bool on_first_line;
     bool on_second_line;
     bool on_both_lines;
 };
 
-Quad quad_from_line(Point16 from, Point16 to, f32 line_width);
+struct LineTraceResult {
+    fp32 t;
+    v2u16 contact_point;
+};
+
+Quad quad_from_line(v2u16 from, v2u16 to, fp32 line_width);
 Quad quad_from_rect(Box16 rect);
-bool sat_collision(Vec32f* a, u32 a_count, Vec32f* b, u32 b_count);
-void find_closest_point_to_line(Vec32f from, Vec32f to, Vec32f point, f32* out_distance = 0, f32* out_t = 0, Vec32f* out_cp = 0);
-std::optional<LineLineIntersect> line_line_intersection(Vec32f a0, Vec32f a1, Vec32f b0, Vec32f b1);
-bool line_trace(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t = 0, Point16* out_cp = 0);
+bool sat_collision(v2* a, u32 a_count, v2* b, u32 b_count);
+void find_closest_point_to_line(v2 from, v2 to, v2 point, fp32* out_distance = 0, fp32* out_t = 0, v2* out_cp = 0);
+std::optional<LineLineIntersect> line_line_intersection(v2 a0, v2 a1, v2 b0, v2 b1);
+std::optional<LineTraceResult> line_trace(v2u16 from, v2u16 to, fp32 line_width, Box16 rect);
 void transform_unit(Unit* unit, u16 unit_id);
 
 void add_unit_overlay(Unit* unit, ImageSet image_set, const OverlaySettings& settings = {});
 void remove_unit_overlay(Unit* unit, ImageSet image_set, const OverlaySettings& settings = {});
 void set_unit_overlay(Unit* unit, ImageSet image_set, bool active, const OverlaySettings& settings = {});
 
-PlayingSound play_sound(SoundSet sound_set, Point16 pos = {});
+PlayingSound play_sound(SoundSet sound_set, v2u16 pos = {});
 PlayingSound play_sound(SoundSet sound_set, Unit* unit, bool force_globally = false);
-PlayingSound play_looping_sound(SoundSet sound_set, Point16 pos = {});
+PlayingSound play_looping_sound(SoundSet sound_set, v2u16 pos = {});
 PlayingSound play_looping_sound(SoundSet sound_set, Unit* unit, bool force_globally = false);
 
 void play_action_sound(u32 sound_id, Unit* unit);
@@ -1062,8 +979,8 @@ void regress(Unit* unit, u32 regression_id);
 void unfreeze_channeling_unit(Unit* unit);
 bool unit_can_flee(Unit* unit);
 GameKind get_game_kind();
-u32 get_worker_harvest_distance(Unit* unit, Point16 target);
-Point16 get_rect_edge_point_towards(Point16 pos, Box16 rect, Point16 target);
+u32 get_worker_harvest_distance(Unit* unit, v2u16 target);
+v2u16 get_rect_edge_point_towards(v2u16 pos, Box16 rect, v2u16 target);
 u32 get_fore_castle_armor_bonus(Unit* unit);
 u32 get_ensnare_factor(Unit* unit);
 u32 get_advisor_sound_from_event_type(u32 player, u32 event_type);
@@ -1077,7 +994,7 @@ void unload_or_kill_loaded_units(Unit* transport);
 u32 get_cloak_sound_id(Unit* unit);
 u32 get_decloak_sound_id(Unit* unit);
 void launch_return_missile(Unit* unit, u32 weapon_id);
-void fire_incremental_bullet(Bullet* bullet, u32 weapon_id, Unit* target, Point16 position);
+void fire_incremental_bullet(Bullet* bullet, u32 weapon_id, Unit* target, v2u16 position);
 bool client_selection_id_check(u32 unit_id);
 u32 client_selection_count();
 u32 client_selection_unit_id_count(u32 unit_id);
@@ -1092,14 +1009,14 @@ void select(std::vector<Unit*>& units, bool play_response);
 u32 get_unit_weapon_fire_sound(Unit* unit, u32 weapon_id);
 u32 get_weapon_fire_sound(u32 weapon_id, Unit* unit);
 bool unit_regenerates_hp(Unit* unit);
-u32 get_regeneration_factor(Unit* unit);
+fp32 get_regeneration_factor(Unit* unit);
 bool unit_has_shields(Unit* unit);
 bool can_show_custom_ui();
 bool player_is_witness(u32 player);
 bool player_is_active(u32 player);
 std::string get_commit_hash();
-bool check_building_collision(UnitId::Enum unit_id, u32 player, Point16 pos);
-Point16 align_to_tile_grid(Point16 pos, UnitId::Enum unit_id);
+bool check_building_collision(UnitId::Enum unit_id, u32 player, v2u16 pos);
+v2u16 align_to_tile_grid(v2u16 pos, UnitId::Enum unit_id);
 u32 active_player_count();
 u32 human_count();
 u32 human_or_defeated_human_count();
@@ -1110,8 +1027,8 @@ void zap_overlay(Unit* unit);
 void play_manual_weaponfire_sound(Unit* unit, WeaponId::Enum weapon_id);
 void play_manual_weaponhit_sound(Unit* unit, WeaponId::Enum weapon_id);
 u32 get_weapon_hit_sound(WeaponId::Enum weapon_id, Unit* unit);
-Point16 get_building_reposition(Unit* unit, Point16 position);
-f32 unit_id_total_cost(u32 unit_id, Faction faction, bool regression_unstable);
+v2u16 get_building_reposition(Unit* unit, v2u16 position);
+fp32 unit_id_total_cost(u32 unit_id, Faction faction, bool regression_unstable);
 bool is_melee_game(u8 game_type, u8 game_subtype);
 bool minerals_exist_for_player(u32 player);
 void set_merge_move_target(Unit* unit, Unit* target);

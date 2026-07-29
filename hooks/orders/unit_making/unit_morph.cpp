@@ -39,7 +39,7 @@ namespace hooks {
 		if (unit->order_signal & 4) {
 			unit->order_signal &= ~4;
 
-			Point16 pos = {};
+			v2u16 pos = {};
 			bool no_two_units = false;
 			if (units_dat::base_property[unit->create_origin] & UnitProperty::TwoUnitsIn1Egg // Fixes crash when cancelling a unit morphed from a dual birth source. -Pr0nogo
 			||  unit_ext.values[ValueSpecialSovrolethBirth]

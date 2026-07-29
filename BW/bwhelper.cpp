@@ -1491,7 +1491,7 @@ namespace helper {
         return result;
     }
 
-    void order_interrupt(Unit* unit, u8 order_id, Vec32* pos, Unit* target) {
+    void order_interrupt(Unit* unit, u8 order_id, v2s32* pos, Unit* target) {
         const u32 func_address = 0x00474C30;
         u32 order_id_xd; order_id_xd = order_id;
         __asm {
@@ -2307,7 +2307,7 @@ namespace helper {
         return thingy;
     }
 
-    void play_sound_at_pos(u32 sound_id, Point16 pos, u32 bool_play, u32 min_volume) {
+    void play_sound_at_pos(u32 sound_id, v2u16 pos, u32 bool_play, u32 min_volume) {
         const u32 func_address = 0x0048EC10;
         __asm {
             PUSHAD
@@ -2618,7 +2618,7 @@ namespace helper {
         }
     }
 
-    void fix_target_location(Point16* coords, u32 unit_id) {
+    void fix_target_location(v2u16* coords, u32 unit_id) {
         const u32 func_address = 0x00401FA0;
         __asm {
             PUSHAD
@@ -2798,7 +2798,7 @@ namespace helper {
         return result;
     }
 
-    s32 unk_building_placement_related(s32 a1, Point16* a2) {
+    s32 unk_building_placement_related(s32 a1, v2u16* a2) {
         const u32 func_address = 0x0048D7F0;
         static s32 result;
         __asm {
@@ -2812,7 +2812,7 @@ namespace helper {
         return result;
     }
 
-    s32 init_placement_box_pos(Point16* in_out) {
+    s32 init_placement_box_pos(v2u16* in_out) {
         const u32 func_address = 0x0048D660;
         static s32 result;
         __asm {
@@ -3174,7 +3174,7 @@ namespace helper {
         }
     }
 
-    bool get_larva_spawn_pos(Unit* unit, Vec32* coords) {
+    bool get_larva_spawn_pos(Unit* unit, v2s32* coords) {
         const u32 func_address = 0x004E8E10;
         static b32 return_pre_value;
         __asm {
@@ -3400,7 +3400,7 @@ namespace helper {
 
     void process_building_placement(Unit* unit, u32 order_id, u16 dimensionX, u16 dimensionY, u32 builtUnitId) {
         const u32 func_address = 0x0048DE70;
-        static Point16 dim;
+        static v2u16 dim;
         dim.x = dimensionX; dim.y = dimensionY;
         __asm {
             PUSHAD
@@ -3415,7 +3415,7 @@ namespace helper {
 
     void CMDRECV_place_building(s16 x, s16 y, u8 order_id, u16 builtUnitId) {
         const u32 func_address = 0x0048E190;
-        static Point16 pos;
+        static v2u16 pos;
         pos.x = x; pos.y = y;
         __asm {
             PUSHAD
@@ -3733,7 +3733,7 @@ namespace helper {
         }
     }
 
-    Order* perform_another_order(u8 order_id, Order* order, Unit* unit, u16 fow_unit_id, Point16 position_xy, Unit* target) {
+    Order* perform_another_order(u8 order_id, Order* order, Unit* unit, u16 fow_unit_id, v2u16 position_xy, Unit* target) {
         const u32 func_address = 0x004745F0;
         static Order* result;
         __asm {
@@ -3751,7 +3751,7 @@ namespace helper {
         return result;
     }
 
-    void order(s32 some_bool, Unit* unit, s8 order_id, Point16 pos, Unit* target_unit, u32 fow_unit_id) {
+    void order(s32 some_bool, Unit* unit, s8 order_id, v2u16 pos, Unit* target_unit, u32 fow_unit_id) {
         const u32 func_address = 0x00474810;
         __asm {
             PUSHAD
@@ -4122,7 +4122,7 @@ namespace helper {
         return result;
     }
 
-    s32 get_direction_from_points(Point16 a, Point16 b) {
+    s32 get_direction_from_points(v2u16 a, v2u16 b) {
         return get_direction_from_points(b.y, a.x, b.x, a.y);
     }
     
@@ -4354,7 +4354,7 @@ namespace helper {
         return result;
     }
 
-    u32 can_unload(Unit* transport, Unit* loaded_unit, Point16* pos) {
+    u32 can_unload(Unit* transport, Unit* loaded_unit, v2u16* pos) {
         const u32 func_address = 0x004E76C0;
         static u32 result;
         __asm {
@@ -5020,7 +5020,7 @@ namespace helper {
 
     void insert_order_before(Unit* unit, Order* order, u8 order_id, s16 x, s16 y, Unit* target, u16 target_unit_id) {
         const u32 func_address = 0x00474540;
-        Point16 pos = {x, y};
+        v2u16 pos(x, y);
         __asm {
             PUSHAD
             PUSH target
@@ -6047,7 +6047,7 @@ namespace helper {
     }
 
     // For targeted_order
-    void queue_new_order(u32 order_type, s16 pos_x, s16 pos_y, Unit* unit, u8 order_id, Unit* target, u16 fow_unit_id, Point16 position, Unit* secondary_target) {
+    void queue_new_order(u32 order_type, s16 pos_x, s16 pos_y, Unit* unit, u8 order_id, Unit* target, u16 fow_unit_id, v2u16 position, Unit* secondary_target) {
         const u32 func_address = 0x00474B90;
         static Order* result;
         __asm {
@@ -6340,7 +6340,7 @@ namespace helper {
 
     void order_interrupt(Unit* unit, Unit* target, u16 x, u16 y, u32 order_id) {
         const u32 func_address = 0x00474C30;
-        static Point16 pos;
+        static v2u16 pos;
         pos.x = x; pos.y = y;
         __asm {
             PUSHAD
@@ -6980,7 +6980,7 @@ namespace helper {
     }
 
     // For move_to_target
-    s32 is_point_at_unit_border(s32 unused, Unit* other, Unit* self, Point16 position_xy) {
+    s32 is_point_at_unit_border(s32 unused, Unit* other, Unit* self, v2u16 position_xy) {
         const u32 func_address = 0x0042DA90;
         static s32 result;
         __asm {
@@ -7587,7 +7587,7 @@ namespace helper {
         return result;
     }
 
-    Unit* get_disabled_unit_in_range(s32 owner, Point16 position) {
+    Unit* get_disabled_unit_in_range(s32 owner, v2u16 position) {
         const u32 func_address = 0x00440420;
         static Unit* result;
         __asm {
@@ -7601,7 +7601,7 @@ namespace helper {
         return result;
     }
 
-    void ai_get_build_location(s32 unit_id, char* placement_data, s32 player, Point16 try_position, s32 max_range) {
+    void ai_get_build_location(s32 unit_id, char* placement_data, s32 player, v2u16 try_position, s32 max_range) {
         const u32 func_address = 0x004461B0;
         __asm {
             PUSHAD
@@ -7615,7 +7615,7 @@ namespace helper {
         }
     }
 
-    void ai_placement_data_something(s8* placement_data, Point16 try_position) {
+    void ai_placement_data_something(s8* placement_data, v2u16 try_position) {
         const u32 func_address = 0x00443610;
         __asm {
             PUSHAD
@@ -8171,7 +8171,7 @@ namespace helper {
     }
 
     // For AI_GetBuildingLocation
-    u32 ai_get_building_placement_data(u32 max_range, u32 unit_id, char* placement_data, u32 player, Point16 desired_pos) {
+    u32 ai_get_building_placement_data(u32 max_range, u32 unit_id, char* placement_data, u32 player, v2u16 desired_pos) {
         const u32 func_address = 0x00445D60;
         static u32 result;
         __asm {
@@ -8188,7 +8188,7 @@ namespace helper {
         return result;
     }
 
-    char* ai_remove_unreachable_regions(char* placement_data, Point16 desired_pos) {
+    char* ai_remove_unreachable_regions(char* placement_data, v2u16 desired_pos) {
         const u32 func_address = 0x00443900;
         static char* result;
         __asm {
@@ -8202,7 +8202,7 @@ namespace helper {
         return result;
     }
 
-    u32 ai_remove_dangerous_regions(u32 unit_id, char* placement_data, u32 placement_id, Point16 desired_pos) {
+    u32 ai_remove_dangerous_regions(u32 unit_id, char* placement_data, u32 placement_id, v2u16 desired_pos) {
         const u32 func_address = 0x00443870;
         static u32 result;
         __asm {
@@ -8218,7 +8218,7 @@ namespace helper {
         return result;
     }
 
-    u32 ai_remove_far_tiles(char* placement_data, Point16 desired_pos, u32 max_range) {
+    u32 ai_remove_far_tiles(char* placement_data, v2u16 desired_pos, u32 max_range) {
         const u32 func_address = 0x00444E20;
         static u32 result;
         __asm {
@@ -8233,7 +8233,7 @@ namespace helper {
         return result;
     }
 
-    u32 ai_remove_different_height(char* placement_data, Point16 desired_pos) {
+    u32 ai_remove_different_height(char* placement_data, v2u16 desired_pos) {
         const u32 func_address = 0x004436C0;
         static u32 result;
         __asm {
@@ -8247,7 +8247,7 @@ namespace helper {
         return result;
     }
 
-    u32 ai_placement_related_something(u32 unit_id, char* placement_data, Point16 desired_pos) {
+    u32 ai_placement_related_something(u32 unit_id, char* placement_data, v2u16 desired_pos) {
         const u32 func_address = 0x00443E30;
         static u32 result;
         __asm {
@@ -8262,7 +8262,7 @@ namespace helper {
         return result;
     }
 
-    void ai_remove_unfit_tiles(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos) {
+    void ai_remove_unfit_tiles(u32 unit_id, char* placement_data, u32 player, v2u16 desired_pos) {
         const u32 func_address = 0x00444CE0;
         __asm {
             PUSHAD
@@ -8275,7 +8275,7 @@ namespace helper {
         }
     }
 
-    u32 ai_remove_addon_places(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos) {
+    u32 ai_remove_addon_places(u32 unit_id, char* placement_data, u32 player, v2u16 desired_pos) {
         const u32 func_address = 0x00443CC0;
         static u32 result;
         __asm {
@@ -8291,7 +8291,7 @@ namespace helper {
         return result;
     }
 
-    u32 get_tower_placement_position(char* placement_data, u32 player, Point16 desired_pos, u32 unit_id, u32 unk_flag) {
+    u32 get_tower_placement_position(char* placement_data, u32 player, v2u16 desired_pos, u32 unit_id, u32 unk_flag) {
         const u32 func_address = 0x00443AC0;
         static u32 result;
         __asm {
@@ -8308,7 +8308,7 @@ namespace helper {
         return result;
     }
 
-    u32 get_pylon_placement_position(char* placement_data, u32 player, Point16 desired_pos) {
+    u32 get_pylon_placement_position(char* placement_data, u32 player, v2u16 desired_pos) {
         const u32 func_address = 0x004448D0;
         static u32 result;
         __asm {
@@ -8323,7 +8323,7 @@ namespace helper {
         return result;
     }
 
-    u32 get_default_placement_position(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos) {
+    u32 get_default_placement_position(u32 unit_id, char* placement_data, u32 player, v2u16 desired_pos) {
         const u32 func_address = 0x004449A0;
         static u32 result;
         __asm {
@@ -8364,7 +8364,7 @@ namespace helper {
     }
 
     // For issue_order_targeting_ground
-    void order_copy(s32 a1, Unit* a2, s8 a3, Point16* a4, Unit* a5, s32 a6) {
+    void order_copy(s32 a1, Unit* a2, s8 a3, v2u16* a4, Unit* a5, s32 a6) {
         const u32 func_address = 0x00474810;
         __asm {
             PUSHAD
@@ -9677,7 +9677,7 @@ namespace helper {
         }
     }
 
-    bool get_gas_exit_point(Unit* worker, Unit* resource_node, Point16* position, s32* direction) {
+    bool get_gas_exit_point(Unit* worker, Unit* resource_node, v2u16* position, s32* direction) {
         static bool result;
         const u32 func_address = 0x00468B00;
         __asm {
@@ -9847,7 +9847,7 @@ namespace helper {
         }
     }
 
-    Unit* harvest_next_nearest_resources_ex(s32 worker_count_bool, Unit* worker, Point16 worker_pos) {
+    Unit* harvest_next_nearest_resources_ex(s32 worker_count_bool, Unit* worker, v2u16 worker_pos) {
         static Unit* result;
         const u32 func_address = 0x004432D0;
         __asm {
@@ -10242,7 +10242,7 @@ namespace helper {
         return result;
     }
 
-    void prepend_order(Unit* unit, u8 order_id, Point16 target_pos, Unit* target_unit) {
+    void prepend_order(Unit* unit, u8 order_id, v2u16 target_pos, Unit* target_unit) {
         const u32 func_address = 0x00474AF0;
         __asm {
             PUSHAD
@@ -10828,7 +10828,7 @@ namespace helper {
         return result;
     }
 
-    char input_place_building_left_mouse_click(Event* event_arg, u32 unused, Point16 position) {
+    char input_place_building_left_mouse_click(Event* event_arg, u32 unused, v2u16 position) {
         static char result;
         const u32 func_address = 0x0048E5D0;
         __asm {
@@ -11326,7 +11326,7 @@ namespace helper {
         return result;
     }
 
-    Unit* find_nearest_available_military(u32 player, u32 unit_id, Point16 point) {
+    Unit* find_nearest_available_military(u32 player, u32 unit_id, v2u16 point) {
         static Unit* result;
         const u32 func_address = 0x004379B0;
         u32 x_pos = point.x;
@@ -11817,7 +11817,7 @@ namespace helper {
         return result;
     }
 
-    u32 get_path_distance_to(Unit* unit, Point16 position) {
+    u32 get_path_distance_to(Unit* unit, v2u16 position) {
         static u32 result;
         const u32 func_address = 0x0042FA30;
         u32 x = position.x;
@@ -12191,7 +12191,7 @@ namespace helper {
         return result;
     }
 
-    s32 get_bunker_position(u32 player, Point16* return_pos) {
+    s32 get_bunker_position(u32 player, v2u16* return_pos) {
         static s32 result;
         const u32 func_address = 0x004376F0;
         __asm {
@@ -12218,7 +12218,7 @@ namespace helper {
         }
     }
 
-    s32 ai_manage_building_placement(Unit* builder, u32 unit_id, Point16 try_pos, Point16* out_pos, s32 area_tiles) {
+    s32 ai_manage_building_placement(Unit* builder, u32 unit_id, v2u16 try_pos, v2u16* out_pos, s32 area_tiles) {
         static s32 result;
         const u32 func_address = 0x004465C0;
         __asm {
@@ -12248,7 +12248,7 @@ namespace helper {
         return result;
     }
 
-    s32 get_turret_position(u32 player, Point16* out_pos) {
+    s32 get_turret_position(u32 player, v2u16* out_pos) {
         static s32 result;
         const u32 func_address = 0x00437670;
         __asm {
@@ -12333,7 +12333,7 @@ namespace helper {
         return result;
     }
 
-    u32 get_next_strafe_position(Unit* unit, u8 strafe_type, Point16 pos) {
+    u32 get_next_strafe_position(Unit* unit, u8 strafe_type, v2u16 pos) {
         static u32 result;
         const u32 func_address = 0x00465D30;
         __asm {
@@ -13216,7 +13216,7 @@ namespace helper {
         }
     }
 
-    void move_screen(Point16 pos) {
+    void move_screen(v2u16 pos) {
         const u32 func_address = 0x0049C440;
         __asm {
             PUSHAD 
@@ -13677,7 +13677,7 @@ namespace helper {
         return result;
     }
 
-    s32 make_valid_position(Point16* old_pos, Point16* new_pos, Box16* acceptable_area) {
+    s32 make_valid_position(v2u16* old_pos, v2u16* new_pos, Box16* acceptable_area) {
         static s32 result;
         const u32 func_address = 0x0042A5C0;
         __asm {
@@ -13818,7 +13818,7 @@ namespace helper {
         }
     }
 
-    void issue_order_before_2(u8 order_id, Order* order_queue_head, Unit* unit, Point16* pos, Unit* target) {
+    void issue_order_before_2(u8 order_id, Order* order_queue_head, Unit* unit, v2u16* pos, Unit* target) {
         const u32 func_address = 0x004747C0;
         __asm {
             PUSHAD
@@ -14012,7 +14012,7 @@ namespace helper {
         }
     }
 
-    s32 unit_movement_another_path(Unit* unit, Point16 dest) {
+    s32 unit_movement_another_path(Unit* unit, v2u16 dest) {
         const u32 func_address = 0x0042FE00;
         static s32 result;
         __asm {
@@ -15405,7 +15405,7 @@ namespace helper {
         return (bool)result;
     }
 
-    Thingy* get_placement_parent(u32 sprite_id, u32 x_dims, u32 y_dims, Point16 parent_dims) {
+    Thingy* get_placement_parent(u32 sprite_id, u32 x_dims, u32 y_dims, v2u16 parent_dims) {
         const u32 func_address = 0x00487C70;
         static Thingy* result;
         __asm {
@@ -15456,7 +15456,7 @@ namespace helper {
         return result;
     }
 
-    u32 update_nydus_placement_state(u8 player, u32 tile_x, u32 tile_y, Point16 position, u32 placement_state_entry, b32 check_vision) {
+    u32 update_nydus_placement_state(u8 player, u32 tile_x, u32 tile_y, v2u16 position, u32 placement_state_entry, b32 check_vision) {
         const u32 func_address = 0x00473150;
         static u32 result;
         __asm {
@@ -15474,7 +15474,7 @@ namespace helper {
         return result;
     }
 
-    u32 update_creep_building_placement_state(u8 player, u32 tile_x, u32 tile_y, Point16 position, u32 placement_state_entry, b32 check_vision, b32 unk_bool) {
+    u32 update_creep_building_placement_state(u8 player, u32 tile_x, u32 tile_y, v2u16 position, u32 placement_state_entry, b32 check_vision, b32 unk_bool) {
         const u32 func_address = 0x00473010;
         u32 tile_x_xd = tile_x;
         u32 tile_y_xd = tile_y;
@@ -15495,7 +15495,7 @@ namespace helper {
         return result;
     }
 
-    u32 update_building_placement_state_map_tile_flags(u16 unit_id, u32 tile_x, u32 tile_y, u8 player, Point16 pos, u32 placement_state_entry, b32 check_vision) {
+    u32 update_building_placement_state_map_tile_flags(u16 unit_id, u32 tile_x, u32 tile_y, u8 player, v2u16 pos, u32 placement_state_entry, b32 check_vision) {
         const u32 func_address = 0x00473A10;
         u32 player_xd = player;
         static u32 result;
@@ -15515,7 +15515,7 @@ namespace helper {
         return result;
     }
 
-    u32 update_building_placement_state_units(Unit* builder, u32 tile_x, u32 tile_y, u8 player, u16 unit_id, Point16 pos, u32 placement_state_entry, bool is_not_addon, bool also_invisible, b32 without_vision) {
+    u32 update_building_placement_state_units(Unit* builder, u32 tile_x, u32 tile_y, u8 player, u16 unit_id, v2u16 pos, u32 placement_state_entry, bool is_not_addon, bool also_invisible, b32 without_vision) {
         // actual order is tile_y - builder - tile_x - the rest ^
         const u32 func_address = 0x00473720;
         b32 also_invisible_xd = also_invisible;
@@ -16017,7 +16017,7 @@ namespace helper {
         return result;
     }
     
-    b32 is_blocked_position(Unit* unit, Point16 position) {
+    b32 is_blocked_position(Unit* unit, v2u16 position) {
         const u32 func_address = 0x0042E1D0;
         static b32 result;
         __asm {
@@ -16031,7 +16031,7 @@ namespace helper {
         return result;
     }
 
-    void decollide_or_unstack(Unit* unit, Point16* position) {
+    void decollide_or_unstack(Unit* unit, v2u16* position) {
         const u32 func_address = 0x004F29E0;
         __asm {
             PUSHAD
@@ -16066,7 +16066,7 @@ namespace helper {
         }
     }
 
-    void issue_order_by_type(u8 order_id, u16 pos_x, u16 pos_y, u32 order_type, Unit* unit, Unit* target, u32 fow_unit_id, Point16 position, Unit* secondary_target) {
+    void issue_order_by_type(u8 order_id, u16 pos_x, u16 pos_y, u32 order_type, Unit* unit, Unit* target, u32 fow_unit_id, v2u16 position, Unit* secondary_target) {
         const u32 func_address = 0x00475470;
         __asm {
             PUSHAD

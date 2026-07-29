@@ -5,7 +5,7 @@
 struct Unit;
 
 struct Target {
-    Point16 pt;
+    v2u16 pt;
     Unit*   unit;
 
     bool operator==(const Target& other) const = default;

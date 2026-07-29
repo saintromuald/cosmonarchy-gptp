@@ -42,7 +42,7 @@ namespace hooks {
 		if (units_dat::base_property[unit->id] & (UnitProperty::Worker | UnitProperty::Building)) {
 			bw::printf("SimpleMilitary on worker or building! ID: %u", (u32)unit->id);
 		}
-		Point16 position = {};
+		v2u16 position = {};
 		if (AssertSprite(unit->sprite)) {
 			position = unit->sprite->position;
 		} else {
@@ -227,13 +227,13 @@ namespace hooks {
 						if (layouts_town.worker_maynard) {
 							layouts_town.worker_maynard--;
 						}
-						Point16 position = g_ai_layouts.get_ai_town_position(*town);
+						v2u16 position = g_ai_layouts.get_ai_town_position(*town);
 						unit_ext.values[ValueAI_WorkerChosenForExpansion] = true;
 						unit_ext.values[ValueAI_WorkerChosenX] = position.x;
 						unit_ext.values[ValueAI_WorkerChosenY] = position.y;
 					} else if (layouts_town.worker_maynard) {
 						layouts_town.worker_maynard--;
-						Point16 position = g_ai_layouts.get_ai_town_position(*town);
+						v2u16 position = g_ai_layouts.get_ai_town_position(*town);
 						unit_ext.values[ValueAI_WorkerChosenForExpansion] = true;
 						unit_ext.values[ValueAI_WorkerChosenX] = position.x;
 						unit_ext.values[ValueAI_WorkerChosenY] = position.y;

@@ -411,7 +411,7 @@ namespace hooks {
 
     // Hooked to change functionality later - Pr0nogo
     Unit* get_closest_enemy_structure(s32 x, s32 y, s32 player) { // 004A0F90
-        Point16 region_center = bw::get_region_center(bw::get_region(helper::get_region_id(x, y)));
+        v2u16 region_center = bw::get_region_center(bw::get_region(helper::get_region_id(x, y)));
         u32 max_distance = 99999999;
         Unit* best_unit = 0;
         for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
@@ -600,7 +600,7 @@ namespace hooks {
             result = 1;
         } else {
             u32 iterator1 = 0;
-            Point16 region_positions[24];
+            v2u16 region_positions[24];
             u32 tile_distances[24];
             if (g_region_ids_count) {
                 memset(tile_distances, 99999999, *g_region_ids_count);
@@ -652,7 +652,7 @@ namespace hooks {
     }
 
     // Hooked to change default behaviors - Pr0nogo
-    void ai_get_build_location(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos, s32 max_range) { // 004461B0
+    void ai_get_build_location(u32 unit_id, char* placement_data, u32 player, v2u16 desired_pos, s32 max_range) { // 004461B0
         memset(placement_data, 0, 4096);
         helper::ai_get_building_placement_data(max_range, unit_id, placement_data, player, desired_pos);
         helper::ai_remove_unreachable_regions(placement_data, desired_pos);
@@ -714,7 +714,7 @@ namespace hooks {
     }
 
     // Hooked to change default behaviors - Pr0nogo
-    u32 get_tower_placement_position(char* placementData, u32 player, Point16 desiredPos, u16 unit_id, u32 unkFlag) { // 00443AC0
+    u32 get_tower_placement_position(char* placementData, u32 player, v2u16 desiredPos, u16 unit_id, u32 unkFlag) { // 00443AC0
         // will do this later
         return 0;
     }
@@ -752,7 +752,7 @@ namespace hooks {
     }
 
     // Hooked to fix AI height stupidity... or DUMBNESS??? -Pr0nogo
-    u32 __stdcall ai_remove_different_height(char* placement_data, Point16 desired_pos) { // 004436C0
+    u32 __stdcall ai_remove_different_height(char* placement_data, v2u16 desired_pos) { // 004436C0
         return 0;
 
         /*
@@ -980,7 +980,7 @@ namespace hooks {
             worker_ai->wait_timer--;
             return;
         }
-        Point16 worker_pos = {};
+        v2u16 worker_pos = {};
         AiTown* town = worker_ai->town;
         worker_ai->last_update_second = *g_elapsed_time_seconds;
 
@@ -1080,7 +1080,7 @@ namespace hooks {
         return 0;
     }
 
-    static u32 find_closest_resarea_id(Point16 pos) {
+    static u32 find_closest_resarea_id(v2u16 pos) {
         u32 best_resarea = 0;
         u32 best_distance = std::numeric_limits<u32>::max();
         for (auto [i, resarea] : g_resource_areas->enumerate()) {
@@ -1349,7 +1349,7 @@ namespace hooks {
         }
 
         repairman->user_action_flags |= UserActionFlags_IscriptGoToIdle;
-        Point16 repair_target_pos = {};
+        v2u16 repair_target_pos = {};
         if (repair_target) {
             repair_target_pos = repair_target->sprite->position;
         }
@@ -1537,7 +1537,7 @@ namespace hooks {
     }
 
     // Hooked to add addon cases for new addon buildings and to reserve space around buildings. -Veeq7
-    void __stdcall ai_remove_addon_placements(u16 unit_id, PlacementData* placement_data, u32 player, Point16 desired_position) { // 00443CC0
+    void __stdcall ai_remove_addon_placements(u16 unit_id, PlacementData* placement_data, u32 player, v2u16 desired_position) { // 00443CC0
         for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
             if (unit->sprite && unit->main_order_id != OrderId::Die && units_dat::base_property[unit->id] & UnitProperty::Building) {
                 // Map coordinates to the placement grid
@@ -1687,7 +1687,7 @@ namespace hooks {
         if (helper::get_region_id(unit->sprite->position.x, unit->sprite->position.y) == region_id) {
             helper::make_to_hold_position(unit);
         } else {
-            Point16 center = bw::get_region_center(region);
+            v2u16 center = bw::get_region_center(region);
             helper::ai_order_to_destination(unit, OrderId::AttackMove, center.x, center.y);
         }
     }
@@ -1695,7 +1695,7 @@ namespace hooks {
     // Hooked to help AI group mixed speed armies in more intelligent ways. -Pr0nogo
     void ai_assign_region_to_slowest_unit(AiRegion* ai_region) { // 00436F70
         Region* region = bw::get_region(ai_region->region);
-        Point16 center = bw::get_region_center(region);
+        v2u16 center = bw::get_region_center(region);
 
         Unit* slowest_ground_unit = 0;
         u32 slowest_ground_speed = UINT_MAX;
@@ -1773,7 +1773,7 @@ namespace hooks {
                         unit_2 = unit;
                     } while (unit);
                     if (unit_to_order_1) {
-                        Point16 victim_pos = {};
+                        v2u16 victim_pos = {};
                         victim_pos.x = victim->sprite->position.x;
                         victim_pos.y = victim->sprite->position.y;
                         unit_to_order_1->user_action_flags |= 1;
@@ -1847,7 +1847,7 @@ namespace hooks {
 
         u32 player = ai_region->player;
         Region* region = bw::get_region(ai_region->region);
-        Point16 region_center = bw::get_region_center(region);
+        v2u16 region_center = bw::get_region_center(region);
         s32 missing_ground = ai_region->ground_strength_needed - ai_region->ground_strength_full;
         s32 missing_air = ai_region->air_strength_needed - ai_region->air_strength_full;
 
@@ -1931,16 +1931,16 @@ namespace hooks {
 
     // Hooked to improve functionality and allow Pylons to respect the asc3 "creep" header. -Pr0nogo
     // GREAT GOOGLY MOOGLY BATMAN, THIS IS A DISASTER
-    s32 ai_manage_building_placement(Unit* builder, u32 unit_id, Point16 try_position, Point16* out_position, s32 area_tiles) { // 004465C0
-        Point16 point1 = {};
-        Point16 point2 = {};
+    s32 ai_manage_building_placement(Unit* builder, u32 unit_id, v2u16 try_position, v2u16* out_position, s32 area_tiles) { // 004465C0
+        v2u16 point1 = {};
+        v2u16 point2 = {};
         point1.x = try_position.x / 32;
         point2.x = try_position.x / 32;
         u32 player_var = builder->player;
         point1.y = (*(s32*)&try_position >> 16) / 32;
         point2.y = point1.y;
         u32 player = player_var;
-        Point16 fallback = {};
+        v2u16 fallback = {};
         u32 fallback_y = 0;
 
         u32 addon_cucko0 = 0;
@@ -2038,7 +2038,7 @@ namespace hooks {
         if (placement_data_2) {
             helper::ai_placement_data_something(placement_data, try_position);
         }
-        Point16 point3 = point2;
+        v2u16 point3 = point2;
         if (player != 2500) {
             __int64 region_something = ((*g_sai_paths)->regions[player].region_center_x >> 8); // It must be destroyed.
         //	point3.x = ((BYTE4(region_something) & 0x1F) + (s32)region_something) >> 5; // Fixel
@@ -2048,7 +2048,7 @@ namespace hooks {
         u32 pos_y_minus = point2.y - 32;
         u32 best_distance = 99999999;
         u32 best_fallback_distance = 99999999;
-        Point16 desired_fallback_pos = {};
+        v2u16 desired_fallback_pos = {};
         desired_fallback_pos.x = 0;
         desired_fallback_pos.y = 0;
         addon_cucko1 = 0;
@@ -2187,7 +2187,7 @@ namespace hooks {
         return result;
     }
 
-    static u32 attack_distance(Point16 a, Point16 b, bool air_only_attack) {
+    static u32 attack_distance(v2u16 a, v2u16 b, bool air_only_attack) {
         if (air_only_attack) {
             return bw::distance_between(a, b) / 32;
         }
@@ -2533,7 +2533,7 @@ namespace hooks {
     }
 
     // Hooked to improve and validate. -Veeq7
-    bool is_ground_map(Point16 position, u32 player) { // 00433110
+    bool is_ground_map(v2u16 position, u32 player) { // 00433110
         Region* source = bw::get_region(position);
         for (u32 other_player = 0; other_player < PlayerLimit; ++other_player) {
             if (bw::is_allied_to(player, other_player) || g_completed_factory_counts->unit[other_player] == 0) {
@@ -2700,7 +2700,7 @@ namespace hooks {
 
         u32 target_pos_x = target->position.x;
         u32 target_pos_y = target->position.y;
-        Point16 angle_distance = { g_angle_distance[direction].x , g_angle_distance[direction].y };
+        v2u16 angle_distance(g_angle_distance[direction].x , g_angle_distance[direction].y);
         Target result = {};
 
         u32 target_pos_x_1 = 0;

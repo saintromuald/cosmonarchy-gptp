@@ -40,11 +40,11 @@ bw::UnitFinder::CallbackMatch cosmonarchy_finder_match(Unit* center, u32 context
 
 bool range_match(Unit* unit, u32 r, u32 context, const std::vector<u16>& allowed_ids);
 Unit* range_match_unit(Unit* unit, u32 r, u32 context, const std::vector<u16>& allowed_ids);
-Unit* range_match_position(Vec32 position, u32 r, u32 context, const std::vector<u16>& allowed_ids);
-u32 cosmonarchy_unit_count(Unit* unit, Point16 pos, s32 r, u32 flags, const std::vector<u16>& unit_ids);
+Unit* range_match_position(v2s32 position, u32 r, u32 context, const std::vector<u16>& allowed_ids);
+u32 cosmonarchy_unit_count(Unit* unit, v2u16 pos, s32 r, u32 flags, const std::vector<u16>& unit_ids);
 
 template <typename Func>
-void cosmonarchy_finder_loop(Unit* unit, Point16 pos, s32 r, u32 flags, std::vector<u16> unit_ids, Func&& func) {
+void cosmonarchy_finder_loop(Unit* unit, v2u16 pos, s32 r, u32 flags, std::vector<u16> unit_ids, Func&& func) {
 	auto condition = cosmonarchy_finder_match(unit, flags, unit_ids);
 	bw::UnitFinder units_in_splash(pos.x - r, pos.y - r, pos.x + r, pos.y + r);
 	for (u32 i = 0; i < units_in_splash.get_unit_count(); i++) {

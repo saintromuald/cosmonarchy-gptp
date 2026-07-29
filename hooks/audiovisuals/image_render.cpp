@@ -699,7 +699,7 @@ namespace hooks {
 
 	//Optimizes fog sprite creation by avoiding unnecessarily creating Images (that will be freed anyway),
 	//and prevents possible desyncs caused by Iscript rng opcodes executed by the Init animations of those images.
-	Sprite* create_empty_sprite(u32 spriteId, Point16 spritePos, u8 playerId) {
+	Sprite* create_empty_sprite(u32 spriteId, v2u16 spritePos, u8 playerId) {
 		Sprite* sprite = g_free_sprites->head;
 
 		if (!sprite) {

@@ -30,8 +30,8 @@ struct SpawnSequence {
 	u32 type;
 	u32 delay;
 	u32 stagger;
-	Point16 source_pos;
-	Point16 move_pos;
+	v2u16 source_pos;
+	v2u16 move_pos;
 };
 
 #define SpawnSequenceCap 1000

@@ -123,9 +123,9 @@ namespace hooks {
 							}
 
 							bool spawn_point_set = false;
-							Point16 spawn_point = unit->position;
+							v2u16 spawn_point = unit->position;
 							if (unit->rally.pt.x || unit->rally.pt.y) {
-								Point16 new_spawn_point = bw::get_rect_edge_point_towards(unit->position, units_dat::unit_bounds[unit->id], unit->rally.pt);
+								v2u16 new_spawn_point = bw::get_rect_edge_point_towards(unit->position, units_dat::unit_bounds[unit->id], unit->rally.pt);
 								if (new_spawn_point != unit->rally.pt) {
 									if (bw::get_active_tile_at_coords(spawn_point)->ground_height == bw::get_active_tile_at_coords(new_spawn_point)->ground_height) {
 										spawn_point_set = true;

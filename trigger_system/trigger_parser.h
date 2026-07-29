@@ -40,7 +40,7 @@ struct Area {
 	Box32 box;
 	u16 flags;
 
-	bool check(Point16 position, bool air) const {
+	bool check(v2u16 position, bool air) const {
 		if (position.x >= this->box.left && position.x <= this->box.right &&
 			position.y >= this->box.top && position.y <= this->box.bottom) {
 			ActiveTile* tile = bw::get_active_tile_at_coords(position.x, position.y);
@@ -68,7 +68,7 @@ struct Area {
 			&& (flags & LocationFlags_All) == LocationFlags_All;
 	}
 
-	Point16 center() const {
+	v2u16 center() const {
 		return box.center();
 	}
 };
@@ -224,7 +224,7 @@ public:
 
 	Location* get_location();
 	Area get_area(Area default_value = {});
-	Point16 get_position(Point16 default_value = {});
+	v2u16 get_position(v2u16 default_value = {});
 
 	s32 get_enum(const char** enum_names, size_t count, s32 default_value = 0);
 

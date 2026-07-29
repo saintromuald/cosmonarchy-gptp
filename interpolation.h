@@ -1,6 +1,6 @@
 #pragma once
 
-#include "_vendor_modified/fpm/fixed.hpp"
+#include <fpm/fixed.hpp>
 
 #include <concepts>
 
@@ -8,6 +8,9 @@ namespace utils {
 
 template <typename T>
 concept FloatLike = std::floating_point<T> || fpm::is_fixed_v<T>;
+
+template <typename T>
+concept FixedPoint = fpm::is_fixed_v<T>;
 
 template <FloatLike T>
 constexpr T map(T value, T from_a, T from_b, T to_a, T to_b, bool clamp = false) {

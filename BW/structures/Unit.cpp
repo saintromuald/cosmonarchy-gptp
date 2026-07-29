@@ -837,7 +837,7 @@ void Unit::order_to_idle() {
 void Unit::order(u8 order_id, u16 x, u16 y, Unit* target, u16 target_unit_id, bool stop_previous_orders) {
     assert(this);
     const u32 Func_Order = 0x00474810;
-    static Point16 pos; pos.x = x, pos.y = y;
+    static v2u16 pos; pos.x = x, pos.y = y;
     u32 target_unit_id_xd = target_unit_id;
     __asm {
         PUSHAD
@@ -854,7 +854,7 @@ void Unit::order(u8 order_id, u16 x, u16 y, Unit* target, u16 target_unit_id, bo
 
 void Unit::perform_another_order(u8 order_id, s16 x, s16 y, Unit* target, u16 target_unit_id, u32 unk) {
     const u32 func_address = 0x004745F0;
-    static Point16 pos;
+    static v2u16 pos;
     pos.x = x; pos.y = y;
     __asm {
         PUSHAD
@@ -1020,7 +1020,7 @@ u32 Unit::get_distance_to_target(Unit* target) const {
     return bw::distance_between(0, 0, dx, dy);
 }
 
-u32 Unit::get_distance_to_point(Point16 point) const {
+u32 Unit::get_distance_to_point(v2u16 point) const {
     assert(this);
     Unit* unit = (Unit*)this;
     if (this->is_subunit()) {
@@ -1469,7 +1469,7 @@ Faction Unit::faction() {
     return player < PlayerLimit ? g_globals->players[player].faction : Faction::None;
 }
 
-f32 Unit::total_cost() {
+fp32 Unit::total_cost() {
     auto& unit_ext = this->ext();
     return bw::unit_id_total_cost(id, faction(), unit_ext.values[ValueRegressionUnstable]);
 }
@@ -1613,7 +1613,7 @@ void Unit::autophagy_spawn() {
     Thingy* corpse = get_closest_active_corpse(this->position, Vilgoleth::Range);
     if (corpse && corpse->sprite->id != SpriteId::Corpse_Rilirokor) {
         unit_ext.timers[TimerAutophagySpawn] = timer;
-        Point16 pos = corpse->sprite->position;
+        v2u16 pos = corpse->sprite->position;
         bw::create_unit_from_ability(UnitId::ZergRilirokor, 2, this->player, pos);
         bw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, pos.x, pos.y - 12, this->player, corpse->sprite->elevation + 1);
         consume_corpse(corpse);
@@ -1841,11 +1841,10 @@ void Unit::pull_towards(Unit* source) {
     auto& pull_ext = this->ext();
     pull_ext.units[UnitPullTowardsSource] = source;
     const u32 displacement_time = 5;
-    Vec32 diff = bw::vec_between(source->sprite->position, this->sprite->position);
-    if (bw::vec_length(diff) > 12) {
-        Vec32f displacement = bw::normalize(diff);
-        displacement.x *= -1 * 32.0 / displacement_time;
-        displacement.y *= -1 * 32.0 / displacement_time;
+    v2 diff = v2(source->sprite->position).vec_to(v2(this->sprite->position));
+    if (diff.len() > 12.0fp) {
+        v2 displacement = diff.norm();
+        displacement *= -32.0fp / fp32(displacement_time);
         pull_ext.timers[TimerPullTowards] = displacement_time;
         pull_ext.repulsion_vector = displacement;
         pull_ext.pull_pos = source->position;
@@ -1914,7 +1913,7 @@ void Unit::rematerialize_cast() {
         helper::display_error_message_id_with_sfx(this->player, 968, get_racial_error_sfx(RaceId::Enum(g_player_table[this->player].race)));
         return;
     }
-    Point16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
+    v2u16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
     u32 range = Askosi::RematerializeCastRange;
     if (!helper::is_target_within_min_range(this, range, target)) {
         if (this->order_target.unit) {
@@ -1954,7 +1953,7 @@ bool Unit::rapid_rendezvous_cast() {
         helper::display_error_message_id_with_sfx(this->player, 969, get_racial_error_sfx(RaceId::Enum(g_player_table[this->player].race)));
         return false;
     }
-    Point16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
+    v2u16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
     u32 range = Askosi::RapidRendezvousCastRange;
     if (!helper::is_target_within_min_range(this, range, target)) {
         if (this->order_target.unit) {
@@ -1998,7 +1997,7 @@ void Unit::hijack_cast() {
         helper::display_error_message_id_with_sfx(this->player, 970, get_racial_error_sfx(RaceId::Enum(g_player_table[this->player].race)));
         return;
     }
-    Point16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
+    v2u16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
     u32 range = Askosi::HijackCastRange;
     if (!helper::is_target_within_min_range(this, range, target)) {
         if (this->order_target.unit) {
@@ -2047,7 +2046,7 @@ void Unit::remote_hijack_cast() {
         helper::display_error_message_id_with_sfx(this->player, 970, get_racial_error_sfx(RaceId::Enum(g_player_table[this->player].race)));
         return;
     }
-    Point16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
+    v2u16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
     u32 range = Askosi::RemoteHijackCastRange;
     if (!helper::is_target_within_min_range(this, range, target)) {
         if (this->order_target.unit) {
@@ -2093,7 +2092,7 @@ void Unit::preylock_cast() {
         helper::display_error_message_id_with_sfx(this->player, 967, get_racial_error_sfx(RaceId::Enum(g_player_table[this->player].race)));
         return;
     }
-    Point16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
+    v2u16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
     u32 range = Askosi::PreylockCastRange;
     if (!helper::is_target_within_min_range(this, range, target)) {
         if (this->order_target.unit) {
@@ -2126,7 +2125,7 @@ void Unit::lobotomy_warhead_cast() {
         try_cast = false;
         return;
     }
-    Point16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
+    v2u16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
     u32 range = TerranTriton::LobotomyWarheadRange;
     if (!helper::is_target_within_min_range(this, range, target)) {
         if (this->order_target.unit) {

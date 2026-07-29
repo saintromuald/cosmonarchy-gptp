@@ -117,8 +117,8 @@ struct Image {
     /*0x17*/  u8			wait;					// iscript sleep time
     /*0x18*/  u16			frameset;
     /*0x1A*/  u16			frame_index;
-    /*0x1C*/  Point16		map_pos;
-    /*0x20*/  Point16		screen_pos;
+    /*0x1C*/  v2u16		map_pos;
+    /*0x20*/  v2u16		screen_pos;
     /*0x24*/  Box16			grp_size;				// Bounds for GRP frame, only different from normal when part of graphic is out of bounds.
     /*0x2C*/  GrpHead*		grp_file;
     /*0x30*/  union {

@@ -315,7 +315,7 @@ void unit_on_death_behaviors(Unit* unit) {
                 };
             } break;
             case UnitId::ProtossArchon: {
-                g_iquare_globals->create_effect(EffectId::PsiStormPersistent, 10 * 24 + 1, {(u16)unit->position.x, (u16)unit->position.y}, Point16{4 * 32, 4 * 32},
+                g_iquare_globals->create_effect(EffectId::PsiStormPersistent, 10 * 24 + 1, {(u16)unit->position.x, (u16)unit->position.y}, v2u16{4 * 32, 4 * 32},
                     SpriteId::Psionic_Storm, 20, unit->player, unit);
             } break;
             case UnitId::ZergRilirokor:

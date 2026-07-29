@@ -26,7 +26,7 @@ struct Header {
 
 struct CameraSync : Header<CameraSync, NewGameCommand::CameraSync> {
     u8 player;
-    Point16 pos;
+    v2u16 pos;
     char unused[5];
 };
 static_assert(sizeof(CameraSync) == CustomCommandSize);

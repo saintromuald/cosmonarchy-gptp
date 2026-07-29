@@ -356,8 +356,8 @@ namespace hooks {
                 color = index_ref;
             }
 
-            Point16 pos = unit->sprite->position;
-            Point16 dims = units_dat::building_dimensions[unit->id];
+            v2u16 pos = unit->sprite->position;
+            v2u16 dims = units_dat::building_dimensions[unit->id];
             helper::draw_unit_box(pos.x, pos.y, dims.x, dims.y, color, unit->is_building());
             goto next;
         }
@@ -435,7 +435,7 @@ namespace hooks {
                         }
                     }
 
-                    Point16 pos = sprite->position;
+                    v2u16 pos = sprite->position;
                     /*
                     if (sprite->player == 11) {
                         ActiveTile* tile = bw::get_active_tile_at_coords(pos);
@@ -446,7 +446,7 @@ namespace hooks {
                         }
                     }
                     */
-                    Point16 dims = units_dat::building_dimensions[thingy->unit_id];
+                    v2u16 dims = units_dat::building_dimensions[thingy->unit_id];
                     helper::draw_unit_box(pos.x, pos.y, dims.x, dims.y, color, units_dat::base_property[thingy->unit_id] & UnitProperty::Building);
                     --*g_minimap_unit_box_count;
                 }
@@ -464,7 +464,7 @@ namespace hooks {
                 if (!g_is_in_replay && !g_globals->players[g_local_nation_id].witness_mode && !bw::is_allied_to(player, g_local_nation_id)) {
                     continue;
                 }
-                Point16 camera = g_globals->players[player].camera;
+                v2u16 camera = g_globals->players[player].camera;
                 if (camera.x || camera.y) {
                     draw_camera_box(camera.x, camera.y, g_player_minimap_colors[player]);
                 }
@@ -783,7 +783,7 @@ namespace hooks {
         return result;
     }
 
-    static Vec32f g_mouse_error;
+    static v2f32 g_mouse_error;
 
     char input_mmb_down(DialogEvent* event) {
         g_disable_mouse_scroll = true;
@@ -824,15 +824,15 @@ namespace hooks {
         const s32 dy = (s32)mouse.y - (s32)g_mmb_pos_y;
 
         const auto sens = g_config.scroll_sensitivity;
-        const f32 sdx = dx * sens + g_mouse_error.x;
-        const f32 sdy = dy * sens + g_mouse_error.y;
+        const f32 sdx = dx * sens + f32(g_mouse_error.x);
+        const f32 sdy = dy * sens + f32(g_mouse_error.y);
         if (g_config.use_pan_scrolling) {
             scroll_screen(std::lround(sdx), std::lround(sdy));
         } else {
             scroll_screen(std::lround(-sdx), std::lround(-sdy));
         }
-        g_mouse_error.x = sdx - (s32)sdx;
-        g_mouse_error.y = sdy - (s32)sdy;
+        g_mouse_error.x = sdx - f32((s32)sdx);
+        g_mouse_error.y = sdy - f32((s32)sdy);
 
         if (dx || dy) {
             SetCursorPos(g_mmb_pos_x, g_mmb_pos_y);
@@ -885,7 +885,7 @@ namespace hooks {
                                 goto EarlyExit;
                             }
                         }
-                        Point16 event_position = { g_last_event_position->x, g_last_event_position->y };
+                        v2u16 event_position(g_last_event_position->x, g_last_event_position->y);
                         helper::move_screen(event_position);
                         result = 1;
                     } else {
@@ -1076,7 +1076,7 @@ namespace hooks {
 
     // Hooked to make movement smoother. -Pr0nogo
     void move_screen_to_unit(Unit* unit) { // 004E6020
-        Point16 pos = {unit->position.x - 320, unit->position.y - 140};
+        v2u16 pos(unit->position.x - 320, unit->position.y - 140);
         helper::move_screen(pos);
     }
 

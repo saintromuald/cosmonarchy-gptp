@@ -193,7 +193,7 @@ namespace hooks {
 			if (unit->main_order_state) {
 				if (unit->main_order_state == 5 && !unit->main_order_timer) {
 					s32 worker_direction = unit->current_direction_1;
-					Point16 pos = {};
+					v2u16 pos = {};
 					if (helper::get_gas_exit_point(unit, node, &pos, &worker_direction)) {
 						if (node) {
 							hooks::transfer_resource_to_worker(unit, node);

@@ -535,7 +535,7 @@ namespace hooks {
                     if (noop) {
                         break;
                     }
-                    Point16 pt;
+                    v2u16 pt;
                     helper::iscript_use_lo_file(&pt, image, v30, v29);
                     helper::iscript_create_image(image, image_id, LOBYTE(pt.x) + image->horizontal_offset, (u8)(LOBYTE(pt.y) + image->vertical_offset), 1);
                 } break;
@@ -546,7 +546,7 @@ namespace hooks {
                     if (noop) {
                         break;
                     }
-                    Point16 pt;
+                    v2u16 pt;
                     helper::iscript_use_lo_file(&pt, image, v34, v33);
                     helper::iscript_create_image(image, image_id, LOBYTE(pt.x) + image->horizontal_offset, (u8)(LOBYTE(pt.y) + image->vertical_offset), 0);
                 } break;
@@ -621,7 +621,7 @@ namespace hooks {
                     if (noop) {
                         break;
                     }
-                    Point16 pt;
+                    v2u16 pt;
                     helper::iscript_use_lo_file(&pt, image, arg3, 0);
                     if (Thingy* thingy = hooks::iscript_create_sprite(image, sprite_id, pt.x, pt.y, image->parent_sprite->elevation + 1)) {
                         helper::set_all_overlay_directions_generic((Unit*)thingy, (image->flags & ImageFlags::Mirrored) ? 32 - image->direction : image->direction);
@@ -909,7 +909,7 @@ namespace hooks {
                     if (noop) {
                         break;
                     }
-                    Point16 pt;
+                    v2u16 pt;
                     helper::iscript_use_lo_file(&pt, image, 2, offset);
                     u32 gas_id = offset + ((*g_active_iscript_unit)->building.resource.resource_amount != 0 ? 430 : 435);
                     if (Image* new_image = helper::get_empty_image()) {

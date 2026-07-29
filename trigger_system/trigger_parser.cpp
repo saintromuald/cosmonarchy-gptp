@@ -462,13 +462,13 @@ Area Parser::get_area(Area default_value) {
 	return default_value;
 }
 
-Point16 Parser::get_position(Point16 default_value) {
+v2u16 Parser::get_position(v2u16 default_value) {
 	if (!skip_whitespace()) {
 		return {};
 	}
 
 	if (get_char('(')) {
-		Point16 pos = {};
+		v2u16 pos = {};
 		pos.x = get_s32();
 		pos.y = get_s32();
 		get_char(')');

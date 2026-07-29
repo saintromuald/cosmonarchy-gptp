@@ -505,4 +505,17 @@ template<typename T>
 inline constexpr bool is_fixed_v = is_fixed<T>::value;
 //#endif
 }
+
+template <typename F, typename T> requires fpm::is_fixed_v<F>&& std::is_constructible_v<T, F>
+constexpr T& operator+=(T& t, F f) { return t = T(F(t) + f); }
+
+template <typename F, typename T> requires fpm::is_fixed_v<F>&& std::is_constructible_v<T, F>
+constexpr T& operator-=(T& t, F f) { return t = T(F(t) - f); }
+
+template <typename F, typename T> requires fpm::is_fixed_v<F>&& std::is_constructible_v<T, F>
+constexpr T& operator*=(T& t, F f) { return t = T(F(t) * f); }
+
+template <typename F, typename T> requires fpm::is_fixed_v<F>&& std::is_constructible_v<T, F>
+constexpr T& operator/=(T& t, F f) { return t = T(F(t) / f); }
+
 #endif

@@ -19,7 +19,7 @@ enum DialogButtonIndex : s32 {
 };
 
 inline const u32 UiTextHeight = 15;
-inline Point16 g_ui_text_pos;
+inline v2u16 g_ui_text_pos;
 
 inline ApmCounter g_local_apm_counter;
 inline ApmCounter g_player_apm_counter[PlayerLimit];

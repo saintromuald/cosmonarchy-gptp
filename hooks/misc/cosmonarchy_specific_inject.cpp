@@ -716,7 +716,7 @@ namespace hooks {
     void __declspec(naked) create_thingy_wrapper() { // 00488210
         static Thingy* result;
         static u32 sprite_id;
-        static Point16 position;
+        static v2u16 position;
         static u8 player;
         __asm {
             PUSH EBP

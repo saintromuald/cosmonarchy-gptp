@@ -71,7 +71,7 @@ struct UnitStatFuncArrayEntry {
 };
 
 struct UnitPath {
-    Point16		start;					 // 0x00
+    v2u16		start;					 // 0x00
     s32			next;					 // 0x04
     s32			finish;					 // 0x08
     s32			time_started;			 // 0x0C
@@ -146,13 +146,13 @@ struct DialogEvent {
     u16             virtual_key;            // 0x8
     u16             virtual_key_modifier;   // 0xA
     DialogEventType number_order;           // 0xC
-    Point16	current;                        // 0xE
+    v2u16	current;                        // 0xE
     u16 field_12;                           // 0x12
 };
 
 // Seems to be identical to ResourceArea
 struct Base {
-    Point16	position;			 // 0x0
+    v2u16	position;			 // 0x0
     u8		mineral_field_count; // 0x4
     u8		geyser_count;		 // 0x5
     u8		is_start_loc;		 // 0x6
@@ -719,17 +719,17 @@ public:
     void set_ltrb(s16 left, s16 top, s16 right, s16 bottom);
     void set_xywh(s16 x, s16 y, u16 width, u16 height);
 
-    bool contains(const Point16 point) const;
+    bool contains(const v2u16 point) const;
     bool contains(u16 x, u16 y) const;
     bool contains_mouse() const;
 
     bool is_empty() const;
     bool is_valid() const;
-    Point16 center() const;
-    Point16 top_left() const;
-    Point16 top_right() const;
-    Point16 bottom_left() const;
-    Point16 bottom_right() const;
+    v2u16 center() const;
+    v2u16 top_left() const;
+    v2u16 top_right() const;
+    v2u16 bottom_left() const;
+    v2u16 bottom_right() const;
 
     DialogBounds intersect(const DialogBounds& other) const;
     DialogBounds unite(const DialogBounds& other) const;
@@ -867,13 +867,13 @@ union {
 
 union {
     struct {
-        /*0x46*/  Point16	text_pos;
+        /*0x46*/  v2u16	text_pos;
         /*0x4A*/  u16		response_area_width;
         /*0x4C*/  u16		response_area_height;
         /*0x4E*/  unk_t     unk_4e[8];
     } initial_version_0x46;
     struct {
-        /*0x46*/  Point16   text_pos;				// unverified filler
+        /*0x46*/  v2u16   text_pos;				// unverified filler
         /*0x4A*/  void*     unk_function;
         /*0x4E*/  unk_t     unk_4e[8];				// unverified filler
     } onInitDialog0x46;
@@ -949,7 +949,7 @@ struct SMK_Structure {
     /*0x06*/ u32		internal_use1;
     /*0x0A*/ u32		smk_filename_offset;
     /*0x0E*/ u32		internal_use2;
-    /*0x12*/ Point16	smk_overlay_pos;
+    /*0x12*/ v2u16	smk_overlay_pos;
     /*0x16*/ u32		internal_use3;
     /*0x1A*/ u32		internal_use4;
 };
@@ -979,8 +979,8 @@ struct GuardAi {
     u8 unk_a[2];					// 0xA
     Unit* parent;					// 0xC
     u16 unit_id;					// 0x10
-    Point16 current_home;			// 0x12
-    Point16 original_home;			// 0x16
+    v2u16 current_home;			// 0x12
+    v2u16 original_home;			// 0x16
     u8 unk_1a[2];					// 0x1A
     u32 previous_update;			// 0x1C
 };
@@ -1173,7 +1173,7 @@ struct AiTown {
     u8 resource_units_not_set;				//	0x1D
     u8 in_battle;							//	0x1E
     u8 unk1f;								//	0x1F
-    Point16 position;						//	0x20
+    v2u16 position;						//	0x20
     Unit* main_building;					//	0x24
     Unit* building_scv;						//	0x28
     Unit* mineral;							//	0x2C
@@ -1264,7 +1264,7 @@ struct AiScript {
     s32					sleep;			// 0xC
     s32					player;			// 0x10
     Box32				loc_bounds;		// 0x14
-    Vec32			    loc_center;		// 0x24
+    v2s32			    loc_center;		// 0x24
     AiTown*				town;			// 0x2C
     s32					flags;			// 0x30
 };
@@ -1276,7 +1276,7 @@ struct AiScriptArray {
 };
 
 struct ResourceArea {
-    Point16 position;
+    v2u16 position;
     u8 mineral_field_count;
     u8 geyser_count;
     bool is_start_location;
@@ -1406,10 +1406,10 @@ struct PlayerNames {
 };
 
 struct MovementGroup {
-    Point16 pos;
-    Point16 current_unit_target;
-    Point16 pathed_pos;
-    Point16 nonpathed_pos;
+    v2u16 pos;
+    v2u16 current_unit_target;
+    v2u16 pathed_pos;
+    v2u16 nonpathed_pos;
     s32 unit_offset;
     s16 sqrt_2_times_unit_area_sum;
     s16 unit_area_sum;

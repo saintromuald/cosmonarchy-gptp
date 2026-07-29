@@ -297,7 +297,7 @@ namespace
 		static u32 unit_id;
 		static char* placement_data;
 		static u32 player;
-		static Point16 desired_pos;
+		static v2u16 desired_pos;
 		static s32 max_range;
 		__asm
 		{
@@ -767,7 +767,7 @@ namespace
 	void __declspec(naked) is_ground_map_wrapper() { // 00433110
 		static bool result;
 		static u32 player;
-		static Point16 position;
+		static v2u16 position;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP

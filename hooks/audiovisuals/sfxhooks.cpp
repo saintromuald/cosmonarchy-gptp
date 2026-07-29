@@ -271,7 +271,7 @@ namespace hooks {
     }
 
     // Hooked to use positional audio. -Pr0nogo
-    void play_sound_at_pos(SoundId::Enum sound_id, Point16 pos, bool play, s32 min_volume) { // 0048EC10
+    void play_sound_at_pos(SoundId::Enum sound_id, v2u16 pos, bool play, s32 min_volume) { // 0048EC10
         if (!sound_id || !g_options_list->sfx || !play) {
             return;
         }

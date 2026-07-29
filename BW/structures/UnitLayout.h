@@ -204,9 +204,9 @@ struct UnitLayout {
     /*0x008*/ s32       hitpoints;						// Hit points of unit, note that the displayed value in broodwar is ceil(healthPoints/256). Officially called "xLife"
     /*0x00C*/ Sprite*	sprite;
     /*0x010*/ Target    move_target;					// The position or unit to move to. It is NOT an order target.
-    /*0x018*/ Point16   next_movement_waypoint;			// The next way point in the path the unit is following to get to its destination.
+    /*0x018*/ v2u16   next_movement_waypoint;			// The next way point in the path the unit is following to get to its destination.
                                                         // Equal to moveToPos for edge units since they don't need to navigate around buildings.
-    /*0x01C*/ Point16   next_target_waypoint;			// The desired position
+    /*0x01C*/ v2u16   next_target_waypoint;			// The desired position
     /*0x020*/ u8        movement_flags;					// sound_flags specifying movement type, MovementFlags::Enum contains possible explanations
     /*0x021*/ u8        current_direction_1;			// The current direction the unit is facing
     /*0x022*/ u8        flingy_turn_rate;				// AKA flingy turn radius
@@ -218,12 +218,12 @@ struct UnitLayout {
     /*0x024*/ u16       flingy_id;
     /*0x026*/ u8        new_flags_1;					// Enum NewFlags1 | was unused
     /*0x027*/ u8        flingy_movement_type;
-    /*0x028*/ Point16   position;						// Current position of the unit
-    /*0x02C*/ Vec32		halt;
+    /*0x028*/ v2u16   position;						// Current position of the unit
+    /*0x02C*/ v2s32		halt;
     /*0x034*/ u32       flingy_top_speed;				// top speed
     /*0x038*/ u32       current_speed_1;				// current speed
     /*0x03C*/ u32       current_speed_2;				// not sure if there are any differences with these 2 variables, they always have the same value
-    /*0x040*/ Vec32		current_velocity;
+    /*0x040*/ v2s32		current_velocity;
     /*0x048*/ u16       flingy_acceleration;
     /*0x04A*/ u8        current_direction_2;			// ?
     /*0x04B*/ u8        velocity_direction_2;			// pathing related, BWAPI has more info
@@ -363,7 +363,7 @@ struct UnitLayout {
             /*0x0D0*/				Unit*		harvest_target;		// When waiting or harvesting
             /*0x0D4*/				Link<Unit>	harvest_link;		// When there is a gather conflict
         } worker;
-        /*0x0D0*/			Point16	powerup_origin;
+        /*0x0D0*/			v2u16	powerup_origin;
         /*0x0D4*/			Unit*	powerup_carrier;
     };
 
@@ -373,7 +373,7 @@ struct UnitLayout {
     /*0x0E2*/ u8        secondary_order_state;	
     /*0x0E3*/ u8        recent_order_timer;				// Counts down from 15 to 0 when most orders are given, or when the unit moves after reaching a patrol location
     /*0x0E4*/ s32       detection_status;				// sound_flags specifying which players can detect this unit (cloaked/burrowed)
-    /*0x0E8*/ Point16   secondary_order_pos;			// Unused according to BWAPI
+    /*0x0E8*/ v2u16   secondary_order_pos;			// Unused according to BWAPI
 //	/*0x0EA*/ u32		secondary_order_unk;			// From neiv's list
     /*0x0EC*/ Unit*		current_build_unit;				// tied to secondary order according to BWAPI
     /*0x0F0*/ Link<Unit>invisible_link;

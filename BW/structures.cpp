@@ -144,7 +144,7 @@ void ControlGroup::center_camera() {
 		return;
 	}
 	u32 avg_count = 0;
-	Vec32 avg_pos = {};
+	v2s32 avg_pos = {};
 	for (u32 i = 0; i < SelectionCap; ++i) {
 		Unit* unit = unit_index[i].get_for_selection(false);
 		if (!unit || bw::distance_between(unit->position, anchor->position) > distance_quota) {
@@ -199,13 +199,13 @@ void DialogBounds::set_xywh(s16 x, s16 y, u16 w, u16 h) {
 	m_bottom = y + static_cast<s16>(h) - 1;
 }
 
-bool DialogBounds::contains(const Point16 point) const {
+bool DialogBounds::contains(const v2u16 point) const {
 	return point.x >= static_cast<u16>(m_left) && point.x <= static_cast<u16>(m_right) &&
 		point.y >= static_cast<u16>(m_top) && point.y <= static_cast<u16>(m_bottom);
 }
 
 bool DialogBounds::contains(u16 x, u16 y) const {
-	return contains(Point16{x, y});
+	return contains(v2u16{x, y});
 }
 
 bool DialogBounds::contains_mouse() const {
@@ -220,27 +220,27 @@ bool DialogBounds::is_valid() const {
 	return m_right >= m_left && m_bottom >= m_top;
 }
 
-Point16 DialogBounds::center() const {
-	return Point16{
+v2u16 DialogBounds::center() const {
+	return v2u16{
 		static_cast<u16>((m_left + m_right) / 2),
 		static_cast<u16>((m_top + m_bottom) / 2)
 	};
 }
 
-Point16 DialogBounds::top_left() const {
-	return Point16{static_cast<u16>(m_left), static_cast<u16>(m_top)};
+v2u16 DialogBounds::top_left() const {
+	return v2u16{static_cast<u16>(m_left), static_cast<u16>(m_top)};
 }
 
-Point16 DialogBounds::top_right() const {
-	return Point16{static_cast<u16>(m_right), static_cast<u16>(m_top)};
+v2u16 DialogBounds::top_right() const {
+	return v2u16{static_cast<u16>(m_right), static_cast<u16>(m_top)};
 }
 
-Point16 DialogBounds::bottom_left() const {
-	return Point16{static_cast<u16>(m_left), static_cast<u16>(m_bottom)};
+v2u16 DialogBounds::bottom_left() const {
+	return v2u16{static_cast<u16>(m_left), static_cast<u16>(m_bottom)};
 }
 
-Point16 DialogBounds::bottom_right() const {
-	return Point16{static_cast<u16>(m_right), static_cast<u16>(m_bottom)};
+v2u16 DialogBounds::bottom_right() const {
+	return v2u16{static_cast<u16>(m_right), static_cast<u16>(m_bottom)};
 }
 
 DialogBounds DialogBounds::intersect(const DialogBounds& other) const {

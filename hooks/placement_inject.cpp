@@ -6,7 +6,7 @@ namespace
     void __declspec(naked) init_placement_box_pos_wrapper() // 0048D660
     {
         static s32 unused;
-        static Point16* placement;
+        static v2u16* placement;
         static s32 result;
 
         __asm
@@ -26,7 +26,7 @@ namespace
 
     void __declspec(naked) draw_placement_box_wrapper() // 0048DDC0
     {
-        static Point16 ecx0;
+        static v2u16 ecx0;
         static u8 result;
 
         __asm
@@ -100,7 +100,7 @@ namespace
         static u8 player;
         static u16 x_tile;
         static u16 y_tile;
-        static Point16 size_wh;
+        static v2u16 size_wh;
         static u32 placement_state_entry;
         static u32 check_vision;
         static u32 check_vision_2;
@@ -140,7 +140,7 @@ namespace
         static u16 tile_x;
         static u16 tile_y;
         static u8 player;
-        static Point16 size_wh;
+        static v2u16 size_wh;
         static u32 placement_state_entry;
         static u32 check_creep;
         __asm {

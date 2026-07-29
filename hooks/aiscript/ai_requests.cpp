@@ -651,7 +651,7 @@ namespace hooks {
         }
     }
 
-    static Unit* find_unit_for_guard(u32 player, u32 unit_id, Point16 position) {
+    static Unit* find_unit_for_guard(u32 player, u32 unit_id, v2u16 position) {
         Unit* best_unit = 0;
         fp32 best_score{};
         for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
@@ -906,7 +906,7 @@ namespace hooks {
             return false;
         }
 
-        Point16 build_pos = {};
+        v2u16 build_pos = {};
         if (unit_id == helper::get_default_refinery_type(player)) {
             Unit* gas = helper::get_ai_gas_node(town, 1, 1);
             if (!gas) {

@@ -152,7 +152,7 @@ namespace hooks
 		bool bBuildTimeReachedZero = false;
 		bool bStopFunction = false;
 		bool bReturnToIdle = false;
-		Point16 actualpos;
+		v2u16 actualpos;
 
 		if (unitInfesting->main_order_state == 3) {
 			//infesting in progress, dealing with timer			

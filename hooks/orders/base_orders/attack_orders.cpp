@@ -497,7 +497,7 @@ namespace hooks {
     }
 
     // Hooked to remove randomness. -Pr0nogo
-    void get_next_strafe_position(Unit* unit, u8 strafe_type, Point16 position) { // 00465D30
+    void get_next_strafe_position(Unit* unit, u8 strafe_type, v2u16 position) { // 00465D30
         // TODO: replace randomness with some kind of consistent rotation.
         u32 rand_off_x = strafe_type * helper::rand_between(-127, 128, 11);
         u32 rand_off_y = strafe_type * helper::rand_between(-127, 128, 11);

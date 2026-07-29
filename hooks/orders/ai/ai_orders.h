@@ -19,10 +19,10 @@ bool ai_is_building_safe(Unit* unit);																				// 00438910
 bool ai_are_on_connected_regions(Unit* unit1, Unit* unit2);															// 00438E10
 
 s32 get_bunker_placement_position(u32 placement_id, u32* region_id);												// 004442E0
-void ai_get_build_location(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos, s32 max_range);		// 004461B0
-u32 get_tower_placement_position(char* placementData, u32 player, Point16 desiredPos, u16 unit_id, u32 unkFlag);	// 00443AC0
+void ai_get_build_location(u32 unit_id, char* placement_data, u32 player, v2u16 desired_pos, s32 max_range);		// 004461B0
+u32 get_tower_placement_position(char* placementData, u32 player, v2u16 desiredPos, u16 unit_id, u32 unkFlag);	    // 00443AC0
 bool ai_check_military_grouping(Unit* unit);																		// 00439550
-u32 __stdcall ai_remove_different_height(char* placement_data, Point16 desired_pos);								// 004BD0F0
+u32 __stdcall ai_remove_different_height(char* placement_data, v2u16 desired_pos);								    // 004BD0F0
 s32 attack_recent_attacker(Unit* unit);																				// 004770E0
 u32 ai_get_vespene_type(Unit* unit, u32 index, bool for_harvesting = false);										// 004326E0
 Unit* get_ai_gas_node(AiTown* town, u32 gas_state, u32 index, bool for_harvesting = false);							// 004326E0
@@ -40,7 +40,7 @@ struct PlacementData {
     bool tile_valid[64][64];
 };
 C_ASSERT(sizeof(PlacementData) == 0x1000);
-void __stdcall ai_remove_addon_placements(u16 unit_id, PlacementData* placement_data, u32 player, Point16 desired_position);	// 00443CC0
+void __stdcall ai_remove_addon_placements(u16 unit_id, PlacementData* placement_data, u32 player, v2u16 desired_position);	// 00443CC0
 
 void ai_manage_military_controller(Unit* unit);																		// 0043D910
 void ai_assign_region_to_slowest_unit(AiRegion* region);															// 00436F70
@@ -56,7 +56,7 @@ bool ai_prepare_attack(u32 player, u32 x, u32 y, u32 overwrite_last_attack, u32 
 bool ai_attack_timer_decrement(u32 player);																			// 00447090
 void __stdcall ai_region_grouping_for_attack(AiRegion* ai_region);
 
-bool is_ground_map(Point16 position, u32 player);																	// 00433110
+bool is_ground_map(v2u16 position, u32 player);																	// 00433110
 
 AiTown* ai_remove_from_towns(Unit* unit);																			// 00432760
 void ai_get_oldpeons(AiTown* town, u32 count);																		// 004355C0

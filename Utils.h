@@ -44,6 +44,6 @@ std::optional<std::invoke_result_t<GenFunc>> sample_best(GenFunc&& gen_func, Sco
     return result;
 }
 
-std::optional<Point16> pick_random_spawn_point(UnitId::Enum unit_id, u32 samples = 10);
+std::optional<v2u16> pick_random_spawn_point(UnitId::Enum unit_id, u32 samples = 10);
 
 }; // utils

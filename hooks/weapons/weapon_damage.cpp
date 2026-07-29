@@ -354,9 +354,9 @@ namespace hooks {
             if (fore_castle_factor) {
                 bool apply_fore_castle = !data.attacker || data.target->is_building();
                 if (!apply_fore_castle) {
-                    Vec32f dir = bw::dir_between(data.target->position, data.attacker->position);
-                    Vec32f facing_dir = bw::facing_dir(data.target);
-                    apply_fore_castle = bw::dot_product(dir, facing_dir) >= bw::deg_to_dot(120.0 / 2);
+                    v2 dir = data.target->position.dir_to(data.attacker->position);
+                    v2 facing_dir = bw::facing_dir(data.target);
+                    apply_fore_castle = dir.dot(facing_dir) >= bw::deg_to_dot(60.0fp);
                 }
                 if (apply_fore_castle) {
                     armor_total += fore_castle_factor;
@@ -925,9 +925,8 @@ namespace hooks {
                         const u32 dist = bw::distance_between(data.attacker->get_x(), data.attacker->get_y(), data.target->get_x(), data.target->get_y());
                         if (dist < 2tiles) {
                             const u32 displacement_time = 5;
-                            Vec32f displacement = bw::dir_between(data.target->position, data.attacker->position);
-                            displacement.x *= 1 * 32.0 / displacement_time;
-                            displacement.y *= 1 * 32.0 / displacement_time;
+                            v2 displacement = data.target->position.dir_to(data.attacker->position);
+                            displacement *= 32.0fp / fp32(displacement_time);
 
                             attacker_ext.timers[TimerStrigaRepulsion] = displacement_time;
                             attacker_ext.repulsion_vector = displacement;
@@ -1157,9 +1156,8 @@ namespace hooks {
                         // Magnetar - Law of Attraction - Pull target to attacker
                         if (unit_can_be_repulsed(data.target)) {
                             const u32 displacement_time = 5;
-                            Vec32f displacement = bw::dir_between(data.target->sprite->position, data.attacker->sprite->position);
-                            displacement.x *= 2 * 32.0 / displacement_time;
-                            displacement.y *= 2 * 32.0 / displacement_time;
+                            v2 displacement = data.target->sprite->position.dir_to(data.attacker->sprite->position);
+                            displacement *= 2fp * 32.0fp / fp32(displacement_time);
                             target_ext.timers[TimerMagnetarAttraction] = displacement_time;
                             target_ext.repulsion_vector = displacement;
 
@@ -1551,7 +1549,7 @@ namespace hooks {
 
                 // Kill flying -> ground regressions if placement is impossible. Otherwise, no corpse is created! -Pr0nogo
                 if (!(units_dat::base_property[regression_id] & UnitProperty::Flyer) && units_dat::base_property[data.target->id] & UnitProperty::Flyer) {
-                    Point16 position = data.target->position;
+                    v2u16 position = data.target->position;
                     position.y += AirToGroundDistance;
                     const auto& tile = bw::get_tile_at_coords(position);
                     if (tile.is_unwalkable) {

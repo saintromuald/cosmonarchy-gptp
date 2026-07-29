@@ -5,7 +5,7 @@
 #include "ai_layouts.h"
 #include "BW\stat_txt_spec.h"
 
-Box32 box32_rect(Point16 pos, u32 w, u32 h) {
+Box32 box32_rect(v2u16 pos, u32 w, u32 h) {
     Box32 box = {};
     box.left   = pos.x - w / 2;
     box.right  = pos.x + w / 2;
@@ -14,7 +14,7 @@ Box32 box32_rect(Point16 pos, u32 w, u32 h) {
     return box;
 }
 
-Box32 box32_square(Point16 pos, u32 w) {
+Box32 box32_square(v2u16 pos, u32 w) {
     Box32 box = {};
     box.left   = pos.x - w / 2;
     box.right  = pos.x + w / 2;
@@ -33,7 +33,7 @@ bool is_hostile_or_neutral(u32 player, u32 other_player) {
 void replay_witness_event(Unit* unit, SpectatorEvent event_type) {
     if (g_is_in_replay || g_globals->players[g_local_nation_id].witness_mode) {
         bool ping = true;
-        Point16 position = {};
+        v2u16 position = {};
         switch (event_type) {
             // TODO: Different ping types, maybe sound queue... Must be tasteful! -Pr0nogo
             case SpectatorEvent_Combat: 

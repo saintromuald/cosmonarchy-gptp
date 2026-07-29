@@ -30,8 +30,8 @@ struct KitePositions {
     u32 ally_strength;
     u32 hostile_strength;
 
-    Point16 forward_pos;
-    Point16 backward_pos;
+    v2u16 forward_pos;
+    v2u16 backward_pos;
 };
 
 static u32 get_max_range(u32 unit_id) {
@@ -52,12 +52,8 @@ static bool is_melee_attacker(u32 unit_id) {
     return get_max_range(unit_id) <= 32;
 }
 
-static void adjust_vector(Vec32f* vector, Unit* unit, Point16 position, s32 value) {
-    Vec32f delta = bw::normalize(bw::vec_between(unit->position, position));
-    delta.x *= value;
-    delta.y *= value;
-    vector->x += delta.x;
-    vector->y += delta.y;
+static void adjust_vector(v2* vector, Unit* unit, v2u16 position, s32 value) {
+    vector += unit->position.dir_to(position) * fp32{value};
 }
 
 static bool unit_has_min_range(Unit* unit) {
@@ -450,10 +446,10 @@ static KitePositions get_kite_positions(Unit* unit) {
     KitePositions result = {};
     result.distance = get_max_range(unit->id);
 
-    Vec32f hostile_vector = {};
-    Vec32f forward_vector = {};
-    Vec32f backward_vector = {};
-    Vec32f effect_vector = {};
+    v2 hostile_vector = {};
+    v2 forward_vector = {};
+    v2 backward_vector = {};
+    v2 effect_vector = {};
 
     for (Unit* hostile : g_unit_search.square_ex(unit, GroupRadius, FilterEnemy | FilterCanAttackOrCast)) {
         s32 strength = 0;
@@ -503,7 +499,7 @@ static KitePositions get_kite_positions(Unit* unit) {
         s32 value = get_effect_value(unit, effect);
         if (value) {
             result.targets_found = true;
-            Point16 position = {};
+            v2u16 position = {};
             position.x = effect->position.x;
             position.y = effect->position.y;
             adjust_vector(&effect_vector, unit, position, value);
@@ -513,7 +509,7 @@ static KitePositions get_kite_positions(Unit* unit) {
     if (unit->id == UnitId::ZergSovroleth) {
         for (Thingy* corpse : g_corpse_search.radial(unit->position, GroupRadius)) {
             result.targets_found = true;
-            Point16 position = {};
+            v2u16 position = {};
             position.x = corpse->sprite->position.x;
             position.y = corpse->sprite->position.y;
             result.forward_found = true;
@@ -522,29 +518,21 @@ static KitePositions get_kite_positions(Unit* unit) {
     }
 
     if (result.targets_found) {
-        Vec32f forward_pos = forward_vector;
-        forward_pos.x += hostile_vector.x;
-        forward_pos.y += hostile_vector.y;
-        forward_pos.x -= effect_vector.x;
-        forward_pos.y -= effect_vector.y;
-        forward_pos = bw::normalize(forward_pos);
-        forward_pos.x *= MoveRadius;
-        forward_pos.y *= MoveRadius;
-        forward_pos.x += unit->position.x;
-        forward_pos.y += unit->position.y;
-        result.forward_pos = bw::to_point16(forward_pos);
+        v2 forward_pos = forward_vector;
+        forward_pos += hostile_vector;
+        forward_pos -= effect_vector;
+        forward_pos = forward_pos.norm();
+        forward_pos *= MoveRadius;
+        forward_pos += v2(unit->position);
+        result.forward_pos = v2u16(forward_pos);
 
-        Vec32f backward_pos = backward_vector;
-        backward_pos.x -= hostile_vector.x;
-        backward_pos.y -= hostile_vector.y;
-        backward_pos.x -= effect_vector.x;
-        backward_pos.y -= effect_vector.y;
-        backward_pos = bw::normalize(backward_pos);
-        backward_pos.x *= MoveRadius;
-        backward_pos.y *= MoveRadius;
-        backward_pos.x += unit->position.x;
-        backward_pos.y += unit->position.y;
-        result.backward_pos = bw::to_point16(backward_pos);
+        v2 backward_pos = backward_vector;
+        backward_pos -= hostile_vector;
+        backward_pos -= effect_vector;
+        backward_pos = backward_pos.norm();
+        backward_pos *= MoveRadius;
+        backward_pos += v2(unit->position);
+        result.backward_pos = v2u16(backward_pos);
     }
     return result;
 }

@@ -1,10 +1,13 @@
-// Based on BWAPI's BW/Position.h
+﻿// Based on BWAPI's BW/Position.h
 
 #pragma once
 #include "../../types.h"
 #include "../../interpolation.h"
 #include <algorithm>
 #include <source_location>
+#include <concepts>
+#include <numbers>
+
 #pragma pack(1)
 
 struct Point8 {
@@ -34,32 +37,6 @@ struct std::hash<TileCoord> {
 	}
 };
 
-struct Point16 {
-	u16 x;
-	u16 y;
-
-	bool operator==(const Point16& other) const = default;
-	operator bool() const { return *this != Point16{}; }
-};
-
-struct Vec32 {
-	s32 x;
-	s32 y;
-};
-
-struct Vec32f {
-	f32 x;
-	f32 y;
-
-	Vec32f() = default;
-	Vec32f(f32 x, f32 y) : x(x), y(y) {}
-	Vec32f(Point16 point) : x(point.x), y(point.y) {}
-
-	bool operator==(const Vec32f& other) const = default;
-	operator bool() const { return *this != Vec32f{}; }
-	operator Point16() const { return Point16{u16(x), u16(y)}; }
-};
-
 // Implemented in api.cpp, declaration moved here to avoid circular include
 namespace bw {
 #define MaxRandom 32767.0
@@ -68,11 +45,26 @@ namespace bw {
 /// generate the same sequence in a replay.
 u16 random(std::source_location src = std::source_location::current());
 
-template <utils::FloatLike F = f32> // TODO: remove f32
+template <utils::FloatLike F>
 F random_float(std::source_location src = std::source_location::current()) {
-    return F(random()) / F(MaxRandom);
+	return F(random()) / F(MaxRandom);
 }
 }; // namespace bw
+
+template <typename>
+struct PI;
+
+template <utils::FixedPoint F>
+struct PI<F> { static constexpr F value = F::pi(); };
+
+template <std::floating_point F>
+struct PI<F> { static constexpr F value = std::numbers::pi_v<F>; };
+
+template <utils::FixedPoint F>
+inline auto degs_to_rads(F degs) { return degs * PI<F>::value / F{180}; }
+
+template <utils::FixedPoint F>
+inline auto rads_to_degs(F degs) { return degs * F{180} / PI<F>::value; }
 
 namespace detail {
 using utils::FloatLike;
@@ -80,112 +72,146 @@ using utils::FloatLike;
 inline const u16& g_map_tile_width  = *(u16*)0x0057F1D4;
 inline const u16& g_map_tile_height = *(u16*)0x0057F1D6;
 
+// TODO: consider replacing DefaultFloat with PromotionType (v2<T>), and use `using default_float = PromotionType::backing_type;`
 template <typename T, FloatLike DefaultFloat = T>
 struct v2 {
-	T x{};
-	T y{};
+	T x;
+	T y;
+
+	using backing_type = T;
+	using default_float_type = DefaultFloat;
+	using v2t = v2<T, DefaultFloat>;
 
 	constexpr v2() = default;
 	constexpr v2(T x, T y) : x{x}, y{y} {}
-	constexpr v2(Point16 p) : x(p.x), y(p.y) {}
-	constexpr v2(Vec32f v) : x(v.x), y(v.y) {}
 	
 	template <typename Y>
 	explicit constexpr v2(v2<Y> v) : x(v.x), y(v.y) {}
 
-	constexpr bool operator==(const v2<T>& b) const { return x == b.x && y == b.y; }
-	constexpr operator bool() const { return *this != v2<T>{}; }
-	constexpr operator Point16() const { return Point16{u16(x), u16(y)}; }
+	constexpr bool operator==(const v2<T, DefaultFloat>& b) const { return x == b.x && y == b.y; }
+	constexpr operator bool() const { return *this != v2t{}; }
 
-	constexpr v2<T> operator+(v2<T> b) const { return v2<T>{x + b.x, y + b.y}; }
-	constexpr v2<T> operator-(v2<T> b) const { return v2<T>{x - b.x, y - b.y}; }
-	constexpr v2<T> operator*(T b) const { return v2<T>{x * b, y * b}; }
-	constexpr v2<T> operator/(T b) const { return v2<T>{x / b, y / b}; }
+	template <typename T, FloatLike F>
+	explicit constexpr operator v2<T, F>() const { return v2<T, F>{T(x), T(y)}; }
+
+	constexpr v2t operator+(v2t b) const { return v2t{x + b.x, y + b.y}; }
+	constexpr v2t operator-(v2t b) const { return v2t{x - b.x, y - b.y}; }
+	constexpr v2t operator*(T b) const { return v2t{x * b, y * b}; }
+	constexpr v2t operator/(T b) const { return v2t{x / b, y / b}; }
 	template <FloatLike F = DefaultFloat> constexpr v2<F> operator*(F b) const { return v2<F>{x * b, y * b}; }
 	template <FloatLike F = DefaultFloat> constexpr v2<F> operator/(F b) const { return v2<F>{x / b, y / b}; }
 
-	constexpr v2<T>& operator+=(v2<T> b) { return *this = *this + b; }
-	constexpr v2<T>& operator-=(v2<T> b) { return *this = *this - b; }
-	constexpr v2<T>& operator*=(T b) { return *this = *this + b; }
-	constexpr v2<T>& operator/=(T b) { return *this = *this - b; }
-	template <FloatLike F = DefaultFloat> constexpr v2<F>& operator*=(F b) { return *this = *this + b; }
-	template <FloatLike F = DefaultFloat> constexpr v2<F>& operator/=(F b) { return *this = *this - b; }
+	constexpr v2t& operator+=(v2t b) { return *this = *this + b; }
+	constexpr v2t& operator-=(v2t b) { return *this = *this - b; }
+	constexpr v2t& operator*=(T b) { return *this = *this * b; }
+	constexpr v2t& operator/=(T b) { return *this = *this / b; }
+	template <FloatLike F = DefaultFloat> constexpr v2<F>& operator*=(F b) { return *this = *this * b; }
+	template <FloatLike F = DefaultFloat> constexpr v2<F>& operator/=(F b) { return *this = *this / b; }
 
 	template <FloatLike F = DefaultFloat>
-	inline F distance() const {
-		return fpm::hypot(F{x}, F{y});
+	inline F len() const {
+		if constexpr (fpm::is_fixed_v<F>) {
+            F dx = abs(x); F dy = abs(y);
+
+            if (dy > dx) {
+                const auto temp = dx;
+                dx = dy;
+                dy = temp;
+            }
+			if (!dx) return 0;
+
+			return dx * fpm::sqrt(F{1} + (dy / dx) * (dy / dx));
+		} else {
+            return hypot(F{x}, F{y});
+		}
 	}
 
 	template <FloatLike F = DefaultFloat>
-	inline F distance_to(v2<T> b) const {
-		return fpm::hypot(F{b.x - x}, F{b.y - y});
+	inline F distance_to(v2t b) const {
+		return vec_to(b).len<F>();
 	}
 
 	template <FloatLike F = DefaultFloat>
-	inline v2<F> normalize() const {
-		return *this / distance<F>();
-	}
-
-	constexpr inline v2<T> vector_to(v2<T> b) const {
-		return (b - *this);
+	inline v2<F> norm() const {
+		if (len<F>()) {
+			return *this / len<F>();
+		}
+		return *this;
 	}
 
 	template <FloatLike F = DefaultFloat>
-	inline v2<F> dir_to(v2<T> b) const {
-		return vector_to(b).normalize<F>();
+	constexpr inline v2<F> vec_to(v2t b) const {
+		return v2<F>(b) - v2<F>(*this);
 	}
 
-	constexpr inline T dot(v2<T> b) const {
+	// NOTE: in this case we always promote to float vector,
+	//       since we need negative numbers and integer vectors we currently only use unsigned
+	//       and we probably don't want to add signed ones
+	//       (let's not multiply types if not needed, also they would have to be bigger, and so on)
+	template <FloatLike F = DefaultFloat>
+	inline v2<F> dir_to(v2t b) const {
+		return vec_to(b).norm<F>();
+	}
+
+	constexpr inline T dot(v2t b) const {
 		return x * b.x + y * b.y;
 	}
 
 	template <FloatLike F = DefaultFloat>
-	inline F dot_norm(v2<T> b) const {
-		return normalize<F>().dot(b.normalize<F>());
+	inline F dot_norm(v2t b) const {
+		return norm<F>().dot(b.norm<F>());
 	}
 
-	constexpr inline T determinant(v2<T> b) const {
+	constexpr inline T determinant(v2t b) const {
 		return x * b.y - y * b.x;
 	}
 
 	template <FloatLike F = DefaultFloat>
-	inline F determinant_norm(v2<T> b) const {
-		return normalize<F>().determinant(b.normalize<F>());
+	inline F determinant_norm(v2t b) const {
+		return norm<F>().determinant(b.norm<F>());
 	}
 
-	constexpr inline v2<T> perpendicular() const {
+	template <FloatLike F = DefaultFloat>
+	constexpr inline v2<F> perpendicular() const {
 		return {-y, x};
 	}
 
-	constexpr inline v2<T> reversed() const {
+	template <FloatLike F = DefaultFloat>
+	constexpr inline v2<F> reversed() const {
 		return {-x, -y};
 	}
 
 	template <FloatLike F = DefaultFloat>
-	inline v2<T> rotate(v2<T> anchor, F angle_degrees) const {
+	inline v2t rotate(v2t anchor, F angle_degrees) const {
+		using namespace std;
+		using namespace fpm;
         F x1 = x - anchor.x;
         F y1 = y - anchor.y;
-		F radians = angle_degrees / F{57.296};
-        F x2 = x1 * fpm::cos(radians) - y1 * fpm::sin(radians);
-        F y2 = x1 * fpm::sin(radians) + y1 * fpm::cos(radians);
+		F radians = degs_to_rads(angle_degrees);
+        F x2 = x1 * cos(radians) - y1 * fpm::sin(radians);
+        F y2 = x1 * sin(radians) + y1 * fpm::cos(radians);
         return {T(x2 + anchor.x), T(y2 + anchor.y)};
 	}
 
 	template <FloatLike F = DefaultFloat>
-	inline v2<T> polar_point(F angle_degrees, F distance) const {
-		F rads = angle_degrees / F{57.296};
+	inline v2t polar_point(F angle_degrees, F distance) const {
+		using namespace std;
+		using namespace fpm;
+		F rads = degs_to_rads(angle_degrees);
         return {
-            T(x + fpm::cos(rads) * distance),
-            T(y + fpm::sin(rads) * distance),
+            T(x + cos(rads) * distance),
+            T(y + sin(rads) * distance),
         };
     }
 
 	template <FloatLike F = DefaultFloat>
-    inline v2<T> random_polar_point(F max_distance) const {
-        return polar_point<F>(bw::random_float<F>() * 360, max_distance * fpm::sqrt(bw::random_float<F>()));
+    inline v2t random_polar_point(F max_distance) const {
+		using namespace std;
+		using namespace fpm;
+        return polar_point<F>(bw::random_float<F>() * 360, max_distance * sqrt(bw::random_float<F>()));
     }
 
-	constexpr inline v2<T> clamp_to_map_bounds() const {
+	constexpr inline v2t clamp_to_map_bounds() const {
 		return {
 			std::clamp<T>(x, T{0}, T(g_map_tile_width * 32)),
 			std::clamp<T>(y, T{0}, T(g_map_tile_height * 32)),
@@ -195,20 +221,21 @@ struct v2 {
 
 }; // namespace detail
 
-// using Point16 = detail::v2<u16, fp32>;
-// using Vec32 = detail::v2<u32, fp32>;
-using v2  = detail::v2<fp32>;
-using v2d = detail::v2<fp64>;
-// using Vec32f = v2; // TODO: Remove this later
+using v2u16  = detail::v2<u16, fp32>; // Used to be named Point16, uses u16,  default point type used by broodwar
+using v2s32  = detail::v2<s32, fp32>; // Used to be named Vec32,   uses s32,  used by broodwar
+using v2     = detail::v2<fp32>;      // Similar to Vec32f,        uses fp32, use as default vector type
+using v2fp64 = detail::v2<fp64>;      // Similar to Vec32,         uses fp64, use when double precision fixed point is needed for complex math
+
+using v2f32 = detail::v2<f32>; // Use for UI math
 
 union Quad {
 	struct {
-		Vec32f top_left;
-		Vec32f top_right;
-		Vec32f bottom_right;
-		Vec32f bottom_left;
+		v2 top_left;
+		v2 top_right;
+		v2 bottom_right;
+		v2 bottom_left;
 	};
-	Vec32f corners[4]; // Should be clockwise!
+	v2 corners[4]; // Should be clockwise!
 };
 
 union Box16 {
@@ -225,14 +252,14 @@ union Box16 {
 		s16 h;
 	};
 
-	bool contains_ltrb(Point16 point) const {
+	bool contains_ltrb(v2u16 point) const {
 		return point.x >= left && point.x <= right &&
-			point.y >= top && point.y <= bottom;
+			   point.y >= top && point.y <= bottom;
 	}
 
-	bool contains_xywh(Point16 point) const {
+	bool contains_xywh(v2u16 point) const {
 		return point.x >= x && point.x < x + w &&
-			point.y >= y && point.y < y + h;
+			   point.y >= y && point.y < y + h;
 	}
 };
 
@@ -250,11 +277,10 @@ union Box32 {
 		s32 h;
 	};
 
-    Point16 center() const {
-        return {
-            .x = u16(left + (right  - left) / 2),
-            .y = u16(top  + (bottom - top)  / 2),
-		};
+    v2u16 center() const {
+        return v2u16(
+            left + (right  - left) / 2,
+            top  + (bottom - top)  / 2);
     }
 
 	Box32 offsets_from_center() const {
@@ -288,8 +314,8 @@ struct Bounds {
 };
 
 C_ASSERT(sizeof(Point8) == 2);
-C_ASSERT(sizeof(Point16) == 4);
-C_ASSERT(sizeof(Vec32) == 8);
+C_ASSERT(sizeof(v2u16) == 4);
+C_ASSERT(sizeof(v2s32) == 8);
 C_ASSERT(sizeof(Box16) == 8);
 C_ASSERT(sizeof(Box32) == 16);
 C_ASSERT(sizeof(Bounds) == 12);

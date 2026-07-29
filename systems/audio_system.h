@@ -79,14 +79,14 @@ struct PlaySoundSettings {
 	s32 bw_pan = 0;
 	bool is_bw_hook = false;
 
-	Point16 position = {};
+	v2u16 position = {};
 	Unit* unit = nullptr;
 	s32 min_volume = 0;
 	bool force_globally = false;
 	bool looping = false;
 	s32 unit_response_id = -1;
 
-	Point16 get_updated_position() {
+	v2u16 get_updated_position() {
 		if (force_globally) {
 			position = {};
 		} else if (unit) {
@@ -123,7 +123,7 @@ struct SoundBuffer {
 	}
 
 	virtual SoundMainBuffer* get_root_buffer() = 0;
-	bool is_blocking_play(SoundBuffer* candidate, Point16 candidate_pos);
+	bool is_blocking_play(SoundBuffer* candidate, v2u16 candidate_pos);
 };
 
 struct SoundMainBuffer : SoundBuffer {
@@ -208,7 +208,7 @@ public:
 	void set_playlist_shuffle(bool shuffle);
 
 	s32 get_sound_volume() const;
-	s32 get_sound_volume_at_pos(Point16 pos) const;
+	s32 get_sound_volume_at_pos(v2u16 pos) const;
 	s32 get_playback_volume() const;
 
 	void update_playing_sounds();

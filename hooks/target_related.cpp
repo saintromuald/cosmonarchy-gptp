@@ -752,8 +752,8 @@ namespace hooks {
         acceptable_area.y = shift_y + new_y;
 
         s32 final_h = new_h - shift_y;
-        Point16 old_pos = { acceptable_area.x + ((shift_w - (s32)acceptable_area.x) / 2), acceptable_area.y + ((final_h - (s32)acceptable_area.y) / 2) };
-        Point16 new_pos = { unit->position.x, unit->position.y };
+        v2u16 old_pos(acceptable_area.x + ((shift_w - (s32)acceptable_area.x) / 2), acceptable_area.y + ((final_h - (s32)acceptable_area.y) / 2));
+        v2u16 new_pos(unit->position.x, unit->position.y);
         if (helper::make_valid_position(&old_pos, &new_pos, &acceptable_area))
         {
             *out_x = new_pos.x;

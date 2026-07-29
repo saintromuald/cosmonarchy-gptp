@@ -92,7 +92,7 @@ namespace {
 
 	void __declspec(naked) play_sound_at_pos_wrapper() { // 0048EC10
 		static SoundId::Enum sound_id;
-		static Point16 pos;
+		static v2u16 pos;
 		static b32 play;
 		static s32 min_volume;
 		__asm {

@@ -411,7 +411,7 @@ namespace bw
 	Unit* UnitFinder::getNearest(s32 x, s32 y, 	s32 boundsLeft, s32 boundsTop, s32 boundsRight, s32 boundsBottom,
 		UnitFinderData* left, UnitFinderData* top,
 		UnitFinderData* right, UnitFinderData* bottom,
-		CallbackMatch match, Vec32 sourcePosition)
+		CallbackMatch match, v2s32 sourcePosition)
 	{
 		s32 bestDistance = bw::distance_between(0, 0, std::max(x - boundsLeft, boundsRight - x), std::max(y - boundsTop, boundsBottom - y));
 		Unit* bestUnit = nullptr;
@@ -592,7 +592,7 @@ namespace bw
 			match, sourceBullet);
 	}
 
-	Unit* UnitFinder::get_nearest_target(s32 left, s32 top, s32 right, s32 bottom, Vec32 sourcePosition, CallbackMatch match)
+	Unit* UnitFinder::get_nearest_target(s32 left, s32 top, s32 right, s32 bottom, v2s32 sourcePosition, CallbackMatch match)
 	{
 		UnitFinderData* searchLeft, * searchTop, * searchRight, * searchBottom;
 

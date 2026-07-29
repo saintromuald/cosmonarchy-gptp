@@ -69,14 +69,14 @@ void TheTurningGameMode::on_unit_tick(Unit* unit) {
         }
 
         if (!unit_ext->timers[TimerTurningAggressiveModeThrottle]) {
-            unit_ext->timers[TimerTurningAggressiveModeThrottle] = bw::rand_between(5 * 24, 8 * 24);
+            unit_ext->timers[TimerTurningAggressiveModeThrottle] = bw::rand_between(5secs, 8secs);
             if (Unit* target = g_unit_search.all().not_neutral().filter().closest_to(unit->position)) {
                 unit->order_to(OrderId::AttackUnit, target);
                 return;
             }
         }
         if (!unit_ext->timers[TimerTurningRoam]) {
-            const auto target_pos = bw::random_polar_point(unit->position, 1 * 32);
+            const auto target_pos = unit->position.random_polar_point<fp32>(1tiles);
             unit->order_to(OrderId::Move, target_pos);
             unit_ext->timers[TimerTurningRoam] = 6;
         }
@@ -94,7 +94,7 @@ void TheTurningGameMode::on_unit_tick(Unit* unit) {
     if (Unit* target = g_unit_search.radial(unit->position, unit->get_sight_range() * 32).not_neutral().filter().sort_by_distance(unit->position).first()) {
         unit->order_to(OrderId::AttackUnit, target);
     } else if (!unit_ext->timers[TimerTurningRoam]) {
-        const auto target_pos = bw::random_polar_point(unit->position, 6 * 32);
+        const auto target_pos = unit->position.random_polar_point<fp32>(6tiles);
         unit->order_to(OrderId::Move, target_pos);
         unit_ext->timers[TimerTurningRoam] = 6 * 24;
     }
@@ -136,7 +136,7 @@ Unit* TheTurningGameMode::spawn() {
         return 0;
     }
 
-    std::optional<Point16> spawn_position = utils::pick_random_spawn_point(unit_id);
+    std::optional<v2u16> spawn_position = utils::pick_random_spawn_point(unit_id);
     if (!spawn_position) {
         return 0;
     }

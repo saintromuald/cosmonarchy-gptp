@@ -341,17 +341,17 @@ namespace hooks {
         if (g_is_placing_building) {
             auto y = g_mouse->y;
             auto x = g_mouse->x;
-            auto mouse_pos = Point16{ (u16)g_mouse->x, (u16)g_mouse->y };
+            auto mouse_pos = v2u16{ (u16)g_mouse->x, (u16)g_mouse->y };
             if (helper::init_placement_box_pos(&mouse_pos)) {
                 g_place_building_message_id = helper::update_placement_state_for_placement_box();
                 helper::refresh_layers_3_and_4();
-                Point16 buildPoint;
+                v2u16 buildPoint;
                 buildPoint.x = x;
                 buildPoint.y = y;
                 helper::unk_building_placement_related(1, &buildPoint);
                 if (g_is_placing_addon) {
                     u32 unit_id = g_place_building_unit_id - UnitId::TerranMinistry;
-                    Point16 addon_point = { units_dat::addon_placement[unit_id].x , units_dat::addon_placement[unit_id].y };
+                    v2u16 addon_point = { units_dat::addon_placement[unit_id].x , units_dat::addon_placement[unit_id].y };
                     bw::adjust_addon_coordinates(g_place_building_unit_id, 0, &addon_point.x, &addon_point.y);
                     helper::unk_building_placement_related(0, &addon_point);
                 }
@@ -487,7 +487,7 @@ namespace hooks {
         if (unit->move_target.pt.x == unit->position.x && unit->move_target.pt.y == unit->position.y) {
             // Get addon position - this is probably wrong right now, the original IDA code was a disaster.
             u32 addon_id = unit->building.addon_build_id;
-            Point16 dimensions = units_dat::building_dimensions[addon_id];
+            v2u16 dimensions = units_dat::building_dimensions[addon_id];
             unit->order_target.pt.x += units_dat::addon_placement[addon_id].x + dimensions.x / 2;
             unit->order_target.pt.y += units_dat::addon_placement[addon_id].y + dimensions.y / 2;
 

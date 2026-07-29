@@ -348,7 +348,7 @@ namespace helper {
     void switch_to_warp_texture(Image* image);																// 004D8500
     bool set_thingy_visibility_flags(Thingy* thingy);									                    // 004878F0
     const char* set_unit_stat_txt_error_message(const char* message);									    // 0048CCB0
-    void play_sound_at_pos(u32 sound_id, Point16 pos, u32 bool_play = 1, u32 min_volume = 0);				// 0048EC10
+    void play_sound_at_pos(u32 sound_id, v2u16 pos, u32 bool_play = 1, u32 min_volume = 0);				// 0048EC10
     u32 randomize_short(u32 unknown_index);																	// 004DC4A0
     u32 iterate_units_at_location_target_proc_recall_targets(Unit* unit, Box16* coords);					// 004E8280
     void move_unit_duplicate(Unit* unit, s32 x, s32 y);														// 004EBAE0
@@ -387,7 +387,7 @@ namespace helper {
 
     //// building_terran
     bool is_distance_greater_than_halt_distance(Unit* unit, s32 x, s32 y, u32 distance);					// 00401240
-    void fix_target_location(Point16* coords, u32 unit_id);								                    // 00401FA0
+    void fix_target_location(v2u16* coords, u32 unit_id);								                    // 00401FA0
     bool is_unit_positions_2_equal(Unit* unit);																// 00402160
     b32 generic_progress_build(Unit* unit, u32 hp_gain, b32 show_hidden);									// 004679A0
     void prepend_order_targeting_nothing(Unit* unit, Order* order, u8 order_id);							// 00474760
@@ -413,8 +413,8 @@ namespace helper {
     
     // For refresh_screen
     s32 update_placement_state_for_placement_box();															// 0048DCE0
-    s32 unk_building_placement_related(s32 a1, Point16* a2);												// 0048D7F0
-    s32 init_placement_box_pos(Point16* in_out);															// 0048D660
+    s32 unk_building_placement_related(s32 a1, v2u16* a2);												// 0048D7F0
+    s32 init_placement_box_pos(v2u16* in_out);															// 0048D660
     char unk_building_placement_related_mouse(s32 a1, s32 a2);												// 0048D7B0
 
     //// liftland
@@ -454,14 +454,14 @@ namespace helper {
     void update_unit_strength(Unit* unit);																							// 0049FA40
     u32 iterate_units_at_location_target_proc_larva_count(Unit* unit, Box16* coords);												// 004E8280
     void set_larva_order_state(Unit* unit);																							// 004E8DA0
-    bool get_larva_spawn_pos(Unit* unit, Vec32* coords);																			// 004E8E10
+    bool get_larva_spawn_pos(Unit* unit, v2s32* coords);																			// 004E8E10
 
     // TODO: move somewhere else?
     // SC Variables and Buffers used in this file
     u32* const mapTileBufWidth = (u32*)(0x006D0F08);
     u32* const mapTileBufHeight = (u32*)(0x006D0C6C);
     u16** const mapTileBuf = (u16**)(0x006D0E84);
-    Vec32* const someCreepPointBuf = (Vec32*)(0x006D7578);
+    v2s32* const someCreepPointBuf = (v2s32*)(0x006D7578);
     typedef u32(*isTileVisible_func)(u32 x, u32 y);
     typedef bool(*SetCreepRelationalData_callback)(u16* tileBackup, u8* creepOverlayVal, u32* retval, u16* tile, u32 arg);
     isTileVisible_func* const isTileVisible_ptr = (isTileVisible_func*)(0x006D0C78);
@@ -544,8 +544,8 @@ namespace helper {
     void begin_cloak(Unit* unit, s32 sound_id);																						// 0049B5B0
     void refresh_unit_vision(Unit* unit);																								// 004E5F30
     void init_unit_trap_doodad(Unit* unit);																							// 004E6490
-    Order* perform_another_order(u8 order_id, Order* order, Unit* unit, u16 fow_unit_id, Point16 position_xy, Unit* target);		// 004745F0
-    void order(s32 some_bool, Unit* unit, s8 order_id, Point16 pos, Unit* target_unit, u32 fow_unit_id);							// 00474810
+    Order* perform_another_order(u8 order_id, Order* order, Unit* unit, u16 fow_unit_id, v2u16 position_xy, Unit* target);		// 004745F0
+    void order(s32 some_bool, Unit* unit, s8 order_id, v2u16 pos, Unit* target_unit, u32 fow_unit_id);							// 00474810
     u32 get_unit_strength(Unit* a1, s32 a2, bool a3);																				// 00431800
 
     //// make_nydus_exit
@@ -589,7 +589,7 @@ namespace helper {
     void prepend_order_targeting_ground(__int8 order_id, __int16 x, __int16 y, Unit* unit);
     s32 orders_hold_position_suicidal(Unit* a1);
     s32 get_direction_from_points(s32 dest_y, s32 x, s32 dest_x, s32 y);
-    s32 get_direction_from_points(Point16 a, Point16 b);
+    s32 get_direction_from_points(v2u16 a, v2u16 b);
 
     // for ai_attack_unit
     void stimpack_proc(Unit* unit);																									// 004554A0
@@ -618,7 +618,7 @@ namespace helper {
 
     //// load_unload_proc
     u8 ignore_iscript_go_to_idle(Unit* unit);																						// 00476550
-    u32 can_unload(Unit* transport, Unit* loaded_unit, Point16* pos);																// 004E76C0
+    u32 can_unload(Unit* transport, Unit* loaded_unit, v2u16* pos);																// 004E76C0
     void unload_unit_ext(Unit* unit, u32 unk);																						// 004E7E10
 
     //// stats_panel_display
@@ -877,7 +877,7 @@ namespace helper {
 
     // For targeted_order
     void queue_new_order(u32 order_type, s16 pos_x, s16 pos_y, Unit* unit, u8 order_id, Unit* target,
-                         u16 fow_unit_id, Point16 position, Unit* secondary_target);		                        // 00474B90
+                         u16 fow_unit_id, v2u16 position, Unit* secondary_target);		                        // 00474B90
     s32 show_stat_txt_to_player(const char* text, u32 player);														// 0048CF00
 
     // For select_units
@@ -961,7 +961,7 @@ namespace helper {
     s32 check_energy_for_tech_use(s32 tech_id);																// 00423660
 
     //// pathfinding
-    s32 is_point_at_unit_border(s32 unused, Unit* other, Unit* self, Point16 position_xy);						// 004EB720
+    s32 is_point_at_unit_border(s32 unused, Unit* other, Unit* self, v2u16 position_xy);						// 004EB720
     s32 ai_prepare_moving_to(Unit* unit, s32 x, s32 y);														// 004E7420
 
     // order attack behavior
@@ -998,10 +998,10 @@ namespace helper {
 
     // For ai_manage_building_placement
     s32 get_bunker_placement_position(s32 placement_id, s32* region_id);									// 004442E0
-    Unit* get_disabled_unit_in_range(s32 owner, Point16 position);											// 00440420
-    void ai_get_build_location(s32 unit_id, char* placement_data, s32 player, Point16 try_position,			// 004461B0
+    Unit* get_disabled_unit_in_range(s32 owner, v2u16 position);											// 00440420
+    void ai_get_build_location(s32 unit_id, char* placement_data, s32 player, v2u16 try_position,			// 004461B0
         s32 max_range);
-    void ai_placement_data_something(s8* placement_data, Point16 try_position);								// 00443610
+    void ai_placement_data_something(s8* placement_data, v2u16 try_position);								// 00443610
     u32 get_tile_distance(s32 x, s32 y, s32 x2, s32 y2);													// 00444100
 
     // For initialize_unit_counts
@@ -1080,17 +1080,17 @@ namespace helper {
     u32 btnscond_rally(u32 unused, u32 player, Unit* unit);													// 00429520
 
     // For ai_get_build_location
-    u32 ai_get_building_placement_data(u32 max_range, u32 unit_id, char* placement_data, u32 player, Point16 desired_pos);		// 00445D60
-    char* ai_remove_unreachable_regions(char* placement_data, Point16 desired_pos);												// 00443900
-    u32 ai_remove_dangerous_regions(u32 unit_id, char* placement_data, u32 placement_id, Point16 desired_pos);					// 00443870
-    u32 ai_remove_far_tiles(char* placement_data, Point16 desired_pos, u32 max_range);											// 00444E20
-    u32 ai_remove_different_height(char* placement_data, Point16 desired_pos);													// 004436C0
-    u32 ai_placement_related_something(u32 unit_id, char* placement_data, Point16 desired_pos);									// 00443E30
-    void ai_remove_unfit_tiles(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos);								// 00444CE0
-    u32 ai_remove_addon_places(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos);								// 00443CC0
-    u32 get_tower_placement_position(char* placement_data, u32 player, Point16 desired_pos, u32 unit_id, u32 unk_flag);		// 00443AC0
-    u32 get_pylon_placement_position(char* placement_data, u32 player, Point16 desired_pos);									// 004448D0
-    u32 get_default_placement_position(u32 unit_id, char* placement_data, u32 player, Point16 desired_pos);						// 004449A0
+    u32 ai_get_building_placement_data(u32 max_range, u32 unit_id, char* placement_data, u32 player, v2u16 desired_pos);		// 00445D60
+    char* ai_remove_unreachable_regions(char* placement_data, v2u16 desired_pos);												// 00443900
+    u32 ai_remove_dangerous_regions(u32 unit_id, char* placement_data, u32 placement_id, v2u16 desired_pos);					// 00443870
+    u32 ai_remove_far_tiles(char* placement_data, v2u16 desired_pos, u32 max_range);											// 00444E20
+    u32 ai_remove_different_height(char* placement_data, v2u16 desired_pos);													// 004436C0
+    u32 ai_placement_related_something(u32 unit_id, char* placement_data, v2u16 desired_pos);									// 00443E30
+    void ai_remove_unfit_tiles(u32 unit_id, char* placement_data, u32 player, v2u16 desired_pos);								// 00444CE0
+    u32 ai_remove_addon_places(u32 unit_id, char* placement_data, u32 player, v2u16 desired_pos);								// 00443CC0
+    u32 get_tower_placement_position(char* placement_data, u32 player, v2u16 desired_pos, u32 unit_id, u32 unk_flag);		// 00443AC0
+    u32 get_pylon_placement_position(char* placement_data, u32 player, v2u16 desired_pos);									// 004448D0
+    u32 get_default_placement_position(u32 unit_id, char* placement_data, u32 player, v2u16 desired_pos);						// 004449A0
 
     // For ai_check_military_grouping
     void get_region_center_from_id(u16 region_id, u32* out_x, u32* out_y);														// 0049CAA0
@@ -1099,7 +1099,7 @@ namespace helper {
     void play_idle_iscript(Sprite* sprite);																						// 00497880
 
     // For issue_order_targeting_ground
-    void order_copy(s32 a1, Unit* a2, s8 a3, Point16* a4, Unit* a5, s32 a6);													// 00447810
+    void order_copy(s32 a1, Unit* a2, s8 a3, v2u16* a4, Unit* a5, s32 a6);													// 00447810
 
     // For unit_destructor_special
     s32 remove_creep_at_unit(s32 left, s32 top, s16 unit_id);																	// 00414560
@@ -1253,7 +1253,7 @@ namespace helper {
 
     // For vespene rework in harvest.cpp
     void set_gathering_flags(Unit* unit);																// 00468AA0
-    bool get_gas_exit_point(Unit* worker, Unit* resource_node, Point16* position, s32* direction);		// 00468B00
+    bool get_gas_exit_point(Unit* worker, Unit* resource_node, v2u16* position, s32* direction);		// 00468B00
     void move_unit(Unit* unit, s16 x, s16 y);															// 004EB9F0
     Unit* finished_mining(Unit* worker, Unit* resource_node);											// 00468E40
     Order* delete_order(Unit* unit, u8 order_id);														// 00474400
@@ -1268,7 +1268,7 @@ namespace helper {
     s32 ai_try_progress_spending_queue_worker(AiTown* town, Unit* unit);								// 004348C0
     bool unit_is_mineral_field(Unit* unit);																// 00468890
     void ai_auto_harvest(Unit* resource, Unit* worker, Unit* fallback);									// 00433B90
-    Unit* harvest_next_nearest_resources_ex(s32 worker_count_bool, Unit* worker, Point16 worker_pos);	// 004432D0
+    Unit* harvest_next_nearest_resources_ex(s32 worker_count_bool, Unit* worker, v2u16 worker_pos);	// 004432D0
     Unit* get_ai_gas_node(AiTown* town, s32 gas_state, s32 index);										// 00432B90
     u32 ai_get_vespene_type(Unit* node, s32 player_id);													// 004326E0
     void ai_resource_need_split(u8* out_gas_percentage, u32 player, u8* out_mineral_percentage);		// 004475B0
@@ -1328,7 +1328,7 @@ namespace helper {
     void update_hp_gain(Unit* unit);																		// 0047B180
 
     bool unit_is_geyser_ex(Unit* resource_node, Unit* worker);												// 00468930
-    void prepend_order(Unit* unit, u8 order_id, Point16 target_pos, Unit* target_unit);						// 00474AF0
+    void prepend_order(Unit* unit, u8 order_id, v2u16 target_pos, Unit* target_unit);						// 00474AF0
     bool ai_is_building_safe(Unit* building);																// 00438910
     Unit* ai_find_best_repair_unit(Unit* unit);																// 00443160
 
@@ -1397,7 +1397,7 @@ namespace helper {
     void minimap_game_target_order(Event* event_arg);														// 004A55F0
     char input_target_order_left_mouse_click(Event* event_arg);												// 004BD500
 
-    char input_place_building_left_mouse_click(Event* event_arg, u32 unused, Point16 position);				// 0048E5D0
+    char input_place_building_left_mouse_click(Event* event_arg, u32 unused, v2u16 position);				// 0048E5D0
 
     void initialize_input_procs();																			// 004D2FF0
 
@@ -1454,7 +1454,7 @@ namespace helper {
     // For ai_update_guard_needs
     void delete_guard_ai(GuardAi* guard_ai, GuardAiList* guard_ai_list);									// 00403030
     u32 ai_request_guard(GuardAi* guard_ai, u32 player);													// 00448630
-    Unit* find_nearest_available_military(u32 player, u32 unit_id, Point16 point);							// 004379B0
+    Unit* find_nearest_available_military(u32 player, u32 unit_id, v2u16 point);							// 004379B0
 
     void create_bunker_attack_overlay(Unit* unit);															// 00477FD0
     
@@ -1508,7 +1508,7 @@ namespace helper {
     u16 set_iscript(Image* image, u32 iscript_id);															// 004D6640
 
     Image* update_image_frame_index(Image* image);															// 004D5940
-    u32 get_path_distance_to(Unit* unit, Point16 position);													// 0042FA30
+    u32 get_path_distance_to(Unit* unit, v2u16 position);													// 0042FA30
 
     void fire_unit_weapon(Unit* unit, u8 weapon_id);																					// 00479C90
     Thingy* ufl_unstable_randomize(Flingy* flingy);																						// 004955F0
@@ -1541,11 +1541,11 @@ namespace helper {
     u16 ai_build_bunker(AiTown* town, u32 player);																						// 0043EBB0
     u32 ai_build_turret(AiTown* town, u32 player);																						// 0043AAE0
 
-    s32 get_bunker_position(u32 player, Point16* return_pos);																			// 004376F0
+    s32 get_bunker_position(u32 player, v2u16* return_pos);																			// 004376F0
     void do_area_fixups_for_enemy(u32 player, u16 region_id, u32 iterations);															// 00444EB0
-    s32 ai_manage_building_placement(Unit* builder, u32 unit_id, Point16 try_pos, Point16* out_pos, s32 area_tiles);					// 004465C0
+    s32 ai_manage_building_placement(Unit* builder, u32 unit_id, v2u16 try_pos, v2u16* out_pos, s32 area_tiles);					// 004465C0
     u32 ai_finish_unit(Unit* unit);																										// 00433640
-    s32 get_turret_position(u32 player, Point16* out_pos);																				// 00437670
+    s32 get_turret_position(u32 player, v2u16* out_pos);																				// 00437670
     void get_secondary_hachirosk_build_location(u32 resarea, u16* out_x, u16* out_y);													// 00444630
 
     char update_buttonset();																											// 00458DE0
@@ -1555,7 +1555,7 @@ namespace helper {
     void create_selection_circle_image(Image* image, Sprite* sprite, u8 color, u16 image_id);											// 004D6810
 
     b32 return_interceptor_if_cannot_attack(Unit* steward);																				// 00465810
-    u32 get_next_strafe_position(Unit* unit, u8 strafe_type, Point16 pos);																// 00465D30
+    u32 get_next_strafe_position(Unit* unit, u8 strafe_type, v2u16 pos);																// 00465D30
     void get_weapon_iscript_init(Unit* unit, IscriptAnimation::Enum animation);															// 00476ED0
 
     b32 set_temp_iscript_animation(IscriptAnimation::Enum animation);																	// 0042D600
@@ -1637,7 +1637,7 @@ namespace helper {
 
     void place_building_refinery_check(Unit* unit);															// 0048E1E0
 
-    void move_screen(Point16 pos);																			// 0049C440
+    void move_screen(v2u16 pos);																			// 0049C440
 
     b32 is_at_home(Unit* unit);																				// 00462930
     u32 is_under_carapace_swarm(Unit* unit);																// 00476210
@@ -1689,7 +1689,7 @@ namespace helper {
     u32* get_cd_key_info(const char** owner, u32* key);																							// 004D9BF0
     u32 local_get_lang();																														// 0041F1D0
 
-    s32 make_valid_position(Point16* old_pos, Point16* new_pos, Box16* acceptable_area);														// 0042A5C0
+    s32 make_valid_position(v2u16* old_pos, v2u16* new_pos, Box16* acceptable_area);														// 0042A5C0
 
     void cancel_zerg_building(Unit* unit);																										// 0045DA40
     void update_building_construct_shields_amount(Unit* unit);																					// 0047B6A0
@@ -1704,7 +1704,7 @@ namespace helper {
     u32 change_menu();																															// 004DCFA0
     void store_selection_group_hp_and_type();																									// 004DCFA0
 
-    void issue_order_before_2(u8 order_id, Order* order_queue_head, Unit* unit, Point16* pos, Unit* target);									// 004747C0
+    void issue_order_before_2(u8 order_id, Order* order_queue_head, Unit* unit, v2u16* pos, Unit* target);									// 004747C0
 
     u8 apply_defensive_matrix(Unit* unit);				// 00455010
     u8 apply_lockdown(Unit* unit, u32 duration);		// 00455380
@@ -1724,7 +1724,7 @@ namespace helper {
     void set_kills_string_text(BinDlg* dialog);         // 00425DD0
 
     void set_unit_hp(Unit* unit, u32 amount);					// 00467340
-    s32 unit_movement_another_path(Unit* unit, Point16 dest);	// 0042FE00
+    s32 unit_movement_another_path(Unit* unit, v2u16 dest);	// 0042FE00
 
     void scroll_screen_left(u32 x_diff);						// 0049C1A0 
     void scroll_screen_right(u32 x_diff);						// 0049C0C0 
@@ -1868,14 +1868,14 @@ namespace helper {
 
     bool tiles_in_rect_are_not_explored_for(u16 width, u16 height, u16 x_pos, u16 y_pos, u8 player); // 004027F0
     bool tiles_in_rect_are_not_visible_for(u16 width, u16 height, u16 x_pos, u16 y_pos, u8 player);  // 00402770
-    Thingy* get_placement_parent(u32 sprite_id, u32 x_dims, u32 y_dims, Point16 parent_dims);        // 00487C70
+    Thingy* get_placement_parent(u32 sprite_id, u32 x_dims, u32 y_dims, v2u16 parent_dims);        // 00487C70
 
     s32 vespene_geyser_placebox(u32 tile_x, u32 tile_y, u8 player, u32 check_vision);                // 00473DB0
-    u32 update_nydus_placement_state(u8 player, u32 tile_x, u32 tile_y, Point16 position, u32 placement_state_entry, b32 check_vision); // 00473150
+    u32 update_nydus_placement_state(u8 player, u32 tile_x, u32 tile_y, v2u16 position, u32 placement_state_entry, b32 check_vision); // 00473150
     s32 get_psi_placement_state(u8 player, u16 unit_id, u16 tile_x, u16 tile_y);                     // 00473920
-    u32 update_creep_building_placement_state(u8 player, u32 tile_x, u32 tile_y, Point16 position, u32 placement_state_entry, b32 check_vision, b32 unk_bool); // 00473010
-    u32 update_building_placement_state_map_tile_flags(u16 unit_id, u32 tile_x, u32 tile_y, u8 player, Point16 pos, u32 placement_state_entry, b32 check_vision); // 00473A10
-    u32 update_building_placement_state_units(Unit* builder, u32 tile_x, u32 tile_y, u8 player, u16 unit_id, Point16 pos, u32 placement_state_entry, bool is_not_addon, bool also_invisible, b32 without_vision); // 00473720
+    u32 update_creep_building_placement_state(u8 player, u32 tile_x, u32 tile_y, v2u16 position, u32 placement_state_entry, b32 check_vision, b32 unk_bool); // 00473010
+    u32 update_building_placement_state_map_tile_flags(u16 unit_id, u32 tile_x, u32 tile_y, u8 player, v2u16 pos, u32 placement_state_entry, b32 check_vision); // 00473A10
+    u32 update_building_placement_state_units(Unit* builder, u32 tile_x, u32 tile_y, u8 player, u16 unit_id, v2u16 pos, u32 placement_state_entry, bool is_not_addon, bool also_invisible, b32 without_vision); // 00473720
 
     void orders_init_psi_provider(Unit* unit);                                                      // 00493F70
     s8 remove_selection_circle_and_hp_bar(Sprite* sprite);                                          // 00497620
@@ -1949,13 +1949,13 @@ namespace helper {
     void glu_chat_dlgproc_destroy(BinDlg* dialog);          // 004b8d70
     void glu_chat_map_preview_destroy(BinDlg* dialog);      // 004b8d90
     
-    b32 is_blocked_position(Unit* unit, Point16 position);                                          // 0042E1D0
-    void decollide_or_unstack(Unit* unit, Point16* position);                                       // 004F29E0
+    b32 is_blocked_position(Unit* unit, v2u16 position);                                          // 0042E1D0
+    void decollide_or_unstack(Unit* unit, v2u16* position);                                       // 004F29E0
     void set_next_waypoint(Unit* unit, u32 pos_x, u32 pos_y);                                       // 004EB130
     void get_allocated_path_single_step(Unit* unit, u32 next_pos, u32 end_pos);                     // 0042F830
 
     void issue_order_by_type(u8 order_id, u16 pos_x, u16 pos_y, u32 order_type, Unit* unit, Unit* target,
-                             u32 fow_unit_id, Point16 position, Unit* secondary_target);             // 00475470
+                             u32 fow_unit_id, v2u16 position, Unit* secondary_target);             // 00475470
     void command_targeted(u16 pos_x, u16 pos_y, Unit* unit, u32 unit_id, u8 order_id, u8 is_queued); // 0049AB00
     s32 node_is_unpathable(Unit* node);                                                              // 00473560
     Unit* get_nearest_unit_from(u32 pos_x, u32 pos_y, u16 range, s32(__fastcall* proc)(Unit*, Unit*), Unit* compare); // 004E86C0

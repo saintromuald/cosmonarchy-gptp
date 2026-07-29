@@ -10,7 +10,7 @@ namespace hooks {
 		if (unit_ext->values[ValueJustCastedHallucination]) {
 			unit->order_to_idle();
 		} else if (helper::spell_order(unit, TechId::Hallucination, &tech_cost, sight_range, 2201)) {
-			Vec32 hit = {unit->order_target.pt.x, unit->order_target.pt.y};
+			v2s32 hit = {unit->order_target.pt.x, unit->order_target.pt.y};
 			if (Unit* target = unit->order_target.unit) {
 				hit = {target->get_x(), target->get_y()};
 			}

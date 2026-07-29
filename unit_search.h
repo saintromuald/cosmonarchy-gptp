@@ -70,7 +70,7 @@ struct EffectField;
 
 namespace bw {
 Box32 clamp_box32(Box32 rect);
-u32 distance_between(Point16 p1, Point16 p2);
+u32 distance_between(v2u16 p1, v2u16 p2);
 bool are_mutual_allies(u32 a, u32 b);
 };
 
@@ -82,7 +82,7 @@ void update_search_index_effects(); // must be done once per frame after effects
 bool unit_flag_match(Unit* unit, Unit* center = nullptr, u32 flags = 0, const std::unordered_set<u16>& allowed_unit_ids = {});
 bool corpse_flag_match(Thingy* target, Thingy* center = nullptr, u32 flags = 0, const std::unordered_set<u16>& allowed_unit_ids = {});
 
-bool is_point_in_rect(Point16 point, Box32 rect);
+bool is_point_in_rect(v2u16 point, Box32 rect);
 bool is_rect_in_rect(Box32 inner, Box32 outer);
 
 template <typename... Ts>
@@ -133,7 +133,7 @@ public:
         return self;
     }
 
-    static Point16 position_of(T* entity) {
+    static v2u16 position_of(T* entity) {
         if constexpr (std::same_as<T, Thingy>) {
             return entity->sprite->position;
         } else {
@@ -141,7 +141,7 @@ public:
         }
     }
 
-    auto sort_by_distance(this auto&& self, Point16 center) {
+    auto sort_by_distance(this auto&& self, v2u16 center) {
         return self.sort([center](T* a) { return bw::distance_between(position_of(a), center); });
     }
 
@@ -220,7 +220,7 @@ public:
         return nullptr;
     }
 
-    T* closest_to(Point16 pos) {
+    T* closest_to(v2u16 pos) {
         T* best = nullptr;
         u32 best_distance = UINT_MAX;
 
@@ -306,7 +306,7 @@ public:
 
     struct Entry {
         Entry* next;
-        Point16 position;
+        v2u16 position;
         T* data;
     };
 
@@ -316,7 +316,7 @@ public:
         memset(m_grid, 0, sizeof(m_grid));
     }
 
-    void add(T* data, Point16 position) {
+    void add(T* data, v2u16 position) {
         if (m_size >= EntryLimit) {
             return;
         }
@@ -380,7 +380,7 @@ public:
         return result;
     }
 
-    EntryArray<T> square(Point16 center, u32 radius, u32 limit = 0) {
+    EntryArray<T> square(v2u16 center, u32 radius, u32 limit = 0) {
         return rect({
             center.x - (s32)radius,
             center.y - (s32)radius,
@@ -389,7 +389,7 @@ public:
         }, limit);
     }
 
-    EntryArray<T> radial(Point16 center, u32 radius, u32 limit = 0) {
+    EntryArray<T> radial(v2u16 center, u32 radius, u32 limit = 0) {
 		EntryArray<T> result(limit != 0 ? limit : EntryArrayDefaultReserve);
 
         Box32 rect = {
@@ -406,9 +406,9 @@ public:
         const u32 y1 = (rect.bottom + CellPxSize - 1) / CellPxSize;
         for (u32 x = x0; x < x1; x++) {
             for (u32 y = y0; y < y1; y++) {
-                Point16 tile_center = {
-                    x * CellPxSize + CellPxSize / 2,
-                    y * CellPxSize + CellPxSize / 2
+                v2u16 tile_center{
+                    u16(x * CellPxSize + CellPxSize / 2),
+                    u16(y * CellPxSize + CellPxSize / 2)
                 };
                 bool is_fully_covered = bw::distance_between(center, tile_center) + CellPxSize * 1.414fp <= fp32(radius);
 
@@ -428,9 +428,9 @@ public:
 		return result;
     }
 
-    EntryArray<T> square(Point16 center, SearchRadius radius) {
+    EntryArray<T> square(v2u16 center, SearchRadius radius) {
         return std::visit(Overloaded{
-            [this, center](Point16 size) {
+            [this, center](v2u16 size) {
                 return rect(Box32{
                     center.x - size.x / 2,
                     center.y - size.y / 2,
@@ -444,9 +444,9 @@ public:
         }, radius);
     }
 
-    EntryArray<T> search(Point16 center, SearchRadius radius) {
+    EntryArray<T> search(v2u16 center, SearchRadius radius) {
         return std::visit(Overloaded{
-            [this, center](Point16 size) {
+            [this, center](v2u16 size) {
                 // TODO: consider oval? then rename to radial
                 return rect(Box32{
                     center.x - size.x / 2,

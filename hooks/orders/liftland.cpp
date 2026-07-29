@@ -10,7 +10,7 @@ namespace hooks {
 		Target unit_target = {};
 		unit_target.unit = unit->order_target.unit;
 		unit_target.pt = unit->order_target.pt;
-		Point16 coords = {};
+		v2u16 coords = {};
 		coords.x = 0;
 		coords.y = 0;
 

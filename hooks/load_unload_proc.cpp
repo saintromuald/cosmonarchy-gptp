@@ -77,11 +77,11 @@ static void special_post_unload_unit(Unit* unit, Unit* transport) {
     apply_unload_delay(unit->subunit);
 }
 
-static bool fix_unload_pos(Unit* unit, Point16* pos) {
+static bool fix_unload_pos(Unit* unit, v2u16* pos) {
     if (unit->is_building()) {
         static constexpr auto Tolerance = 3;
         *pos = bw::align_to_tile_grid(*pos, (UnitId::Enum)unit->id);
-        Point16 best_pos = bw::get_building_reposition(unit, *pos);
+        v2u16 best_pos = bw::get_building_reposition(unit, *pos);
         if (best_pos) {
             *pos = best_pos;
             return true;
@@ -250,7 +250,7 @@ b32 unload_unit_proc(Unit* unit) { // 004E7F70
         return false;
     }
 
-    Point16 pos{};
+    v2u16 pos{};
     if (!helper::can_unload(transport, unit, &pos)) {
         pos = transport->position;
     }

@@ -100,9 +100,9 @@ bool is_witness() {
     return !bw::in_replay() && g_globals->players[g_local_nation_id].witness_mode;
 }
 
-Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, Point16 target_pt, Point16 origin_pt) {
+Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, v2u16 target_pt, v2u16 origin_pt) {
     Unit* target_unit = source->order_target.unit;
-    Point16 target_pos = source->order_target.pt;
+    v2u16 target_pos = source->order_target.pt;
     source->order_target.unit = target;
     source->order_target.pt = target_pt;
     if (target && target_unit) {
@@ -110,7 +110,7 @@ Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* targ
     } else {
         source->order_target.pt = target_pt;
     }
-    Point16 bullet_source_pos = {source->position.x, source->position.y};
+    v2u16 bullet_source_pos = {source->position.x, source->position.y};
     if (origin_pt.x != 0 || origin_pt.y != 0) {
         bullet_source_pos = origin_pt;
     }
@@ -125,7 +125,7 @@ Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* targ
     return artificial_bullet_from(weapon_id, player, source, target, {x, y});
 }
 
-void teleport_internal(Unit* unit, Point16 target, u16 sprite_id, bool preserve_order) {
+void teleport_internal(Unit* unit, v2u16 target, u16 sprite_id, bool preserve_order) {
     // Finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
     bw::prepare_unit_move(unit, false);
     if (!preserve_order) {
@@ -157,8 +157,8 @@ void teleport_internal(Unit* unit, Point16 target, u16 sprite_id, bool preserve_
     }
 }
 
-bool teleport_to_point(Unit* unit, Point16 target, u16 sprite_id, bool preserve_order) {
-    Point16 new_pos = {};
+bool teleport_to_point(Unit* unit, v2u16 target, u16 sprite_id, bool preserve_order) {
+    v2u16 new_pos = {};
     if (!bw::check_unit_collision_pos(unit, &target, &new_pos, 0, false, 0)) {
         return false;
     }
@@ -175,7 +175,7 @@ bool teleport_to_unit(Unit* unit, Unit* target, u32 radius, const TeleportOption
     move_area.bottom = target->get_bottom() + radius;
     move_area = clamp_box16(move_area);
 
-    Point16 new_pos = {};
+    v2u16 new_pos = {};
     if (!bw::check_unit_collision_pos(unit, &unit->position, &new_pos, &move_area, false, 0)) {
         return false;
     }
@@ -377,45 +377,39 @@ s32 get_angle(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd) {
     }
 }
 
-Point16 rotate_point(Point16 anchor, Point16 point, f64 angle_degrees) {
-    f64 x1 = point.x - anchor.x;
-    f64 y1 = point.y - anchor.y;
-    f64 radians = angle_degrees / 57.296;
-    f64 x2 = x1 * cos(radians) - y1 * sin(radians);
-    f64 y2 = x1 * sin(radians) + y1 * cos(radians);
-    return {u16(x2 + anchor.x), u16(y2 + anchor.y)};
+v2u16 rotate_point(v2u16 anchor, v2u16 point, fp32 angle_degrees) {
+    fp64 x1 = fp64(s32(point.x)) - fp64(s32(anchor.x));
+    fp64 y1 = fp64(s32(point.y)) - fp64(s32(anchor.y));
+    fp64 radians = fp64(angle_degrees) * fp64::pi() / 180;
+    fp64 x2 = x1 * fpm::cos(radians) - y1 * fpm::sin(radians);
+    fp64 y2 = x1 * fpm::sin(radians) + y1 * fpm::cos(radians);
+    return {u16(x2 + fp64(s32(anchor.x))), u16(y2 + fp64(s32(anchor.y)))};
 }
 
-Vec32 rotate_point(Vec32 anchor, Vec32 point, f64 angle_degrees) {
-    f64 x1 = point.x - anchor.x;
-    f64 y1 = point.y - anchor.y;
-    f64 radians = angle_degrees / 57.296;
-    f64 x2 = x1 * cos(radians) - y1 * sin(radians);
-    f64 y2 = x1 * sin(radians) + y1 * cos(radians);
-    Vec32 product = {};
-    product.x = x2 + anchor.x;
-    product.y = y2 + anchor.y;
-    return {s32(x2 + anchor.x), s32(y2 + anchor.y)};
+v2s32 rotate_point(v2s32 anchor, v2s32 point, fp32 angle_degrees) {
+    fp64 x1 = fp64(s32(point.x)) - fp64(s32(anchor.x));
+    fp64 y1 = fp64(s32(point.y)) - fp64(s32(anchor.y));
+    fp64 radians = fp64(angle_degrees) * fp64::pi() / 180;
+    fp64 x2 = x1 * fpm::cos(radians) - y1 * fpm::sin(radians);
+    fp64 y2 = x1 * fpm::sin(radians) + y1 * fpm::cos(radians);
+    return v2s32{s32(x2 + fp64(s32(anchor.x))), s32(y2 + fp64(s32(anchor.y)))};
 }
 
-Vec32f rotate_point(Vec32f anchor, Vec32f point, f64 angle_degrees) {
-    f64 x1 = point.x - anchor.x;
-    f64 y1 = point.y - anchor.y;
-    f64 radians = angle_degrees / 57.296;
-    f64 x2 = x1 * cos(radians) - y1 * sin(radians);
-    f64 y2 = x1 * sin(radians) + y1 * cos(radians);
-    Vec32f product = {};
-    product.x = x2 + anchor.x;
-    product.y = y2 + anchor.y;
-    return {f32(x2 + anchor.x), f32(y2 + anchor.y)};
+v2 rotate_point(v2 anchor, v2 point, fp32 angle_degrees) {
+    fp64 x1 = fp64(point.x) - fp64(anchor.x);
+    fp64 y1 = fp64(point.y) - fp64(anchor.y);
+    fp64 radians = fp64(angle_degrees) * fp64::pi() / 180;
+    fp64 x2 = x1 * fpm::cos(radians) - y1 * fpm::sin(radians);
+    fp64 y2 = x1 * fpm::sin(radians) + y1 * fpm::cos(radians);
+    return v2{fp32(x2 + fp64(anchor.x)), fp32(y2 + fp64(anchor.y))};
 }
 
-f64 bw_angle_to_normal(s32 bw_angle) {
-    return (f64)bw_angle * 1.40625;
+fp32 bw_angle_to_normal(s32 bw_angle) {
+    return fp32(bw_angle) * fp32{1.40625f};
 }
 
-s32 degrees_to_bw_angle(f64 degrees) {
-    return degrees / 1.40625;
+s32 degrees_to_bw_angle(fp32 degrees) {
+    return s32(degrees / fp32{1.40625f});
 }
 
 s32 get_polar_x(s32 distance, u8 angle) {
@@ -424,17 +418,6 @@ s32 get_polar_x(s32 distance, u8 angle) {
 
 s32 get_polar_y(s32 distance, u8 angle) {
     return distance * g_angle_distance[angle].y >> 8;
-}
-
-Point16 polar_point(Point16 center, f32 rads, f32 distance) {
-    return {
-        static_cast<u16>(center.x + cosf(rads) * distance),
-        static_cast<u16>(center.y + sinf(rads) * distance),
-    };
-}
-
-Point16 random_polar_point(Point16 center, f32 max_distance) {
-    return polar_point(center, bw::random_float() * 2 * PI, max_distance * sqrt(bw::random_float()));
 }
 
 //-------- Player information --------//
@@ -859,9 +842,9 @@ void adjust_addon_coordinates(u16 addonId, u16 sourceId, u16* x, u16* y) {
 //-------- Moving Units --------//
 
 bool move_unit(Unit* unit, s16 x, s16 y) {
-    Point16 targetPos = {x, y};
-    Point16 actualPos = {};
-    Point16 prevPos = unit->sprite->position;
+    v2u16 targetPos{u16(x), u16(y)};
+    v2u16 actualPos = {};
+    v2u16 prevPos = unit->sprite->position;
 
     // Based on the code for DimensionalRecall/Nydus Canal/Move Unit trigger
     helper::move_unit(unit, x, y);
@@ -929,7 +912,7 @@ Unit* create_unit_in_game(u16 unit_id, u8 player, u32 x, u32 y, Unit* creator, b
     if (*g_unit_count >= UnitLimit) {
         return 0; // Prevent crashes, move to create unit later. -Veeq7
     }
-    Point16 pos = {x, y};
+    v2u16 pos{u16(x), u16(y)};
     helper::fix_target_location(&pos, unit_id);
     Unit* unit = helper::create_unit(unit_id, pos.x, pos.y, player);
     if (!unit) {
@@ -1060,7 +1043,7 @@ void clone_unit_traits(Unit* new_unit, Unit* old_unit) {
     inherit_selection(old_unit, new_unit);
 }
 
-Unit* create_hidden_unit(UnitId::Enum unit_id, s32 count, u32 player, Point16 position, Unit* creator, bool clone) {
+Unit* create_hidden_unit(UnitId::Enum unit_id, s32 count, u32 player, v2u16 position, Unit* creator, bool clone) {
     Unit* unit = bw::create_unit_in_game(unit_id, player, position.x, position.y, creator, false, true);
     if (clone) {
         clone_unit_traits(unit, creator);
@@ -1069,7 +1052,7 @@ Unit* create_hidden_unit(UnitId::Enum unit_id, s32 count, u32 player, Point16 po
     return unit;
 }
 
-Unit* create_unit_from_bullet(UnitId::Enum unit_id, u32 player, Point16 position, Unit* reference) {
+Unit* create_unit_from_bullet(UnitId::Enum unit_id, u32 player, v2u16 position, Unit* reference) {
     Unit* unit = bw::create_unit_in_game(unit_id, player, position.x, position.y, reference, false);
     if (reference) {
         spread_debuffs(reference, unit);
@@ -1081,7 +1064,7 @@ Unit* create_unit_from_bullet(UnitId::Enum unit_id, u32 player, Point16 position
     return unit;
 }
 
-void create_unit_from_ability(s32 unit_id, s32 count, u16 player, Point16 position, Unit* creator) {
+void create_unit_from_ability(s32 unit_id, s32 count, u16 player, v2u16 position, Unit* creator) {
     u32 remove_timer = 0;
     switch (unit_id) {
         case UnitId::ZergRililisk:
@@ -1182,7 +1165,7 @@ fp32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_
     if (!can_use_cliff_advantage(unit, weapon)) {
         return 0fp;
     }
-    Point16 unit_pos;
+    v2u16 unit_pos;
     if (unit_id_is_burrowed_attacker(unit->id)) {
         unit_pos = unit->move_target.pt;
     } else {
@@ -1247,8 +1230,8 @@ s32 get_overlay_offset(u16 unit_id, bool xlarge_allowed) {
 s32 get_final_damage(Unit* unit, u16 weapon_id) {
     s32 upgrade_type = get_upgrade_type(unit);
     s32 base_damage = weapons_dat::damage_amount[weapon_id];
-    f64 bonus_damage = (f64) weapons_dat::armor_pen[weapon_id] * (f64) bw::get_upgrade_level(unit->player, upgrade_type);
-    f64 final_damage = base_damage;
+    s32 bonus_damage = weapons_dat::armor_pen[weapon_id] * bw::get_upgrade_level(unit->player, upgrade_type);
+    s32 final_damage = base_damage;
     if (bonus_damage) {
         final_damage = base_damage + bonus_damage;
     }
@@ -1637,7 +1620,7 @@ void prepare_unit_move(Unit* unit, bool hide_unit) {
     }
 }
 
-bool check_unit_collision_pos(Unit* unit, const Point16* in_pos, Point16* out_pos, Box16* move_area, bool hide_error_message, u32 some_flag) {
+bool check_unit_collision_pos(Unit* unit, const v2u16* in_pos, v2u16* out_pos, Box16* move_area, bool hide_error_message, u32 some_flag) {
     const u32 func_address = 0x0049D3E0;
     assert(unit);
     assert(in_pos);
@@ -1830,7 +1813,7 @@ void clear_creep(Box32 area) {
     }
 }
 
-u32 get_closest_resarea(Point16 position) {
+u32 get_closest_resarea(v2u16 position) {
     u32 min_distance = UINT32_MAX;
     u32 best_resarea = 0;
     for (u32 i = 1; i <= g_resource_areas->count; ++i) {
@@ -1844,7 +1827,7 @@ u32 get_closest_resarea(Point16 position) {
     return best_resarea;
 }
 
-AiTown* get_closest_town(u32 player, Point16 position) {
+AiTown* get_closest_town(u32 player, v2u16 position) {
     u32 min_distance = UINT32_MAX;
     AiTown* best_town = 0;
     for (AiTown* town = g_ai_town_list[player].first; town; town = town->prev) {
@@ -1860,8 +1843,8 @@ AiTown* get_closest_town(u32 player, Point16 position) {
     return best_town;
 }
 
-Point16 get_region_center(Region* region) {
-    Point16 center = {};
+v2u16 get_region_center(Region* region) {
+    v2u16 center = {};
     center.x = region->region_center_x >> 8;
     center.y = region->region_center_y >> 8;
     return center;
@@ -1916,7 +1899,7 @@ void ask_for_ai_help(Unit* victim, Unit* attacker) {
     }
 }
 
-void spawn_custom_creep_at(Point16 pos, u32 unit_id, bool more_creep, bool is_building) {
+void spawn_custom_creep_at(v2u16 pos, u32 unit_id, bool more_creep, bool is_building) {
     u32 w = units_dat::building_dimensions[unit_id].x / 32;
     u32 h = units_dat::building_dimensions[unit_id].y / 32;
     u32 x = pos.x / 32 - w / 2;
@@ -1977,7 +1960,7 @@ AiScript* run_ai(u32 player, Box32 area, s32 name) {
     if (block) {
         AiScript* ai_script = helper::run_aiscript(&area, player, block, is_bw);
         if (ai_script) {
-            Point16 center = {};
+            v2u16 center = {};
             center.x = area.left + (area.right - area.left) / 2;
             center.y = area.top + (area.top - area.bottom) / 2;
             ai_script->flags |= bw::get_closest_resarea(center) << 3;
@@ -1989,7 +1972,7 @@ AiScript* run_ai(u32 player, Box32 area, s32 name) {
     return 0;
 }
 
-AiScript* run_ai(u32 player, Point16 pos, s32 name) {
+AiScript* run_ai(u32 player, v2u16 pos, s32 name) {
     Box32 area = {};
     area.left = pos.x - 2tiles;
     area.right = pos.x + 2tiles;
@@ -1998,7 +1981,7 @@ AiScript* run_ai(u32 player, Point16 pos, s32 name) {
     return run_ai(player, area, name);
 }
 
-AiScript* run_default_ai(u32 player, Point16 pos) {
+AiScript* run_default_ai(u32 player, v2u16 pos) {
     u32 race = g_player_table[player].race;
     switch (race) {
         case RaceId::Terran:	bw::printf("Running Terran AI for player %u", player + 1);  return bw::run_ai(player, pos, 'xCMT');
@@ -2194,7 +2177,7 @@ bool unit_is_allied_or_detected(Unit* unit, u32 player) {
     return false;
 }
 
-u32 get_ground_path_distance_tiles(Point16 a, Point16 b) {
+u32 get_ground_path_distance_tiles(v2u16 a, v2u16 b) {
     return helper::get_tile_distance(a.x, a.y, b.x, b.y);
 }
 
@@ -2266,7 +2249,7 @@ u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id) {
     return WeaponId::None;
 }
 
-void set_bullet_target(Bullet* bullet, Point16 target) {
+void set_bullet_target(Bullet* bullet, v2u16 target) {
     bullet->attack_target.unit = 0;
     bullet->attack_target.pt = target;
     bullet->move_target.unit = 0;
@@ -2298,7 +2281,7 @@ void set_bullet_target_absolute(Bullet* bullet, Target target) {
     bullet->move_target.unit = target.unit;
 }
 
-void set_bullet_direction(Bullet* bullet, Point16 target) {
+void set_bullet_direction(Bullet* bullet, v2u16 target) {
     u32 direction = helper::get_direction_from_points(bullet->position, target);
     bullet->current_direction_1 = direction;
     bullet->velocity_direction_1 = direction;
@@ -2420,7 +2403,7 @@ bool is_attack_region(AiRegion* ai_region) {
     return false;
 }
 
-void prepare_building_area(Point16 pos, u32 unit_id, Unit* builder) {
+void prepare_building_area(v2u16 pos, u32 unit_id, Unit* builder) {
     Box32 rect = {};
     rect.x = pos.x - units_dat::building_dimensions[unit_id].x / 2;
     rect.y = pos.y - units_dat::building_dimensions[unit_id].y / 2;
@@ -2478,7 +2461,7 @@ void town_add_spending_request(AiTown& town, u32 count, u32 unit_id, u32 priorit
     }
 }
 
-void military_add_spending_request(u32 player, u32 unit_id, Point16 position, u32 priority, bool request_base) {
+void military_add_spending_request(u32 player, u32 unit_id, v2u16 position, u32 priority, bool request_base) {
     if (unit_id_is_siege_mode(static_cast<UnitId::Enum>(unit_id))) {
         unit_id = unit_id_to_tank_mode(static_cast<UnitId::Enum>(unit_id));
     }
@@ -2510,7 +2493,7 @@ void guard_add_spending_request(u32 player, GuardAi* guard_ai, u32 priority, boo
 }
 
 // Based on the function prepare_guard_ai 00462670 -Veeq7
-GuardAi* create_guard_ai(u32 player, u32 unit_id, Point16 position) {
+GuardAi* create_guard_ai(u32 player, u32 unit_id, v2u16 position) {
     GuardAiList* guard_list = &g_player_guard_list->player[player];
     GuardAi* guard_ai = guard_list->array->first_free_guard;
     if (guard_ai) {
@@ -2680,7 +2663,7 @@ void delete_fow_sprite(Thingy* thingy) {
     }
 }
 
-std::vector<Unit*> binding_plasma_find_targets(Point16 position, Unit* reference, u32 player, u32 stacks) {
+std::vector<Unit*> binding_plasma_find_targets(v2u16 position, Unit* reference, u32 player, u32 stacks) {
     EntryArray targets = g_unit_search.radial(position, Protoss::BindingPlasmaRadius)
         .filter(reference, FilterNotSelf | FilterNotSubunit)
         .filter_by([player](Unit* target) {
@@ -2827,7 +2810,7 @@ PlayerColorCode get_player_color_code(u32 player, bool use_green_for_self) {
     return code;
 }
 
-void move_camera(Point16 pos) {
+void move_camera(v2u16 pos) {
     if (pos.x >= 320) {
         pos.x -= 320;
     } else {
@@ -2841,51 +2824,45 @@ void move_camera(Point16 pos) {
     helper::move_screen(pos);
 }
 
-Quad quad_from_line(Point16 from, Point16 to, f32 line_width) {
-    Vec32f line_dir = dir_between(from, to);
-    Vec32f p = {-line_dir.y * line_width / 2, line_dir.x * line_width / 2};
+Quad quad_from_line(v2u16 from, v2u16 to, fp32 line_width) {
+    v2 line_dir = v2(from).dir_to(v2(to));
+    v2 p = line_dir.perpendicular() * (line_width / 2.0fp);
     Quad quad = {};
-    quad.corners[0].x = from.x - p.x;
-    quad.corners[0].y = from.y - p.y;
-    quad.corners[1].x = to.x - p.x;
-    quad.corners[1].y = to.y - p.y;
-    quad.corners[2].x = to.x + p.x;
-    quad.corners[2].y = to.y + p.y;
-    quad.corners[3].x = from.x + p.x;
-    quad.corners[3].y = from.y + p.y;
+    quad.corners[0] = v2(from) - p;
+    quad.corners[1] = v2(to)   - p;
+    quad.corners[2] = v2(to)   + p;
+    quad.corners[3] = v2(from) + p;
     return quad;
 }
 
 Quad quad_from_rect(Box16 rect) {
-    Quad box_quad = {};
-    box_quad.top_left.x = rect.left;
-    box_quad.top_left.y = rect.top;
-    box_quad.top_right.x = rect.right;
-    box_quad.top_right.y = rect.top;
-    box_quad.bottom_right.x = rect.right;
-    box_quad.bottom_right.y = rect.bottom;
-    box_quad.bottom_left.x = rect.left;
-    box_quad.bottom_left.y = rect.bottom;
-    return box_quad;
+    return {
+        .top_left     = {fp32(rect.left),  fp32(rect.top)},
+        .top_right    = {fp32(rect.right), fp32(rect.top)},
+        .bottom_right = {fp32(rect.right), fp32(rect.bottom)},
+        .bottom_left  = {fp32(rect.left),  fp32(rect.bottom)},
+    };
 }
 
-static bool sat_collision_internal(Vec32f* a, u32 a_count, Vec32f* b, u32 b_count) {
+static bool sat_collision_internal(v2* a, u32 a_count, v2* b, u32 b_count) {
     for (u32 i = 0; i < a_count; ++i) {
-        Vec32f dir = dir_between(a[i], a[(i + 1) % a_count]);
-        Vec32f proj = {-dir.y, dir.x};
+        v2 dir = a[i].dir_to(a[(i + 1) % a_count]);
+        v2 proj = {-dir.y, dir.x};
 
-        f32 a_min = INFINITY;
-        f32 a_max = -INFINITY;
+        fp64 a_min = std::numeric_limits<fp64>::max();
+        fp64 a_max = std::numeric_limits<fp64>::lowest();
         for (u32 j = 0; j < a_count; ++j) {
-            f32 dot = bw::dot_product(a[j], proj);
+            v2fp64 aj{fp64(a[j].x), fp64(a[j].y)};
+            fp64 dot = aj.dot(v2fp64{fp64(proj.x), fp64(proj.y)});
             if (dot < a_min) a_min = dot;
             if (dot > a_max) a_max = dot;
         }
 
-        f32 b_min = INFINITY;
-        f32 b_max = -INFINITY;
+        fp64 b_min = std::numeric_limits<fp64>::max();
+        fp64 b_max = std::numeric_limits<fp64>::lowest();
         for (u32 j = 0; j < b_count; ++j) {
-            f32 dot = bw::dot_product(b[j], proj);
+            v2fp64 bj{fp64(b[j].x), fp64(b[j].y)};
+            fp64 dot = bj.dot(v2fp64{fp64(proj.x), fp64(proj.y)});
             if (dot < b_min) b_min = dot;
             if (dot > b_max) b_max = dot;
         }
@@ -2897,24 +2874,24 @@ static bool sat_collision_internal(Vec32f* a, u32 a_count, Vec32f* b, u32 b_coun
     return true;
 }
 
-bool sat_collision(Vec32f* a, u32 a_count, Vec32f* b, u32 b_count) {
+bool sat_collision(v2* a, u32 a_count, v2* b, u32 b_count) {
     return sat_collision_internal(a, a_count, b, b_count) && sat_collision_internal(b, b_count, a, a_count);
 }
 
-void find_closest_point_to_line(Vec32f from, Vec32f to, Vec32f point, f32* out_distance, f32* out_t, Vec32f* out_cp) {
-    Vec32f ab = bw::vecf_between(from, to);
-    Vec32f ap = bw::vecf_between(from, point);
+void find_closest_point_to_line(v2 from, v2 to, v2 point, fp32* out_distance, fp32* out_t, v2* out_cp) {
+    v2 ab = from.vec_to(to);
+    v2 ap = from.vec_to(point);
 
-    f32 t = bw::dot_product(ab, ap);
-    t /= bw::dot_product(ab, ab);
-    t = std::clamp<f32>(t, 0, 1);
+    fp32 t = ab.dot(ap);
+    t /= ab.dot(ab);
+    t = std::clamp(t, 0.0fp, 1.0fp);
 
-    Vec32f cp = from;
+    v2 cp = from;
     cp.x += ab.x * t;
     cp.y += ab.y * t;
 
     if (out_distance) {
-        *out_distance = bw::distance_between(cp, point);
+        *out_distance = cp.distance_to(point);
     }
     if (out_t) {
         *out_t = t;
@@ -2925,25 +2902,18 @@ void find_closest_point_to_line(Vec32f from, Vec32f to, Vec32f point, f32* out_d
 }
 
 // https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line
-std::optional<LineLineIntersect> line_line_intersection(Vec32f a0, Vec32f a1, Vec32f b0, Vec32f b1) {
-    f32 x1 = a0.x;
-    f32 x2 = a1.x;
-    f32 x3 = b0.x;
-    f32 x4 = b1.x;
+std::optional<LineLineIntersect> line_line_intersection(v2 a0, v2 a1, v2 b0, v2 b1) {
+    fp32 x1 = a0.x, x2 = a1.x, x3 = b0.x, x4 = b1.x;
+    fp32 y1 = a0.y, y2 = a1.y, y3 = b0.y, y4 = b1.y;
 
-    f32 y1 = a0.y;
-    f32 y2 = a1.y;
-    f32 y3 = b0.y;
-    f32 y4 = b1.y;
-
-    f32 denom = ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
+    fp32 denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
     if (!denom) return {};
 
     LineLineIntersect result = {};
-    result.t =  ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
-    result.u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denom;
-    result.clamped_t = std::clamp<f32>(result.t, 0, 1);
-    result.clamped_u = std::clamp<f32>(result.u, 0, 1);
+    result.t  =  ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
+    result.u  = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denom;
+    result.clamped_t = std::clamp(result.t, 0.0fp, 1.0fp);
+    result.clamped_u = std::clamp(result.u, 0.0fp, 1.0fp);
     result.cp = {
         x1 + (x2 - x1) * result.t,
         y1 + (y2 - y1) * result.t,
@@ -2956,43 +2926,43 @@ std::optional<LineLineIntersect> line_line_intersection(Vec32f a0, Vec32f a1, Ve
         x3 + (x4 - x3) * result.clamped_u,
         y3 + (y4 - y3) * result.clamped_u,
     };
-    result.on_first_line = result.t >= 0 && result.t <= 1;
-    result.on_second_line = result.u >= 0 && result.u <= 1;
+    result.on_first_line  = result.t >= 0.0fp && result.t <= 1.0fp;
+    result.on_second_line = result.u >= 0.0fp && result.u <= 1.0fp;
     result.on_both_lines = result.on_first_line && result.on_second_line;
     return result;
 }
 
 // https://math.stackexchange.com/questions/846054/closest-points-on-two-line-segments/4289668#4289668
-static std::pair<Vec32f, Vec32f> closest_points_on_segments(Vec32f a0, Vec32f a1, Vec32f b0, Vec32f b1) {
-    Vec32f P1 = a0;
-    Vec32f P2 = b0;
-    Vec32f V1 = vecf_between(a0, a1);
-    Vec32f V2 = vecf_between(b0, b1);
-    Vec32f V21 = vecf_between(P1, P2);
+static std::pair<v2, v2> closest_points_on_segments(v2 a0, v2 a1, v2 b0, v2 b1) {
+    v2 P1 = a0;
+    v2 P2 = b0;
+    v2 V1 = a0.vec_to(a1);
+    v2 V2 = b0.vec_to(b1);
+    v2 V21 = P1.vec_to(P2);
 
-    f32 v22 = dot_product(V2, V2);
-    f32 v11 = dot_product(V1, V1);
-    f32 v21 = dot_product(V2, V1);
-    f32 v21_1 = dot_product(V21, V1);
-    f32 v21_2 = dot_product(V21, V2);
-    f32 denom = v21 * v21 - v22 * v11;
+    fp32 v22   = V2.dot(V2);
+    fp32 v11   = V1.dot(V1);
+    fp32 v21   = V2.dot(V1);
+    fp32 v21_1 = V21.dot(V1);
+    fp32 v21_2 = V21.dot(V2);
+    fp32 denom = v21 * v21 - v22 * v11;
 
-    f32 s, t;
-    if (abs(denom) < 0.000001) {
-        s = 0;
-        t = (v11 * s - v21_1) / v21;
+    fp32 s, t;
+    if (fpm::abs(denom) < 0.001fp) {
+        s = 0.0fp;
+        t = v21 ? (v11 * s - v21_1) / v21 : 0.0fp;
     } else {
         s = (v21_2 * v21 - v22 * v21_1) / denom;
         t = (-v21_1 * v21 + v11 * v21_2) / denom;
     }
-    s = std::clamp<f32>(s, 0, 1);
-    t = std::clamp<f32>(t, 0, 1);
+    s = std::clamp(s, 0.0fp, 1.0fp);
+    t = std::clamp(t, 0.0fp, 1.0fp);
 
-    Vec32f cp0 = {
+    v2 cp0 = {
         P1.x + V1.x * s,
         P1.y + V1.y * s,
     };
-    Vec32f cp1 = {
+    v2 cp1 = {
         P2.x + V2.x * t,
         P2.y + V2.y * t,
     };
@@ -3000,50 +2970,46 @@ static std::pair<Vec32f, Vec32f> closest_points_on_segments(Vec32f a0, Vec32f a1
     return {cp0, cp1};
 }
 
-bool line_trace(Point16 from, Point16 to, f32 line_width, Box16 rect, f32* out_t, Point16* out_cp) {
-    Vec32f best_cp = {};
-    Vec32f best_line_pt = {};
-    Vec32f best_rect_pt = {};
-    f32 best_t = INFINITY;
-    f32 best_distance = INFINITY;
+std::optional<LineTraceResult> line_trace(v2u16 from, v2u16 to, fp32 line_width, Box16 rect) {
+    v2 best_cp = {};
+    v2 best_line_pt = {};
+    v2 best_rect_pt = {};
+    fp32 best_t = std::numeric_limits<fp32>::max();
+    fp32 best_distance = std::numeric_limits<fp32>::max();
 
-    Vec32f line0 = {f32(from.x), f32(from.y)};
-    Vec32f line1 = {f32(to.x),   f32(to.y)};
-    Vec32f axis = dir_between(line0, line1);
+    v2 line0 = v2(from);
+    v2 line1 = v2(to);
     Quad quad = quad_from_rect(rect);
     for (u32 i = 0; i < 4; i++) {
-        Vec32f rect0 = quad.corners[i];
-        Vec32f rect1 = quad.corners[(i + 1) % 4];
+        v2 rect0 = quad.corners[i];
+        v2 rect1 = quad.corners[(i + 1) % 4];
 
         const auto intersect = line_line_intersection(line0, line1, rect0, rect1);
         // Note that parallel line to line intersection is impossible, however this should not be a problem for any real shapes
         if (intersect) {
             const auto [line_pt, rect_pt] = closest_points_on_segments(line0, line1, rect0, rect1);
-            f32 distance = std::min(distance_between(line_pt, rect_pt), distance_between(intersect->clamped_first_cp, intersect->clamped_second_cp));
-            if (abs(distance - best_distance) < 1) {
+            fp32 distance = std::min(line_pt.distance_to(rect_pt), intersect->clamped_first_cp.distance_to(intersect->clamped_second_cp));
+            if (fpm::abs(distance - best_distance) < 1.0fp) {
                 if (intersect->t < best_t) {
                     best_cp = intersect->clamped_second_cp;
-                    best_line_pt = line_pt;
-                    best_rect_pt = rect_pt;
                     best_t = intersect->t;
                     best_distance = distance;
                 }
             } else if (distance < best_distance) {
                 best_cp = intersect->clamped_second_cp;
-                best_line_pt = line_pt;
-                best_rect_pt = rect_pt;
                 best_t = intersect->t;
                 best_distance = distance;
             }
         }
     }
 
-    if (best_distance <= line_width / 2) {
-        *out_t = best_t;
-        *out_cp = {u16(best_cp.x), u16(best_cp.y)};
-        return true;
+    if (best_distance <= line_width / 2.0fp) {
+        return LineTraceResult{
+            .t = best_t,
+            .contact_point = v2u16{u16(best_cp.x), u16(best_cp.y)},
+        };
     }
-    return false;
+    return {};
 }
 
 void transform_unit(Unit* unit, u16 unit_id) { // Written by DarkenedFantasies for siege transformation.
@@ -3132,24 +3098,24 @@ void set_unit_overlay(Unit* unit, ImageSet image_set, bool active, const Overlay
     }
 }
 
-PlayingSound play_sound(SoundSet sound_set, Point16 pos) {
+PlayingSound play_sound(SoundSet sound_set, v2u16 pos) {
     SoundId::Enum sound_id = sound_set.rand();
     return AudioSystem::instance().play_sound(sound_id, {.position = pos, .min_volume = sfx_dat::volume[sound_id]});
 }
 
 PlayingSound play_sound(SoundSet sound_set, Unit* unit, bool force_globally) {
     SoundId::Enum sound_id = sound_set.rand();
-    return AudioSystem::instance().play_sound(sound_id, {.position = force_globally ? Point16{} : unit->position, .unit = unit, .min_volume = sfx_dat::volume[sound_id], .force_globally = force_globally});
+    return AudioSystem::instance().play_sound(sound_id, {.position = force_globally ? v2u16{} : unit->position, .unit = unit, .min_volume = sfx_dat::volume[sound_id], .force_globally = force_globally});
 }
 
-PlayingSound play_looping_sound(SoundSet sound_set, Point16 pos) {
+PlayingSound play_looping_sound(SoundSet sound_set, v2u16 pos) {
     SoundId::Enum sound_id = sound_set.rand();
     return AudioSystem::instance().play_sound(sound_id, {.position = pos, .min_volume = sfx_dat::volume[sound_id], .looping = true});
 }
 
 PlayingSound play_looping_sound(SoundSet sound_set, Unit* unit, bool force_globally) {
     SoundId::Enum sound_id = sound_set.rand();
-    return AudioSystem::instance().play_sound(sound_id, {.position = force_globally ? Point16{} : unit->position, .unit = unit, .min_volume = sfx_dat::volume[sound_id], .force_globally = force_globally, .looping = true});
+    return AudioSystem::instance().play_sound(sound_id, {.position = force_globally ? v2u16{} : unit->position, .unit = unit, .min_volume = sfx_dat::volume[sound_id], .force_globally = force_globally, .looping = true});
 }
 
 void play_action_sound(u32 sound_id, Unit* unit) {
@@ -3193,8 +3159,8 @@ void regress(Unit* unit, u32 regression_id) {
     Unit* new_unit = unit;
     bool is_atg_regression = UnitId::is_atg_regression(static_cast<UnitId::Enum>(old_id), static_cast<UnitId::Enum>(regress_to));
     bool create_corpse = false;
-    Point16 old_pos = unit->position;
-    Point16 new_pos = unit->position;
+    v2u16 old_pos = unit->position;
+    v2u16 new_pos = unit->position;
     if ((unit->id == UnitId::ZergEskigant || unit->id == UnitId::ZergExcisant) && !unit->ext().values[ValueOriginatedFromAgrileth]) {
         new_unit = bw::create_unit_in_game(regress_to, unit->player, unit->position.x, unit->position.y);
     } else if (unit_id_is_larva(regression_id) || units_dat::base_property[regression_id] & UnitProperty::Worker) {
@@ -3344,7 +3310,7 @@ GameKind get_game_kind() {
     return GameKind::Invalid;
 }
 
-u32 get_worker_harvest_distance(Unit* unit, Point16 target) {
+u32 get_worker_harvest_distance(Unit* unit, v2u16 target) {
     u32 distance = bw::distance_between(unit->position, target);
     if (!(unit->pathing_flags & 1)) {
         return distance;
@@ -3364,18 +3330,18 @@ u32 get_worker_harvest_distance(Unit* unit, Point16 target) {
     return helper::get_path_distance_to(unit, target);
 }
 
-Point16 get_rect_edge_point_towards(Point16 pos, Box16 rect, Point16 target) {
-    Vec32f dir = bw::dir_between(pos, target);
-    f32 max_axis = std::max(abs(dir.x), abs(dir.y));
-    if (max_axis) {
+v2u16 get_rect_edge_point_towards(v2u16 pos, Box16 rect, v2u16 target) {
+    v2 dir = v2(pos).dir_to(v2(target));
+    fp32 max_axis = std::max(fpm::abs(dir.x), fpm::abs(dir.y));
+    if (max_axis > 0.0fp) {
         dir.x /= max_axis;
         dir.y /= max_axis;
 
-        u32 w = dir.x < 0 ? rect.left : rect.right;
-        u32 h = dir.y < 0 ? rect.top  : rect.bottom;
+        fp32 w{dir.x < 0.0fp ? rect.left : rect.right};
+        fp32 h{dir.y < 0.0fp ? rect.top  : rect.bottom};
 
-        pos.x += dir.x * w;
-        pos.y += dir.y * h;
+        pos.x = u16(fp32(pos.x) + dir.x * w);
+        pos.y = u16(fp32(pos.y) + dir.y * h);
     }
     return pos;
 }
@@ -3833,7 +3799,7 @@ bool has_custom_advisor(u32 player) {
     return g_globals->current_advisor != Advisor::Default;
 }
 
-const Vec32f perimeter[] = {
+const v2 perimeter[] = {
     {64, -258}, {64, -252}, {198, -198}, {250, -66}, {258, -66},
     {258, 66}, {250, 66}, {198, 198}, {64, 252}, {64, 258},
     {-64, 258}, {-64, 252}, {-198, 198}, {-250, 66}, {-258, 66},
@@ -3843,15 +3809,15 @@ const Vec32f perimeter[] = {
 
 void draw_shape(u32 i_0, float scale, Point32* offset, u8 color) {
     do {
-        Point32 line_head = {(s32) (perimeter[i_0].x * scale) + offset[i_0].x, (s32) (perimeter[i_0].y * scale) + offset[i_0].y};
+        Point32 line_head = {(s32)(f32(perimeter[i_0].x) * scale) + offset[i_0].x, (s32)(f32(perimeter[i_0].y) * scale) + offset[i_0].y};
         i_0--;
-        Point32 line_tail = {(s32) (perimeter[i_0].x * scale) + offset[i_0].x, (s32) (perimeter[i_0].y * scale) + offset[i_0].y};
+        Point32 line_tail = {(s32)(f32(perimeter[i_0].x) * scale) + offset[i_0].x, (s32)(f32(perimeter[i_0].y) * scale) + offset[i_0].y};
         g_graphics.draw_line(line_head.x, line_head.y, line_tail.x, line_tail.y, color, graphics::ON_MAP);
     } while (i_0);
 }
 
 void draw_weapon_range(Unit* unit, u8 weapon_id, u8 color) {
-    Point16 pos = unit->sprite->position;
+    v2u16 pos = unit->sprite->position;
     Box16 bounds = units_dat::unit_bounds[unit->id];
     Point32 bounds_wy = {bounds.right + pos.x, -bounds.top + pos.y};
     Point32 bounds_wh = {bounds.right + pos.x, bounds.bottom + pos.y};
@@ -3877,7 +3843,7 @@ void draw_weapon_range(Unit* unit, u8 weapon_id, u8 color) {
 }
 
 void draw_aura_range(Unit* unit, u16 radius, u8 color) {
-    Point16 pos = unit->sprite->position;
+    v2u16 pos = unit->sprite->position;
     Box16 bounds = units_dat::unit_bounds[unit->id];
     Point32 bounds_wy = {bounds.right + pos.x, -bounds.top + pos.y};
     Point32 bounds_wh = {bounds.right + pos.x, bounds.bottom + pos.y};
@@ -3948,9 +3914,9 @@ u32 get_decloak_sound_id(Unit* unit) {
 
 void launch_return_missile(Unit* unit, u32 weapon_id) {
     UnitExt* unit_ext = get_unit_ext(unit);
-    Point16 position = unit->position;
-    Point16 spr_position = unit->sprite->position;
-    Vec32 pos = {(s32) unit_ext->values[ValueMissileReturnX], (s32) unit_ext->values[ValueMissileReturnY]};
+    v2u16 position = unit->position;
+    v2u16 spr_position = unit->sprite->position;
+    v2s32 pos{s32(unit_ext->values[ValueMissileReturnX]), s32(unit_ext->values[ValueMissileReturnY])};
     // This currently stores the old value so the function call can overwrite them safely. It's stupid. -Pr0nogo
     unit->position.x = (u16)pos.x;
     unit->position.y = (u16)pos.y;
@@ -3968,7 +3934,7 @@ void launch_return_missile(Unit* unit, u32 weapon_id) {
     }
 }
 
-void fire_incremental_bullet(Bullet* bullet, u32 weapon_id, Unit* target, Point16 position) {
+void fire_incremental_bullet(Bullet* bullet, u32 weapon_id, Unit* target, v2u16 position) {
     g_iquare_globals->add_incremental_bullet_multihit(bullet, target);
     s32 count = g_iquare_globals->get_multihit_count(bullet) - 1;
     bw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, position.x, position.y, bullet->player);
@@ -4249,19 +4215,32 @@ bool unit_regenerates_hp(Unit* unit) {
         || unit_ext.timers[TimerImpactDissipation];
 }
 
-u32 get_regeneration_factor(Unit* unit) {
-    u32 factor = 0;
+fp32 get_regeneration_factor(Unit* unit) {
     auto& unit_ext = unit->ext();
+
+    fp32 base = 0;
+    if (unit_ext.damage_taken_timer > 2secs) {
+        base += unit->is_burrowed() ? 2 : 1;
+    }
     if (unit_ext.timers[TimerNathreliskMitosalFog]) {
-        factor += 2;
+        base += 2;
     }
     if (unit_ext.timers[TimerImpactDissipation]) {
-        factor += 4;
+        base += 4;
     }
     if (unit->id == UnitId::ZergMalkothrokor && unit->is_burrowed()) {
-        factor += 3;
+        base += 3;
     }
-    return factor;
+    
+    fp32 factor = 1;
+    if (unit->id == UnitId::TerranEidolonNydus && unit->is_cloaked) {
+        factor += 0.33fp;
+    }
+    if (!unit_ext.unit_vectors[UnitVectorCrucibles].empty()) {
+        factor += 0.25fp;
+    }
+
+    return base * factor;
 }
 
 bool unit_has_shields(Unit* unit) {
@@ -4323,9 +4302,9 @@ std::string get_commit_hash() {
     return head;
 }
 
-bool check_building_collision(UnitId::Enum unit_id, u32 player, Point16 pos) {
+bool check_building_collision(UnitId::Enum unit_id, u32 player, v2u16 pos) {
     bool is_zerg = units_dat::group_flags[unit_id].is_zerg;
-    Point16 size = units_dat::building_dimensions[unit_id];
+    v2u16 size = units_dat::building_dimensions[unit_id];
     u32 tx0 = (pos.x - size.x / 2) / 32;
     u32 tx1 = (pos.x + size.x / 2) / 32;
     u32 ty0 = (pos.y - size.y / 2) / 32;
@@ -4356,7 +4335,7 @@ bool check_building_collision(UnitId::Enum unit_id, u32 player, Point16 pos) {
     return true;
 }
 
-Point16 align_to_tile_grid(Point16 pos, UnitId::Enum unit_id) {
+v2u16 align_to_tile_grid(v2u16 pos, UnitId::Enum unit_id) {
     const auto [w, h] = units_dat::building_dimensions[unit_id];
     const auto hw = w / 2;
     const auto hh = h / 2;
@@ -4526,13 +4505,13 @@ void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id, co
     }
 }
 
-Point16 get_building_reposition(Unit* unit, Point16 position) {
+v2u16 get_building_reposition(Unit* unit, v2u16 position) {
     static constexpr auto Tolerance = 3;
-    Point16 best_pos = {};
+    v2u16 best_pos = {};
     u32 best_distance = UINT_MAX;
     for (s32 x = -Tolerance; x <= Tolerance; x++) {
         for (s32 y = -Tolerance; y <= Tolerance; y++) {
-            Point16 new_pos = position;
+            v2u16 new_pos = position;
             new_pos.x += x * 32;
             new_pos.y += y * 32;
             new_pos = bw::align_to_tile_grid(new_pos, static_cast<UnitId::Enum>(unit->id));
@@ -4549,12 +4528,12 @@ Point16 get_building_reposition(Unit* unit, Point16 position) {
     return best_pos;
 }
 
-f32 unit_id_total_cost(u32 unit_id, Faction faction, bool regression_unstable) {
-	f32 cost = 0;
-	cost += units_dat::mineral_cost[unit_id];
-	cost += units_dat::vespene_cost[unit_id];
+fp32 unit_id_total_cost(u32 unit_id, Faction faction, bool regression_unstable) {
+	fp32 cost{};
+	cost += fp32(units_dat::mineral_cost[unit_id]);
+	cost += fp32(units_dat::vespene_cost[unit_id]);
 	if (units_dat::base_property[unit_id] & UnitProperty::TwoUnitsIn1Egg) {
-		cost /= 2;
+		cost /= 2fp;
 	}
 
 	if (!regression_unstable) {

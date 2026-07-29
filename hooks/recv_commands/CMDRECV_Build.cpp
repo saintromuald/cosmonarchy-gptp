@@ -109,7 +109,7 @@ namespace hooks {
 
 	// Hooked to try to allow for queueable build orders. -Pr0nogo
 	// Not injected. Status unknown as of Feb '24.
-	void process_building_placement(Unit* unit, u8 order_id, Point16 pos, u16 target_unit_id) { // 0048DE70
+	void process_building_placement(Unit* unit, u8 order_id, v2u16 pos, u16 target_unit_id) { // 0048DE70
 		if (order_id == OrderId::BuildingLand) {
 			helper::issue_order_targeting_ground(unit, OrderId::BuildingLand, pos.x, pos.y);
 			return;
@@ -144,7 +144,7 @@ namespace hooks {
 	}
 
 	// Hooked to debug Pylon-based construction. -Pr0nogo
-	u32 cmdrecv_place_building(u32 order_id, u16 built_unit_id, Point16 position) { // 0048E190
+	u32 cmdrecv_place_building(u32 order_id, u16 built_unit_id, v2u16 position) { // 0048E190
 		if (units_dat::base_property[built_unit_id] & UnitProperty::Addon) {
 			cmdrecv_place_addon(position.x, position.y, order_id, built_unit_id);
 		} else {

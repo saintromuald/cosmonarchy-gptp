@@ -157,7 +157,7 @@ static const char* advisor_names[]{
 static_assert(std::size(advisor_names) == (size_t)Advisor::Count);
 
 struct CmPlayer {
-    Point16 camera;
+    v2u16 camera;
     WitnessMode witness_mode;
     Faction faction;
     bool no_starting_units;

@@ -428,7 +428,7 @@ static bool parse_condition(Parser& parser) {
             EntryArray<Unit> units = scouting_player ? designator.search_seen(scouting_player - 1) : designator.search();
             for (Unit* unit : units) {
                 UnitExt* unit_ext = get_unit_ext(unit);
-                Point16 position = unit->position;
+                v2u16 position = unit->position;
                 if (scouting_player) {
                     position = unit_ext->last_seen_position[scouting_player - 1];
                 }
@@ -445,7 +445,7 @@ static bool parse_condition(Parser& parser) {
             Area area = parser.get_area();
             Token min_visibility = parser.get_word();
 
-            Point16 center = {};
+            v2u16 center = {};
             center.x = g_move_to_x + 320;
             center.y = g_move_to_y + 200;
 
@@ -879,7 +879,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
         } else if (parser.equals("play_sound") && is_local_player) {
             Token path = parser.get_string();
             PlayerBitset players = parser.get_player_bitset();
-            Point16 position = parser.get_position();
+            v2u16 position = parser.get_position();
             Token min_visibility = parser.get_word();
 
             if (trigger_player < PlayerLimit && players[trigger_player]) {
@@ -1068,7 +1068,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
             Area area = parser.get_area();
             PlayerBitset players = parser.get_player_bitset();
             UnitIdBitset unit_ids = parser.get_unit_id_bitset();
-            Point16 resarea_position = parser.get_position(area.box.center());
+            v2u16 resarea_position = parser.get_position(area.box.center());
 
             u32 resarea = bw::get_closest_resarea(resarea_position);
             for (u32 player = 0; player < PlayerLimit; ++player) {
@@ -1094,7 +1094,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
             }
         } else if (parser.equals("create_town")) {
             u32 player = parser.get_player();
-            Point16 pos = parser.get_position();
+            v2u16 pos = parser.get_position();
             s32 worker_count = parser.get_s32();
             s32 attach_to_nearest_resarea = parser.get_s32();
             Area claim_placeholders_area = parser.get_area();
@@ -1142,7 +1142,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
             }
         } else if (parser.equals("set_start_location")) {
             u32 player = parser.get_player();
-            Point16 position = parser.get_position();
+            v2u16 position = parser.get_position();
 
             if (player) {
                 player -= 1;
@@ -1305,9 +1305,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
             u32 count = parser.get_s32();
             b32 overlay = parser.get_s32();
 
-            Point16 dest = area_dest.center();
+            v2u16 dest = area_dest.center();
             for (Unit* unit : designator.search({.sort = count != 0}).take(count)) {
-                Point16 origin = unit->position;
+                v2u16 origin = unit->position;
                 if (!bw::teleport_to_point(unit, dest)) {
                     bw::printf("move_unit: Failed to move unit with id %u to coordinates %u, %u", unit->id, dest.x, dest.y);
                 }
@@ -1337,7 +1337,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
         //	EntryArray target_units = {};
         //	unit_search_rect(&target_units, area_dest.box);
 
-            Point16 dest = target.area.center();
+            v2u16 dest = target.area.center();
             for (Unit* unit : source.search({.sort = count != 0}).take(count)) {
                 // TODO: Handle orders other than build / train. -Pr0nogo
                 switch (order_id) {
@@ -1596,7 +1596,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                     }
                     if (first_player) {
                         first_player -= 1;
-                        Point16 pos = g_start_positions[first_player];
+                        v2u16 pos = g_start_positions[first_player];
                         pos.x = pos.x > 320 ? pos.x - 320 : 0;
                         pos.y = pos.y > 200 ? pos.y - 200 : 0;
                         helper::move_screen(pos);
@@ -1783,7 +1783,7 @@ void Globals::sample_eco() {
             continue;
         }
         UnitExt* unit_ext = get_unit_ext(unit);
-        eco[unit->player] += unit->total_cost();
+        eco[unit->player] += f32(unit->total_cost());
     }
     eco_measurements.push_back(eco);
 }

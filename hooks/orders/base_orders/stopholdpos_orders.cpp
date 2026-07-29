@@ -92,7 +92,7 @@ namespace hooks
 		}
 
 		unit->user_action_flags |= 1;
-		Point16 pos = {};
+		v2u16 pos = {};
 		if (unit->order_target.unit) {
 			pos.x = (unit->order_target.unit)->sprite->position.x;
 			pos.y = (unit->order_target.unit)->sprite->position.y;
