@@ -6,6 +6,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <magic_enum/magic_enum_all.hpp>
 
 #include "BW/bwdata.h"
 #include "config.h"

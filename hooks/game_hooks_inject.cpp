@@ -17,7 +17,6 @@ void __declspec(naked) on_game_start()
     {
         isGameOn = true;
         hooks::game_preinit();
-        gptp::g_logger.log_game_start();
     }
     __asm {
         POPAD
@@ -35,9 +34,6 @@ void __declspec(naked) on_game_end()
     {
         isGameOn = false;
         hooks::game_end();
-        gptp::g_logger.log_game_end();
-        gptp::g_local_random_logger.log_end();
-        gptp::g_sync_random_logger.log_end();
     }
     __asm {
         POPAD
@@ -324,28 +320,28 @@ void __declspec(naked) storm_patch0() {
 
 namespace hooks {
 void inject_game_hooks() {
-jump_patch(on_game_start,						   Hook_OnGameStart);
-jump_patch(set_ingame_input_procs,			   0x00484CC0, 0);
-jump_patch(update_minimap_colors,				   0x004A3A00, 0);
-jump_patch(update_doodad_visibility_wrapper,	   0x00487690, 1);
-jump_patch(game_recv_wrapper,					   0x004865D0, 0);
+    jump_patch(on_game_start,						   Hook_OnGameStart);
+    jump_patch(set_ingame_input_procs,			   0x00484CC0, 0);
+    jump_patch(update_minimap_colors,				   0x004A3A00, 0);
+    jump_patch(update_doodad_visibility_wrapper,	   0x00487690, 1);
+    jump_patch(game_recv_wrapper,					   0x004865D0, 0);
 
-jump_patch(ui_button_click_wrapper,			   0x004190ED, 2);
+    jump_patch(ui_button_click_wrapper,			   0x004190ED, 2);
 
-call_patch(on_game_end,						   0x004EE983, 0);
-call_patch(next_frame_hook,					   0x004D974E, 0);
-call_patch(next_ui_frame_hook,				   0x004DE433, 0);
+    call_patch(on_game_end,						   0x004EE983, 0);
+    call_patch(next_frame_hook,					   0x004D974E, 0);
+    call_patch(next_ui_frame_hook,				   0x004DE433, 0);
 
-jump_patch(sp_save_directory_wrapper,			   0x004AE9E2, 0);
-jump_patch(mp_save_directory_wrapper,			   0x0044CCF7, 1);
+    jump_patch(sp_save_directory_wrapper,			   0x004AE9E2, 0);
+    jump_patch(mp_save_directory_wrapper,			   0x0044CCF7, 1);
 
-jump_patch(initialize_provider_version_wrapper,  0x00472770, 1);
-jump_patch(network_set_return_menu,              0x004DC5B0, 0);
-jump_patch(load_stat_txt,                        0x004C3A20, 1);
+    jump_patch(initialize_provider_version_wrapper,  0x00472770, 1);
+    jump_patch(network_set_return_menu,              0x004DC5B0, 0);
+    jump_patch(load_stat_txt,                        0x004C3A20, 1);
 
-// Fix replay buffer overflow. (get_replay_turn_data @ 004CDFF0)
-call_patch(hooks::get_replay_turn_data,          0x00487163);
-call_patch(replay_loop,                          0x004D96C4);
-call_patch(storm_patch0,                         0x1503E164); // DF: Re-order network providers
+    // Fix replay buffer overflow. (get_replay_turn_data @ 004CDFF0)
+    call_patch(hooks::get_replay_turn_data,          0x00487163);
+    call_patch(replay_loop,                          0x004D96C4);
+    call_patch(storm_patch0,                         0x1503E164); // DF: Re-order network providers
 }
 }

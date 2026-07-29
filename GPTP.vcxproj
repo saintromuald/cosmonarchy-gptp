@@ -222,6 +222,7 @@
     <ClCompile Include="bullet_extender.cpp" />
     <ClCompile Include="BW\bwdata.cpp" />
     <ClCompile Include="BW\bwhelper.cpp" />
+    <ClCompile Include="BW\rand.cpp" />
     <ClCompile Include="BW\Storm.cpp" />
     <ClCompile Include="CM\cm_behaviors.cpp" />
     <ClCompile Include="CM\cm_ids.cpp" />
@@ -630,6 +631,7 @@
     <ClInclude Include="BW\enumerations\GluIndex.h" />
     <ClInclude Include="BW\extender\iscript_extender.h" />
     <ClInclude Include="BW\game_runner.h" />
+    <ClInclude Include="BW\rand.h" />
     <ClInclude Include="BW\Storm.h" />
     <ClInclude Include="BW\ui.h" />
     <ClInclude Include="CM\cm.h" />

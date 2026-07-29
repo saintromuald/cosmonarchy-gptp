@@ -4186,6 +4186,7 @@ namespace hooks {
         init_float_precision();
 
         g_game = std::make_unique<Game>();
+        bw::g_random_logger.open();
 
         g_globals = std::make_unique<Globals>();
         g_globals->current_advisor = get_advisor_type_from_config(g_player_table[g_local_nation_id].race);
@@ -4222,6 +4223,10 @@ namespace hooks {
         g_game_was_init = false;
         hotkeys.game_started = true;
 
+        for (auto* logger : gptp::g_loggers) {
+            logger->log_game_start();
+        }
+
         return true;
     }
 
@@ -4235,6 +4240,9 @@ namespace hooks {
         }
         hotkeys.game_started = false;
         g_game.reset();
+        for (auto* logger : gptp::g_loggers) {
+            logger->log_game_end();
+        }
         return true;
     }
 

@@ -163,16 +163,6 @@ private:
 
 s32 get_overlay_offset(u16 unit_id, bool xlarge_allowed = false);
 
-/// Generates a pseudorandom number between min and max, inclusive. This is
-/// identical to the function used internally by StarCraft, and is guaranteed to
-/// generate the same sequence in a replay.
-/// NOTE: The RNG has a maximum distance of 0 - 32767.
-u32 rand_between(u32 min, u32 max, std::source_location src = std::source_location::current());
-
-// Similar to above, but isn't synced, meaning it should be used for local only code
-// Uses C stdlib rand
-u32 rand_between_local(u32 min, u32 max, std::source_location src = std::source_location::current());
-
 template <typename T, T T_None>
 struct GraphicsSet {
     T first = T_None; // Smallest Overlay
@@ -241,12 +231,12 @@ struct SoundSet {
     }
     bool operator==(const SoundSet&) const = default;
 
-    SoundId::Enum rand(std::source_location src = std::source_location::current()) const {
+    SoundId::Enum rand(RandMessage message = {}, std::source_location src = std::source_location::current()) const {
         if (first == last) return first;
         if (random_type == RandType::Local) {
-            return (SoundId::Enum) bw::rand_between_local(first, last, src);
+            return (SoundId::Enum) bw::rand_between_local(first, last, std::move(message), src);
         }
-        return (SoundId::Enum) bw::rand_between(first, last, src);
+        return (SoundId::Enum) bw::rand_between(first, last, std::move(message), src);
     }
 
     SoundSet as_local() {
@@ -280,14 +270,6 @@ struct BindingPlasmaOptions {
 struct TeleportOptions {
     bool preserve_order : 1 = false;
     bool check_distance : 1 = true;
-};
-
-auto rand_one(const std::ranges::range auto& range, std::source_location src = std::source_location::current()) -> decltype(*std::ranges::begin(range)) {
-    return *std::ranges::next(std::ranges::begin(range), bw::rand_between(0, std::ranges::size(range) - 1, src));
-};
-
-auto rand_one_local(const std::ranges::range auto& range, std::source_location src = std::source_location::current()) -> decltype(*std::ranges::begin(range)) {
-    return *std::ranges::next(std::ranges::begin(range), bw::rand_between_local(0, std::ranges::size(range) - 1, src));
 };
 
 inline bool harvester_is_active(Unit* unit, Unit* target) {

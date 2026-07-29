@@ -720,9 +720,9 @@ void randomize_faction(u32 player_id) {
 
 Faction get_random_faction(RaceId::Enum race) {
     switch (race) {
-        case RaceId::Terran:  return static_cast<Faction>(bw::rand_between((u32)Faction::TerranOrionImperium, (u32)Faction::TerranUpstart));
-        case RaceId::Protoss: return static_cast<Faction>(bw::rand_between((u32)Faction::ProtossDivinePrimacy, (u32)Faction::ProtossAstralOmen));
-        case RaceId::Zerg:    return static_cast<Faction>(bw::rand_between((u32)Faction::ZergAtaltrethTendril, (u32)Faction::ZergZorthosTendril));
+        case RaceId::Terran:  return bw::rand_between(Faction::TerranOrionImperium, Faction::TerranUpstart);
+        case RaceId::Protoss: return bw::rand_between(Faction::ProtossDivinePrimacy, Faction::ProtossAstralOmen);
+        case RaceId::Zerg:    return bw::rand_between(Faction::ZergAtaltrethTendril, Faction::ZergZorthosTendril);
     }
     return Faction::None;
 }

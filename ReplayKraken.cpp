@@ -46,15 +46,14 @@ bool ReplayKraken::authenticate() {
 }
 
 bool ReplayKraken::upload_replay(const std::vector<char>& uuid_data, const std::string& game_version,
-    const std::vector<char>& replay_file, const std::vector<char>& desync_file) {
+    const std::vector<char>& replay_file, const std::vector<char>& desync_file, const std::vector<char>& randoms_file) {
     InsertMatchRequest request{
         .matchUuid = uuids::to_string(m_uuid_generator(std::string{std::begin(uuid_data), std::end(uuid_data)})),
         .gameVersion = game_version,
         .replayFile = cppcodec::base64_rfc4648::encode(replay_file),
+        .desyncFile = !desync_file.empty() ? cppcodec::base64_rfc4648::encode(desync_file) : "",
+        .randomsFile = !randoms_file.empty() ? cppcodec::base64_rfc4648::encode(randoms_file) : "",
     };
-    if (!desync_file.empty()) {
-        request.desyncFile = cppcodec::base64_rfc4648::encode(desync_file);
-    }
 
     const Json json(request);
     const auto json_str = json.dump();

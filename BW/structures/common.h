@@ -3,8 +3,8 @@
 #pragma once
 #include "../../types.h"
 #include "../../interpolation.h"
+#include "../rand.h"
 #include <algorithm>
-#include <source_location>
 #include <concepts>
 #include <numbers>
 
@@ -36,20 +36,6 @@ struct std::hash<TileCoord> {
 		return hash;
 	}
 };
-
-// Implemented in api.cpp, declaration moved here to avoid circular include
-namespace bw {
-#define MaxRandom 32767.0
-/// Generates a pseudorandom number between 0 and 32767, inclusive. This is
-/// identical to the function used internally by StarCraft, and is guaranteed to
-/// generate the same sequence in a replay.
-u16 random(std::source_location src = std::source_location::current());
-
-template <utils::FloatLike F>
-F random_float(std::source_location src = std::source_location::current()) {
-	return F(random()) / F(MaxRandom);
-}
-}; // namespace bw
 
 template <typename>
 struct PI;
