@@ -51,7 +51,7 @@ namespace hooks {
 				if (unit->move_target.pt.x == unit->position.x && unit->move_target.pt.y == unit->position.y) {
 					unit->order_to_idle();
 				} else if (unit->main_order_timer == 0) {
-					Point16 old_pos = {};
+					v2u16 old_pos = {};
 					unit->main_order_timer = 15;
 					Unit* new_target = helper::acquire_medic_heal_target(unit);
 					if (new_target) {

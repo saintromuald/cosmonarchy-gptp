@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "BW/api.h"
 #include <GameModes/Uprising.h>
 
@@ -548,16 +548,16 @@ struct UnitExt {
 
     u32                     total_damage_taken;
     u32                     total_damage_dealt;
-    Point16					anthelion_last_move_target;
-    Vec32f					repulsion_vector;
-    Point16					ai_kiting_origin;
+    v2u16					anthelion_last_move_target;
+    v2					repulsion_vector;
+    v2u16					ai_kiting_origin;
     Target                  projectile_pattern_target;
-    Vec32f					last_repulsion;
+    v2					last_repulsion;
 //	Target					rally;
     const char*				custom_name;
 
     u8						seen_by_flags;
-    Point16					last_seen_position[PlayerLimit];
+    v2u16					last_seen_position[PlayerLimit];
     u32						last_seen_timer[PlayerLimit]{
         UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX
     };
@@ -568,29 +568,29 @@ struct UnitExt {
     fp32                    salvage_minerals;
     fp32                    salvage_gas;
 
-    Point16					terran_build_pos;
-    Point16					recall_pos;
+    v2u16					terran_build_pos;
+    v2u16					recall_pos;
 
     u32						ai_timer_avoid_targeting[FullPlayerLimit];
 
     UnitRef					loaded_unit[TransportCap];
 
     std::optional<Target>   last_unit_target;
-    std::optional<Point16>  target_pos_override;
+    std::optional<v2u16>  target_pos_override;
 
     EffectRef               current_storm;
     
     Sprite*					power_aura;
     Link<Unit>				psi_link;
 
-    Point16                 last_pos;
+    v2u16                 last_pos;
 
     u32                     unar_solitary_focus_stacks;
     u32                     unar_distance_traveled;
     u32                     indomitable_annex_stacks;
     u32                     last_malefactor_player;
 
-    Point16                 pull_pos;
+    v2u16                 pull_pos;
 
     u32						values[ValueCount];
     u32						timers[TimerCount];
@@ -613,7 +613,7 @@ struct TileExt {
 };
 
 struct BulletExt {
-    Point16 bullet_source;
+    v2u16 bullet_source;
     u32 distance_traveled;
     u32 ticks_traveled;
     u32 divisor_multiplier = 1;
@@ -621,7 +621,7 @@ struct BulletExt {
     u32 hit_count;
 
     fp32 t;
-    Vec32f displacement;
+    v2 displacement;
 
     u32 fire_index;
     u32 bullet_local_index;

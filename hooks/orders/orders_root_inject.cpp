@@ -119,7 +119,7 @@ void __declspec(naked) targeted_order_wrapper() { // 004754F0
     static u32 is_queued;
     static u8 order_id;
     static Unit* target;
-    static Point16 position;
+    static v2u16 position;
     static Unit* secondary_target;
     __asm {
         PUSH EBP

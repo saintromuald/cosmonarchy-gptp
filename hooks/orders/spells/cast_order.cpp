@@ -20,7 +20,7 @@ namespace hooks {
 					if (unit_ext.values[ValueJustCastedHallucination]) {
 						return 0;
 					}
-					Point16 target_pos = caster->order_target.pt;
+					v2u16 target_pos = caster->order_target.pt;
 					if (bw::distance_between(caster->position, target_pos) > range) {
 						helper::set_move_target_xy(caster, target_pos.x, target_pos.y);
 						return 0;
@@ -163,7 +163,7 @@ namespace hooks {
 				unit->order_signal &= ~0x20;
 				unit_ext.timers[TimerSkyfall] = 3;
 				unit_ext.values[ValueSkyfallStacks] = 0;
-				Point16 pt = unit->order_target.pt;
+				v2u16 pt = unit->order_target.pt;
 				if (unit->order_target.unit) {
 					pt = unit->order_target.unit->position;
 					unit->order_target.unit = 0;
@@ -498,7 +498,7 @@ namespace hooks {
 					return true;
 				}
 			} else {
-				Point16 sprite_pos = caster->sprite->position;
+				v2u16 sprite_pos = caster->sprite->position;
 				if (caster->move_target.pt.x == sprite_pos.x && caster->move_target.pt.y == sprite_pos.y && ((caster->status & UnitStatus::Unmovable) != 0) == 1) {
 					helper::set_resource_target(caster);
 					helper::to_idle(caster);

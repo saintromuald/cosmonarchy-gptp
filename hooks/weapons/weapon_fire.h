@@ -11,7 +11,7 @@ struct WeaponOffsets {
 };
 
 struct FireBulletOpts {
-	std::optional<Point16> launch_pos;
+	std::optional<v2u16> launch_pos;
 	bool apply_cooldown = true;
 	bool ignore_max_range = false;
 	bool dont_follow = false;
@@ -37,10 +37,10 @@ enum class ShotgunScatterStyle {
 	Arc,
 };
 
-Target make_target(Unit* unit, Point16 pos = {});
+Target make_target(Unit* unit, v2u16 pos = {});
 Point8 peek_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets);
 Point8 next_bullet_offset(Unit* unit, WeaponOffsets* weapon_offsets);
-Point16 make_launch_pos(Point16 unit_position, Point8 offset);
+v2u16 make_launch_pos(v2u16 unit_position, Point8 offset);
 Bullet* fire_bullet(Unit* unit, WeaponId::Enum weapon_id, Target target, const FireBulletOpts& opts = {});
 void apply_weapon_cooldown(Unit* unit, WeaponId::Enum weapon_id);
 Bullet* create_bullet_ex(WeaponId::Enum weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction, bool apply_cooldown = true);

@@ -9,7 +9,7 @@ struct TriggerEvent {
 	u16 source_unit_id;
 	u16 target_unit_id;
 	u32 timestamp;
-	Point16 position;
+	v2u16 position;
 };
 
 #define EventCap 100'000

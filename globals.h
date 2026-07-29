@@ -14,7 +14,7 @@
 
 #include <variant>
 
-using SearchRadius = std::variant<u32, Point16>;
+using SearchRadius = std::variant<u32, v2u16>;
 
 #define ATTACK_LIMIT 64
 
@@ -50,7 +50,7 @@ enum class EffectId {
 struct EffectField {
     EffectRef ref;
     EffectId id;
-    Vec32f position;
+    v2u16 position;
     SearchRadius radius;
     u32 current_time;
     u32 max_time;
@@ -63,7 +63,7 @@ struct EffectField {
     // Extras
     Unit* origin;
     u32 intervals;
-    Vec32f move_target;
+    v2u16 move_target;
     u32 move_speed;
 
     // Runtime Data
@@ -76,7 +76,7 @@ struct EffectField {
 struct EffectFieldExtras {
     Unit* origin = nullptr;
     u32 intervals = 1;
-    Point16 move_target = {};
+    v2u16 move_target = {};
     u32 move_speed = 0;
 };
 
@@ -118,9 +118,9 @@ struct IquareGlobals {
     void register_line_attack_hit(Unit* source, Unit* target);
 
     EffectField* get_effect(EffectRef ref);
-    EffectRef create_effect(EffectId id, u32 time, Point16 position, SearchRadius radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras = {});
-    EffectRef create_effect(EffectId id, u32 time, Point16 position, Point16 size, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras = {});
-    EffectRef create_effect(EffectId id, u32 time, Point16 position, u32 radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras = {});
+    EffectRef create_effect(EffectId id, u32 time, v2u16 position, SearchRadius radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras = {});
+    EffectRef create_effect(EffectId id, u32 time, v2u16 position, v2u16 size, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras = {});
+    EffectRef create_effect(EffectId id, u32 time, v2u16 position, u32 radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras = {});
     bool was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target);
     bool multihit_bullet_is_set(Bullet* bullet);
     u32 get_multihit_count(Bullet* bullet);

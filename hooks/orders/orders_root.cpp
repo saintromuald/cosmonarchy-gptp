@@ -557,7 +557,7 @@ namespace hooks {
 				Order* order = helper::remove_order_from_unit_queue(queue_head, unit);
 				u32 order_unit_id = order->unit_id;
 				u32 order_id = order->order_id;
-				Point16 order_position = order->target.pt;
+				v2u16 order_position = order->target.pt;
 				Unit* order_target = order->target.unit;
 				bool cannot_be_interrupted = orders_dat::can_be_interrupted[order_id] == 0;
 
@@ -974,7 +974,7 @@ namespace hooks {
 	}
 
 	// Hooked to troubleshoot custom abilities. -Pr0nogo
-	void targeted_order(u16 x_pos, u32 fow_unit_id, Unit* unit, u16 y_pos, u32 order_type, u32 is_queued, u8 order_id, Unit* target, Point16 position, Unit* secondary_target) { // 004754F0
+	void targeted_order(u16 x_pos, u32 fow_unit_id, Unit* unit, u16 y_pos, u32 order_type, u32 is_queued, u8 order_id, Unit* target, v2u16 position, Unit* secondary_target) { // 004754F0
 		if (is_queued && orders_dat::can_be_queued[order_id]) {
 			switch (unit->main_order_id) {
 				case OrderId::Guard:

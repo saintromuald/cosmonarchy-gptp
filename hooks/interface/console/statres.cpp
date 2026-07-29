@@ -313,7 +313,7 @@ loc_ret:
     return x_offset - (i_0 ? 2 : 0);
 }
 
-static void draw_player_stats(BinDlg** dialog_ptr, Point16* pos, u32 player,
+static void draw_player_stats(BinDlg** dialog_ptr, v2u16* pos, u32 player,
     bool use_player_color, bool can_show_apm, bool show_production, bool show_name, bool show_color_box, bool count_in_production) {
     // Track worker/military counts. -Veeq7
     u32 workers = 0;
@@ -349,7 +349,7 @@ static void draw_player_stats(BinDlg** dialog_ptr, Point16* pos, u32 player,
     print_stat_res_info(dialog, icon_index, statres_state.displayed_minerals[player], resources->minerals[player]);
     dialog = dialog->next;
 
-    Point16 local_pos = *pos;
+    v2u16 local_pos = *pos;
     u32 user_value = (player << 24) | (use_player_color << 16);
 
     if (can_show_apm) {
@@ -394,7 +394,7 @@ static void __fastcall stat_res_timer_proc(BinDlg* dialog, u16 index_unused) { /
 
     g_graphics.reset_stat_res_graphics();
     u32 local_player = g_local_nation_id;
-    Point16 pos = {434, 3};//x is dialog->bounds.left of the third row element (from the right), minus 2. -DF
+    v2u16 pos = {434, 3};//x is dialog->bounds.left of the third row element (from the right), minus 2. -DF
 
     if (bw::in_replay_or_witness()) {
         for (u32 player = 0; player < PlayerLimit; ++player) {

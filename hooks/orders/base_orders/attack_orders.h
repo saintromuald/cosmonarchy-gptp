@@ -13,7 +13,7 @@ namespace hooks {
 	void orders_strafe_unit2(Unit* unit);											// 00465E00
 	void set_interceptors_to_standby(Unit* unit);									// 00465780
 	void orders_strafe_unit(Unit* unit);											// 00465F60
-	void get_next_strafe_position(Unit* unit, u8 strafe_type, Point16 position);	// 00465D30
+	void get_next_strafe_position(Unit* unit, u8 strafe_type, v2u16 position);	// 00465D30
 	void orders_carrier_idle(Unit* unit);											// 004666A0
 	Unit* release_fighter(Unit* unit);												// 00466440 | local only!
 	s32 order_attack_behavior(Unit* unit);											// 00478540

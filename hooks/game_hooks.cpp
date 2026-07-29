@@ -124,7 +124,7 @@ namespace hooks {
                 }
             }
             if (not_held) {
-                Point16 position = {};
+                v2u16 position = {};
                 position.x = g_mouse->x;
                 position.y = g_mouse->y;
 
@@ -264,11 +264,11 @@ namespace hooks {
         return false;
     }
 
-    static Point16 get_target_point(Target target) {
+    static v2u16 get_target_point(Target target) {
         return target.unit ? target.unit->position : target.pt;
     }
 
-    static bool draw_simple_line(Point16 source, Point16 target, graphics::ColorId color) {
+    static bool draw_simple_line(v2u16 source, v2u16 target, graphics::ColorId color) {
         if (target.x != 0 || target.y != 0) {
             g_graphics.draw_line(source.x, source.y, target.x, target.y, color, graphics::ON_MAP);
             return true;
@@ -276,8 +276,8 @@ namespace hooks {
         return false;
     }
 
-    static Point16 draw_order_line(Point16 source, Target target, graphics::ColorId color, Unit* ignore_draw_unit = 0) {
-        Point16 target_pos = get_target_point(target);
+    static v2u16 draw_order_line(v2u16 source, Target target, graphics::ColorId color, Unit* ignore_draw_unit = 0) {
+        v2u16 target_pos = get_target_point(target);
         if (target_pos.x != 0 || target_pos.y != 0) {
             if (!ignore_draw_unit || target.unit != ignore_draw_unit) {
                 g_graphics.draw_line(source.x, source.y, target_pos.x, target_pos.y, color, graphics::ON_MAP);
@@ -288,8 +288,8 @@ namespace hooks {
     }
 
     static void draw_transport_ui() {
-        Point16 start_pos = {179, 346};
-        Point16 pos = start_pos;
+        v2u16 start_pos = {179, 346};
+        v2u16 pos = start_pos;
 
         if (g_game->m_transport_ui_unit) {
             g_game->m_transport_ui_unit = nullptr;
@@ -341,7 +341,7 @@ namespace hooks {
             }
 
             pos.y -= 13 + ((cargo_slots_count + 3) / 4) * 13;
-            Point16 local_pos = pos;
+            v2u16 local_pos = pos;
             pos.y -= 4;
 
             {
@@ -404,7 +404,7 @@ namespace hooks {
         for (u32 i = 0; i < g_client_selection_count; ++i) {
             Unit* unit = g_client_selection_group->unit[i];
             auto& unit_ext = unit->ext();
-            Point16 source = unit->position;
+            v2u16 source = unit->position;
 
             // For checking cargo-related elements.
             // This helped me solve an Anchor issue on 3 February 2023, please leave it here for the future. -Pr0nogo
@@ -507,7 +507,7 @@ namespace hooks {
             if (g_config.show_rally_lines && bw::can_show_custom_ui()
             && (bw::is_allied_to(g_local_nation_id, unit->player) || bw::in_replay_or_witness()))
             {
-                Point16 target = get_target_point(unit->rally);
+                v2u16 target = get_target_point(unit->rally);
                 if (target.x == unit->position.x && target.y == unit->position.y) {
                     target.x = 0;
                     target.y = 0;
@@ -968,10 +968,7 @@ namespace hooks {
         // Queue commands
         cmd::CameraSync{
             .player = u8(g_local_nation_id),
-            .pos = {
-                .x = u16(g_move_to_x),
-                .y = u16(g_move_to_y),
-            },
+            .pos = v2u16{u16(g_move_to_x), u16(g_move_to_y)},
         }.queue();
         
         if (g_elapsed_time_frames == 1) {
@@ -2114,11 +2111,10 @@ namespace hooks {
                             if (!target->is_building() && unit_can_be_repulsed(target)) {
                                 target_ext.units[UnitPullTowardsSource] = unit;
                                 const u32 displacement_time = 5;
-                                Vec32 diff = bw::vec_between(unit->sprite->position, target->sprite->position);
-                                if (bw::vec_length(diff) > 12) {
-                                    Vec32f displacement = bw::normalize(diff);
-                                    displacement.x *= -1 * 32.0 / displacement_time;
-                                    displacement.y *= -1 * 32.0 / displacement_time;
+                                v2 diff = v2(unit->sprite->position).vec_to(v2(target->sprite->position));
+                                if (diff.len() > 12.0fp) {
+                                    v2 displacement = diff.norm();
+                                    displacement *= -32.0fp / fp32(displacement_time);
                                     target_ext.timers[TimerPullTowards] = displacement_time;
                                     target_ext.repulsion_vector = displacement;
                                     target_ext.pull_pos = unit->position;
@@ -2149,7 +2145,7 @@ namespace hooks {
                 }
 
                 if (unit->main_order_id == OrderId::Move) {
-                    Point16 target = unit->move_target.pt;
+                    v2u16 target = unit->move_target.pt;
                     if (bw::get_active_tile_at_coords(target.x, target.y)->visibility_flags & (1 << unit->player)) {
                         unit_ext.anthelion_last_move_target = {};
                     } else {
@@ -2162,7 +2158,7 @@ namespace hooks {
                         unit_ext.anthelion_last_move_target = unit->move_target.pt;
 
                         if (unit_ext.timers[TimerAnthelionEndlessEclipse] == 1) {
-                            Point16 old_pos = unit->position;
+                            v2u16 old_pos = unit->position;
                             bool teleport = bw::teleport_to_point(unit, unit->move_target.pt, 0, true);
                             if (teleport) {
                                 bw::create_and_init_thingy(SpriteId::AnthelionTeleportDepart, old_pos.x, old_pos.y, unit->player, 11);
@@ -2312,7 +2308,7 @@ namespace hooks {
                     auto target = unit->order_target;
                     switch (unit->main_order_id) {
                         case OrderId::DivineDiscipline: {
-                            Point16 position = target.pt;
+                            v2u16 position = target.pt;
                             if (target.unit) {
                                 position = target.unit->position;
                             }
@@ -2370,7 +2366,7 @@ namespace hooks {
                     try_cast = false;
                 }
                 if (try_cast && !unit_ext.timers[TimerTryCastCustomSpell] && !unit_ext.timers[TimerHypnagogueChannel]) {
-                    Point16 target_pos = {};
+                    v2u16 target_pos = {};
                     bool target_is_unit = false;
                     if (unit->order_target.unit) {
                         target_pos.x = unit->order_target.unit->get_x();
@@ -2406,24 +2402,24 @@ namespace hooks {
                         case 36:
                         case 24:
                         case 12: {
-                            Point16 target_pos = {};
+                            v2u16 target_pos = {};
                             target_pos.x = unit_ext.values[ValueThroughTheLookingGlassX];
                             target_pos.y = unit_ext.values[ValueThroughTheLookingGlassY];
-                            Point16 pos = unit->position;
+                            v2u16 pos = unit->position;
                             helper::create_thingy(SpriteId::ThroughTheLookingGlassCast, pos.x, pos.y, unit->player);
                             helper::create_thingy(SpriteId::ThroughTheLookingGlassCast, target_pos.x, target_pos.y, unit->player);
                         } break;
                         case 1: {
-                            Point16 target_center_pos{
-                                .x = u16(unit_ext.values[ValueThroughTheLookingGlassX]),
-                                .y = u16(unit_ext.values[ValueThroughTheLookingGlassY]),
+                            v2u16 target_center_pos{
+                                u16(unit_ext.values[ValueThroughTheLookingGlassX]),
+                                u16(unit_ext.values[ValueThroughTheLookingGlassY]),
                             };
-                            Point16 pos = unit->position;
+                            v2u16 pos = unit->position;
 
                             for (Unit* target : g_unit_search.radial_ex(unit, ThroughTheLookingGlass::TargetSearchRange, FilterAlly | FilterNoBuilding | FilterCompleted)) {
-                                Point16 target_pos{
-                                    .x = u16(target_center_pos.x + (target->position.x - pos.x)),
-                                    .y = u16(target_center_pos.y + (target->position.y - pos.y)),
+                                v2u16 target_pos{
+                                    u16(target_center_pos.x + (target->position.x - pos.x)),
+                                    u16(target_center_pos.y + (target->position.y - pos.y)),
                                 };
                                 helper::create_thingy(SpriteId::LegionnaireTeleportEffect, target->position.x, target->position.y, unit->player);
                                 bw::teleport_to_point(target, target_pos);
@@ -2955,7 +2951,7 @@ namespace hooks {
                     unit_ext.timers[TimerTalosAnimationSubtimer] = subtimer;
                 }
                 if (!unit_ext.values[ValueTalosAnimationTimer] || unit_ext.values[ValueTalosAnimationTimer] % 128 == 0) {
-                    Point16 pos = target->sprite->position;
+                    v2u16 pos = target->sprite->position;
                     switch (bw::random() % 4) {
                     case 0: {
                         pos.x -= u16(units_dat::unit_bounds[target->id].left * 0.75fp);
@@ -3453,10 +3449,10 @@ namespace hooks {
 
         // Striga - Fleeting Focus
         if (unit_ext.timers[TimerStrigaRepulsion]) {
-            Point16 final_pos = unit->position;
+            v2u16 final_pos = unit->position;
             final_pos.x += unit_ext.repulsion_vector.x;
             final_pos.y += unit_ext.repulsion_vector.y;
-            final_pos = bw::clamp_point(final_pos);
+            final_pos = final_pos.clamp_to_map_bounds();
 
             if (!bw::move_unit_improved(unit, final_pos.x, final_pos.y)) {
                 unit_ext.timers[TimerStrigaRepulsion] = 0;
@@ -3467,10 +3463,10 @@ namespace hooks {
         // Todo - fix lag time between multiple pulls
         // Todo - fix delay before moved unit is able to do stuff
         if (unit_ext.timers[TimerMagnetarAttraction]) {
-            Point16 final_pos = unit->position;
+            v2u16 final_pos = unit->position;
             final_pos.x += unit_ext.repulsion_vector.x;
             final_pos.y += unit_ext.repulsion_vector.y;
-            final_pos = bw::clamp_point(final_pos);
+            final_pos = final_pos.clamp_to_map_bounds();
 
             if (!bw::move_unit_improved(unit, final_pos.x, final_pos.y)) {
                 unit_ext.timers[TimerMagnetarAttraction] = 0;
@@ -3479,12 +3475,12 @@ namespace hooks {
 
         // Pulling units (e.g. Anthelion Gravity Well)
         if (unit_ext.timers[TimerPullTowards]) {
-            Point16 target_pos = unit_ext.pull_pos;
+            v2u16 target_pos = unit_ext.pull_pos;
             if (unit->position != target_pos && !unit->is_burrowed()) {
-                Point16 final_pos = unit->position;
+                v2u16 final_pos = unit->position;
                 final_pos.x += unit_ext.repulsion_vector.x;
                 final_pos.y += unit_ext.repulsion_vector.y;
-                final_pos = bw::clamp_point(final_pos);
+                final_pos = final_pos.clamp_to_map_bounds();
 
                 if (!bw::move_unit_improved(unit, final_pos.x, final_pos.y) && unit_ext.timers[TimerPullTowards]) {
                     unit_ext.timers[TimerPullTowards] = 0;

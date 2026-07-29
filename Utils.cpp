@@ -23,13 +23,13 @@ bool Timer::elapsed() const {
 
 namespace utils {
 
-std::optional<Point16> pick_random_spawn_point(UnitId::Enum unit_id, u32 samples) {
+std::optional<v2u16> pick_random_spawn_point(UnitId::Enum unit_id, u32 samples) {
     const auto buildings = g_unit_search.all().not_neutral().filter(0, FilterBuilding);
     return sample_best(
         [unit_id]() {
-            Point16 position{
-                static_cast<u16>(bw::random_float() * g_map_width_pixels),
-                static_cast<u16>(bw::random_float() * g_map_height_pixels),
+            v2u16 position{
+                static_cast<u16>(bw::random_float<fp32>() * g_map_width_pixels),
+                static_cast<u16>(bw::random_float<fp32>() * g_map_height_pixels),
             };
 
             if (units_dat::base_property[unit_id] & UnitProperty::Building) {
@@ -38,7 +38,7 @@ std::optional<Point16> pick_random_spawn_point(UnitId::Enum unit_id, u32 samples
 
             return position;
         },
-        [unit_id, &buildings](const Point16& position) -> s32 {
+        [unit_id, &buildings](const v2u16& position) -> s32 {
             if (units_dat::base_property[unit_id] & UnitProperty::Building) {
                 if (!bw::check_building_collision(unit_id, NeutralHostilePlayer, position)) {
                     return InvalidSample;

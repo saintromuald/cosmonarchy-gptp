@@ -17,7 +17,7 @@ namespace hooks {
         Unit* ua = *(Unit**)a;
         Unit* ub = *(Unit**)b;
 
-        Point16 mouse_pos = {};
+        v2u16 mouse_pos = {};
         mouse_pos.x = g_move_to_x + g_selection_start->x;
         mouse_pos.y = g_move_to_y + g_selection_start->y;
 

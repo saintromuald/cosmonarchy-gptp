@@ -1,7 +1,7 @@
 #include "unit_search.h"
 #include "BW/api.h"
 
-bool is_point_in_rect(Point16 point, Box32 rect) {
+bool is_point_in_rect(v2u16 point, Box32 rect) {
 	return point.x >= rect.left
 		&& point.x <= rect.right
 		&& point.y >= rect.top

@@ -3,14 +3,14 @@
 #include <hooks/limits/sfx_extender.h>
 
 namespace hooks {
-    s32 init_placement_box_pos(s32 unused, Point16* placement_pos) { // 0048D660
+    s32 init_placement_box_pos(s32 unused, v2u16* placement_pos) { // 0048D660
         if (g_mouse->x < 0 || g_mouse->x >= 640 ||
             g_mouse->y < 0 || g_mouse->y >= 400) {
             return 0;
         }
 
-        Vec32 pos = *g_mouse;
-        Point16 dims = units_dat::building_dimensions[g_place_building_unit_id];
+        v2s32 pos = *g_mouse;
+        v2u16 dims = units_dat::building_dimensions[g_place_building_unit_id];
         pos.x -= dims.x / 2;
         pos.y -= dims.y / 2;
 
@@ -21,8 +21,8 @@ namespace hooks {
         return 1;
     }
 
-    u8 draw_placement_box(Point16 unused) { // 0048DDC0
-        Point16 placement_pos = unused;
+    u8 draw_placement_box(v2u16 unused) { // 0048DDC0
+        v2u16 placement_pos = unused;
         u8 result = g_is_placing_building;
         if (!result) {
             return result;
@@ -101,7 +101,7 @@ namespace hooks {
     }
 
     // Hooked to allow building on allied creep. -Pr0nogo
-    int update_creep_building_placement_state(u8 player, u16 x_tile, u16 y_tile, Point16 size, u32 placement_state_entry, u32 check_temporary_creep, u32 check_creep) { // 00473010
+    int update_creep_building_placement_state(u8 player, u16 x_tile, u16 y_tile, v2u16 size, u32 placement_state_entry, u32 check_temporary_creep, u32 check_creep) { // 00473010
         u32 human_only_player_bit = 0;
         if (player == 0xff) return 0; // First time calling bug fix -Jesse
         if (g_player_table[player].type == PlayerType::Human) {
@@ -135,7 +135,7 @@ namespace hooks {
     }
 
     // Hooked to allow building on allied creep. -Pr0nogo
-    u32 update_building_placement_state_map_tile_flags(u16 unit_id, u16 tile_x, u16 tile_y, u8 player, Point16 size, u32 placement_state_entry, u32 check_creep) { // 00473A10
+    u32 update_building_placement_state_map_tile_flags(u16 unit_id, u16 tile_x, u16 tile_y, u8 player, v2u16 size, u32 placement_state_entry, u32 check_creep) { // 00473A10
         u32 human_only_player_bit = 0;
         if (player == 0xff) return 0; // First time calling bug fix -Jesse
         if (g_player_table[player].type == PlayerType::Human) {
@@ -503,7 +503,7 @@ namespace hooks {
     // We might be able to use a town center variant of this function (if it exists) to fix the bug that greenlights quasifog placement too close to resources.
     s32 vespene_geyser_placebox(u32 tile_x, u32 tile_y, u8 player, u32 check_vision, u32 unit_id) { // 00473DB0
         u32 node_id = unit_id_is_ridge_refinery(unit_id) ? UnitId::ResourceVespeneRidge : UnitId::ResourceVespeneGeyser;
-        Point16 node_dims = units_dat::building_dimensions[node_id];
+        v2u16 node_dims = units_dat::building_dimensions[node_id];
         u32 x_pos = 32 * tile_x + node_dims.x / 2;
         u32 y_pos = 32 * tile_y + node_dims.y / 2;
         if (g_player_table[player].type != PlayerType::Human)  {

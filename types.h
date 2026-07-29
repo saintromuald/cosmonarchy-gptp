@@ -65,53 +65,14 @@ inline consteval fp64 operator""dfp(unsigned long long f) { return fp64{s64(f)};
 inline consteval fp32 operator""fp(long double f) { return fp32{f}; }
 inline consteval fp64 operator""dfp(long double f) { return fp64{f}; }
 
-template <typename F, typename T>
-    requires fpm::is_fixed_v<F>&& std::is_constructible_v<T, F>
-constexpr T& operator+=(T& t, F f) {
-    return t = T(F(t) + f);
-}
+inline consteval u32 operator""tiles(long double tiles) { return static_cast<u32>(tiles * 32); }
+inline consteval u32 operator""tiles(unsigned long long tiles) { return static_cast<u32>(tiles * 32); }
 
-template <typename F, typename T>
-    requires fpm::is_fixed_v<F>&& std::is_constructible_v<T, F>
-constexpr T& operator-=(T& t, F f) {
-    return t = T(F(t) - f);
-}
+inline consteval u32 operator""secs(long double seconds) { return static_cast<u32>(seconds * 24); }
+inline consteval u32 operator""secs(unsigned long long seconds) { return static_cast<u32>(seconds * 24); }
 
-template <typename F, typename T>
-    requires fpm::is_fixed_v<F>&& std::is_constructible_v<T, F>
-constexpr T& operator*=(T& t, F f) {
-    return t = T(F(t) * f);
-}
+inline consteval u32 operator""mins(long double minutes) { return static_cast<u32>(minutes * 60 * 24); }
+inline consteval u32 operator""mins(unsigned long long minutes) { return static_cast<u32>(minutes * 60 * 24); }
 
-template <typename F, typename T>
-    requires fpm::is_fixed_v<F>&& std::is_constructible_v<T, F>
-constexpr T& operator/=(T& t, F f) {
-    return t = T(F(t) / f);
-}
-
-inline consteval u32 operator""tiles(long double tiles) {
-    return static_cast<u32>(tiles * 32);
-}
-inline consteval u32 operator""tiles(unsigned long long tiles) {
-    return static_cast<u32>(tiles * 32);
-}
-
-inline consteval u32 operator""secs(long double seconds) {
-    return static_cast<u32>(seconds * 24);
-}
-inline consteval u32 operator""secs(unsigned long long seconds) {
-    return static_cast<u32>(seconds * 24);
-}
-inline consteval u32 operator""mins(long double minutes) {
-    return static_cast<u32>(minutes * 60 * 24);
-}
-inline consteval u32 operator""mins(unsigned long long minutes) {
-    return static_cast<u32>(minutes * 60 * 24);
-}
-
-inline consteval u32 operator""hp(long double value) {
-    return static_cast<u32>(value * 256);
-}
-inline consteval u32 operator""hp(unsigned long long value) {
-    return static_cast<u32>(value * 256);
-}
+inline consteval u32 operator""hp(long double value) { return static_cast<u32>(value * 256); }
+inline consteval u32 operator""hp(unsigned long long value) { return static_cast<u32>(value * 256); }

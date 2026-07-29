@@ -100,7 +100,7 @@ void UprisingGameMode::on_tick() {
             continue;
         }
 
-        Vec32 pos_sum{};
+        v2s32 pos_sum{};
         for (UnitRef ref : wave.units) {
             Unit* unit = ref.get();
             assert(unit); // since we cleared wave.units from empty refs
@@ -109,10 +109,7 @@ void UprisingGameMode::on_tick() {
             pos_sum.y += unit->position.y; 
         }
 
-        Point16 center{
-            pos_sum.x / wave.units.size(),
-            pos_sum.y / wave.units.size(),
-        };
+        v2u16 center(pos_sum / s32(wave.units.size()));
 
         Unit* target = g_unit_search.all().not_neutral().filter().filter_by([&wave](Unit* target) {
             const auto group = bw::get_region(target->position)->group_index;
@@ -168,7 +165,7 @@ void UprisingGameMode::on_unit_tick(Unit* unit) {
                 unit->order_to(OrderId::AttackUnit, target);
             }
         } else if (!unit_ext->timers[TimerTurningRoam] && !unit_ext->values[ValueUprisingInAttackWave]) {
-            const auto target_pos = bw::random_polar_point(unit->position, 1 * 32);
+            const auto target_pos = unit->position.random_polar_point<fp32>(1tiles);
             unit->order_to(OrderId::Move, target_pos);
             unit_ext->timers[TimerTurningRoam] = 4 * 24;
         }

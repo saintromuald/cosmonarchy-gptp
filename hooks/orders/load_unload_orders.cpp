@@ -143,7 +143,7 @@ void orders_move_unload(Unit* unit) { // 004E7700
                     bool bStopLoop = false;
                     bool bStopAll = false;
                     bool bIsDistanceGreaterThanHaltDistance = helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, 512);
-                    Point16 pos = {0,0}; // unsure about this start value
+                    v2u16 pos = {0,0}; // unsure about this start value
                     while (!bStopLoop) {
                         Unit* unit_to_unload = helper::get_loaded_unit_from_index(unit, index);
                         if (unit_to_unload) {

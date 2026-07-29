@@ -58,10 +58,10 @@ namespace hooks {
 			return false;
 		}
 
-		const Vec32f facing_dir = bw::facing_dir(unit);
-		const Vec32f dir_to_target = bw::dir_between(unit->position, target->position);
-		const f32 dot = bw::dot_product(facing_dir, dir_to_target);
-		if (dot <= bw::deg_to_dot(225.0 / 2)) { // 225 in total, 112.5 degrees in both directions 
+		const v2    facing_dir    = bw::facing_dir(unit);
+		const v2    dir_to_target = unit->position.dir_to(target->position);
+		const fp32  dot           = facing_dir.dot(dir_to_target);
+		if (dot <= bw::deg_to_dot(112.0fp)) { // 225 in total, 112.5 degrees in both directions 
 			return false;
 		}
 
@@ -291,22 +291,7 @@ namespace hooks {
 
 			// Passive HP regeneration
 			if (bw::unit_regenerates_hp(unit) && unit->hitpoints > 0 && unit->hitpoints != unit->get_max_hp_raw()) {
-				u32 factor = bw::get_regeneration_factor(unit);
-				if (unit_ext.damage_taken_timer > 2secs) {
-					factor++;
-					if (unit->is_burrowed()) {
-						factor++;
-					}
-				}
-
-				s32 regen = 11 * factor; // 1 HP per second, before factor.
-				if (unit->id == UnitId::TerranEidolonNydus && unit->is_cloaked) {
-					regen *= 1.33fp;
-				}
-
-				if (!unit_ext.unit_vectors[UnitVectorCrucibles].empty()) {
-					regen *= 1.25fp;
-				}
+				unit->heal_hp(u32(fp32{1hp} / fp32{1secs} * bw::get_regeneration_factor(unit)));
 			}
 
 			// Deliberate healing
@@ -666,7 +651,7 @@ namespace hooks {
 		bw::refresh_console();
 		u32 pos_x = unit->position.x;
 		u32 pos_y = unit->position.y;
-		Point16 position = {pos_x, pos_y};
+		v2u16 position{u16(pos_x), u16(pos_y)};
 		helper::fix_target_location(&position, new_id);
 		if (pos_x != position.x || pos_y != position.y) {
 			helper::move_unit(unit, position.x, position.y);
@@ -967,7 +952,7 @@ namespace hooks {
 			unit->order_signal = 0;
 			unit->order_unit_id = UnitId::None;
 			*(u32*)(&unit->main_order_timer) = 0; // Zero-inits the cooldown timers as well.
-			unit->order_target = {0, 0, 0};
+			unit->order_target = {};
 			u32* union_0xC0 = (u32*)(&unit->mine_carrier); // Not specifically mine carriers, just unit layout offset 0xC0.
 			*union_0xC0 = 0;
 			*(union_0xC0 + 1) = 0; // 0xC4

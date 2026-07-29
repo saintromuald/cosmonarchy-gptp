@@ -5,7 +5,7 @@
 namespace {
 	bool can_cast_spell_order(Unit* unit, u8 tech_id, u8 order_id);
 	bool ai_cast_spell_order(Unit* unit, Unit* target, u8 order_id, u8 ai_action_flag = 1);
-	bool ai_cast_spell_order_pos(Unit* unit, Point16 pos, u8 order_id, u8 ai_action_flag);
+	bool ai_cast_spell_order_pos(Unit* unit, v2u16 pos, u8 order_id, u8 ai_action_flag);
 	u16 get_order_energy_cost(u8 order_id);
 	bool is_nuke_timer_ready(u8 player);
 	Unit* get_loaded_silo(Unit* nuker, b32 check_nuke_available_for_nuker = 1);
@@ -233,7 +233,7 @@ namespace {
 		return true;
 	}
 
-	bool ai_cast_spell_order_pos(Unit* unit, Point16 pos, u8 order_id, u8 ai_action_flag) {
+	bool ai_cast_spell_order_pos(Unit* unit, v2u16 pos, u8 order_id, u8 ai_action_flag) {
 		if (unit->main_order_id != order_id) {
 			unit->order_to(order_id, pos.x, pos.y);
 		}

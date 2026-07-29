@@ -13,9 +13,9 @@ struct Flingy {
     /*0x008*/ s32       value;                 ///for unit it's hitpoints
     /*0x00C*/ Sprite*   sprite;
     /*0x010*/ Target    move_target;            ///< The position or unit to move to. It is NOT an order target.
-    /*0x018*/ Point16   next_movement_waypoint;  ///< The next way point in the path the unit is following to get to its destination.
+    /*0x018*/ v2u16   next_movement_waypoint;  ///< The next way point in the path the unit is following to get to its destination.
                                                ///< Equal to moveToPos for edge units since they don't need to navigate around buildings.
-    /*0x01C*/ Point16   next_target_waypoint;    ///< The desired position
+    /*0x01C*/ v2u16   next_target_waypoint;    ///< The desired position
     /*0x020*/ u8        movement_flags;		   /// sound_flags specifying movement type, movement_flags::Enum contains possible explanations
     /*0x021*/ u8        current_direction_1;	   /// The current direction the unit is facing
     /*0x022*/ u8        flingy_turn_rate;       //AKA flingy turn radius
@@ -23,12 +23,12 @@ struct Flingy {
     /*0x024*/ u16       flingy_id;
     /*0x026*/ u8        _unknown_0x026;
     /*0x027*/ u8        flingy_movement_type;
-    /*0x028*/ Point16   position;
-    /*0x02C*/ Vec32  halt;
+    /*0x028*/ v2u16   position;
+    /*0x02C*/ v2s32  halt;
     /*0x034*/ u32       flingy_top_speed;
     /*0x038*/ u32       current_speed_1;
     /*0x03C*/ u32       current_speed_2;
-    /*0x040*/ Vec32  current_velocity;
+    /*0x040*/ v2s32  current_velocity;
     /*0x048*/ u16       flingy_acceleration;
     /*0x04A*/ u8        current_direction_2;
     /*0x04B*/ u8        velocity_direction_2;
@@ -251,7 +251,7 @@ struct Unit : public UnitLayout {
     // Issue the @p order to the unit, using the given position as the target.
     void order_to(u8 order_id, u16 x, u16 y);
 
-    inline void order_to(u8 order_id, Point16 pos) {
+    inline void order_to(u8 order_id, v2u16 pos) {
         order_to(order_id, pos.x, pos.y);
     }
 
@@ -306,7 +306,7 @@ struct Unit : public UnitLayout {
     // Returns the distance between this unit and the @p target, taking unit collision count in units.dat into account.
     // Internally, this function uses bw::get_distance_fast().
     u32 get_distance_to_target(Unit* target) const;
-    u32 get_distance_to_point(Point16 point) const;
+    u32 get_distance_to_point(v2u16 point) const;
 
     // Checks whether this unit can reach the target position. This checks only for terrain, and does not consider obstacles (units and buildings).
     bool has_path_to_pos(u32 x, u32 y) const;
@@ -393,7 +393,7 @@ struct Unit : public UnitLayout {
     bool is_queue_slot_active(int slot);
     u8 get_right_click_action_order();
     Faction faction();
-    f32 total_cost();
+    fp32 total_cost();
 
     inline u32 get_strength() const { return std::max(this->ground_strength, this->air_strength); }
 

@@ -273,7 +273,7 @@ void AiLayouts::update() {
 
                     char buffer[256] = {};
 
-                    Point16 pos = {};
+                    v2u16 pos = {};
                     pos.x = unit_box.left + 5;
                     pos.y = unit_box.top + 5;
 
@@ -338,7 +338,7 @@ void AiLayouts::add_placeholder_chk(const CHKUnit& unit, u32 player) {
     add_placeholder_unit_id(m_player_layouts[player], placeholder, (UnitId::Enum)unit.unit_id);
 }
 
-Point16 AiLayouts::get_ai_town_position(AiTown& town) {
+v2u16 AiLayouts::get_ai_town_position(AiTown& town) {
     PlayerLayouts& layouts = m_player_layouts[town.player];
     for (AiPlaceholder& placeholder : layouts.placeholders) {
         if (placeholder.resarea == town.resarea && placeholder.is_townhall_marker) {
@@ -475,8 +475,8 @@ void AiLayouts::sort_layouts(PlayerLayouts& layouts) {
         if (cost_diff) return cost_diff < 0;
 
         if (a.resarea && b.resarea) {
-            Point16 point_a = g_resource_areas->areas[a.resarea].position;
-            Point16 point_b = g_resource_areas->areas[b.resarea].position;
+            v2u16 point_a = g_resource_areas->areas[a.resarea].position;
+            v2u16 point_b = g_resource_areas->areas[b.resarea].position;
 
             s32 pos_diff = bw::distance_between(a.position, point_a) - bw::distance_between(b.position, point_b);
             if (pos_diff) return pos_diff < 0;
@@ -691,7 +691,7 @@ bool unit_has_no_or_allied_creep(UnitId::Enum unit_id, u32 x, u32 y, u32 player)
     return true;
 }
 
-bool can_place_unit(UnitId::Enum unit_id, Point16 position, u32 player) {
+bool can_place_unit(UnitId::Enum unit_id, v2u16 position, u32 player) {
     if (find_unit_equivalent_down(unit_id).from != UnitId::None) {
         return true; // If we are requesting a structure upgrade that is not merged into one request, we don't actually place it. -Veeq7
     }

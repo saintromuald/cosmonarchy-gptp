@@ -160,7 +160,7 @@ namespace {
 	void __declspec(naked) get_next_strafe_position_wrapper() {
 		static Unit* unit;
 		static u8 strafe_type;
-		static Point16 position;
+		static v2u16 position;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP

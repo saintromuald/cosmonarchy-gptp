@@ -128,7 +128,7 @@ struct UnitsSel {
 BW_DATA(UnitsSel*,			g_client_selection_group,		ccmu_extender.new_client_selection_group);
 BW_DATA(Unit*,				g_client_selection_group_end,	0x00597238);
 BW_REF(u8,					g_client_selection_count,		0x0059723D);
-BW_DATA(Point16*,			g_selection_start,				0x0066FF4C);
+BW_DATA(v2u16*,			g_selection_start,				0x0066FF4C);
 BW_DATA(Box16*,				g_selection_box,				0x0066FF50);
 
 // Screen position relative to the map
@@ -136,10 +136,10 @@ BW_DATA(s32*,				g_screen_x,				0x00628448);
 BW_DATA(s32*,				g_screen_y,				0x00628470);
 
 // To use with a player ID
-BW_DATA(Point16*,			g_start_positions,		0x0058D720);
+BW_DATA(v2u16*,			g_start_positions,		0x0058D720);
 
 // Mouse position relative to the screen
-BW_DATA(const Vec32*,		g_mouse,				0x006CDDC4);
+BW_DATA(const v2s32*,		g_mouse,				0x006CDDC4);
 
 BW_REF(u32,				g_mmb_pos_x,            0x006556F8);
 BW_REF(u32,				g_mmb_pos_y,            0x006556F4);
@@ -456,7 +456,7 @@ BW_DATA(s8*,		g_selection_circle_color,		0x00581D6A);
 // For initializeBulet
 BW_DATA(Unit**,		g_last_bullet_creator,			0x0064DEB0);
 BW_DATA(s32*,		g_launch_spin_random,			0x0064DEC0);
-BW_DATA(Point16*, g_attack_curve,					0x00513650);
+BW_DATA(v2u16*, g_attack_curve,					0x00513650);
 
 // For ai_progress_build
 BW_DATA(s32*,		g_game_minerals,				0x0057F0F0);
@@ -638,8 +638,8 @@ namespace units_dat {
     BW_DATA_REF(u16*,			sound_annoyed_last,		unitsDat[33].address);	// 00661EE8
     BW_DATA_REF(u16*,			sound_yes_first,		unitsDat[34].address);	// 00663C10
     BW_DATA_REF(u16*,			sound_yes_last,			unitsDat[35].address);	// 00661440
-    BW_DATA_REF(Point16*,		building_dimensions,	unitsDat[36].address);	// 00662860	// Placement Box in PyDAT
-    BW_DATA_REF(Point16*,		addon_placement,		unitsDat[37].address);	// 006626E0 // Addon Position in PyDAT
+    BW_DATA_REF(v2u16*,		building_dimensions,	unitsDat[36].address);	// 00662860	// Placement Box in PyDAT
+    BW_DATA_REF(v2u16*,		addon_placement,		unitsDat[37].address);	// 006626E0 // Addon Position in PyDAT
     BW_DATA_REF(Box16*,			unit_bounds,			unitsDat[38].address);	// 006617C8	// Unit Dimensions in PyDAT
     BW_DATA_REF(u16*,			portrait_id,			unitsDat[39].address);	// 00662F88
     BW_DATA_REF(u16*,			mineral_cost,			unitsDat[40].address);	// 00663888
@@ -842,7 +842,7 @@ BW_DATA(UnitFinderData*,	g_unit_ordering_x,		ccmu_extender.unit_finder_x);
 BW_DATA(UnitFinderData*,	g_unit_ordering_y,		ccmu_extender.unit_finder_y);
 BW_DATA(u32*,				g_unit_ordering_count,	0x0066FF74);
 
-BW_DATA(Vec32*,				g_angle_distance,		0x00512D28);
+BW_DATA(v2s32*,				g_angle_distance,		0x00512D28);
 BW_DATA(u16*,				g_megatile_count,		0x005998E0);
 
 // Used internally by Starcraft to manage temporary units lists
@@ -1316,7 +1316,7 @@ BW_REF(b32,   g_68517C,             0x0068517C); // Probably defines that the sc
 
 BW_REF(u8,    g_replay_speed,       0x006D0F30);
 
-BW_REF(Point16, g_resource_target_acquire_position, 0x0069579C);
+BW_REF(v2u16, g_resource_target_acquire_position, 0x0069579C);
 BW_REF(u32,     g_resource_target_acquire_radius,   0x006955E8);
 BW_REF(u32,     g_require_empty_ai_resource,        0x004432FA);
 

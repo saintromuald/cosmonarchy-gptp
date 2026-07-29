@@ -75,11 +75,11 @@ namespace hooks {
 		return result;
 	}
 
-	void irradiate_hit(Unit* attacker, Point16 target, u8 attacking_player_id) {
+	void irradiate_hit(Unit* attacker, v2u16 target, u8 attacking_player_id) {
 	//	iquare_globals.create_effect(EffectId::Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attacking_player_id, attacker);
 	}
 
-	void irradiate_hit_internal(Unit* attacker, Point16 target, u8 attacking_player_id) {
+	void irradiate_hit_internal(Unit* attacker, v2u16 target, u8 attacking_player_id) {
 		g_iquare_globals->create_effect(EffectId::Irradiate, 10 * 24, { target.x, target.y }, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attacking_player_id, attacker);
 	}
 
@@ -340,7 +340,7 @@ namespace hooks {
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	void dark_swarm_hit(s32 x, s32 y, u32 attacking_player_id, Bullet* bullet) {
 		// Adjust location where Dark Swarm will be created if necessary (by modifying coords)
-		Point16 coords = {x, y};
+		v2u16 coords(x, y);
 		helper::fix_target_location(&coords, UnitId::Spell_CarapaceSwarm);
 
 		// The spell is created for player 11 (neutral), not for the owner		
@@ -361,7 +361,7 @@ namespace hooks {
 
 	void carapace_swarm_hit_internal(s32 x, s32 y, u32 attacking_player_id, u32 spell_unit_id) {
 		// Adjust location where Dark Swarm will be created if necessary (by modifying coords)
-		Point16 coords = {x, y};
+		v2u16 coords(x, y);
 		helper::fix_target_location(&coords, spell_unit_id);
 
 		// The spell is created for player 11 (neutral), not for the owner		
@@ -391,14 +391,14 @@ namespace hooks {
 		if (tile->has_cagra|| tile->cagra_receding) {
 			broodlings_to_spawn = 5;
 		}
-		Point16 current = bullet->sprite->position;
+		v2u16 current = bullet->sprite->position;
 		current.x -= 2;
 		current.y -= 2;
 		while (broodlings_to_spawn > 0) {
 			// Check various conditions before attempting to create Broodspawn
 			if (helper::can_unit_id_fit_at_xy(current.x, current.y, UnitId::ZergRilirokor)) {
-				Point16 in_pos = current;
-				Point16 out_pos = {};
+				v2u16 in_pos = current;
+				v2u16 out_pos = {};
 
 				Box16 move_area = {};
 				move_area.left = current.x - 32;
@@ -412,7 +412,7 @@ namespace hooks {
 			}
 
 			// Adjust the position to welcome the unit...I think
-			Point16 pos = current;
+			v2u16 pos = current;
 			helper::fix_target_location(&pos, UnitId::ZergRilirokor);
 
 			// Create the broodling
@@ -525,11 +525,11 @@ namespace hooks {
 
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	void stasis_field_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet) {
-		Point16 position = { x, y };
+		v2u16 position{u16(x), u16(y)};
 		stasis_field_hit_internal(attacker, position, bullet);
 	}
 
-	void stasis_field_hit_internal(Unit* attacker, Point16 position, Bullet* bullet) {
+	void stasis_field_hit_internal(Unit* attacker, v2u16 position, Bullet* bullet) {
 		bw::create_and_init_thingy(SpriteId::Stasis_Field_Hit, position.x, position.y, 11, 17);
 		helper::play_sound_at_pos(SoundId::Protoss_ARBITER_PAbCag00_WAV, position, 1, 0);
 		Box16 coords = {};
@@ -543,7 +543,7 @@ namespace hooks {
 	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
 	Unit* create_disruption_web(u32 attacking_player_id, s32 x, s32 y) {
 		return 0; // Reimplemented entirely in Cosmonarchy
-		Point16 coords;
+		v2u16 coords;
 		Unit* disruption_web_unit;
 		coords.x = x;
 		coords.y = y;

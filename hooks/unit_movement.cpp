@@ -18,11 +18,10 @@ namespace hooks {
 	}
 
 	void move_unit(Unit* unit, s16 x, s16 y, bool ignore_collision) { // 004EB9F0
-		Point16 old_pos = { unit->sprite->position.x, unit->sprite->position.y };
-		Point16 new_pos = { x, y };
+		v2u16 old_pos = unit->sprite->position;
+		v2u16 new_pos(x, y);
 		helper::fix_target_location(&new_pos, unit->id);
-        unit->position.x = new_pos.x;
-        unit->position.y = new_pos.y;
+        unit->position = new_pos;
         unit->halt.x = new_pos.x << 8;
         unit->halt.y = new_pos.y << 8;
         helper::move_sprite(unit->sprite, new_pos.x, new_pos.y);
@@ -250,7 +249,7 @@ namespace hooks {
 		if (!(unit->status & UnitStatus::IsNormal)) {
 			return false;
 		}
-		Point16 position = {unit->sprite->position.x, unit->sprite->position.y};
+		v2u16 position = {unit->sprite->position.x, unit->sprite->position.y};
 		if (!helper::is_blocked_position(unit, position)) {
 			return false;
 		}

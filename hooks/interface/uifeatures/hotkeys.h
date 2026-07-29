@@ -48,7 +48,7 @@ struct KeyEvent {
 
 struct Hotkeys {
 	bool game_started;
-	Point16 screens[CameraCap];
+	v2u16 screens[CameraCap];
 	ControlGroup control_groups[ControlGroupCap];
 	ControlGroup* last_control_group_selected;
 	KeyState keys[KeyCap];

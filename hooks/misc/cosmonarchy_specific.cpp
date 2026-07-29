@@ -205,7 +205,7 @@ s32 game_loop() { // 004D94B0 - hooked for lag testing - Pr0nogo
 // 004A09D0 - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo
 // Now used to set starting energy to a new amount - Veeq7
 Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 player) {
-    Vec32 attack_frame = {};
+    v2s32 attack_frame = {};
     u32 facing_angle = bw::rand_between(0, 31);
 
     Unit* unit = helper::unit_constructor(x, y, unit_id, player, facing_angle);
@@ -422,7 +422,7 @@ void __cdecl create_unit_building_sprite_validity_array() { // 00497110
 }
 
 // Hooked to help with corpse-related abilities. -Pr0nogo
-Thingy* create_thingy(u32 sprite_id, Point16 position, u8 player) { // 00488210
+Thingy* create_thingy(u32 sprite_id, v2u16 position, u8 player) { // 00488210
     Thingy* thingy = *g_first_free_thingy;
     if (!thingy) {
         return 0;

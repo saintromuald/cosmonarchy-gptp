@@ -12,7 +12,7 @@
 static constexpr s32 ScreenW = 640;
 static constexpr s32 ScreenH = 400;
 
-static bool should_check_duplicate(Point16 existing_pos, Point16 candidate_pos) {
+static bool should_check_duplicate(v2u16 existing_pos, v2u16 candidate_pos) {
 	// | --------- | -------- | -------- |
 	// | Candidate | Existing | Check    |
 	// | --------- | -------- | -------- |
@@ -35,7 +35,7 @@ static bool should_check_duplicate(Point16 existing_pos, Point16 candidate_pos) 
 	return true;
 }
 
-bool SoundBuffer::is_blocking_play(SoundBuffer* candidate, Point16 candidate_pos) {
+bool SoundBuffer::is_blocking_play(SoundBuffer* candidate, v2u16 candidate_pos) {
 	if (get_root_buffer() != candidate->get_root_buffer() || !last_play_time) {
 		return false;
 	}
@@ -561,7 +561,7 @@ s32 AudioSystem::get_sound_volume() const {
 	return g_big_volume_array[index * g_options_list->sfx / 100];
 }
 
-s32 AudioSystem::get_sound_volume_at_pos(Point16 pos) const {
+s32 AudioSystem::get_sound_volume_at_pos(v2u16 pos) const {
 	s32 index = helper::get_sfx_volume_from_screen_distance(pos.x, pos.y);
 	if (g_use_quiet_sounds) {
 		index /= 5;

@@ -137,8 +137,10 @@ namespace hooks
 		if (weapon_id != WeaponId::None) {
 			weapon_strength = (weapon_damage * damage_factor << 11) / (s32)weapon_cooldown;
 		}
-		final_strength = (u64)(sqrt((double)(weapon_damage * damage_factor * (weapons_dat::max_range[weapon_id] / weapon_cooldown)
-									+ ((u32)(max_vitality * weapon_strength) >> 8))) * 7.58);
+		constexpr fp32 strength_scalar = fp32{7.58f};
+		fp32 inner = fp32(weapon_damage * damage_factor * (weapons_dat::max_range[weapon_id] / weapon_cooldown)
+						+ ((u32)(max_vitality * weapon_strength) >> 8));
+		final_strength = (u64)(fpm::sqrt(inner) * strength_scalar);
 		return (u32)final_strength;
 	}
 

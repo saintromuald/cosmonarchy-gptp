@@ -24,15 +24,15 @@ namespace hooks
     }
 
     // Hooked to improve functionality -Veeq7
-    b32 __fastcall is_point_at_unit_border(u32 unused, Unit* target_unit, Unit* unit, Point16 target_point) { // 0042DA90
+    b32 __fastcall is_point_at_unit_border(u32 unused, Unit* target_unit, Unit* unit, v2u16 target_point) { // 0042DA90
         if (unit_aabb(unit, target_unit)) {
             return true;
         }
         return false;
     }
 
-    static Point16 get_target_point(Unit* unit, Unit* target) {
-        Point16 position = unit->position;
+    static v2u16 get_target_point(Unit* unit, Unit* target) {
+        v2u16 position = unit->position;
         Box32 box = get_unit_box(target);
         if (position.x < box.left - units_dat::unit_bounds[unit->id].right) {
             position.x = box.left - units_dat::unit_bounds[unit->id].right;
@@ -51,7 +51,7 @@ namespace hooks
 
     // Hooked to resolve contextual order issues - Pr0nogo
     s32 move_to_target(Unit* target, Unit* unit) { // 004EB720
-        Point16 new_target = get_target_point(unit, target);
+        v2u16 new_target = get_target_point(unit, target);
         if (target == unit->move_target.unit
         && ((unit->move_target.pt.x == new_target.x && unit->move_target.pt.y == new_target.y)
           || helper::is_point_at_unit_border(0, unit->move_target.unit, unit, unit->move_target.pt)))
@@ -93,7 +93,7 @@ namespace hooks
 
     // Hooked to investigate crashes - Pr0nogo
     bool unit_has_path_to_dest(Unit* unit, s32 x, s32 y) { // 0049CB60
-        Point16 target = {x, y};
+        v2u16 target(x, y);
         return bw::get_region(unit->position)->group_index == bw::get_region(target)->group_index;
     }
 
@@ -131,7 +131,7 @@ namespace hooks
         search_box.h += dist * 2;
         auto target = g_unit_search.rect(search_box);
 
-        Vec32f repulsion = {};
+        v2 repulsion = {};
         bool collides = false;
         if (unit_ext->timers[TimerUseLastRepulsion]) {
             repulsion = unit_ext->last_repulsion;
@@ -152,8 +152,8 @@ namespace hooks
                     collides = true;
                 }
 
-                Vec32f dir = bw::dir_between(target->position, unit->position);
-                if (abs(dir.x) < 0.001 && abs(dir.y) < 0.001) {
+                v2 dir = target->position.dir_to(unit->position);
+                if (fpm::abs(dir.x) < 0.001fp && fpm::abs(dir.y) < 0.001fp) {
                     continue;
                 }
 
@@ -161,13 +161,13 @@ namespace hooks
                 repulsion.y += dir.y;
             }
 
-            repulsion = bw::normalize(repulsion);
+            repulsion = repulsion.norm();
 
-            if (abs(repulsion.x) < 0.001 && abs(repulsion.y) < 0.001) {
+            if (fpm::abs(repulsion.x) < 0.001fp && fpm::abs(repulsion.y) < 0.001fp) {
                 u32 rand_amount = bw::rand_between(0, 255);
-                Vec32 random_repulse = g_angle_distance[rand_amount];
-                repulsion.x = random_repulse.x / 256.0;
-                repulsion.y = random_repulse.y / 256.0;
+                v2s32 random_repulse = g_angle_distance[rand_amount];
+                repulsion.x = random_repulse.x / 256fp;
+                repulsion.y = random_repulse.y / 256fp;
             }
 
             unit_ext->last_repulsion = repulsion;
@@ -175,10 +175,10 @@ namespace hooks
         }
 
         if (collides) {
-            Point16 target = {};
-            target.x = unit->position.x + repulsion.x * (unit->flingy_top_speed / 256.0 / 2.0);
-            target.y = unit->position.y + repulsion.y * (unit->flingy_top_speed / 256.0 / 2.0);
-            target = bw::clamp_point(target);
+            v2u16 target = {};
+            target.x = unit->position.x + u16{repulsion.x * (unit->flingy_top_speed / 256fp / 2fp)};
+            target.y = unit->position.y + u16{repulsion.y * (unit->flingy_top_speed / 256fp / 2fp)};
+            target = target.clamp_to_map_bounds();
 
             unit->move_target.pt.x = target.x;
             unit->move_target.pt.y = target.y;

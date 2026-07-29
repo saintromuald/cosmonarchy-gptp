@@ -89,7 +89,7 @@ void EffectField::destroy() {
     intervals = 0;
 }
 
-EffectRef IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, SearchRadius radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras) {
+EffectRef IquareGlobals::create_effect(EffectId id, u32 time, v2u16 position, SearchRadius radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras) {
     EffectField& effect_field = m_effects_to_add.emplace_back(EffectField{
         .ref = ++m_next_effect_field_ref,
         .id = id,
@@ -114,11 +114,11 @@ EffectRef IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, 
     return effect_field.ref;
 }
 
-EffectRef IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, Point16 size, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras) {
+EffectRef IquareGlobals::create_effect(EffectId id, u32 time, v2u16 position, v2u16 size, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras) {
     return create_effect(id, time, position, SearchRadius{size}, sprite_id, elevation, player, source, extras);
 }
 
-EffectRef IquareGlobals::create_effect(EffectId id, u32 time, Point16 position, u32 radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras) {
+EffectRef IquareGlobals::create_effect(EffectId id, u32 time, v2u16 position, u32 radius, SpriteId::Enum sprite_id, u32 elevation, u32 player, Unit* source, const EffectFieldExtras& extras) {
     return create_effect(id, time, position, SearchRadius{radius}, sprite_id, elevation, player, source, extras);
 }
 
@@ -152,12 +152,12 @@ static void tick_effect(EffectField& effect) {
     }
 
     if (effect.move_target && effect.position != effect.move_target) {
-        const auto distance = bw::distance_between(effect.position, effect.move_target);
-        auto move_speed = effect.move_speed / 24.0;
+        const auto distance = effect.position.distance_to(effect.move_target);
+        auto move_speed = effect.move_speed / 24fp;
         if (distance < move_speed) {
             effect.position = effect.move_target;
         } else {
-            auto dir = bw::dir_between(effect.position, effect.move_target);
+            const auto dir = effect.position.dir_to(effect.move_target);
             effect.position.x += dir.x * move_speed;
             effect.position.y += dir.y * move_speed;
         }
@@ -240,7 +240,7 @@ static void tick_effect(EffectField& effect) {
                     effect.destroy();
                     break;
                 }
-                auto distance = bw::distance_between(caster->position, (Point16)effect.position);
+                auto distance = bw::distance_between(caster->position, (v2u16)effect.position);
                 if (distance > weapons_dat::max_range[WeaponId::PsiStorm] + 2tiles || caster->status & UnitStatus::InTransport) {
                     caster_ext.current_storm = 0;
                     effect.destroy();
@@ -278,10 +278,10 @@ static void tick_effect(EffectField& effect) {
                         fp32 distance{effect.tick * 2tiles};
                         u32 count = effect.tick * 8;
 
-                        Point16 pos = effect.position;
+                        v2u16 pos = effect.position;
                         pos.x += static_cast<u16>(distance);
                         for (u32 i = 0; i < count; i++) {
-                            pos = bw::rotate_point((Point16)effect.position, pos, (360.0 / count));
+                            pos = pos.rotate(effect.position, fp32(360) / fp32(count));
                             g_iquare_globals->create_effect(EffectId::Irradiate, 20secs - elapsed, pos, 1.5tiles, SpriteId::MorningstarRadiationField, 5, effect.player, effect.source);
                         }
                     } break;
@@ -457,11 +457,10 @@ static void tick_effect(EffectField& effect) {
 
                         auto& pull_ext = pull_victim->ext();
                         const u32 displacement_time = 5;
-                        Vec32 diff = bw::vec_between(effect.position, pull_victim->sprite->position);
-                        if (bw::vec_length(diff) > 12) {
-                            Vec32f displacement = bw::normalize(diff);
-                            displacement.x *= -1 * 32.0 / displacement_time;
-                            displacement.y *= -1 * 32.0 / displacement_time;
+                        const auto diff = effect.position.vec_to(pull_victim->sprite->position);
+                        if (diff.len() > 12fp) {
+                            v2 displacement = diff.norm();
+                            displacement *= -32.0fp / displacement_time;
                             pull_ext.timers[TimerPullTowards] = displacement_time;
                             pull_ext.repulsion_vector = displacement;
                             pull_ext.pull_pos = effect.position;

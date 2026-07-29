@@ -38,7 +38,7 @@ extern ThresholdConfig threshold_config;
 #define InitPositionsCap UnitLimit
 struct InitPositions {
 	u32 count;
-	Point16 positions[InitPositionsCap];
+	v2u16 positions[InitPositionsCap];
 };
 
 extern InitPositions sources_positions;

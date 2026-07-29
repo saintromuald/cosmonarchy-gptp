@@ -14,7 +14,7 @@ enum ChkUnitFlags {
 // This structure is mirrored in aise, be careful when you change it 
 // TODO: Make a SetBaseLayoutRequest type instead, and allow this to be modified freely
 struct AiPlaceholder {
-	Point16 position;
+	v2u16 position;
 	UnitId::Enum unit_id;
 	u8 priority;
 	u8 guard_rebuilds;
@@ -139,7 +139,7 @@ public:
 	void add_placeholder_unit_id(PlayerLayouts& layouts, AiPlaceholder& placeholder, UnitId::Enum unit_id);
 	void add_placeholder_chk(const CHKUnit& unit, u32 player);
 
-	Point16 get_ai_town_position(AiTown& town);
+	v2u16 get_ai_town_position(AiTown& town);
 	PlayerLayouts& get_player_layouts(u32 player);
 	TownLayouts& get_town_layouts(AiTown& town);
 	u32 ai_get_next_custom_expo(AiTown& main_town);
@@ -174,4 +174,4 @@ u32 player_count_up_equivalents(u32 player, UnitId::Enum unit_id);
 
 bool unit_has_creep(UnitId::Enum unit_id, u32 x, u32 y);
 bool unit_has_no_or_allied_creep(UnitId::Enum unit_id, u32 x, u32 y, u32 player);
-bool can_place_unit(UnitId::Enum unit_id, Point16 position, u32 player);
+bool can_place_unit(UnitId::Enum unit_id, v2u16 position, u32 player);

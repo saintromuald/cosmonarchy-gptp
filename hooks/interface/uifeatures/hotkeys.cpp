@@ -137,7 +137,7 @@ static bool handle_key_event(const KeyEvent& ev) {
 	// Cameras
 	if (g_config.extended_camera_hotkeys) {
 		if (ev.key >= VK_F1 && ev.key < VK_F1 + CameraCap) {
-			Point16& screen = hotkeys.screens[ev.key - VK_F1];
+			v2u16& screen = hotkeys.screens[ev.key - VK_F1];
 			if (ev.control_held || ev.shift_held) {
 				screen.x = g_move_to_x;
 				screen.y = g_move_to_y;

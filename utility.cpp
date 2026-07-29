@@ -23,6 +23,7 @@ std::string mpq_load_file(const char* filename) {
 	DWORD size = helper::SFileGetFileSize(handle, &high);
 	if (high) {
 		bw::printf("Error: File %s too big!", filename);
+        helper::SFileCloseFile(handle);
 		return {};
 	}
 
@@ -30,11 +31,12 @@ std::string mpq_load_file(const char* filename) {
 	if (size) {
 		file.resize(size, 0);
 		helper::SFileReadFile(handle, file.data(), file.size(), 0, 0);
-		return file;
+        helper::SFileCloseFile(handle);
+        return file;
 	}
-	helper::SFileCloseFile(handle);
 
-	return file;
+	helper::SFileCloseFile(handle);
+	return {};
 }
 
 void sb_resize(StringBuilder* sb, u32 needed_size) {

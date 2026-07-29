@@ -101,7 +101,7 @@ namespace {
 	void __declspec(naked) process_building_placement_wrapper() { // 0048DE70
 		static Unit* unit;
 		static u8 order_id;
-		static Point16 pos;
+		static v2u16 pos;
 		static u16 target_unit_id;
 		__asm {
 			PUSH EBP
@@ -129,7 +129,7 @@ namespace {
 	void __declspec(naked) cmdrecv_place_building_wrapper() { // 0048E190
 		static u32 order_id;
 		static u16 built_unit_id;
-		static Point16 position;
+		static v2u16 position;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP

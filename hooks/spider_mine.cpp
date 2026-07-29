@@ -151,7 +151,7 @@ namespace hooks {
 			&&  (unit->move_target.pt.x != unit->position.x) || unit->move_target.pt.y != unit->position.y || !(unit->status & UnitStatus::Unmovable)) {
 				if ((helper::get_distance_fast(unit->halt.x, unit->order_target.pt.x << 8, unit->halt.y, unit->order_target.pt.y << 8) & 0xFFFFFF00) <= 5120) {
 					helper::orders_hold_pos_suicidal(unit);
-					Point16 target_pos = {unit->order_target.pt.x, unit->order_target.pt.y};
+					v2u16 target_pos = {unit->order_target.pt.x, unit->order_target.pt.y};
 					const auto mine_id = bw::get_trap_id(unit);
 					helper::fix_target_location(&target_pos, mine_id);
 					Unit* mine = helper::create_unit(mine_id, target_pos.x, target_pos.y, unit->player);

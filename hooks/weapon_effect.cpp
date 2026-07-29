@@ -1,4 +1,4 @@
-#include "weapon_effect.h"
+﻿#include "weapon_effect.h"
 #include <BW/UnitFinder.h>
 #include <BW/enumerations.h>
 #include <BW/api.h>
@@ -49,7 +49,7 @@ namespace hooks {
 		s16 medium = weapons_dat::medium_splash_radius[weapon_id];
 		s16 outer = weapons_dat::outer_splash_radius[weapon_id];
 
-		Point16 pos = bullet->sprite->position;
+		v2u16 pos = bullet->sprite->position;
 		Unit* unit = bullet->source_unit;
 		if (unit && unit->sprite) { // Sprite is new.
 			auto& bullet_source_ext = unit->ext();
@@ -209,17 +209,17 @@ namespace hooks {
 		}
 
 		Unit* attack_target = bullet->attack_target.unit;
-		Point16 forward_pos = attack_target ? attack_target->position : bullet->position;
-		Vec32f dir_forward = bw::dir_between(attacker->position, forward_pos);
+		v2u16 forward_pos = attack_target ? attack_target->position : bullet->position;
+		v2 dir_forward = attacker->position.dir_to(forward_pos);
 
-		f32 outer    = weapons_dat::outer_splash_radius[weapon_id];
-		f32 inner_t  = 1 - weapons_dat::inner_splash_radius[weapon_id] / outer;
-		f32 medium_t = 1 - weapons_dat::medium_splash_radius[weapon_id] / outer;
-		f32 outer_t  = 0;
+		fp32 outer    = weapons_dat::outer_splash_radius[weapon_id];
+		fp32 inner_t  = 1 - weapons_dat::inner_splash_radius[weapon_id] / outer;
+		fp32 medium_t = 1 - weapons_dat::medium_splash_radius[weapon_id] / outer;
+		fp32 outer_t  = 0;
 
 		const auto area = box32_rect(attacker->position, get_splash_width_from_weapon_id(weapon_id), get_splash_height_from_weapon_id(weapon_id));
 		for (Unit* target : g_unit_search.rect(area).filter()) {
-			if (!helper::is_unit_distance_within(target, bullet, outer)) {
+			if (!helper::is_unit_distance_within(target, bullet, u32(outer))) {
 				continue;
 			}
 			if (!bw::can_weapon_target_unit(bullet->weapon_id, target, attacker)) {
@@ -229,8 +229,8 @@ namespace hooks {
 				continue;
 			}
 
-			Vec32f dir_to_target = bw::dir_between(attacker->position, target->position);
-			f32 t = bw::dot_product(dir_forward, dir_to_target);
+			v2 dir_to_target = attacker->position.dir_to(target->position);
+			fp32 t = dir_forward.dot(dir_to_target);
 			if (t >= inner_t) {
 				helper::weapon_bullet_shot(target, bullet, 1); // 100% damage
 			} else if (t >= medium_t) {

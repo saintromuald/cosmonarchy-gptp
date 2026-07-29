@@ -44,18 +44,18 @@ void consume_corpse(Thingy* corpse) {
 	corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
 }
 
-Thingy* get_closest_active_corpse(Point16 position, SearchRadius radius) {
+Thingy* get_closest_active_corpse(v2u16 position, SearchRadius radius) {
 	return g_corpse_search
 		.search(position, radius)
 		.sort_by_distance(position)
 		.first([](Thingy* corpse) { return is_active_corpse(corpse); });
 }
 
-Thingy* get_closest_active_corpse(Point16 position, u32 radius) {
+Thingy* get_closest_active_corpse(v2u16 position, u32 radius) {
 	return get_closest_active_corpse(position, SearchRadius{radius});
 }
 
-Unit* spawn_reclaimed_unit(u32 player, Point16 pos, UnitId::Enum unit_id) {
+Unit* spawn_reclaimed_unit(u32 player, v2u16 pos, UnitId::Enum unit_id) {
 	if (units_dat::base_property[unit_id] & UnitProperty::Flyer) {
 		if (pos.y > 42) {
 			pos.y -= 42;
@@ -105,7 +105,7 @@ Unit* reclaim_corpse(Thingy* corpse, u32 player) {
 	}
 	ThingyExt* corpse_ext = get_thingy_ext(corpse);
 	UnitId::Enum unit_id = (UnitId::Enum)corpse_ext->unit_id;
-	Point16 pos = corpse->sprite->position;
+	v2u16 pos = corpse->sprite->position;
 
 	Unit* unit = spawn_reclaimed_unit(player, pos, unit_id);
 	if (unit) {
@@ -128,7 +128,7 @@ void avenge_corpse(Thingy* corpse, u32 player) {
 		return;
 	}
 
-	Point16 pos = corpse->sprite->position;
+	v2u16 pos = corpse->sprite->position;
 	bw::create_and_init_thingy(SpriteId::CuirassStonewallProtocolOverlay, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
 	helper::play_sound_at_pos(SoundId::ZealotRevive01, pos);
 		
@@ -155,13 +155,13 @@ void ascend_corpse(Thingy* corpse, u32 player) {
 		return;
 	}
 
-	Point16 pos = corpse->sprite->position;
+	v2u16 pos = corpse->sprite->position;
 	bw::create_and_init_thingy(SpriteId::CuirassStonewallProtocolOverlay, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
 	ascend_in_area(player, pos, corpse_ext->sight_range_before_death);
 	consume_corpse(corpse);
 }
 
-void ascend_in_area(u32 player, Point16 position, u32 range) {
+void ascend_in_area(u32 player, v2u16 position, u32 range) {
 	helper::play_sound_at_pos(SoundId::Protoss_ZEALOT_PZeRag00_wav, position);
 
 	for (Unit* unit : g_unit_search.radial(position, range)) {
@@ -186,25 +186,25 @@ void avenge_or_ascend_corpse(Thingy* corpse, u32 player) {
 	}
 }
 
-void avenge_corpses_in_area(Point16 position, u32 radius, u32 player) {
+void avenge_corpses_in_area(v2u16 position, u32 radius, u32 player) {
 	for (Thingy* corpse : g_corpse_search.radial(position, radius)) {
 		avenge_corpse(corpse, player);
 	}
 }
 
-void ascend_corpses_in_area(Point16 position, SearchRadius radius, u32 player) {
+void ascend_corpses_in_area(v2u16 position, SearchRadius radius, u32 player) {
 	for (Thingy* corpse : g_corpse_search.search(position, radius)) {
 		ascend_corpse(corpse, player);
 	}
 }
 
-void avenge_or_ascend_corpses_in_area(Point16 position, u32 radius, u32 player) {
+void avenge_or_ascend_corpses_in_area(v2u16 position, u32 radius, u32 player) {
 	for (Thingy* corpse : g_corpse_search.radial(position, radius)) {
 		avenge_or_ascend_corpse(corpse, player);
 	}
 }
 
-void avenge_or_ascend_corpses_in_area(Point16 position, SearchRadius radius, u32 player) {
+void avenge_or_ascend_corpses_in_area(v2u16 position, SearchRadius radius, u32 player) {
 	for (Thingy* corpse : g_corpse_search.search(position, radius)) {
 		avenge_or_ascend_corpse(corpse, player);
 	}
@@ -266,7 +266,7 @@ void salvage_corpse(Thingy* corpse, u32 player) {
 	g_total_vespene[player] += vespene_cost;
 	g_aiscript_controller[player].vespene_available += vespene_cost;
 
-	Point16 pos = corpse->sprite->position;
+	v2u16 pos = corpse->sprite->position;
 	bw::create_and_init_thingy(SpriteId::CuirassStonewallProtocolOverlay, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
 	// TODO: SFX
 
@@ -584,11 +584,11 @@ void tick_psi_storm_damage(EffectField& effect, u32 update_period, u32 tick_scal
 			unit_ext.values[ValueStormDivider] = 1;
 		}
 		unit->damage_with(WeaponId::PsiStorm, (20 * tick_scalar_hp) / unit_ext.values[ValueStormDivider], effect.source, effect.player,
-			helper::get_direction_from_points(effect.position, unit->position), unit->is_building() ? 2 : 1);
+			helper::get_direction_from_points(v2u16(effect.position), unit->position), unit->is_building() ? 2 : 1);
 	}
 }
 
-void apply_lobotomy_effect(Point16 position, u32 timer, bool do_stun) {
+void apply_lobotomy_effect(v2u16 position, u32 timer, bool do_stun) {
 	for (Unit* victim : g_unit_search.radial(position, TerranMine::DetonationRange)) {
 		if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false) || victim->is_invincible()) {
 			continue;
@@ -611,7 +611,7 @@ void apply_lobotomy_effect(Point16 position, u32 timer, bool do_stun) {
 	}
 }
 
-void apply_goremast_effect(Point16 position, u32 timer, bool do_damage) {
+void apply_goremast_effect(v2u16 position, u32 timer, bool do_damage) {
 	for (Unit* victim : g_unit_search.radial(position, TerranMine::DetonationRange)) {
 		if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false) || victim->is_invincible()) {
 			continue;
@@ -626,7 +626,7 @@ void apply_goremast_effect(Point16 position, u32 timer, bool do_damage) {
 	}
 }
 
-void apply_tartarus_effect(Point16 position, u32 timer, bool do_damage, u8 attacking_player) {
+void apply_tartarus_effect(v2u16 position, u32 timer, bool do_damage, u8 attacking_player) {
 	for (Unit* victim : g_unit_search.radial(position, TerranMine::DetonationRange)) {
 		if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false) || victim->is_invincible()) {
 			continue;
