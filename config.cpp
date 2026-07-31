@@ -115,6 +115,7 @@ void load_config() {
 
     // Audiovisuals
     load_field(yaml, "celebrations-enabled", g_config.celebrations_enabled);
+    load_field(yaml, "flash-window-on-lobby-join", g_config.flash_window_lobby_join);
     if (auto yaml_advisors = yaml["advisors"]) {
         load_field(yaml_advisors, "common", g_config.common_advisors);
         load_field(yaml_advisors, "terran", g_config.terran_advisors);
@@ -258,6 +259,7 @@ void save_config() {
 
     yaml << YAML::Comment("Audiovisuals");
     write_field(yaml, "celebrations-enabled", g_config.celebrations_enabled);
+    write_field(yaml, "flash-window-on-lobby-join", g_config.flash_window_lobby_join);
     {
         std::stringstream available_advisors;
         available_advisors << "Available Advisors are: ";
