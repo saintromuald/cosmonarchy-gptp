@@ -693,12 +693,12 @@ namespace hooks {
                 case DialogUserType_Create: {
                     dialog->fxn_update = helper::stat_data_unit_wireframe_select_update;
                     dialog->graphic = 0;
-                    dialog->user = (u32*)helper::SMemAlloc(8, "Starcraft\\SWAR\\lang\\statdata.cpp", 775, 0);
+                    dialog->user = (u32*)SMemAlloc(8);
                 } break;
                 case DialogUserType_Destroy: {
                     void* user = dialog->user;
                     if (user) {
-                        helper::SMemFree(user, "Starcraft\\SWAR\\lang\\statdata.cpp", 780, 0);
+                        SMemFree(user);
                     }
                 } break;
                 case DialogUserType_Activate: {

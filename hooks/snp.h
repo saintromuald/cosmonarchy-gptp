@@ -3,7 +3,7 @@
 #include "BW/enumerations.h"
 #include "BW/bwhelper.h"
 #include "BW/bwdata.h"
-#include "BW/Storm.h"
+#include "storm/storm.h"
 #include "BW/api.h"
 #include <string>
 #include <optional>

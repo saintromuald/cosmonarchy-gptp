@@ -15,6 +15,7 @@
 #include "hooks/snp.h"
 #include "hooks/interface/mainmenu/custom_glues.h"
 #include "hooks/race_randomization.h"
+#include "storm/storm.h"
 
 static s32* const g_fonts = (s32*)0x006CE0F4;
 static u32* const g_print_xy_pos_y = (u32*)0x006CE0E0;
@@ -158,7 +159,7 @@ namespace hooks {
         }
 
         u32 turns = 0;
-        if (helper::snet_get_turns_in_transit(&turns)) {
+        if (SNetGetTurnsInTransit(&turns)) {
             if (turns >= 16 - g_provider_turns_in_transit) {
                 return;
             }
@@ -170,7 +171,7 @@ namespace hooks {
         }
 
         if (!g_out_of_game) {
-            u32 error = helper::serr_get_last_error();
+            u32 error = SErrGetLastError();
             helper::packet_error_handle(error, 81, "Starcraft\\SWAR\\lang\\net_mgr.cpp", 225, 1);
         }
     }

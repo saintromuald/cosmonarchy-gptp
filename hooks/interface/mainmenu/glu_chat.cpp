@@ -1,7 +1,7 @@
 #include "custom_glues.h"
 #include "glu_chat.h"
 #include "BW/ui.h"
-#include "BW/Storm.h"
+#include "storm/storm.h"
 #include "BW/bwdata.h"
 #include "BW/bwhelper.h"
 #include "hooks/snp.h"

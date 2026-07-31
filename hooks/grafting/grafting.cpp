@@ -1,7 +1,10 @@
 #include "grafting.h"
-#include <BW/Storm.h>
+#include <storm/sfile.h>
 #include <hook_tools.h>
 #include "button_functions.h"
+
+#include <algorithm>
+#include <vector>
 
 // Pointers to current data so it can be freed if overwritten
 REQ_SCRIPT* units_req = 0;
@@ -10,9 +13,16 @@ REQ_SCRIPT* research_req = 0;
 REQ_SCRIPT* tech_req = 0;
 REQ_SCRIPT* orders_req = 0;
 
-void* buttons_data = 0;
-
 namespace {
+	struct ButtonGraftData {
+		std::vector<Button> buttons;
+		std::vector<ButtonSet> button_sets;
+		std::vector<UnitStatFuncArrayEntry> stat_info;
+	};
+	ButtonGraftData g_button_graft_data;
+
+	constexpr u32 NoConnectedUnit = 0xFFFF;
+
 	u32 button_req_funcs[] = {
 		ButtonRequirements::Slow_Down_Replay,
 		ButtonRequirements::Speed_Up_Replay,
@@ -173,151 +183,186 @@ namespace {
 		0x00425EE0  // Display Function 9
 	};
 	u32 disp_func_count = sizeof(disp_functions) / sizeof(u32);
-};
+
+	[[nodiscard]] bool validate_id(u32 id, u32 table_size,
+	                               const char* what, u32 index) {
+		if (id >= table_size) {
+			bw::printf("load_button_grafts: %s id %u at index %u out of range (max %u); aborting",
+			           what, id, index, table_size - 1);
+			return false;
+		}
+		return true;
+	}
+
+	bool address_in_table(u32 addr, const u32* table, u32 table_size) {
+		for (u32 j = 0; j < table_size; ++j) {
+			if (table[j] == addr) return true;
+		}
+		return false;
+	}
+
+	bool verify_button_graft_data() {
+		for (size_t i = 0; i < g_button_graft_data.buttons.size(); ++i) {
+			const auto& b = g_button_graft_data.buttons[i];
+			const auto req_addr = static_cast<u32>(reinterpret_cast<uintptr_t>(b.requirement_func));
+			const auto act_addr = static_cast<u32>(reinterpret_cast<uintptr_t>(b.action_func));
+			if (!address_in_table(req_addr, button_req_funcs, button_req_count)) {
+				bw::printf("verify_button_graft: button %zu requirement_func 0x%08x unknown", i, req_addr);
+				return false;
+			}
+			if (!address_in_table(act_addr, button_act_funcs, button_act_count)) {
+				bw::printf("verify_button_graft: button %zu action_func 0x%08x unknown", i, act_addr);
+				return false;
+			}
+		}
+
+		const auto* buttons_begin = g_button_graft_data.buttons.data();
+		const auto* buttons_end   = buttons_begin + g_button_graft_data.buttons.size();
+		for (size_t i = 0; i < g_button_graft_data.button_sets.size(); ++i) {
+			const auto& s = g_button_graft_data.button_sets[i];
+			if (s.buttons_in_set == 0) continue;
+			if (s.first_button < buttons_begin || s.first_button >= buttons_end) {
+				bw::printf("verify_button_graft: button_set %zu first_button out of bounds", i);
+				return false;
+			}
+		}
+
+		for (size_t i = 0; i < g_button_graft_data.stat_info.size(); ++i) {
+			const auto& e = g_button_graft_data.stat_info[i];
+			if (e.unit_stat_cond_func && !address_in_table(e.unit_stat_cond_func, stat_functions, statFuncCount)) {
+				bw::printf("verify_button_graft: stat %zu cond_func 0x%08x unknown", i, e.unit_stat_cond_func);
+				return false;
+			}
+			if (e.unit_stat_act_func && !address_in_table(e.unit_stat_act_func, disp_functions, disp_func_count)) {
+				bw::printf("verify_button_graft: stat %zu act_func 0x%08x unknown", i, e.unit_stat_act_func);
+				return false;
+			}
+		}
+
+		bw::printf_console("verify_button_graft: OK (%zu buttons, %zu sets, %zu stat entries)",
+			g_button_graft_data.buttons.size(),
+			g_button_graft_data.button_sets.size(),
+			g_button_graft_data.stat_info.size());
+		return true;
+	}
+
+	// Have to use raw pointers for target for now since they're used in inline assembly and BW_DATA_DEF -Jesse
+	void reload_req_graft(const char* filename, GraftType::Enum type, REQ_SCRIPT*& target) {
+		auto data = sfile::try_load_mpq_file(filename).unsafe_cast<REQ_SCRIPT>();
+		if (!data) return;
+
+		hooks::inject_grafting_data(data.get(), type);
+		if (target) {
+			SMemFree(target);
+		}
+		target = data.release();
+	}
+}
 
 namespace hooks {
 	void load_req_grafts() {
-		void* data = 0;
-
-		data = FastFileRead("datreq\\units.graft", 0, true, 0, 0);
-		if (data) {
-			inject_grafting_data(data, GraftType::units_req);
-			if (units_req) {
-				helper::SMemFree(units_req);
-			}
-			units_req = (REQ_SCRIPT*)data;
-		}
-
-		data = FastFileRead("datreq\\upgrades.graft", 0, true, 0, 0);
-		if (data) {
-			inject_grafting_data(data, GraftType::upgrades_req);
-			if (upgrades_req) {
-				helper::SMemFree(upgrades_req);
-			}
-			upgrades_req = (REQ_SCRIPT*)data;
-		}
-
-		data = FastFileRead("datreq\\research.graft", 0, true, 0, 0);
-		if (data) {
-			inject_grafting_data(data, GraftType::research_req);
-			if (research_req) {
-				helper::SMemFree(research_req);
-			}
-			research_req = (REQ_SCRIPT*)data;
-		}
-
-		data = FastFileRead("datreq\\tech.graft", 0, true, 0, 0);
-		if (data) {
-			inject_grafting_data(data, GraftType::tech_req);
-			if (tech_req) {
-				helper::SMemFree(tech_req);
-			}
-			tech_req = (REQ_SCRIPT*)data;
-		}
-
-		data = FastFileRead("datreq\\orders.graft", 0, true, 0, 0);
-		if (data) {
-			inject_grafting_data(data, GraftType::orders_req);
-			if (orders_req) {
-				helper::SMemFree(orders_req);
-			}
-			orders_req = (REQ_SCRIPT*)data;
-		}
+		reload_req_graft("datreq\\units.graft", GraftType::units_req, units_req);
+		reload_req_graft("datreq\\upgrades.graft", GraftType::upgrades_req, upgrades_req);
+		reload_req_graft("datreq\\research.graft", GraftType::research_req, research_req);
+		reload_req_graft("datreq\\tech.graft", GraftType::tech_req, tech_req);
+		reload_req_graft("datreq\\orders.graft", GraftType::orders_req, orders_req);
 	}
 
 	void load_button_grafts() {
-		void* data = FastFileRead("datreq\\buttons.graft", 0, true, 0, 0);
-		// File not found
-		if (!data) {
+		auto file = sfile::try_load_mpq_file("datreq\\buttons.graft");
+		if (!file) return;
+
+		// Header: u32 button_count, unit_count, unit_stat_count
+		constexpr size_t header_size = 3 * sizeof(u32);
+		if (file.size < header_size) {
+			bw::printf("load_button_grafts: file smaller than header (%zu bytes)", file.size);
 			return;
 		}
 
-		// unpack data
-		u32 button_count = ((u32*)data)[0];
-		u32 unit_count = ((u32*)data)[1];
-		u32 unit_stat_count = ((u32*)data)[2];
-		Button* buttons = (Button*)(&(((u32*)data)[3]));
-		ButtonSet* button_sets = (ButtonSet*)(&buttons[button_count]);
-		UnitStatFuncArrayEntry* stat_info = (UnitStatFuncArrayEntry*)(&button_sets[unit_count]);
+		const auto* bytes  = reinterpret_cast<const u8*>(file.data.get());
+		const auto* header = reinterpret_cast<const u32*>(bytes);
+		const u32 button_count    = header[0];
+		const u32 unit_count      = header[1];
+		const u32 unit_stat_count = header[2];
 
-		// allocate new, possibly larger, data
-		u32 unitCountNew = std::max(unit_count, (u32)UNIT_TYPE_COUNT);
-		u32 unitStatCountNew = std::max(unit_stat_count, (u32)UNIT_TYPE_COUNT);
-		u32 dataSize = button_count*sizeof(Button) + unitCountNew*sizeof(ButtonSet) + unitStatCountNew*sizeof(UnitStatFuncArrayEntry);
-		void* new_data = malloc(dataSize);
-		Button* buttons_new = (Button*)new_data;
-		ButtonSet* button_sets_new = (ButtonSet*)(&buttons_new[button_count]);
-		UnitStatFuncArrayEntry* stat_info_new = (UnitStatFuncArrayEntry*)(&button_sets_new[unitCountNew]);
+		const size_t expected_size = header_size
+			+ button_count * sizeof(Button)
+			+ unit_count * sizeof(ButtonSet)
+			+ unit_stat_count * sizeof(UnitStatFuncArrayEntry);
+		if (file.size < expected_size) {
+			bw::printf("load_button_grafts: file too small for declared counts "
+			           "(need %zu, got %zu)", expected_size, file.size);
+			return;
+		}
 
-		// Copy data to new, possibly larger, buffer
-		memcpy(buttons_new, buttons, button_count * sizeof(Button));
-		memcpy(button_sets_new, button_sets, unit_count * sizeof(ButtonSet));
-		memcpy(stat_info_new, stat_info, unit_stat_count * sizeof(UnitStatFuncArrayEntry));
+		const auto* src_buttons = reinterpret_cast<const Button*>(bytes + header_size);
+		const auto* src_button_sets = reinterpret_cast<const ButtonSet*>(src_buttons + button_count);
+		const auto* src_stat_info = reinterpret_cast<const UnitStatFuncArrayEntry*>(src_button_sets + unit_count);
 
-		// Remove file buffer
-		helper::SMemFree(data);
+		const u32 unit_count_new = std::max(unit_count, static_cast<u32>(UNIT_TYPE_COUNT));
+		const u32 unit_stat_count_new = std::max(unit_stat_count, static_cast<u32>(UNIT_TYPE_COUNT));
 
-		// Convert function ID's to pointers
-		for (u32 i = 0; i < button_count; i++) {
-			if ((u32)(buttons_new[i].requirement_func) < button_req_count) {
-				buttons_new[i].requirement_func = (ReqFunc*)(button_req_funcs[(u32)(buttons_new[i].requirement_func)]);
-			} else {
-				// what to do here?
+		ButtonGraftData staging;
+		staging.buttons.assign(src_buttons, src_buttons + button_count);
+		staging.button_sets.assign(src_button_sets, src_button_sets + unit_count);
+		staging.button_sets.resize(unit_count_new, ButtonSet{0, nullptr, NoConnectedUnit});
+		staging.stat_info.assign(src_stat_info, src_stat_info + unit_stat_count);
+		staging.stat_info.resize(unit_stat_count_new);
+
+		// Resolve button function IDs to pointers
+		for (u32 i = 0; i < button_count; ++i) {
+			auto& button = staging.buttons[i];
+			const auto req_id = reinterpret_cast<uintptr_t>(button.requirement_func);
+			const auto act_id = reinterpret_cast<uintptr_t>(button.action_func);
+			if (!validate_id(static_cast<u32>(req_id), button_req_count, "requirement", i)) return;
+			if (!validate_id(static_cast<u32>(act_id), button_act_count, "action", i)) return;
+			button.requirement_func = reinterpret_cast<ReqFunc*>(button_req_funcs[req_id]);
+			button.action_func = reinterpret_cast<ActFunc*>(button_act_funcs[act_id]);
+		}
+
+		// Connect button-set pointers to staging.buttons
+		for (u32 i = 0; i < unit_count; ++i) {
+			auto& set = staging.button_sets[i];
+			if (set.buttons_in_set == 0) {
+				continue;
 			}
-			if ((u32)(buttons_new[i].action_func) < button_act_count) {
-				buttons_new[i].action_func = (ActFunc*)(button_act_funcs[(u32)(buttons_new[i].action_func)]);
-			} else {
-				// what to do here?
+			const auto first = reinterpret_cast<uintptr_t>(set.first_button);
+			if (!validate_id(static_cast<u32>(first), button_count, "button set first_button", i)) return;
+			set.first_button = &staging.buttons[first];
+		}
+
+		// Resolve stat-info function IDs
+		for (u32 i = 0; i < unit_stat_count; ++i) {
+			auto& entry = staging.stat_info[i];
+			if (!validate_id(entry.unit_stat_cond_func, statFuncCount, "stat cond", i)) return;
+			if (!validate_id(entry.unit_stat_act_func, disp_func_count, "stat act", i)) return;
+			entry.unit_stat_cond_func = stat_functions[entry.unit_stat_cond_func];
+			entry.unit_stat_act_func = disp_functions[entry.unit_stat_act_func];
+		}
+
+		// Fill expanded stat_info entries using [0] and [4] as templates
+		if (unit_stat_count > 0) {
+			const auto& normal_template = staging.stat_info[0];
+			const auto& unselectable_template = (unit_stat_count > 4)
+				? staging.stat_info[4] : normal_template;
+			for (u32 i = unit_stat_count; i < unit_stat_count_new; ++i) {
+				auto& entry = staging.stat_info[i];
+				if (i < 250) { // Unsure where this number comes from -Jesse
+					entry.unit_id = 0;
+					entry.unit_stat_cond_func = unselectable_template.unit_stat_cond_func;
+					entry.unit_stat_act_func = unselectable_template.unit_stat_act_func;
+				} else {
+					entry.unit_id = i;
+					entry.unit_stat_cond_func = normal_template.unit_stat_cond_func;
+					entry.unit_stat_act_func = normal_template.unit_stat_act_func;
+				}
 			}
 		}
 
-		// Convert button ID's to pointers
-		for (u32 i = 0; i < unit_count; i++) {
-			if (button_sets_new[i].buttons_in_set != 0) {
-				button_sets_new[i].first_button = &buttons_new[(u32)(button_sets_new[i].first_button)];
-			}
-		}
+		inject_grafting_data(staging.button_sets.data(), GraftType::buttons);
+		inject_grafting_data(staging.stat_info.data(),   GraftType::statInfo);
+		g_button_graft_data = std::move(staging);
 
-		// Convert function ID's to pointers
-		for (u32 i = 0; i < unit_stat_count; i++) {
-			if (stat_info_new[i].unit_stat_cond_func < statFuncCount) {
-				stat_info_new[i].unit_stat_cond_func = stat_functions[stat_info_new[i].unit_stat_cond_func];
-			} else {
-				// what to do here?
-			}
-			if (stat_info_new[i].unit_stat_act_func < disp_func_count) {
-				stat_info_new[i].unit_stat_act_func = disp_functions[stat_info_new[i].unit_stat_act_func];
-			} else {
-				// what to do here?
-			}
-		}
-
-		// Fill in any undefined IDs
-		for (u32 i = unit_count; i < unitCountNew; i++) {
-			button_sets_new[i].buttons_in_set = 0;
-			button_sets_new[i].first_button = 0;
-			button_sets_new[i].connected_unit = 65535;
-		}
-
-		for (u32 i = unit_stat_count; i < unitStatCountNew; i++) {
-			if (i < 250) { // Unselectable, unusable
-				stat_info_new[i].unit_id = 0;
-				stat_info_new[i].unit_stat_cond_func = stat_info_new[4].unit_stat_cond_func;
-				stat_info_new[i].unit_stat_act_func = stat_info_new[4].unit_stat_act_func;
-			} else { // Normal
-				stat_info_new[i].unit_id = i;
-				stat_info_new[i].unit_stat_cond_func = stat_info_new[0].unit_stat_cond_func;
-				stat_info_new[i].unit_stat_act_func = stat_info_new[0].unit_stat_act_func;
-			}
-		}
-
-		// Inject data
-		inject_grafting_data(button_sets_new, GraftType::buttons);
-		inject_grafting_data(stat_info_new, GraftType::statInfo);
-
-		if (buttons_data) {
-			free(buttons_data);
-		}
-		buttons_data = new_data;
+		verify_button_graft_data();
 	}
 }

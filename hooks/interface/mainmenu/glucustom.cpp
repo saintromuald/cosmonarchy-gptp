@@ -5,6 +5,7 @@
 #include "hook_tools.h"
 #include "hooks/fraud_launcher.h"
 #include <BW/ui.h>
+#include <storm/storm.h>
 
 namespace hooks
 {
@@ -19,17 +20,17 @@ namespace hooks
 				}
 			}
 		} else if (g_campaign_index == 0 && g_current_map_filename) { // This addition enables establishing shots in custom scenarios
-			helper::SFileOpenArchive(g_current_map_filename, 0, 0, map_archive_handle);
-			HANDLE* handle;
-			bool shot_exists = helper::sfile_open_file_ex(*map_archive_handle, "rez\\est.txt", 0, &handle);
+			SFileOpenArchive(g_current_map_filename, 0, 0, map_archive_handle);
+			HANDLE handle = nullptr;
+			bool shot_exists = SFileOpenFileEx(*map_archive_handle, "rez\\est.txt", 0, &handle);
 			if (handle) {
-				helper::SFileCloseFile(handle);
+				SFileCloseFile(handle);
 			}
 			if (shot_exists) {
 				helper::load_init_credits_bin("est");
 			}
 			if (*map_archive_handle) {
-				helper::SFileCloseArchive(*map_archive_handle);
+				SFileCloseArchive(*map_archive_handle);
 			}
 		}
 	}
@@ -698,51 +699,6 @@ namespace hooks
 			} break;
 		}
 		helper::change_menu();
-	}
-
-	// Hooked to change window name. -Pr0nogo
-	void load_title() // 004D49A0
-	{
-		HANDLE* file_1 = 0;
-		if (!helper::sfile_open_file_ex(0, "rez\\titledlg.bin", 0, &file_1)) {
-			u32 last_error = helper::serr_get_last_error();
-			helper::fatal_file_not_found(last_error, "rez\\titledlg.bin");
-		}
-
-		HANDLE* file_2 = file_1;
-		u32 file_size_1 = helper::SFileGetFileSize(file_1, 0);
-		u32 file_size_2 = file_size_1;
-		if (file_size_1 == -1) {
-			u32 last_error_2 = GetLastError();
-			helper::file_fatal(file_2, last_error_2);
-		}
-		if (!file_size_1) {
-			helper::fatal_file_not_found(0x18u, "rez\\titledlg.bin");
-		}
-		BinDlg* gamedata_dlg = (BinDlg*)helper::SMemAlloc(file_size_1, "Starcraft\\SWAR\\lang\\gamedata.cpp", 210, 0);
-		HANDLE* file_3 = file_1;
-
-		u32 read = 0;
-		if (!helper::sfile_read_file((HANDLE*)file_1, gamedata_dlg, file_size_2, &read, 0)) {
-			if (GetLastError() == ERROR_HANDLE_EOF) {
-				helper::file_fatal(file_3, ERROR_BAD_LENGTH);
-			}
-			u32 last_error_3 = GetLastError();
-			helper::file_fatal(file_3, last_error_3);
-		}
-		if (read != file_size_2) {
-			helper::file_fatal(file_3, ERROR_BAD_LENGTH);
-		}
-		helper::SFileCloseFile(file_1);
-
-		BinDlg* main_dlg = 0;
-		if (gamedata_dlg) {
-			gamedata_dlg->flags |= BinDlgFlags::Active;
-			helper::fixup_and_init_dialog_data(gamedata_dlg, helper::alloc_background_image, "Starcraft\\SWAR\\lang\\title.cpp", 190);
-			main_dlg = gamedata_dlg;
-		}
-		*g_main_dlg = main_dlg;
-		helper::initialize_dialog((u32(__fastcall*)(BinDlg*, DialogEvent*))helper::title_dlg_proc, main_dlg);
 	}
 
 	// Hooked to set Scenario as the default game type. -Pr0nogo

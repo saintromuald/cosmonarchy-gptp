@@ -1,5 +1,5 @@
 #include <BW/api.h>
-#include <BW/Storm.h>
+#include <storm/sfile.h>
 #include <hook_tools.h>
 #include "datext.h"
 
@@ -188,11 +188,11 @@ namespace DatExt {
 		techdata_dat_unpatch();
 	
 		if (g_unit_names_tbl) {
-			helper::SMemFree(g_unit_names_tbl);
+			SMemFree(g_unit_names_tbl);
 			g_unit_names_tbl = nullptr;
 		}
 		if (g_unit_icons) {
-			helper::SMemFree(g_unit_icons);
+			SMemFree(g_unit_icons);
 			g_unit_icons = nullptr;
 		}
 	}
@@ -202,7 +202,8 @@ namespace DatExt {
 		if (g_unit_names_tbl) {
 			return; // already loaded
 		}
-		g_unit_names_tbl = (StringTbl*)FastFileRead("rez\\unitnames.tbl", nullptr, true, 0, nullptr);
+		// Todo: replace g_unit_names and g_unit_icons with smem::ptr
+		g_unit_names_tbl = sfile::try_load_mpq_file("rez\\unitnames.tbl").unsafe_cast<StringTbl>().release();
 	}
 
 	// Loads unit\cmdbtns\uniticons.grp, if it exists, for extended unit ID build queue icons
@@ -210,7 +211,7 @@ namespace DatExt {
 		if (g_unit_icons != NULL) { // already loaded
 			return;
 		}
-		g_unit_icons = (GrpHead*)FastFileRead("unit\\cmdbtns\\uniticons.grp", nullptr, true, 0, nullptr);
+		g_unit_icons = sfile::try_load_mpq_file("unit\\cmdbtns\\uniticons.grp").unsafe_cast<GrpHead>().release();
 
 		// patch if hooks aren't enabled
 		memory_patch(0x00426002 + 2, get_unit_icons_pointer()); // status_buildmorphtrain --> stats_addon_builder

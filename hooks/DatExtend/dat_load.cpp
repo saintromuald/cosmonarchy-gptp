@@ -1,6 +1,7 @@
 #include "dat_load.h"
 #include <BW/api.h>
-#include <BW/Storm.h>
+#include <storm/smem.hpp>
+#include <storm/sfile.h>
 #include <hook_tools.h>
 #include "DatExtend/datext.h"
 
@@ -8,7 +9,6 @@ namespace hooks {
 	void load_game_data(DatLoad* datTable, const char* normal_filename) {
 		u32 size = 0;
 		u32 i;
-		u8* data;
 		u32 length;
 		u32 pos;
 		
@@ -19,7 +19,9 @@ namespace hooks {
 			sprintf_s(filename, "%sex", normal_filename);
 		}
 
-		data = (u8*)FastFileRead(filename, NULL, false, 0, &size);
+		auto loaded_file = sfile::load_mpq_file(filename);
+		auto data = loaded_file.unsafe_cast<u8>();
+		size = loaded_file.size;
 		pos = 0;
 
 		// DatExt -- Patch dat file
@@ -31,7 +33,7 @@ namespace hooks {
 		for (i = 0; datTable[i].address != NULL; i++) {
 			length = datTable[i].entries * datTable[i].length;
 			if (length > size) break;
-			memcpy(datTable[i].address, data + pos, length);
+			memcpy(datTable[i].address, data.get() + pos, length);
 			size -= length;
 			pos += length;
 		}
@@ -39,8 +41,6 @@ namespace hooks {
 		if (size != 0) {
 			helper::fatal_file_not_found(24, filename);
 		}
-		
-		helper::SMemFree(data);
 		
 		// Apply Flingy Expand patch to default units.dat file, so that flingy datatype will be consistent whether DatExt is used or not
 		if (datTable == (DatLoad*)DatExt::LoadTable::Units_Dat) {

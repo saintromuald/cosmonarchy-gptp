@@ -3,6 +3,7 @@
 #include "systems/audio_system.h"
 #include "hook_tools.h"
 #include "hooks/limits/sfx_extender.h"
+#include "storm/storm.h"
 using namespace std::literals;
 
 // HOOKS \\
@@ -407,7 +408,7 @@ void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) { // 00
 
     PortraitData* portrait_data = final_dlg->portrait_data; // Ignoring nullcheck warning as it is accessed without nullchecks all over the codebase. -Pr0nogo
     if (portrait_data->smk) {
-        helper::svid_play_end((u8)portrait_data->smk);
+        SVidPlayEnd(portrait_data->smk);
         portrait_data->smk = 0;
     }
     portrait_data->flags = 2;

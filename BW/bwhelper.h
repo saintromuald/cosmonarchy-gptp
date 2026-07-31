@@ -189,9 +189,6 @@ namespace helper {
     bool isUnitCasterNotHallucination(Unit* a1);
     b32 get_active_tile_flag(s16 y, s16 x, s32 includeFlags, s32 excludeFlags);
 
-    // For modify_unit_shields
-    s32 SErrSetLastError(char a1);
-
     // For compile_health_bar
     void update_image_data_draw(Image* result);
     void play_image_iscript(Image* img, u8 iscript_anim);
@@ -883,9 +880,7 @@ namespace helper {
     // For select_units
     s32 select_single_unit_from_id(s32 index);																		// 00496D30
     s32 select_multiple_units_from_unit_list(u32 unit_count, Unit** selection, u8 play_sound, u32 send_command);	// 0049AEF0
-    s32 snet_get_turns_in_transit(u32* turns);																		// 00410274
     u8 send_turn();																									// 00485A40
-    s32 serr_get_last_error();																						// 004100FA
     u8 packet_error_handle(s32 result, s32 a1, const char* a3, s32 a4, s32 a5);
 
     //// repair_order
@@ -930,8 +925,6 @@ namespace helper {
     Image* create_healthbar(Sprite* sprite);
     void remove_hp_bar(Image* a1);
     void refund_all_queue_slots(Unit* unit);
-    void* SMemAlloc(u32 amount, u32 default_value = 0, std::source_location loc = std::source_location::current()); // 0041006A (based on Storm.dll definition)
-    void* SMemAlloc(u32 amount, const char* unkFilename, u32 unkLine, u32 defaultValue);							// 0041006A (based on Storm.dll definition)
     void set_callback_timer(BinDlg* dialog, u16 timer_index, u32 time, TimerCallback callback);                     // 00416090
     void clear_callback_timer(BinDlg* dialog, u16 timer_index);                                                     // 00416000
     void remove_from_selections(Unit* unit);																		// 0049A7F0
@@ -1047,8 +1040,6 @@ namespace helper {
 
     s8 create_unit_allowed(u16 unit_id, Unit* unit, s32 player);											// 0046E1C0
 
-    b32 SBmpLoadImage(const char *filename, void* palette, void* buffer, u32 buffersize, u32* width, u32* height, u32* bpp); // 00410154
-
     // For ai_military_should_wait_for_group
     bool ai_are_on_connected_regions(Unit* unit1, Unit* unit2);												// 00438E10
     bool ai_check_military_grouping(Unit* unit);															// 00439550
@@ -1068,10 +1059,6 @@ namespace helper {
 
     // For display_establishing_shot
     void* load_init_credits_bin(const char* a1);															// 004D8DF0
-    bool SFileOpenArchive(const char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle);		// 004100B2
-    bool SFileCloseArchive(void* archive);																	// 004100BE
-    bool sfile_open_file_ex(void* hMPQ, const char* szFileName, u32 dwSearchScope, HANDLE** phFile);		// 004100C4
-//	bool SFileCloseFile(void* hFile);																		// 004100C4
 
     // For ai_are_on_connected_regions
     bool ai_regions_are_connected(u32 player, u32 region1, u32 region2);									// 00437E70
@@ -1109,8 +1096,6 @@ namespace helper {
     // For soundThread
     void fastFileRead(s32 a1, s32 a2, char* a3, s32 fileName, s32 buffer, s32 bytesRead, char* logFileName, s32 logLine);		// 004D2D10
     s32 parseWaveFile(s32 a1, s32 a2, s32 a3);																					// 004BBD80
-    bool SMemFree(void* location);																								// 00410070
-    bool SMemFree(void* location, const char* logFileName, s32 logLine, char defaultValue);										// 00410070
     u32 get_sound_duration(s32 sound_id);																						// 004BB890
 
     /*
@@ -1124,7 +1109,6 @@ namespace helper {
     s32 sVidInitialize(char video);																								// 004101C6
     s32 loadButtonSFXFile();																									// 004BCB20
     void initVolume();																											// 004BC450
-    s32 sRegLoadValue(char keyName, char valueName, char a3, char value);														// 00410076
     HANDLE beginThreadEx(s32 lpThreadAttributes, s32 dwStackSize, s32 threadId, s32 a4, s32 dwCreationFlags, s32 lpThreadId);	// 0040CD3C
     */
 
@@ -1181,20 +1165,6 @@ namespace helper {
     s8 OFSUB(s32 x, s32 y);
 
     char* get_chk_string(u32 i);
-
-    typedef BOOL __stdcall SFileOpenFile_Func(const char *filename, HANDLE *phFile);
-    typedef BOOL __stdcall SFileCloseFile_Func(HANDLE hFile);
-    typedef BOOL __stdcall SFileDdaBeginEx_Func(HANDLE directsound, DWORD flags, DWORD mask, unsigned __int32 lDistanceToMove, signed __int32 volume, signed int a6, int a7);
-    typedef BOOL __stdcall SFileDdaEnd_Func(HANDLE directsound);
-    typedef LONG __stdcall SFileGetFileSize_Func(HANDLE hFile, LPDWORD lpFileSizeHigh);
-    typedef int __stdcall SFileReadFile_Func(HANDLE a1, void* a2, DWORD a3, LPDWORD a4, LPOVERLAPPED a5);
-
-    extern SFileOpenFile_Func* SFileOpenFile;
-    extern SFileCloseFile_Func* SFileCloseFile;
-    extern SFileDdaBeginEx_Func* SFileDdaBeginEx;
-    extern SFileDdaEnd_Func* SFileDdaEnd;
-    extern SFileGetFileSize_Func* SFileGetFileSize;
-    extern SFileReadFile_Func* SFileReadFile;
 
     typedef void   __cdecl playNextMusic_Func();
     typedef HANDLE __cdecl stopMusic_Func();
@@ -1470,7 +1440,7 @@ namespace helper {
     s32 get_sfx_volume_from_screen_distance(u32 x, u32 y);													// 0048E8D0
     s32 get_sfx_pan_from_screen_distance(u32 x);															// 0048E850
 
-    void fatal_file_not_found(u32 code, const char* filename);											// 004212C0
+    [[noreturn]] void fatal_file_not_found(u32 code, const char* filename);                                 // 004212C0
 
     void EAX_order(Unit* unit, u32 order_func_offset);
     void EBX_order(Unit* unit, u32 order_func_offset);
@@ -1673,8 +1643,6 @@ namespace helper {
     void initialize_dialog(u32(__fastcall* function)(BinDlg*, DialogEvent*), BinDlg* dialog);													// 00419D20
     s32 display_dialog(BinDlgProc dialog_proc, BinDlg* dialog);
 
-    u32 sfile_read_file(HANDLE* file, void* item, u32 size_arg, u32* read, u32 arg5);															// 00410148
-
     s32 get_fastest_distance(u32 angle);																										// 00494C10
 
     void SC_sprintf_s_2(char* buffer, int buffer_size, const char* format_string, int value1, int value2);										// 0041F1B0
@@ -1733,10 +1701,8 @@ namespace helper {
 
     void update_carryable_sprite_flags(Sprite* sprite);			// 004981B0
 
-    u32 snet_get_player_name(u32 player_id, int player_name, s32 some_index);	// 00410184
     void print_lobby_string(u32 player_id, int string);							// 004B91C0
     b32 is_multiplayer_mode_bnet();												// 004C4200
-    u32 snet_send_server_chat_command(char string);								// 00410280
     u32 battlenet_play_sound(char unk1, u32 event_type, char unk2);				// 004AD0B0
 
     Unit* remove_repulse_tile(Unit* unit);										// 004533D0

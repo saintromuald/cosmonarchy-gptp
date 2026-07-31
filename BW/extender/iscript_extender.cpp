@@ -1,6 +1,7 @@
 #include "hook_tools.h"
 #include "BW/bwdata.h"
 #include "BW/bwhelper.h"
+#include "storm/sfile.h"
 
 char* g_iscript_filenames[] = {
     (char*)"scripts\\iscript_general.bin",
@@ -56,50 +57,18 @@ namespace hooks {
 		return iscript_handles[image->iscript_key];
 	}
 
-	void init_iscript_bin() {
+	static void init_iscript_bin() {
 		for (u32 index = 0; index < IscriptFileCount; ++index) {
-			HANDLE* file = nullptr;
-			u32 read = 0;
-
-			if (!helper::sfile_open_file_ex(nullptr, g_iscript_filenames[index], 0, &file)) {
-				helper::fatal_file_not_found(helper::serr_get_last_error(), g_iscript_filenames[index]);
-			}
-
-			u32 file_size = helper::SFileGetFileSize(file, 0);
-
-			if (file_size == -1) {
-				helper::file_fatal(file, GetLastError());
-			}
-
-			if (!file_size) {
-				helper::fatal_file_not_found(24, g_iscript_filenames[index]);
-			}
-
-			char* item = (char*)helper::SMemAlloc(file_size, "Starcraft\\SWAR\\lang\\gamedata.cpp", 210, 0);
-
-			if (!helper::sfile_read_file(file, item, file_size, &read, 0)) {
-				if (GetLastError() == 38) {
-					helper::file_fatal(file, 24);
-				}
-
-				helper::file_fatal(file, GetLastError());
-			}
-
-			if (read != file_size) {
-				helper::file_fatal(file, 24);
-			}
-
-			helper::SFileCloseFile(file);
-			iscript_handles[index] = item;
+			iscript_handles[index] = sfile::load_mpq_file(g_iscript_filenames[index]).unsafe_cast<char>().release();
 		}
 
 		g_iscript_data = iscript_handles[0];
 	}
 
-	void cleanup_iscript_handles() {
+	static void cleanup_iscript_handles() {
 		for (u32 index = 0; index < IscriptFileCount; ++index) {
 			if (iscript_handles[index]) {
-				helper::SMemFree(iscript_handles[index], "Starcraft\\SWAR\\lang\\CImage.cpp", 1626, 0);
+				SMemFree(iscript_handles[index]);
 				iscript_handles[index] = nullptr;
 			}
 		}

@@ -4,9 +4,11 @@
 #include "BW/bwhelper.h"
 #include "BW/bwdata.h"
 #include "hooks/snp.h"
+#include "storm/sfile.h"
 
 void glu_login() {
-    g_login_bin = load_file_smemalloc<BinDlg>("rez\\gluLogin.bin");
+    g_login_bin = sfile::load_mpq_file("rez\\gluLogin.bin").unsafe_cast<BinDlg>().release();
+
     g_login_bin->flags |= BinDlgFlags::Active;
     helper::fixup_and_init_dialog_data(g_login_bin, helper::alloc_background_image, __FILE__, __LINE__);
     

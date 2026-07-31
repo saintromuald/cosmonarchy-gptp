@@ -1,6 +1,7 @@
 #include "player_color.h"
 #include "trigger_system/trigger_system.h"
 #include "color_palette.h"
+#include "storm/storm.h"
 
 #define ColorSetCount 256
 #define MinimapColorCount (ColorSetCount * TilesetType::Count)
@@ -264,8 +265,8 @@ void init_player_data() {
     if (!g_loaded_colors) {
         g_loaded_colors = true;
 
-        helper::SBmpLoadImage("game\\tminimap.pcx", 0, g_tminimap_colors, MinimapColorCount, 0, 0, 0);
-        helper::SBmpLoadImage("game\\tunit.pcx", 0, g_tunit_colors, UnitColorCount, 0, 0, 0);
+        SBmpLoadImage("game\\tminimap.pcx", 0, g_tminimap_colors, MinimapColorCount, 0, 0, 0);
+        SBmpLoadImage("game\\tunit.pcx", 0, g_tunit_colors, UnitColorCount, 0, 0, 0);
 
         g_easter_egg_unit_names[UnitId::TerranHarakan].push_back("Terran Ackmed Clone");
         g_easter_egg_unit_names[UnitId::TerranCohort].push_back("Terran Nekron");

@@ -1,4 +1,5 @@
 #include "tbl_extender.h"
+#include "storm/storm.h"
 #include <fstream>
 #include <string>
 #include <format>
@@ -67,7 +68,7 @@ void __cdecl load_stat_txt() { // 004C3A20
     }
 
     size_t header_size = sizeof(u32) + lines.size() * sizeof(u32);
-    g_stat_txt_ptr = (u32*)helper::SMemAlloc(header_size + data_size); // Allocates to zeroes, so null chars are implicit
+    g_stat_txt_ptr = (u32*)SMemAlloc(header_size + data_size); // Allocates to zeroes, so null chars are implicit
     g_stat_txt_ptr[0] = lines.size();
 
     char* data_ptr = (char*)g_stat_txt_ptr + header_size;

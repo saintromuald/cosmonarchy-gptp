@@ -112,9 +112,9 @@
       <FloatingPointModel>Strict</FloatingPointModel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>dsound.lib;version.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dsound.lib;version.lib;imm32.lib;storm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalLibraryDirectories>$(ProjectDir)\Libs\yaml-cpp\include;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\Libs\yaml-cpp\include;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(ProjectDir)plugin.def</ModuleDefinitionFile>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -153,9 +153,9 @@
       <FloatingPointModel>Strict</FloatingPointModel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>dsound.lib;version.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dsound.lib;version.lib;imm32.lib;storm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalLibraryDirectories>$(ProjectDir)\Libs\yaml-cpp\include;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\Libs\yaml-cpp\include;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(ProjectDir)plugin.def</ModuleDefinitionFile>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -196,7 +196,7 @@
       <FloatingPointModel>Strict</FloatingPointModel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>dsound.lib;version.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dsound.lib;version.lib;imm32.lib;storm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <ModuleDefinitionFile>$(ProjectDir)plugin.def</ModuleDefinitionFile>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
@@ -207,13 +207,20 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>$(ProjectDir)\Libs\yaml-cpp\include;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\Libs\yaml-cpp\include;$(OutDir);</AdditionalLibraryDirectories>
       <Profile>false</Profile>
     </Link>
     <PostBuildEvent>
       <Command>"$(ProjectDir)post_build_release.bat"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
+  <Target Name="BuildStormLib" BeforeTargets="Link" Inputs="$(ProjectDir)storm\storm.def" Outputs="$(OutDir)storm.lib">
+    <MakeDir Directories="$(OutDir)" />
+    <Exec Command="lib.exe /nologo /def:&quot;$(ProjectDir)storm\storm.def&quot; /machine:x86 /out:&quot;$(OutDir)storm.lib&quot;" />
+  </Target>
+  <ItemGroup>
+    <None Include="storm\storm.def" />
+  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AIScripter\AICore.cpp" />
     <ClCompile Include="AIScripter\AIParser.cpp" />
@@ -223,7 +230,6 @@
     <ClCompile Include="BW\bwdata.cpp" />
     <ClCompile Include="BW\bwhelper.cpp" />
     <ClCompile Include="BW\rand.cpp" />
-    <ClCompile Include="BW\Storm.cpp" />
     <ClCompile Include="CM\cm_behaviors.cpp" />
     <ClCompile Include="CM\cm_ids.cpp" />
     <ClCompile Include="CM\cm_utils.cpp" />
@@ -632,7 +638,9 @@
     <ClInclude Include="BW\extender\iscript_extender.h" />
     <ClInclude Include="BW\game_runner.h" />
     <ClInclude Include="BW\rand.h" />
-    <ClInclude Include="BW\Storm.h" />
+    <ClInclude Include="storm\sfile.h" />
+    <ClInclude Include="storm\storm.h" />
+    <ClInclude Include="storm\smem.hpp" />
     <ClInclude Include="BW\ui.h" />
     <ClInclude Include="CM\cm.h" />
     <ClInclude Include="CM\cm_behaviors.h" />

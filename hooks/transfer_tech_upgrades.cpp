@@ -4,6 +4,7 @@
 #include "transfer_tech_upgrades.h"
 #include "apply_upgrade_flags.h"
 #include <BW/api.h>
+#include <storm/storm.h>
 
 namespace {
 	struct TechTransferData {
@@ -105,7 +106,7 @@ namespace hooks {
 
 		// Stop if the source unit does not exist
 		if (!research_tech_func || !source_unit) {
-			helper::SErrSetLastError(87);
+			SErrSetLastError(87);
 		} else {
 			bool break_main_loop = false;
 			bool break_sub_loop;
@@ -155,7 +156,7 @@ namespace hooks {
 
 		//Stop if the source unit does not exist
 		if (!research_upgrades_func || !source_unit) {
-			helper::SErrSetLastError(87); // 0x57
+			SErrSetLastError(87); // 0x57
 		} else { 
 			bool break_main_loop = false;
 			bool break_sub_loop = false;
