@@ -5,6 +5,7 @@
 #include "BW/structures.h"
 #include "BW/bwdata.h"
 #include "hooks/race_randomization.h"
+#include "storm/storm.h"
 
 #include <time.h>
 
@@ -145,7 +146,7 @@ namespace hooks {
                 helper::play_sound_global(SoundId::Lobby_PlayerJoin);
 
                 char player_name[28];
-                player_id = helper::snet_get_player_name(player_id, (int)player_name, 25);
+                player_id = SNetGetPlayerName(player_id, player_name, 25);
                 if (player_id) {
                     player_id = player_name[0];
                     if (player_name[0]) {
@@ -156,7 +157,7 @@ namespace hooks {
                         player_id = helper::is_multiplayer_mode_bnet();
                         if (player_id) {
                             sprintf_s(final_string, 145, "/astat %s", player_name);
-                            player_id = helper::snet_send_server_chat_command((u32)final_string);
+                            player_id = SNetSendServerChatCommand(final_string);
                         }
                     }
                 }

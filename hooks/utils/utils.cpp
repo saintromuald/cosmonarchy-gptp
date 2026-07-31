@@ -1,6 +1,6 @@
 #include "utils.h"
 #include <BW/api.h>
-#include <BW/Storm.h>
+#include <storm/storm.h>
 
 // Those functions are less likely to be useful (especially if modified alone against as a part of a larger modification),
 // or may cause more trouble if modified the wrong way, so they are put here a bit on the side.

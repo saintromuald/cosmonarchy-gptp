@@ -1,6 +1,7 @@
 #include "maxhp.h"
 #include "BW\api.h"
 #include "BW\bwdata.h"
+#include "storm/storm.h"
 #include "hook_tools.h"
 #include "byte_operations_utils.h"
 #include <globals.h>
@@ -419,15 +420,12 @@ LABEL_32:
 		return damage_amount << 8;
 	}
 
-	b32 __stdcall modify_unit_shields(Unit* unit, s32 new_amount) // 004C5A20
-	{
-		if (!unit)
-		{
-			helper::SErrSetLastError(87);
+	b32 __stdcall modify_unit_shields(Unit* unit, s32 new_amount){ // 004C5A20
+		if (!unit){
+			SErrSetLastError(87);
 			return 0;
 		}
-		if (!bw::unit_has_shields(unit))
-		{
+		if (!bw::unit_has_shields(unit)){
 			return 0;
 		}
 

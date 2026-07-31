@@ -2,7 +2,7 @@
 
 #include "BW/bwdata.h"
 #include "BW/enumerations.h"
-#include "BW/Storm.h"
+#include "storm/storm.h"
 #include "hooks/interface/mainmenu/lobby.h"
 #include "BW/api.h"
 #include "hooks/race_randomization.h"
@@ -69,7 +69,7 @@ static bool can_change_race(RaceId::Enum race, u8 player_index, u32 sender) {
 void broadcast_player_update(Player& player) {
     if (player.id >= 8) return;
     if (!g_lobby_commands_player_update[player.id]) {
-        g_lobby_commands_player_update[player.id] = (Command_PlayerUpdate*)helper::SMemAlloc(sizeof(Command_PlayerUpdate));
+        g_lobby_commands_player_update[player.id] = (Command_PlayerUpdate*)SMemAlloc(sizeof(Command_PlayerUpdate));
     }
     g_lobby_commands_player_update[player.id]->command = GameCommand_PlayerUpdate;
     g_lobby_commands_player_update[player.id]->player_id = player.id;

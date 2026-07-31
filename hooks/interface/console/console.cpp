@@ -4,6 +4,7 @@
 #include "BW/structures.h"
 #include "BW/bwdata.h"
 #include "hooks/interface/uifeatures/ui_features.h"
+#include "storm/storm.h"
 
 #include <numeric>
 
@@ -132,7 +133,7 @@ static SurfaceContext* console_create_surface(u32 offset_x, u32 offset_y, Bitmap
     // TODO: Do we need error handling?
     STransCreateE(bitmap->buffer, bitmap->width, bitmap->height, 8, 0, 0x1000000, &surface_handle);
 
-    auto* surface_node = static_cast<SurfaceContext*>(helper::SMemAlloc(sizeof(SurfaceContext), __FILE__, __LINE__, '\b'));
+    auto* surface_node = static_cast<SurfaceContext*>(SMemAlloc(sizeof(SurfaceContext), "", 0, '\b'));
     if (surface_node) {
         surface_node->next = nullptr;
         surface_node->prev = nullptr;
@@ -218,7 +219,7 @@ void load_command_buttons() { // 00459b90
     g_cmdbtns_grp = load_file_smemalloc<GrpHead>(filename.c_str(), __FILE__, __LINE__);
     g_cmdicons_grp = load_file_smemalloc<GrpHead>("unit\\cmdbtns\\cmdicons.grp", __FILE__, __LINE__);
 
-    if (!SBmpLoadimage("unit\\cmdbtns\\ticon.pcx", 0, (u8*)&g_new_cmdbtn_palette, sizeof(g_new_cmdbtn_palette), 0, 0, 0)) {
+    if (!SBmpLoadImage("unit\\cmdbtns\\ticon.pcx", 0, (u8*)&g_new_cmdbtn_palette, sizeof(g_new_cmdbtn_palette), 0, 0, 0)) {
         helper::fatal_file_not_found(SErrGetLastError(), "unit\\cmdbtns\\ticon.pcx");
     };
     if (g_is_in_replay) {
@@ -270,7 +271,7 @@ void load_statlb() { // 004bed70
 
 void load_wireframe_palette() { // 00456a90
     g_wirefram_grp = load_file_smemalloc<GrpHead>("unit\\wirefram\\wirefram.grp", __FILE__, __LINE__);
-    if (!SBmpLoadimage("game\\twire.pcx", 0, &g_wireframe_colors[0], sizeof(g_wireframe_colors), 0, 0, 0)) {
+    if (!SBmpLoadImage("game\\twire.pcx", 0, &g_wireframe_colors[0], sizeof(g_wireframe_colors), 0, 0, 0)) {
         helper::fatal_file_not_found(SErrGetLastError(), "game\\twire.pcx");
     };
 }
@@ -284,7 +285,7 @@ void load_statf10() { // 004f5300
 
 void load_console() { // 004c3bb0
     load_console_image();
-    if (!SBmpLoadimage("game\\thpbar.pcx", 0, &g_thpbar_colors[0], sizeof(g_thpbar_colors), 0, 0, 0)) {
+    if (!SBmpLoadImage("game\\thpbar.pcx", 0, &g_thpbar_colors[0], sizeof(g_thpbar_colors), 0, 0, 0)) {
         helper::fatal_file_not_found(SErrGetLastError(), "game\\thpbar.pcx");
     };
 

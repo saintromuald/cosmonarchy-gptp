@@ -1,6 +1,6 @@
 #include "requirement_parser.h"
 #include "BW/api.h"
-#include "BW/Storm.h"
+#include "storm/storm.h"
 
 namespace
 {
@@ -22,7 +22,7 @@ namespace
 			bw::printf_console("File is empty: %s", path);
 			return false;
 		}
-		char* filePointer = (char*)helper::SMemAlloc(fileSize);
+		char* filePointer = (char*)SMemAlloc(fileSize);
 		u32 bytesRead;
 		if (!SFileReadFile(fileHandle, filePointer, fileSize, &bytesRead, 0) || bytesRead != fileSize)
 		{
@@ -55,7 +55,7 @@ namespace
 		}
 
 		BOOL result = SFileCloseFile(fileHandle);
-		helper::SMemFree(filePointer);
+		SMemFree(filePointer);
 		return result;
 	}
 }

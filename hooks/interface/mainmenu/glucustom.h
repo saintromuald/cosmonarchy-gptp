@@ -7,7 +7,6 @@ namespace hooks {
     void display_establishing_shot();														// 004D9200, hooked by X405
     void cmdact_game_speed(BinDlg* control);												// 00481EF0
     void hide_dialog(BinDlg* dialog);														// 00418700
-    void load_title();																		// 004D49A0
     void __cdecl create_main_window();														// 004E05B0
     void initialize_game_type_list(BinDlg* list);											// 004AF400
 

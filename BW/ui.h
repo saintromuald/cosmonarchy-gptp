@@ -4,7 +4,7 @@
 #include "enumerations.h"
 #include "color_palette.h"
 #include "bwhelper.h"
-#include "Storm.h"
+#include "storm/storm.h"
 
 #include <functional>
 #include <map>

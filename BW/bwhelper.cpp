@@ -778,22 +778,6 @@ namespace helper {
         return result;
     }
 
-    // For modify_unit_shields
-
-    s32 SErrSetLastError(char a1) {
-        const u32 func_address = 0x00410172;
-        s32 a1_xd = a1;
-        static s32 result;
-        __asm {
-            PUSHAD
-            PUSH a1_xd
-            CALL func_address
-            MOV result, EAX
-            POPAD
-        }
-        return result;
-    }
-
     void update_image_data_draw(Image* a1) {
         const u32 func_address = 0x004D57B0;
         __asm {
@@ -6112,34 +6096,9 @@ namespace helper {
         return result;
     }
 
-    s32 snet_get_turns_in_transit(u32* turns) {
-        const u32 func_address = 0x00410274;
-        static s32 result;
-        _asm {
-            PUSHAD
-            PUSH turns
-            CALL func_address
-            MOV result, EAX
-            POPAD
-        }
-        return result;
-    }
-
     u8 send_turn() {
         const u32 func_address = 0x00485A40;
         static u32 result;
-        _asm {
-            PUSHAD
-            CALL func_address
-            MOV result, EAX
-            POPAD
-        }
-        return result;
-    }
-
-    s32 serr_get_last_error() {
-        const u32 func_address = 0x004100FA;
-        static s32 result;
         _asm {
             PUSHAD
             CALL func_address
@@ -6397,26 +6356,6 @@ namespace helper {
             CALL func_address
             POPAD
         }
-    }
-
-    void* SMemAlloc(u32 amount, u32 default_value, std::source_location loc) {
-        return SMemAlloc(amount, loc.file_name(), loc.line(), default_value);
-    }
-
-    void* SMemAlloc(u32 amount, const char* unkFilename, u32 unkLine, u32 defaultValue) {
-        const u32 func_address = 0x0041006A;
-        static void* pointer_on_allocated_memory;
-        __asm {
-            PUSHAD
-            PUSH defaultValue		// probably what to fill the memory with
-            PUSH unkLine			// unknown use, seems to use hardcoded value
-            PUSH unkFilename		// unknown use, seems to use hardcoded adress (of some text?)
-            PUSH amount				// amount of memory to allocate
-            CALL func_address
-            MOV pointer_on_allocated_memory, EAX
-            POPAD
-        }
-        return pointer_on_allocated_memory;
     }
 
     // Enure matching clear_callback_timer is called in dlgproc destroy function
@@ -7942,25 +7881,6 @@ namespace helper {
         return result;
     }
 
-    b32 SBmpLoadImage(const char *filename, void* palette, void* buffer, u32 buffersize, u32* width, u32* height, u32* bpp) {
-        const u32 func_address = 0x00410154;
-        static b32 result;
-        __asm {
-            PUSHAD
-            PUSH bpp
-            PUSH height
-            PUSH width
-            PUSH buffersize
-            PUSH buffer
-            PUSH palette
-            PUSH filename
-            CALL func_address
-            MOV result, EAX
-            POPAD
-        }
-        return result;
-    }
-
     // For ai_military_should_wait_for_group
     bool ai_are_on_connected_regions(Unit* unit1, Unit* unit2) {
         const u32 func_address = 0x00438E10;
@@ -8077,66 +7997,6 @@ namespace helper {
         }
         return result_;
     }
-
-    bool SFileOpenArchive(const char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle) {
-        const u32 func_address = 0x004100B2;
-        static u32 result;
-        __asm {
-            PUSHAD
-            PUSH handle
-            PUSH dwFlags
-            PUSH dwPriority
-            PUSH archiveName
-            CALL func_address
-            MOV result, EAX
-            POPAD
-        }
-        return (bool)result;
-    }
-
-    bool SFileCloseArchive(void* archive) {
-        const u32 func_address = 0x004100BE;
-        static u32 result;
-        __asm {
-            PUSHAD
-            PUSH archive
-            CALL func_address
-            MOV result, EAX
-            POPAD
-        }
-        return (bool)result;
-    }
-
-    bool sfile_open_file_ex(void* hMPQ, const char* szFileName, u32 dwSearchScope, HANDLE** phFile) {
-        const u32 func_address = 0x004100C4;
-        static u32 result;
-        __asm {
-            PUSHAD
-            PUSH phFile
-            PUSH dwSearchScope
-            PUSH szFileName
-            PUSH hMPQ
-            CALL func_address
-            MOV result, eAX
-            POPAD
-        }
-        return (bool)result;
-    }
-
-    //bool SFileCloseFile(void* hFile)
-    //{
-    //	const u32 Func_SFileCloseFile = 0x4100B8;
-    //	static u32 result;
-    //	__asm
-    //	{
-    //		PUSHAD
-    //		PUSH hFile
-    //		CALL Func_SFileCloseFile
-    //		MOV result, EAX
-    //		POPAD
-    //	}
-    //	return (bool)result;
-    //}
 
     // For ai_are_on_connected_regions
     bool ai_regions_are_connected(u32 player, u32 region1, u32 region2) {
@@ -8446,41 +8306,6 @@ namespace helper {
     }
     */
 
-    bool SMemFree(void* location) {
-        static bool result;
-        const u32 func_address = 0x00410070;
-        const char* logFileName  = "";
-        u32   logLine            = 0;
-        u32   defaultValue       = 0;
-        __asm {
-            PUSHAD
-            PUSH defaultValue
-            PUSH logLine
-            PUSH logFileName
-            PUSH location
-            CALL func_address
-            MOV result, AL
-            POPAD
-        }
-        return result;
-    }
-
-    bool SMemFree(void* location, const char* logFileName, s32 logLine, char defaultValue) {
-        static bool result;
-        const u32 func_address = 0x00410070;
-        __asm {
-            PUSHAD
-            PUSH defaultValue
-            PUSH logLine
-            PUSH logFileName
-            PUSH location
-            CALL func_address
-            MOV result, AL
-            POPAD
-        }
-        return result;
-    }
-
     u32 get_sound_duration(s32 sound_id) {
         static u32 result;
         const u32 func_address = 0x004BB890;
@@ -8602,22 +8427,6 @@ namespace helper {
             CALL Func_initVolume
             POPAD
         }
-    }
-
-    s32 sRegLoadValue(char keyName, char valueName, char a3, char value) {
-        static s32 result;
-        const u32 Func_sRegLoadValue = 0x00410076;
-        __asm {
-            PUSHAD
-            PUSH value
-            PUSH a3
-            PUSH valueName
-            PUSH keyName
-            CALL Func_sRegLoadValue
-            MOV result, EAX
-            POPAD
-        }
-        return result;
     }
 
     HANDLE beginThreadEx(s32 lpThreadAttributes, s32 dwStackSize, s32 threadId, s32 a4, s32 dwCreationFlags, s32 lpThreadId) {
@@ -9111,13 +8920,6 @@ namespace helper {
         }
         return result;
     }
-
-    SFileOpenFile_Func* SFileOpenFile       = (SFileOpenFile_Func*)    0x0041013C;
-    SFileCloseFile_Func* SFileCloseFile     = (SFileCloseFile_Func*)   0x004100B8;
-    SFileDdaBeginEx_Func* SFileDdaBeginEx   = (SFileDdaBeginEx_Func*)  0x004101CC;
-    SFileDdaEnd_Func* SFileDdaEnd           = (SFileDdaEnd_Func*)      0x004101D8;
-    SFileGetFileSize_Func* SFileGetFileSize = (SFileGetFileSize_Func*) 0x00410142;
-    SFileReadFile_Func* SFileReadFile       = (SFileReadFile_Func*)    0x00410148;
 
     playNextMusic_Func* play_next_bw_music  = (playNextMusic_Func*) 0x004A6250;
     stopMusic_Func* stop_bw_music           = (stopMusic_Func*)     0x004A5F50;
@@ -13556,23 +13358,6 @@ namespace helper {
         return result;
     }
 
-    u32 sfile_read_file(HANDLE* file, void* item, u32 size_arg, u32* read, u32 arg5) {
-        static u32 result;
-        const u32 func_address = 0x00410148;
-        __asm {
-            PUSHAD
-            PUSH arg5
-            PUSH read
-            PUSH size_arg
-            PUSH item
-            PUSH file
-            CALL func_address
-            MOV result, EAX
-            POPAD
-        }
-        return result;
-    }
-
     s32 get_fastest_distance(u32 angle) {
         static s32 result;
         const u32 func_address = 0x00494C10;
@@ -14076,21 +13861,6 @@ namespace helper {
         }
     }
 
-    u32 snet_get_player_name(u32 player_id, int player_name, s32 some_index) {
-        const u32 func_address = 0x00410184;
-        static u32 result;
-        __asm {
-            PUSHAD
-            PUSH some_index
-            PUSH player_name
-            PUSH player_id
-            CALL func_address
-            MOV result, EAX
-            POPAD
-        }
-        return result;
-    }
-
     void print_lobby_string(u32 player_id, int string) {
         const u32 func_address = 0x004B91C0;
         __asm {
@@ -14104,19 +13874,6 @@ namespace helper {
 
     b32 is_multiplayer_mode_bnet() {
         return g_multiplayer_mode && g_current_network_mode == 'BNET';
-    }
-
-    u32 snet_send_server_chat_command(char string) {
-        const u32 func_address = 0x00410280;
-        static u32 result;
-        __asm {
-            PUSHAD
-            PUSH string
-            CALL func_address
-            MOV result, EAX
-            POPAD
-        }
-        return result;
     }
 
     u32 battlenet_play_sound(char unk1, u32 event_type, char unk2) {

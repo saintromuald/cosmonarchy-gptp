@@ -9,6 +9,7 @@
 #include "weapon_fire.h"
 #include "hooks/weapons/weapon_spellhit.h"
 #include "hooks/weapons/weapon_damage.h"
+#include "storm/storm.h"
 
 namespace hooks {
 	// Hooked to allow for replacing proc functions - Pr0nogo
@@ -592,7 +593,7 @@ namespace hooks {
 			player = *g_current_trigger_player_id;
 		}
 		if (!(player < 12 ? -(unit != 0) : 0)) {
-			helper::SErrSetLastError(87);
+			SErrSetLastError(87);
 			return false;
 		}
 		if (unit_id_is_resource_node(unit->id, false) || unit_id_is_hangar_unit((UnitId::Enum)unit->id) || unit->is_addon() || unit->player == player) {
