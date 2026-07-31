@@ -55,6 +55,7 @@ struct Config {
     std::vector<Advisor> zerg_advisors{};
     std::vector<Advisor> askosi_advisors{};
     bool celebrations_enabled = true;
+    bool flash_window_lobby_join = true;
 
     // Hotkeys
     bool quick_casting = false;

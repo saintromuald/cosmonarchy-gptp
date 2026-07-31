@@ -243,6 +243,7 @@ enum class GluOptionsControls : s16 {
     SupressWindowsKey = 112,
 
     Celebrations = 120,
+    FlashWindow = 121,
 
     ReplayAutoSave = 130,
     ReplaySanitize = 131,

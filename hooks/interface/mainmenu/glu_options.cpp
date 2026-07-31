@@ -66,6 +66,7 @@ static void load_options(BinDlg* dialog) {
 
     // Audiovisuals
     load_checkbox(dialog, GluOptionsControls::Celebrations, g_config.celebrations_enabled);
+    load_checkbox(dialog, GluOptionsControls::FlashWindow, g_config.flash_window_lobby_join);
 
     // Replays
     load_checkbox(dialog, GluOptionsControls::ReplayAutoSave, g_config.auto_save_replays);
@@ -132,6 +133,7 @@ static void apply_options(BinDlg* dialog) {
 
     // Audiovisuals
     apply_checkbox(dialog, GluOptionsControls::Celebrations, g_config.celebrations_enabled);
+    apply_checkbox(dialog, GluOptionsControls::FlashWindow, g_config.flash_window_lobby_join);
 
     // Replays
     apply_checkbox(dialog, GluOptionsControls::ReplayAutoSave, g_config.auto_save_replays);
