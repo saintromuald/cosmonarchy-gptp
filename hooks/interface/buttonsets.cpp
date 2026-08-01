@@ -2086,7 +2086,20 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::ZergIzirokor: {
-                                        if (faction != Faction::ZergZorthosTendril) {
+                                        if (faction != Faction::ZergImicrenTendril && faction != Faction::ZergZorthosTendril) {
+                                            if (player_has_base_unit_id(unit->player, UnitId::ZergHydrithDen)
+                                                || player_has_gestated_unit_id(unit->player, UnitId::ZergSkibactScab)
+                                                || player_has_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
+                                                current_button_state = Button_State::Enabled;
+                                            } else {
+                                                current_button_state = Button_State::Disabled;
+                                            }
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
+                                    case UnitId::ZergRozirokor: {
+                                        if (faction == Faction::ZergImicrenTendril) {
                                             if (player_has_base_unit_id(unit->player, UnitId::ZergHydrithDen)
                                                 || player_has_gestated_unit_id(unit->player, UnitId::ZergSkibactScab)
                                                 || player_has_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
@@ -3733,10 +3746,15 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::ZergRozirokor: {
+                                    if (current_button->icon_id == IconId::SaberSiphon) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::ZergIziralisk: {
                                     if (current_button->icon_id == IconId::VenomUnused) {			// Corrosive Touch
                                         current_button_state = Button_State::Enabled;
-                                        }
+                                    }
                                 } break;
                                 case UnitId::ZergSkithrokor: {
                                     if (current_button->icon_id == IconId::AblativeWhiplash) {

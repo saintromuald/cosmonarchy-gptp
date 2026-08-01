@@ -1342,6 +1342,10 @@ namespace ImageId {
 
         AskosiEmbeddedOverlay                       = 2304,
 
+        WarringWindsOverlay                         = 2326,
+
+        RozirokorMutate                             = 2405,
+
         // Used for damage overlay crash fix
         FirstMinorDamageOverlay						= 450,
         LastMinorDamageOverlay						= 471,

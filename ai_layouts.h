@@ -107,6 +107,7 @@ inline const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergHydralisk, UnitId::ZergBactalisk},
 	{UnitId::ZergHydraliskOrkoti, UnitId::ZergBactalisk},
 	{UnitId::ZergIzirokor, UnitId::ZergTethzorokor},
+	{UnitId::ZergRozirokor, UnitId::ZergTethzorokor},
 	{UnitId::ZergIziralisk, UnitId::ZergTethzorokor},
 	{UnitId::ZergSkithrokor, UnitId::ZergVithrilisk},
 	{UnitId::ZergKagralisk, UnitId::ZergCherbrathalor},

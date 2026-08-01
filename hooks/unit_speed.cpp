@@ -309,6 +309,7 @@ namespace hooks {
             case UnitId::ZergVorvrokor:
             case UnitId::ZergGarvrokor:
             case UnitId::ZergCikralisk:
+            case UnitId::ZergRozirokor:
             case UnitId::ZergInzorthrokor:
             case UnitId::ZergLakizilisk:
             case UnitId::ZergLakiziliskZorthos:

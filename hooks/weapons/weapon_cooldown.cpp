@@ -29,6 +29,12 @@ namespace hooks {
 			case UnitId::TerranCutlassTurret: armor_pen -= 1; break;
 			case UnitId::ProtossRenesair:	  armor_pen += 1; break;
 			case UnitId::ZergZethalor:		  armor_pen -= 3; break;
+			case UnitId::ZergRozirokor:		  armor_pen -= 3; break;
+			case UnitId::AskosiInsurant:      armor_pen += 3; break;
+			case UnitId::AskosiGhostwrit:     armor_pen -= 2; break;
+			case UnitId::AskosiElgird:        armor_pen -= 2; break;
+			case UnitId::AskosiHistrion:      armor_pen += 4; break;
+			case UnitId::AskosiAlacyne:       armor_pen += 2; break;
 			case UnitId::AskosiParaclete:     armor_pen += 1; break;
 		}
 
@@ -50,6 +56,7 @@ namespace hooks {
 			case UnitId::ProtossRenesair:		      cooldown *= 1.10fp; break;
 			case UnitId::ProtossSimulacrumAstral:     cooldown /= 1.20fp; break;
 			case UnitId::ProtossGarantis:			  cooldown /= 1.50fp; break;
+			case UnitId::ZergRozirokor:				  cooldown *= 1.43fp; break;
 			case UnitId::ZergZoltorokor:			  cooldown /= 1.50fp; break;
 			case UnitId::AskosiAvatar:				  cooldown *= 3.00fp; break;
 			case UnitId::AskosiPhontis:		          cooldown *= 1.33fp; break;
