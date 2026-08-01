@@ -143,6 +143,7 @@ void load_config() {
         load_field(yaml_colors, "terran", g_config.terran_preferred_colors);
         load_field(yaml_colors, "protoss", g_config.protoss_preferred_colors);
         load_field(yaml_colors, "zerg", g_config.zerg_preferred_colors);
+        load_field(yaml_colors, "askosi", g_config.askosi_preferred_colors);
         load_field(yaml_colors, "shuffle", g_config.shuffle_preferred_colors);
     }
 
@@ -312,6 +313,7 @@ void save_config() {
         write_field(yaml, "terran", g_config.terran_preferred_colors);
         write_field(yaml, "protoss", g_config.protoss_preferred_colors);
         write_field(yaml, "zerg", g_config.zerg_preferred_colors);
+        write_field(yaml, "askosi", g_config.askosi_preferred_colors);
         write_field(yaml, "shuffle", g_config.shuffle_preferred_colors);
         yaml << YAML::EndMap;
     }

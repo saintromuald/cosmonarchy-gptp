@@ -72,6 +72,7 @@ struct Config {
     std::vector<PlayerColor> terran_preferred_colors{};
     std::vector<PlayerColor> protoss_preferred_colors{};
     std::vector<PlayerColor> zerg_preferred_colors{};
+    std::vector<PlayerColor> askosi_preferred_colors{};
     bool shuffle_preferred_colors = false;
 
     // Debug

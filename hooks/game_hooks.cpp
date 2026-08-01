@@ -764,8 +764,7 @@ namespace hooks {
         if (!bw::in_replay_or_witness()) {
             std::vector<PlayerColor> colors{};
             switch (g_player_table[g_local_nation_id].race) {
-                case RaceId::Terran:
-                case RaceId::Askosi: {
+                case RaceId::Terran: {
                     colors = g_config.terran_preferred_colors;
                 } break;
                 case RaceId::Protoss: {
@@ -773,6 +772,9 @@ namespace hooks {
                 } break;
                 case RaceId::Zerg: {
                     colors = g_config.zerg_preferred_colors;
+                } break;
+                case RaceId::Askosi: {
+                    colors = g_config.askosi_preferred_colors;
                 } break;
             }
             colors.insert_range(colors.end(), g_config.common_preferred_colors);
