@@ -1349,3 +1349,13 @@ namespace ImageId {
         LastMajorDamageOverlay						= 493,
     };
 }
+
+#include <magic_enum/magic_enum.hpp>
+
+namespace magic_enum::customize {
+template <>
+struct enum_range<ImageId::Enum> {
+    static constexpr int min = 0;
+    static constexpr int max = 2304;
+};
+}

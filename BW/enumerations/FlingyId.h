@@ -390,3 +390,13 @@ namespace flingy_id {
 		Count									= FlingyIdLimit,
 	};
 }
+
+#include <magic_enum/magic_enum.hpp>
+
+namespace magic_enum::customize {
+template <>
+struct enum_range<flingy_id::Enum> {
+    static constexpr int min = 0;
+    static constexpr int max = 567;
+};
+}

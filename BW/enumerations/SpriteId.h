@@ -962,3 +962,13 @@ namespace SpriteId {
         Corpse_ZergBuildingLarge	    = 187,
     };
 }
+
+#include <magic_enum/magic_enum.hpp>
+
+namespace magic_enum::customize {
+template <>
+struct enum_range<SpriteId::Enum> {
+    static constexpr int min = 0;
+    static constexpr int max = 1117;
+};
+}

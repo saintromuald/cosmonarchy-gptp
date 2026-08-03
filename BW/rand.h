@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <type_traits>
+#include <utility>
 #include <ranges>
 #include <magic_enum/magic_enum.hpp>
 #include "types.h"
@@ -69,8 +70,14 @@ u16 random(RandMessage message = {"random"}, std::source_location src = std::sou
 u32 rand_between(u32 min, u32 max, RandMessage message = {}, std::source_location src = std::source_location::current());
 
 template <typename T> requires std::is_enum_v<T>
+std::string enum_name_or_value(T value) {
+    const auto name = magic_enum::enum_name(value);
+    return !name.empty() ? std::string{name} : std::to_string(std::to_underlying(value));
+}
+
+template <typename T> requires std::is_enum_v<T>
 T rand_between(T min, T max, RandMessage message = {}, std::source_location src = std::source_location::current()) {
-    message.assign_if_empty("rand_between {} - {}", magic_enum::enum_name(min), magic_enum::enum_name(max));
+    message.assign_if_empty("rand_between {} - {}", enum_name_or_value(min), enum_name_or_value(max));
     return static_cast<T>(rand_between(static_cast<u32>(min), static_cast<u32>(max), std::move(message), src));
 }
 
@@ -80,7 +87,7 @@ u32 rand_between_local(u32 min, u32 max, RandMessage message = {}, std::source_l
 
 template <typename T> requires std::is_enum_v<T>
 T rand_between_local(T min, T max, RandMessage message = {}, std::source_location src = std::source_location::current()) {
-    message.assign_if_empty("rand_between_local {} - {}", magic_enum::enum_name(min), magic_enum::enum_name(max));
+    message.assign_if_empty("rand_between_local {} - {}", enum_name_or_value(min), enum_name_or_value(max));
     return static_cast<T>(rand_between_local(static_cast<u32>(min), static_cast<u32>(max), std::move(message), src));
 }
 

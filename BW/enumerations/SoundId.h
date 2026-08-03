@@ -2799,3 +2799,13 @@ namespace SoundId {
         AvengingGestationProc                               = 4196,
     };
 }
+
+#include <magic_enum/magic_enum.hpp>
+
+namespace magic_enum::customize {
+template <>
+struct enum_range<SoundId::Enum> {
+    static constexpr int min = 0;
+    static constexpr int max = 4196;
+};
+}

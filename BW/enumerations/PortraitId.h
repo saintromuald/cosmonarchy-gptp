@@ -294,3 +294,13 @@ namespace PortraitId {
         None						= 0xFFFF
     };
 }
+
+#include <magic_enum/magic_enum.hpp>
+
+namespace magic_enum::customize {
+template <>
+struct enum_range<PortraitId::Enum> {
+    static constexpr int min = 0;
+    static constexpr int max = 284;
+};
+}
