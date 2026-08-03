@@ -33,6 +33,12 @@ static void write_bytes(std::ostream& os, const auto& data) {
     os.write(reinterpret_cast<const char*>(&data), sizeof(std::remove_reference_t<decltype(data)>));
 }
 
+static void write_bytes(std::ostream& os, const char* cstr) {
+    const auto size = strlen(cstr);
+    write_bytes(os, size);
+    write_bytes(os, cstr, size);
+}
+
 static void write_bytes(std::ostream& os, const std::string& str) {
     write_bytes(os, str.size());
     write_bytes(os, str.data(), str.size());
@@ -49,7 +55,7 @@ u32 RandomLogger::log_random(LogType log_type, u32 value, RandMessage message, s
     // }
     
     const auto log_randoms_to = [&](std::ostream& os) {
-        write_bytes(os, log_type);
+        write_bytes(os, u8(log_type));
         write_bytes(os, src.file_name());
         write_bytes(os, u64(src.line()));
         write_bytes(os, src.function_name());

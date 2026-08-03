@@ -284,7 +284,7 @@ enum ExtTimerId {
     TimerObservanceDebuff,
     TimerObservancePeriod,
     TimerMissileReturnETA,
-    TimerLobotomySlow,							
+    TimerLobotomySlow,
     TimerStarSovereignGriefOfAllGodsChannel,
     TimerStarSovereignGriefOfAllGodsDelay,
     TimerStarSovereignInterventionMissiles,
@@ -579,7 +579,7 @@ struct UnitExt {
     std::optional<v2u16>  target_pos_override;
 
     EffectRef               current_storm;
-    
+
     Sprite*					power_aura;
     Link<Unit>				psi_link;
 
