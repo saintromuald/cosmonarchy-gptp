@@ -3174,6 +3174,9 @@ void regress(Unit* unit, u32 regression_id) {
             new_unit_ext.timers[TimerStun] = 1 * 24;
             // TODO: Try calling a cagra-related function to stop regression from ruining cagra spread. -Pr0nogo
             // TODO: Add stun audio visuals. -Veeq7
+            if (!new_unit->is_building()) {
+                new_unit->rally = {};
+            }
         } else {
             set_custom_egg(new_unit, regression_id, 2 * 24, 75 * 256); // Disable custom eggs for now, since they seem to yield null sprite units sometimes. -Veeq7
         }
