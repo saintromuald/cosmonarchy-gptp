@@ -1179,8 +1179,14 @@ namespace SoundId {
         AugurDeath02						= 1236,
         AugurDeath03						= 1237,
         AugurDeath04						= 1238,
+
         StarSovereignGriefOfAllGodsChannel	= 1246,
+
+        GorgonWeaponfire01                  = 1252,
+        GorgonWeaponfire02                  = 1253,
+
         StarSovereignGriefOfAllGodsBlast	= 1273,
+
         MindTyrantMindControlChannel		= 1276,
         AkistrokorBlissfulEmbraceChannel	= 1277,
 
@@ -2797,6 +2803,20 @@ namespace SoundId {
         CutlassWeaponfire03                                 = 4194,
         CutlassWeaponfire04                                 = 4195,
         AvengingGestationProc                               = 4196,
+        WarringWindsProc01                                  = 4197,
+        WarringWindsProc02                                  = 4198,
+        WarringWindsProc03                                  = 4199,
+        WarringWindsProcFinal                               = 4200,
+        CloakZergOn                                         = 4201,
+        CloakZergOff                                        = 4202,
+        CloakAskosiOn                                       = 4203,
+        CloakAskosiOff                                      = 4204,
+        FerrumWeaponfire01                                  = 4205,
+        FerrumWeaponfire02                                  = 4206,
+        FerrumWeaponfire03                                  = 4207,
+        InsurantWeaponfire01                                = 4208,
+        InsurantWeaponfire02                                = 4209,
+        InsurantWeaponfire03                                = 4210,
     };
 }
 

@@ -161,6 +161,13 @@ bool unit_id_is_combatant(u32 unit_id) {
     return false;
 }
 
+bool unit_id_is_military(u32 unit_id) {
+    if (units_dat::base_property[unit_id] & UnitProperty::Worker || skip_military_tracking_by_unit_id(unit_id)) {
+        return false;
+    }
+    return unit_id_is_combatant(unit_id);
+}
+
 bool unit_id_is_protoss_warp_factory(u32 unit_id) {
     return unit_id == UnitId::ProtossGateway
         || unit_id == UnitId::ProtossCenotaph
@@ -1835,6 +1842,15 @@ bool is_askosi(UnitId::Enum unit_id) {
         || unit_id == UnitId::AskosiPanoply
         || unit_id == UnitId::AskosiLotiro
         || unit_id == UnitId::AskosiObelisk;
+}
+
+bool is_forerunner(UnitId::Enum unit_id) {
+    return unit_id == UnitId::ForerunnerAthla
+        || unit_id == UnitId::ForerunnerFerrum
+        || unit_id == UnitId::ForerunnerChalyb
+        || unit_id == UnitId::ForerunnerCircitor
+        || unit_id == UnitId::ForerunnerExigo
+        || unit_id == UnitId::ForerunnerVicere;
 }
 
 SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {

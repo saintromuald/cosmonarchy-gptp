@@ -526,6 +526,11 @@ namespace hooks {
                         data.damage -= 5 * 256;
                     }
                 } break;
+                case WeaponId::GorgonArtificeBattery: {
+                    if (data.attacker->id == UnitId::ForerunnerFerrum || data.attacker->id == UnitId::ForerunnerChalyb) {
+                        data.damage -= 3 * 256;
+                    }
+                } break;
                 case WeaponId::ZealotPhaseBlades: {
                     if (data.attacker->id == UnitId::ProtossCicatus) {
                         data.damage -= 3 * 256;
@@ -1145,6 +1150,9 @@ namespace hooks {
                         target_ext.timers[TimerCriticality] = 2secs + 1;
                     } break;
                     case WeaponId::GorgonArtificeBattery: {
+                        if (data.attacker->id == UnitId::ForerunnerFerrum || data.attacker->id == UnitId::ForerunnerChalyb) {
+                            break;
+                        }
                         // Petrification - Gorgon behavior
                         if (target_ext.values[ValuePetrificationStacks] < 20) {
                             target_ext.values[ValuePetrificationStacks] += 1;
@@ -1493,6 +1501,14 @@ namespace hooks {
                     }
                     fatal_deal_damage = false;
                 }
+            } break;
+            case UnitId::ForerunnerMachinamentum: {
+                data.target->heal_hp(data.target->get_max_hp_raw());
+                if (data.target->player != data.attacking_player_id) {
+                    rescue_unit(data.target, data.attacking_player_id);
+                }
+                // TODO: Audiovisuals
+                return false;
             } break;
         }
 
