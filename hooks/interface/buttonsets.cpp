@@ -587,7 +587,7 @@ namespace hooks {
                 if (unit_id_is_larva(buttonset_id) || buttonset_id == UnitId::ZergEgg || buttonset_id == UnitId::ZergCocoon
                     || units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) {
                     button->position = 6;
-                } else if (buttonset_id == UnitId::ProtossLanifect || buttonset_id == UnitId::ProtossDidact || buttonset_id == UnitId::ProtossXenolith) {
+                } else if (buttonset_id == UnitId::ProtossLanifect || UnitId::can_cast_recall(static_cast<UnitId::Enum>(buttonset_id))) {
                     button->position = 7;
                 } else if (buttonset_id == UnitId::TerranApostle) {
                     button->position = 8;
@@ -3572,7 +3572,8 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::ProtossDidact: {
+                                case UnitId::ProtossDidact:
+                                case UnitId::ProtossSaladius: {
                                     if (current_button->icon_id == IconId::ShroudOfAdun) { // Shroud of Adun
                                         current_button_state = Button_State::Enabled;
                                     }
@@ -3843,7 +3844,8 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::ZergUltrokor: {
+                                case UnitId::ZergUltrokor:
+                                case UnitId::ZergZoltorokor: {
                                     if (current_button->icon_id == IconId::SaberSiphon
                                     ||  current_button->icon_id == IconId::AnabolicSynthesis) {	// Kaiser Rampage
                                         current_button_state = Button_State::Enabled;
@@ -4205,7 +4207,7 @@ namespace hooks {
 
                         // Hide ability button, since cancel is the same slot
                         if (UnitId::can_cast_recall(static_cast<UnitId::Enum>(unit->id)) && current_button->action_var == TechId::DimensionalRecall) {
-                            if (unit_ext->values[ValueDidactRecalling]) {
+                            if (unit_ext->values[ValueDimensionalRecalling]) {
                                 current_button_state = Button_State::Invisible;
                             } else {
                                 current_button_state = Button_State::Enabled;
@@ -4227,8 +4229,9 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::ProtossXenolith:
-                                case UnitId::ProtossDidact: {
-                                    if (unit_ext->values[ValueDidactRecalling]) {
+                                case UnitId::ProtossDidact:
+                                case UnitId::ProtossSaladius: {
+                                    if (unit_ext->values[ValueDimensionalRecalling]) {
                                         can_cancel = true;
                                     }
                                 } break;

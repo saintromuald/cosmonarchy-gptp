@@ -13,7 +13,7 @@ namespace hooks {
         previous_pos.y = target->sprite->position.y;
 
         auto& caster_ext = caster->ext();
-        if (!caster_ext.values[ValueDidactRecalling]) {
+        if (!caster_ext.values[ValueDimensionalRecalling]) {
             return;
         }
 
@@ -107,8 +107,8 @@ namespace hooks {
         if (unit->main_order_state == 1) {
             // Execute the recall effect when timer reach 0
             if (unit->main_order_timer == 0) {
-                if (!unit_ext.values[ValueDidactRecalling]) {
-                    unit_ext.values[ValueDidactRecalling] = true;
+                if (!unit_ext.values[ValueDimensionalRecalling]) {
+                    unit_ext.values[ValueDimensionalRecalling] = true;
                     bw::set_generic_rust_value(unit, RustId::CancelRecall, 0);
                 }
 
@@ -116,7 +116,7 @@ namespace hooks {
                 if (unit->energy == 0 || bw::get_generic_rust_value(unit, RustId::CancelRecall)) {
                     bw::set_generic_rust_value(unit, RustId::CancelRecall, 0);
                     unit_ext.values[ValueDidactChannelIndex] = 0;
-                    unit_ext.values[ValueDidactRecalling] = false;
+                    unit_ext.values[ValueDimensionalRecalling] = false;
 
                     unit->status &= ~UnitStatus::CanNotReceiveOrders;
                     unit->order_to_idle();
@@ -178,7 +178,7 @@ namespace hooks {
                 unit->main_order_timer = 4 * 24;
                 helper::make_to_hold_position(unit);
                 unit_ext.values[ValueDidactChannelIndex] = 0;
-                unit_ext.values[ValueDidactRecalling] = false;
+                unit_ext.values[ValueDimensionalRecalling] = false;
                 unit_ext.recall_pos = unit->order_target.pt;
                 tick_recall_channel_anim(unit);
             }

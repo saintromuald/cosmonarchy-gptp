@@ -137,7 +137,7 @@ enum ExtValueId {
     ValueHarvesterActivity,
     ValueNoCorpse,
     ValueDidactChannelIndex,
-    ValueDidactRecalling,
+    ValueDimensionalRecalling,
     ValueDiademTargeting,
     ValueDiademTargetPosX,
     ValueDiademTargetPosY,

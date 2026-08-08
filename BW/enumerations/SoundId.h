@@ -1175,6 +1175,11 @@ namespace SoundId {
         MadcapWeaponfire04					= 1215,
         MadcapWeaponfire05					= 1216,
 
+        StarSovereignWeaponfire01           = 1228,
+        StarSovereignWeaponfire02           = 1229,
+        StarSovereignWeaponfire03           = 1230,
+        StarSovereignWeaponfire04           = 1231,
+
         AugurDeath01						= 1235,
         AugurDeath02						= 1236,
         AugurDeath03						= 1237,
@@ -2817,6 +2822,21 @@ namespace SoundId {
         InsurantWeaponfire01                                = 4208,
         InsurantWeaponfire02                                = 4209,
         InsurantWeaponfire03                                = 4210,
+        GhostwritWeaponfire01                               = 4211,
+        GhostwritWeaponfire02                               = 4212,
+        GhostwritWeaponfire03                               = 4213,
+        FerrumDeath01                                       = 4214,
+        FerrumDeath02                                       = 4215,
+        FerrumWeaponhit01                                   = 4216,
+        FerrumWeaponhit02                                   = 4217,
+        FerrumWeaponhit03                                   = 4218,
+        FerrumWeaponhit04                                   = 4219,
+        ExigoWeaponfire01                                   = 4220,
+        ExigoWeaponfire02                                   = 4221,
+        ExigoWeaponfire03                                   = 4222,
+        ExigoWeaponfire04                                   = 4223,
+        VicereWeaponfire01                                  = 4224,
+        VicereWeaponfire02                                  = 4225,
     };
 }
 

@@ -299,6 +299,7 @@ static KiterType get_kiter_type(u32 unit_id, u32 player) {
         case UnitId::TerranHippogriff:
         case UnitId::ProtossOptecton:
         case UnitId::ProtossAccantor:
+        case UnitId::ProtossGarantis:
         case UnitId::ProtossUnar:
         case UnitId::ProtossArchitect:
         case UnitId::ProtossSolarion:

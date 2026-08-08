@@ -214,8 +214,14 @@ namespace hooks {
                 }
             } break;
             case UnitId::ZergUltrokor: {
-                // Ultrokor Kaiser Rampage: gains 200% movespeed on kill for 1 second
                 speed *= 1.2fp;
+                // Ultrokor Kaiser Rampage: gains 200% movespeed on kill for 1 second
+                if (unit_ext.timers[TimerKaiserRampage]) {
+                    speed *= 2;
+                }
+            } break;
+            case UnitId::ZergZoltorokor: {
+                speed *= 1.25fp;
                 if (unit_ext.timers[TimerKaiserRampage]) {
                     speed *= 2;
                 }
@@ -288,6 +294,7 @@ namespace hooks {
             } break;
             case UnitId::TerranSavantEntropyGauntlets:
             case UnitId::TerranHarakan:
+            case UnitId::TerranNuriel:
             case UnitId::TerranHeracles:
             case UnitId::TerranMatadorTankMode:
             case UnitId::ProtossGolem:

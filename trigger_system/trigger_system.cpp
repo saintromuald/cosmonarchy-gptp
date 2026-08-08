@@ -1555,11 +1555,11 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
             }
         } else if (parser.equals("tyrannize")) {
             auto designator = parser.get_designator();
-            auto player = parser.get_s32(0);
-            auto source_unit_id = parser.get_unit_id();
+            auto tyrannizing_player = parser.get_s32(0);
+            auto tyrant_unit_id = parser.get_unit_id();
 
             for (Unit* unit : designator.search()) {
-                mind_control(player ? player - 1 : unit->player, source_unit_id, unit, true);
+                mind_control(tyrannizing_player ? tyrannizing_player - 1 : unit->player, tyrant_unit_id, unit, true);
                 bw::play_sound(SoundId::Protoss_Darchon_mind_wav, unit->position);
                 unit->order_to_idle();
             }

@@ -356,8 +356,7 @@ void rescue_unit(Unit* unit, u32 player) {
 }
 
 bool can_auto_heal(Unit* unit) {
-    UnitExt* unit_ext = get_unit_ext(unit);
-    return !unit->is_frozen() && !unit_ext->values[ValueDisablePassive];
+    return !unit->is_frozen() && !unit->ext().values[ValueDisablePassive];
 }
 
 bool unit_can_be_repulsed(Unit* unit) {
@@ -425,6 +424,7 @@ void set_up_mines(Unit* unit) {
         case UnitId::TerranVultureUpstart: unit->mine_carrier.mine_count = 3; break;
         case UnitId::TerranClericFuturist: unit->mine_carrier.mine_count = 1; break;
         case UnitId::AskosiProselyte:      unit->mine_carrier.mine_count = 1; break;
+        case UnitId::RaynorVulture:        unit->mine_carrier.mine_count = 3; break;
     }
 }
 
@@ -557,18 +557,26 @@ u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id) {
         case UnitId::ZergGarvrokor:           damage += 1; break;
         case UnitId::ZergZethalor:            damage -= 4; break;
         case UnitId::AskosiAvatar:            damage += 10; break;
-        case UnitId::AskosiPhontis:           damage += 2; break;
-        case UnitId::AskosiAkreno:            damage += 6; break;
-        case UnitId::AskosiIconoclast:        damage += 1; break;
-        case UnitId::AskosiParaclete:         damage += 3; break;
+        case UnitId::AskosiInsurant:          damage += 1;  break;
+        case UnitId::AskosiSilversoul:        damage -= 1;  break;
+        case UnitId::AskosiGhostwrit:         damage -= 20; break;
+        case UnitId::AskosiPhontis:           damage -= 2;  break;
         case UnitId::AskosiZonguard: {
             switch (weapon_id) {
                 case WeaponId::UltrokorKaiserBlades: damage -= 5; break;
                 case WeaponId::GrandstandArteDriver: damage -= 3; break;
             }
         } break;
-        case UnitId::ForerunnerFerrum:     damage -= 3; break;
-        case UnitId::ForerunnerChalyb:     damage -= 3; break;
+        case UnitId::AskosiHistrion:          damage -= 2;  break;
+        case UnitId::AskosiAlacyne:           damage -= 4;  break;
+        case UnitId::AskosiAkreno:            damage += 6;  break;
+        case UnitId::AskosiIconoclast:        damage += 1;  break;
+        case UnitId::AskosiParaclete:         damage += 3;  break;
+        case UnitId::ForerunnerFerrum:        damage -= 3;  break;
+        case UnitId::ForerunnerChalyb:        damage -= 3;  break;
+
+        case UnitId::RaynorVulture:           damage += 10; break;
+        case UnitId::DukeMinotaur:            damage += 10; break;
     }
     return damage;
 }
@@ -820,7 +828,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::NathrokorVestigialStrike:            return "Vestigial Strike";
         case WeaponId::HydraliskNeedleSpines:               return "Needle Spines";
         case WeaponId::PenumbraErebolShockCannon:           return "Erebol Shock Cannon";
-        case WeaponId::UltrokorKaiserBlades:                return unit_id == UnitId::ZergUltrokor ? "Kaiser Blades" : "Azgok Beastblades";
+        case WeaponId::UltrokorKaiserBlades:                return unit_id == UnitId::AskosiZonguard ? "Azgok Beastblades" : "Kaiser Blades";
         case WeaponId::KeskathalorScreamingVenom:           return "Screaming Venom";
         case WeaponId::RilirokorToxicSpores:                return "Toxic Spores";
         case WeaponId::DrolethSpines:                       return "Spines";

@@ -620,6 +620,7 @@ namespace hooks {
 					case UnitId::TerranVultureHecaton: return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 1363); // "Tartarus Mines"
 					case UnitId::TerranVultureUpstart: return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 317);  // "Goremasts"
 					case UnitId::AskosiProselyte:      return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 1070); // "Eyelet"
+					case UnitId::RaynorVulture:        return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 316);  // "Spider Mines"
 					default:                           return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);  // "Mines"
 				}
 			}

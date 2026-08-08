@@ -162,10 +162,10 @@ bool unit_id_is_combatant(u32 unit_id) {
 }
 
 bool unit_id_is_military(u32 unit_id) {
-    if (units_dat::base_property[unit_id] & UnitProperty::Worker || skip_military_tracking_by_unit_id(unit_id)) {
+    if (units_dat::base_property[unit_id] & UnitProperty::Worker || skip_military_tracking_by_unit_id(unit_id) || units_dat::base_property[unit_id] & UnitProperty::Subunit) {
         return false;
     }
-    return unit_id_is_combatant(unit_id);
+    return units_dat::group_flags[unit_id].is_men;
 }
 
 bool unit_id_is_protoss_warp_factory(u32 unit_id) {
@@ -535,7 +535,11 @@ bool unit_collides_with_titanic(Unit* unit) {
         || unit->id == UnitId::ZergOkrimnilisk
         || unit->id == UnitId::ZergKeskathalor
         || unit->id == UnitId::ZergKethrostalor
-        || unit->id == UnitId::ZergUltrokor;
+        || unit->id == UnitId::ZergUltrokor
+        || unit->id == UnitId::ZergZoltorokor
+        || unit->id == UnitId::AskosiPhontis
+        || unit->id == UnitId::AskosiZonguard
+        || unit->id == UnitId::AskosiBegolor;
 }
 
 bool weapon_id_is_for_harvesting(u32 weapon_id) {
@@ -1300,6 +1304,7 @@ bool unit_id_has_proximity_cloak(u32 unit_id) {
     return unit_id == UnitId::TerranEidolon
         || unit_id == UnitId::TerranEidolonNydus
         || unit_id == UnitId::TerranWraith
+        || unit_id == UnitId::TerranPhoenix
         || unit_id == UnitId::TerranSundog
         || unit_id == UnitId::Goska;
 }
@@ -1416,6 +1421,7 @@ bool unit_id_ignores_ground_collision(u32 unit_id) {
 bool unit_id_has_projection_attack(u32 unit_id) {
     return unit_id == UnitId::TerranHarakan
         || unit_id == UnitId::TerranHarakanGolden
+        || unit_id == UnitId::TerranNuriel
         || unit_id == UnitId::TerranStriga
         || unit_id == UnitId::TerranMatadorTankMode
         || unit_id == UnitId::TerranMatadorTurretTankMode
@@ -1544,6 +1550,7 @@ bool unit_id_is_mine_layer(UnitId::Enum unit_id) {
         || unit_id == UnitId::TerranVultureHecaton
         || unit_id == UnitId::TerranVultureUpstart
         || unit_id == UnitId::TerranClericFuturist
+        || unit_id == UnitId::RaynorVulture
         || unit_id == UnitId::AskosiProselyte;
 }
 
@@ -1614,7 +1621,8 @@ UnitId::Enum get_racial_town_center_id(u32 race_id) {
 namespace UnitId {
 bool can_cast_recall(UnitId::Enum unit_id) {
     return unit_id == UnitId::ProtossXenolith
-        || unit_id == UnitId::ProtossDidact;
+        || unit_id == UnitId::ProtossDidact
+        || unit_id == UnitId::ProtossSaladius;
 }
 
 bool has_manual_weapon_fire_sfx(UnitId::Enum unit_id) {
