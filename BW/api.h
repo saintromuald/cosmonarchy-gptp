@@ -417,23 +417,6 @@ s32 get_polar_x(s32 distance, u8 angle);
 /// (distance, angle), using StarCraft's internal data.
 s32 get_polar_y(s32 distance, u8 angle);
 
-Point16 polar_point(Point16 center, f32 rads, f32 distance);
-Point16 random_polar_point(Point16 center, f32 max_distance);
-
-inline Point16 clamp_point(Point16 point) {
-    return {
-        std::clamp<u16>(point.x, 0, g_map_tile_size->width * 32),
-        std::clamp<u16>(point.y, 0, g_map_tile_size->height * 32),
-    };
-}
-
-inline Point16 to_point16(Vec32f vec) {
-    return {
-        (u16)std::clamp<f32>(vec.x, 0, g_map_tile_size->width * 32),
-        (u16)std::clamp<f32>(vec.y, 0, g_map_tile_size->height * 32),
-    };
-}
-
 inline Box16 clamp_box16(Box16 rect) {
     return {
         std::clamp<s16>(rect.left, 0, g_map_tile_size->width * 32),
@@ -466,91 +449,28 @@ inline v2 facing_dir(Bullet* bullet) {
     }.norm();
 }
 
-inline Vec32 vec_between(Point16 source, Point16 target) {
-    return {
-        target.x - source.x,
-        target.y - source.y,
-    };
+inline fp32 deg_to_rad(fp32 degrees) {
+    return degrees * fp32::pi() / 180;
 }
 
-inline Vec32f vecf_between(Point16 source, Point16 target) {
-    return {
-        (f32)target.x - (f32)source.x,
-        (f32)target.y - (f32)source.y,
-    };
+inline fp32 rad_to_deg(fp32 radians) {
+    return radians * 180 / fp32::pi();
 }
 
-inline Vec32f vecf_between(Vec32f source, Vec32f target) {
-    return {
-        target.x - source.x,
-        target.y - source.y,
-    };
+inline fp32 deg_to_dot(fp32 angle) {
+    return fpm::cos(deg_to_rad(angle));
 }
 
-inline Vec32f dir_between(Point16 source, Point16 target) {
-    return normalize(vecf_between(source, target));
+inline fp32 dot_to_degree(fp32 dot) {
+    return rad_to_deg(fpm::acos(dot));
 }
 
-inline Vec32f dir_between(Vec32f source, Vec32f target) {
-    return normalize(vecf_between(source, target));
+inline v2 vec_perpendicular(v2 vec) {
+    return { -vec.y, vec.x };
 }
 
-inline f32 distance_between(Vec32f a, Vec32f b) {
-    return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
-}
-
-inline Vec32f facing_dir(Unit* unit) {
-    return normalize(Vec32f{
-        g_angle_distance[unit->current_direction_1].x / 256.0f,
-        g_angle_distance[unit->current_direction_1].y / 256.0f,
-    });
-}
-
-inline Vec32f facing_dir(Bullet* bullet) {
-    return normalize(Vec32f{
-        g_angle_distance[bullet->current_direction_1].x / 256.0f,
-        g_angle_distance[bullet->current_direction_1].y / 256.0f,
-    });
-}
-
-inline f32 deg_to_rad(f32 degrees) {
-    return degrees * PI / 180;
-}
-
-inline f32 rad_to_deg(f32 radians) {
-    return radians * 180 / PI;
-}
-
-inline f32 deg_to_dot(f32 angle) {
-    return cosf(deg_to_rad(angle));
-}
-
-inline f32 dot_to_degree(f32 dot) {
-    return rad_to_deg(acosf(dot));
-}
-
-inline f32 dot_product(Vec32f a, Vec32f b) {
-    return a.x * b.x + a.y * b.y;
-}
-
-inline f32 dot_norm(Vec32f a, Vec32f b) {
-    return dot_norm(normalize(a), normalize(b));
-}
-
-inline f32 determinant(Vec32f a, Vec32f b) {
-    return a.x * b.y - a.y * b.x;
-}
-
-inline f32 determinant_norm(Vec32f a, Vec32f b) {
-    return determinant_norm(normalize(a), normalize(b));
-}
-
-inline Vec32f vec_perpendicular(Vec32f vec) {
-    return {-vec.y, vec.x};
-}
-
-inline Vec32f vec_reversed(Vec32f vec) {
-    return {-vec.x, -vec.y};
+inline v2 vec_reversed(v2 vec) {
+    return { -vec.x, -vec.y };
 }
 
 inline bool unit_is_facing(Unit* unit, v2u16 position) {

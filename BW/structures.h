@@ -1173,7 +1173,7 @@ struct AiTown {
     u8 resource_units_not_set;	// 0x1D
     u8 in_battle;				// 0x1E
     u8 unk1f;					// 0x1F
-    Point16 position;			// 0x20
+    v2u16 position;			    // 0x20
     Unit* main_building;		// 0x24
     Unit* building_scv;			// 0x28
     Unit* mineral;				// 0x2C

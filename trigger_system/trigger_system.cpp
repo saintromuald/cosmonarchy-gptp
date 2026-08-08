@@ -530,27 +530,33 @@ static bool parse_condition(Parser& parser) {
                     case QuotaType_Equal:    return g_player_table[player].type == type;
                     case QuotaType_NotEqual: return g_player_table[player].type != type;
                 }
-            }
-            if (player) {
-                player -= 1;
-                if (!type_is_witness) {
-                    switch (op.type) {
-                        case QuotaType_Equal:    return g_player_table[player].type == compare_type;
-                        case QuotaType_NotEqual: return g_player_table[player].race != compare_type;
-                    }
-                } else {
-                    auto witness_type = g_globals->players[player].witness_mode;
-                    switch (op.type) {
-                        case QuotaType_Equal:    return type == CrigPlayerType::Witness ? witness_type == WitnessMode_Pure : witness_type == WitnessMode_Defeated;
-                        case QuotaType_NotEqual: return type == CrigPlayerType::Witness ? witness_type != WitnessMode_Pure : witness_type != WitnessMode_Defeated;
-                    }
+                parser.error("Invalid operator", op.type);
+                return false;
+            };
+            const auto compare_witness = [&](WitnessMode mode) {
+                switch (op.type) {
+                    case QuotaType_Equal:    return g_globals->players[player].witness_mode == mode;
+                    case QuotaType_NotEqual: return g_globals->players[player].witness_mode != mode;
                 }
+                parser.error("Invalid operator", op.type);
+                return false;
+            };
+
+            switch (type) {
+                case CrigPlayerType::Human:            return compare(PlayerType::Human);
+                case CrigPlayerType::HumanDefeated:    return compare(PlayerType::HumanDefeated);
+                case CrigPlayerType::Computer:         return compare(PlayerType::Computer);
+                case CrigPlayerType::ComputerDefeated: return compare(PlayerType::ComputerDefeated);
+                case CrigPlayerType::Witness:          return compare_witness(WitnessMode_Pure);
+                case CrigPlayerType::WitnessDefeated:  return compare_witness(WitnessMode_Defeated);
             }
+            parser.error("Invalid player type", type);
             return false;
         } else if (parser.equals("is_multiplayer")) {
             auto state = parser.get_s32();
             return g_multiplayer_mode == (bool)state;
         }
+
     }
     return false;
 }

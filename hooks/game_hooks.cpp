@@ -2941,7 +2941,7 @@ namespace hooks {
                     u32 subtimer = bw::rand_between(3, 7);
                     unit_ext.timers[TimerSalvageAnimationSubtimer] = subtimer;
                 }
-                if (!unit_ext.values[ValueTalosAnimationTimer] || unit_ext.values[ValueTalosAnimationTimer] % 128 == 0) {
+                if (!unit_ext.values[ValueSalvageAnimationTimer] || unit_ext.values[ValueSalvageAnimationTimer] % 128 == 0) {
                     v2u16 pos = target->sprite->position;
                     switch (bw::random() % 4) {
                     case 0: {
