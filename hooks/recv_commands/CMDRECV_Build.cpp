@@ -211,7 +211,9 @@ namespace hooks {
 						case RaceId::Zerg:    error_id = SoundId::ErrorZerg;    break;
 						case RaceId::Askosi:  error_id = SoundId::ErrorTerran;  break;
 					}
-					helper::play_sound_global(error_id);
+					if (!g_use_quiet_sounds) {
+						helper::play_sound_global(error_id);
+					}
 					if (!g_globals->advisor_state.cooldown) {
 						if (!g_globals->advisor_state.play_timer) {
 							u32 timer = 6;

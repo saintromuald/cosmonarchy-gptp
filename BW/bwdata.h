@@ -543,7 +543,7 @@ BW_DATA(s32*,			g_unk_sound_core_2,			0x005999C0);
 BW_DATA(CritSect*,		g_sound_lock,				0x006D5F4C);
 
 // For soundInit
-BW_DATA(SoundChannel*	,g_sound_channels,			0x005998F0);
+BW_DATA(SoundChannel*,  g_sound_channels,			0x005998F0);
 BW_DATA(HMODULE*,		g_hd_sound_module,			0x006D59F0);
 BW_DATA(s8*,			g_dda_initialized,			0x006D1265);
 BW_DATA(s8*,			g_vid_initialized,			0x006D1266);
@@ -583,6 +583,9 @@ BW_REF(void*,       last_bindlg_menu_function,  0x006D1234);
 // For statport_dlg_interact
 BW_DATA(s8**,		g_dialog_key,				0x0068AC88);
 BW_DATA(Point32*,	g_last_event_position,		0x0057FD34);
+
+// For input_mmb_move
+BW_REF(s8,          g_center_view_enabled,      0x00658AC0);
 
 //////////////////////////////////////////////////////////////// @}
 /// @name *.DAT File Data

@@ -710,12 +710,45 @@ void randomize_faction(u32 player_id) {
     if (cm_player.witness_mode != WitnessMode::WitnessMode_Disabled || cm_player.faction_was_set) {
         return;
     }
+    auto faction = get_random_faction(static_cast<RaceId::Enum>(g_player_table[player_id].race));
     SelectFactionCommand command = {};
     command.type = GameCommand_Custom;
     command.subtype = NewGameCommand::SelectFaction;
     command.player = player_id;
-    command.faction = get_random_faction(static_cast<RaceId::Enum>(g_player_table[player_id].race));
+    command.faction = faction;
     helper::queue_game_command((u8*)&command, sizeof(command));
+
+    // Set Mineral Field faction_value for replacing requests in scripts
+    if (g_player_table[player_id].type != PlayerType::Computer) {
+        return;
+    }
+    u32 faction_value = 0;
+    switch (faction) {
+        case Faction::TerranHecatonCoalition:
+        case Faction::ProtossOrderOfTheSacredSaber:
+        case Faction::ZergImicrenTendril: {
+            faction_value = 1;
+        } break;
+        case Faction::TerranFuturistFederation:
+        case Faction::ProtossKhalendricKnights:
+        case Faction::ZergGoszirithTendril: {
+            faction_value = 2;
+        } break;
+        case Faction::TerranGoldenRepublic:
+        case Faction::ProtossStarbound:
+        case Faction::ZergOrkotiTendril: {
+            faction_value = 3;
+        } break;
+        case Faction::TerranNydusTrinity:
+        case Faction::ProtossAstralOmen:
+        case Faction::ZergZorthosTendril: {
+            faction_value = 4;
+        } break;
+        case Faction::TerranUpstart: {
+            faction_value = 5;
+        }
+    }
+    g_unit_deaths_table[UnitId::ResourceMineralField].player[player_id] = faction_value;
 }
 
 Faction get_random_faction(RaceId::Enum race) {

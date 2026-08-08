@@ -99,7 +99,7 @@ namespace hooks {
             case RaceId::Zerg:    alert_id = SoundId::AlertZerg;    break;
             case RaceId::Askosi:  alert_id = SoundId::AlertTerran;  break;
         }
-        if (g_options_list->flags & 1) {
+        if (g_options_list->flags & 1 && !g_use_quiet_sounds) {
             bw::play_sound(alert_id);
         }
         helper::do_unit_event_notification(unit, 16, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, alert_id);

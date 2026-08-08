@@ -3,11 +3,11 @@
 namespace IconId {
     enum Enum {
         /*0000*/	Marine                              = 0,
-        /*0001*/	Ghost                               = 1,
+        /*0001*/	Eidolon                             = 1,
         /*0002*/	Vulture                             = 2,
         /*0003*/	Goliath                             = 3,
         /*0004*/	Blank_Goliath_Turret                = 4,
-        /*0005*/	Siege_Tank_Tank_Mode                = 5,
+        /*0005*/	PhalanxTankMode                     = 5,
         /*0006*/	Blank_Tank_Turret                   = 6,
         /*0007*/	SCV                                 = 7,
         /*0008*/	Wraith                              = 8,
@@ -17,7 +17,7 @@ namespace IconId {
         /*000C*/	Battlecruiser                       = 12,
         /*000D*/	Vulture_Spider_Mine                 = 13,
         /*000E*/	Nuclear_Missile                     = 14,
-        /*000F*/	Civilian                            = 15,
+        /*000F*/	ShamanSupportMode                   = 15,
         /*0010*/	Sarah_Kerrigan_Ghost                = 16,
         /*0011*/	Alan_Schezar_Goliath                = 17,
         /*0012*/	Blank_Alan_Turret                   = 18,
@@ -29,7 +29,7 @@ namespace IconId {
         /*0018*/	Blank_Duke_Turret_Tank              = 24,
         /*0019*/	Edmund_Duke_Siege_Mode              = 25,
         /*001A*/	Blank_Duke_Turret_Siege             = 26,
-        /*001B*/	Blank_Arcturus_Mengsk               = 27,
+        /*001B*/	MadrigalImperiosoMode               = 27,
         /*001C*/	Hyperion_Battlecruiser              = 28,
         /*001D*/	Norad_II_Battlecruiser              = 29,
         /*001E*/	Terran_Siege_Tank_Siege_Mode        = 30,
@@ -189,7 +189,7 @@ namespace IconId {
         /*00B8*/	Blank_Independent_Starport_Unused   = 184,
         /*00B9*/	Skithrokor                          = 185,
         /*00BA*/	Blank_Ruins_Unused                  = 186,
-        /*00BB*/	Blank_Khayd_Crystal_Form_Unused     = 187,
+        /*00BB*/	SavantEntropyGauntlets              = 187,
         /*00BC*/	Vespene_Geyser                      = 188,
         /*00BD*/	Warp_Gate                           = 189,
         /*00BE*/	Psi_Disrupter                       = 190,
@@ -197,7 +197,7 @@ namespace IconId {
         /*00C0*/	Blank_Terran_Marker                 = 192,
         /*00C1*/	Blank_Protoss_Marker                = 193,
         /*00C2*/	Zerg_Beacon                         = 194,
-        /*00C3*/	Terran_Beacon                       = 195,
+        /*00C3*/	Blackjack                           = 195,
         /*00C4*/	Protoss_Beacon                      = 196,
         /*00C5*/	Zerg_Flag_Beacon                    = 197,
         /*00C6*/	Terran_Flag_Beacon                  = 198,
@@ -212,7 +212,7 @@ namespace IconId {
         /*00CF*/	Blank_Left_Pit_Door                 = 207,
         /*00D0*/	Blank_Right_Pit_Door                = 208,
         /*00D1*/	Blank_Floor_Gun_Trap                = 209,
-        /*00D2*/	Blank_Left_Wall_Missile_Trap        = 210,
+        /*00D2*/	Tarasque                            = 210,
         /*00D3*/	Blank_Left_Wall_Flame_Trap          = 211,
         /*00D4*/	Infested_Mine_Unused                = 212,
         /*00D5*/	Blank_Right_Wall_Flame_Trap         = 213,
@@ -406,11 +406,17 @@ namespace IconId {
         LakiziliskBurrow                                = 377,
         LakiziliskUnburrow                              = 398,
 
+        MatadorTankMode                                 = 406,
+
         Zarcavrokor                                     = 408,
 
         Tethzorokor                                     = 417,
 
         Zobriolisk                                      = 423,
+
+        ClericFuturist                                  = 576,
+
+        Tiangou                                         = 591,
 
         Yblyleth                                        = 596,
 
@@ -566,6 +572,9 @@ namespace IconId {
         BloodyRain                                      = 894,
         AkrenoBioticWingblades                          = 895,
         Goremast                                        = 896,
+        Broadside                                       = 897,
+
+        Cutlass                                         = 900,
     };
 }
 

@@ -54,6 +54,10 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
     // Height advantage
     bonus_amount += bw::get_cliff_advantage(unit, target, 0, true);
 
+    if (unit_ext.unar_solitary_focus_stacks) {
+        bonus_amount += unit_ext.unar_solitary_focus_stacks;
+    }
+
     // Ignore bonus distance for melee units
     u32 weapon_range = estimate_max_weapon_range(unit, target);
     if (weapon_range <= 32 || unit_id_is_trap(unit->id)) {
@@ -89,9 +93,6 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
         case UnitId::AskosiPhontis:               final_range += 1; break;
         case UnitId::AskosiIconoclast:            final_range -= 2; break;
         case UnitId::AskosiParaclete:             final_range -= 1; break;
-    }
-    if (unit_ext.unar_solitary_focus_stacks) {
-        bonus_amount += unit_ext.unar_solitary_focus_stacks;
     }
 
     return static_cast<u8>(final_range * scale + bonus_amount);

@@ -104,12 +104,22 @@ static bool fix_unload_pos(Unit* unit, v2u16* pos) {
     }
 }
 
-static SoundId::Enum get_transport_sound_id(Unit* transport) {
+static SoundId::Enum get_transport_load_sound_id(Unit* transport) {
     switch (transport->get_race()) {
         case RaceId::Terran:  return SoundId::Misc_TDrTra00_wav;
         case RaceId::Protoss: return SoundId::Misc_PShTra00_wav;
         case RaceId::Zerg:    return SoundId::Misc_ZOvTra00_wav;
         case RaceId::Askosi:  return SoundId::Misc_PShTra00_wav;
+    }
+    return SoundId::None;
+}
+
+static SoundId::Enum get_transport_unload_sound_id(Unit* transport) {
+    switch (transport->get_race()) {
+        case RaceId::Terran:  return SoundId::Misc_TDrTra01_wav;
+        case RaceId::Protoss: return SoundId::Misc_PShTra01_wav;
+        case RaceId::Zerg:    return SoundId::Misc_ZOvTra01_wav;
+        case RaceId::Askosi:  return SoundId::Misc_PShTra01_wav;
     }
     return SoundId::None;
 }
@@ -129,7 +139,7 @@ void load_unit_proc(Unit* transport, Unit* cargo_unit) { // 004E78E0
     u8 unit_race_id = transport->get_race();
     bw::decloak_passive_proc(transport);
     bw::decloak_passive_proc(cargo_unit);
-    bw::play_sound(get_transport_sound_id(transport), transport->position);
+    bw::play_sound(get_transport_load_sound_id(transport), transport->position);
     if (UnitId::is_terran_worker(static_cast<UnitId::Enum>(cargo_unit->id))) {
         if (cargo_unit->unit_ai) {
             AiTown* town = cargo_unit->unit_ai->worker_ai.town;
@@ -666,7 +676,7 @@ void unload_unit_ext(Unit* cargo, u32 transport_died) { // 004E7E10
         if (transport_died) {
             helper::move_unit_duplicate(cargo, transport->sprite->position.x, transport->sprite->position.y);
         } else {
-            bw::play_sound(get_transport_sound_id(transport), transport->position);
+            bw::play_sound(get_transport_unload_sound_id(transport), transport->position);
             helper::show_and_enable_unit(cargo);
             iterations = iterations_2;
         }

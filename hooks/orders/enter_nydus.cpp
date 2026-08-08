@@ -77,8 +77,10 @@ namespace hooks {
 
     void orders_enter_nydus(Unit* unit) { // 004EA3E0
         Unit* nydus = unit->order_target.unit;
-        if (!nydus || !nydus->is_completed() || !nydus->building.nydus_exit || !nydus->building.nydus_exit->is_completed()
-        || (!bw::is_allied_to(unit->player, nydus->player))) {
+        if (!nydus) {
+            return;
+        }
+        if (!nydus->is_valid_nydus() || (!bw::is_allied_to(unit->player, nydus->player))) {
             if (unit->order_queue_head) {
                 unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
                 prepare_for_next_order(unit);
@@ -99,7 +101,7 @@ namespace hooks {
             u8 movable_state = unit->get_movable_state();
             if (movable_state == MovableState_ReachedDestination) {
                 unit->main_order_state = 2;
-            } else if (movable_state != 0) { // (value is probably 2 == unmovable)
+            } else if (movable_state != MovableState_NotReachedDestination) { // (value is probably 2 == unmovable)
                 unit->order_to_idle();
             }
         }

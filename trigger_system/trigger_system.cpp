@@ -230,7 +230,7 @@ void update_trigger_system(bool in_game) {
         }
         if (g_globals->alert.play_timer) {
             g_globals->alert.play_timer--;
-            if (!g_globals->alert.play_timer) {
+            if (!g_globals->alert.play_timer && !g_use_quiet_sounds) {
                 bw::play_sound(g_globals->alert.sound_id);
             }
         }
@@ -240,7 +240,7 @@ void update_trigger_system(bool in_game) {
         }
         if (g_globals->advisor_state.play_timer) {
             g_globals->advisor_state.play_timer--;
-            if (!g_globals->advisor_state.play_timer) {
+            if (!g_globals->advisor_state.play_timer && !g_use_quiet_sounds) {
                 bw::play_sound(g_globals->advisor_state.sound_id);
             }
         }
@@ -1357,7 +1357,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                         helper::issue_order_targeting_ground(unit, order_id, dest.x, dest.y);
                     } break;
                     case OrderId::Burrow:
-                    case OrderId::Unburrow: {
+                    case OrderId::Unburrow:
+                    case OrderId::BuildingLiftoff: {
                         helper::perform_another_order(order_id, 0, unit, UnitId::None, {}, 0);
                     } break;
                     case OrderId::GriefOfAllGods: {
