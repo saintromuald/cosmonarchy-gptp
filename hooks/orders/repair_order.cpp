@@ -137,7 +137,7 @@ namespace hooks {
 					return 0;
 				}
 
-				if (target->id == UnitId::ZergNydusCesiant && target->hitpoints >= units_dat::max_hitpoints[target->id]) {
+				if (target->is_valid_nydus() && target->hitpoints >= units_dat::max_hitpoints[target->id]) {
 					return 0;
 				}
 				return 1;

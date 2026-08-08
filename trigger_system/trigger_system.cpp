@@ -1402,23 +1402,22 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
             Designator designator_exit = parser.get_designator();
             b32 enable = parser.get_s32();
 
-            for (Unit* entry : designator_entry.search().take(1)) {
-                for (Unit* exit : designator_exit.search().take(1)) {
-                    if (entry && exit) {
-                        if (enable) {
-                            entry->building.nydus_exit = exit;
-                            exit->building.nydus_exit = entry;
-                        //  exit->sprite->player = entry->sprite->player;
-                            entry->ext().values[ValueIsNydusEntry] = true;
-                            exit->ext().values[ValueIsNydusExit] = true;
-                        } else {
-                            entry->building.nydus_exit = 0;
-                            exit->building.nydus_exit = 0;
-                            entry->ext().values[ValueIsNydusEntry] = false;
-                            exit->ext().values[ValueIsNydusExit] = false;
-                        }
-                    }
-                }
+            Unit* entry = designator_entry.search().first();
+            Unit* exit = designator_exit.search().first();
+            if (!entry || !exit) {
+                break;
+            }
+            if (enable) {
+                entry->building.nydus_exit = exit;
+                exit->building.nydus_exit = entry;
+            //  exit->sprite->player = entry->sprite->player;
+                entry->ext().values[ValueIsNydusEntry] = true;
+                exit->ext().values[ValueIsNydusExit] = true;
+            } else {
+                entry->building.nydus_exit = 0;
+                exit->building.nydus_exit = 0;
+                entry->ext().values[ValueIsNydusEntry] = false;
+                exit->ext().values[ValueIsNydusExit] = false;
             }
         } else if (parser.equals("var") || parser.equals("timer")) {
             bool is_timer = parser.equals("timer");

@@ -175,7 +175,7 @@ struct Designator {
         if (!area.check(unit->position, unit->is_in_air())) {
             return false;
         }
-        if (unit->player >= PlayerLimit || !players[unit->player]) {
+        if (unit->player >= FullPlayerLimit || !players[unit->player]) {
             return false;
         }
         if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
