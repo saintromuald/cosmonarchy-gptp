@@ -3,14 +3,15 @@
 
 namespace {
     void __declspec(naked) get_attack_priority_wrapper() { // 00442160
-        static Unit* target, * attacker;
+        static Unit* attacker;
+        static Unit* target;
         static u32 result;
         __asm {
-            MOV target, EDI
             MOV attacker, EBX
+            MOV target, EDI
             PUSHAD
         }
-        result = hooks::get_attack_priority(target, attacker);
+        result = hooks::get_attack_priority(attacker, target);
         __asm {
             POPAD
             MOV EAX, result

@@ -826,27 +826,25 @@ namespace hooks {
 
     // Hooked to fix Optectons when they have edge targets. -Pr0nogo
     void order_attack_move_try_pick_target(Unit* unit, u8 order_id) { // 00477820
-        if (helper::get_seek_range(unit)) {
-            if (unit->unit_ai) {
-                helper::ai_update_attack_target(unit, 0, 0, 0);
-            } else if (can_pick_new_target(unit)) {
-                Unit* target = helper::find_best_attack_target(unit);
-                if (target) {
-                    if (unit_id_has_custom_air_weapon(unit->id) && target->status & UnitStatus::InAir) {
-                        return;
-                    }
-                    helper::set_resource_target(unit);
-                    helper::prepend_order(unit, order_id, unit->order_target.pt, unit->order_target.unit);
-                    helper::insert_order_before(unit, unit->order_queue_head, units_dat::attack_unit_order[unit->id], target->position.x, target->position.y, target, UnitId::None);
-                    helper::force_order_done(unit);
-                    target = 0;
-                    unit->status |= UnitStatus::AttackMove;
-                    Unit* subunit = unit->subunit;
-                    if (subunit) {
-                        subunit->status |= UnitStatus::AttackMove;
-                    }
-                }
-            }
+        if (!helper::get_seek_range(unit) || !can_pick_new_target(unit)) {
+            return;
+        }
+        if (unit->unit_ai) {
+            helper::ai_update_attack_target(unit, 0, 0, 0);
+            return;
+        }
+        Unit* target = helper::find_best_attack_target(unit);
+        if (!target || (unit_id_has_custom_air_weapon(unit->id) && target->is_in_air())) {
+            return;
+        }
+        helper::set_resource_target(unit);
+        helper::prepend_order(unit, order_id, unit->order_target.pt, unit->order_target.unit);
+        helper::insert_order_before(unit, unit->order_queue_head, units_dat::attack_unit_order[unit->id], target->position.x, target->position.y, target, UnitId::None);
+        helper::force_order_done(unit);
+        unit->status |= UnitStatus::AttackMove;
+        Unit* subunit = unit->subunit;
+        if (subunit) {
+            subunit->status |= UnitStatus::AttackMove;
         }
     }
 
