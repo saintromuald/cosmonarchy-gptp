@@ -423,6 +423,7 @@ static bool parse_condition(Parser& parser) {
             Quota quota = parser.get_quota();
             u32 scouting_player = parser.get_player();
             Quota scouting_time_quota = parser.get_time_quota();
+            bool completed = parser.get_s32();
 
             u32 count = 0;
             EntryArray<Unit> units = scouting_player ? designator.search_seen(scouting_player - 1) : designator.search();
@@ -433,6 +434,9 @@ static bool parse_condition(Parser& parser) {
                     position = unit_ext->last_seen_position[scouting_player - 1];
                 }
                 if (!scouting_player || !scouting_time_quota.value || scouting_time_quota.check(unit_ext->last_seen_timer[scouting_player - 1])) {
+                    if (completed && !unit->is_completed()) {
+                        continue;
+                    }
                     count++;
                 }
             }
@@ -511,19 +515,20 @@ static bool parse_condition(Parser& parser) {
             return false;
         } else if (parser.equals("player_type")) {
             auto player = parser.get_player();
-            const Quota op = parser.get_quota(QuotaType_Equal);
-            const auto type = parser.get_magic_enum<CrigPlayerType>();
-            auto compare_type = PlayerType::Human;
-            bool type_is_witness = false;
-            switch (type) {
-                case CrigPlayerType::Human:            compare_type = PlayerType::Human;            break;
-                case CrigPlayerType::HumanDefeated:    compare_type = PlayerType::HumanDefeated;    break;
-                case CrigPlayerType::Computer:         compare_type = PlayerType::Computer;         break;
-                case CrigPlayerType::ComputerDefeated: compare_type = PlayerType::ComputerDefeated; break;
+            const auto op = parser.get_quota(QuotaType_Equal);
+            const auto type = parser.get_magic_enum<CrigPlayerType>(static_cast<CrigPlayerType>(parser.get_s32()));
 
-                case CrigPlayerType::Witness:
-                case CrigPlayerType::WitnessDefeated: {
-                    type_is_witness = true;
+            if (!player) return false;
+            player -= 1;
+            if (type == CrigPlayerType::None) {
+                parser.error("Invalid player type", type);
+                return false;
+            }
+
+            const auto compare = [&](PlayerType::Enum type) {
+                switch (op.type) {
+                    case QuotaType_Equal:    return g_player_table[player].type == type;
+                    case QuotaType_NotEqual: return g_player_table[player].type != type;
                 }
             }
             if (player) {
@@ -542,28 +547,10 @@ static bool parse_condition(Parser& parser) {
                 }
             }
             return false;
-        }/* else if (parser.eq("selected")) {
-            PlayerBitset players = parser.get_player_bitset();
-            UnitIdBitset unit_ids = parser.get_unit_id_bitset();
-            QuotaType quota_type = parser.get_quota_type(QuotaType_GreaterOrEqual);
-            u32 quota = parser.get_s32();
-
-            u32 count = 0;
-            for (u32 i = 0; i < units.count; ++i) { // TODO: Replace with selection. -Pr0nogo
-                Unit* unit = units.units[i];
-                if (unit->player >= FullPlayerLimit || !players[unit->player]) {
-                    continue;
-                }
-                if (unit->id >= UnitId::Count || !unit_ids[unit->id]) {
-                    continue;
-                }
-                count++;
-            }
-            if (check_quota(quota_type, quota, count)) {
-                return true;
-            }
-            return false;
-        }*/
+        } else if (parser.equals("is_multiplayer")) {
+            auto state = parser.get_s32();
+            return g_multiplayer_mode == (bool)state;
+        }
     }
     return false;
 }
@@ -777,16 +764,16 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
             s32 max_score = parser.get_s32();
 
             Objective& objective = g_objectives.get(key);
-            objective.score = std::clamp(objective.score + score, 0, max_score);
-            objective.max_score = max_score;
+            objective.max_score = objective.max_score + max_score;
+            objective.score = std::clamp(objective.score + score, 0, (s32)objective.max_score);
         } else if (parser.equals("objective_score_subtract") && is_local_player) {
             s32 key = parser.get_s32();
             s32 score = parser.get_s32();
             s32 max_score = parser.get_s32();
 
             Objective& objective = g_objectives.get(key);
-            objective.score = std::clamp(objective.score - score, 0, max_score);
-            objective.max_score = max_score;
+            objective.max_score = objective.max_score - max_score;
+            objective.score = std::clamp(objective.score - score, 0, (s32)objective.max_score);
         } else if (parser.equals("objective_timer") && is_local_player) {
             s32 key = parser.get_s32();
             u32 time = parser.get_time_ticks();
@@ -1175,8 +1162,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
             s32 enable = parser.get_s32();
 
             for (Unit* unit : designator.search()) {
-                UnitExt* unit_ext = get_unit_ext(unit);
-                unit_ext->values[ValueDisableAutoBurrow] = !enable;
+                unit->ext().values[ValueDisableAutoBurrow] = !enable;
             }
         } else if (parser.equals("kill")) {
             Designator designator = parser.get_designator();
@@ -1246,8 +1232,12 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                         unit_ext.values[ValueButtonsetOverride] = value;
                     } break;
                     case TriggerStat_HealRange: {
-                        unit_ext.values[ValueTriggerHealRangeSet] = 1;
+                        unit_ext.values[ValueTriggerHealRangeSet] = true;
                         unit_ext.values[ValueTriggerHealRangeAmount] = value;
+                    } break;
+                    case TriggerStat_Portrait: {
+                        unit_ext.values[ValuePortraitOverrideSet] = true;
+                        unit_ext.values[ValuePortraitOverrideId] = value;
                     } break;
                 }
             }
@@ -1295,6 +1285,11 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                     case TriggerBehavior_NoEnergyOverlay: {
                         if (unit_ext.values[ValueNoEnergyOverlay] != enable) {
                             unit_ext.values[ValueNoEnergyOverlay] = enable;
+                        }
+                    } break;
+                    case TriggerBehavior_InfrastructureBurrow: {
+                        if (unit_ext.values[ValueOverrideInfrastructureBurrow] != enable) {
+                            unit_ext.values[ValueOverrideInfrastructureBurrow] = enable;
                         }
                     } break;
                 }
@@ -1357,7 +1352,8 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                     } break;
                     case OrderId::Move:
                     case OrderId::AttackMove:
-                    case OrderId::Patrol: {
+                    case OrderId::Patrol:
+                    case OrderId::RallyPointToTile: {
                         helper::issue_order_targeting_ground(unit, order_id, dest.x, dest.y);
                     } break;
                     case OrderId::Burrow:
@@ -1384,6 +1380,21 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
 
             for (Unit* unit : designator.search({.sort = count != 0}).take(count)) {
                 rescue_unit(unit, target_player - 1);
+            }
+        } else if (parser.equals("highlight_unit")) {
+            Designator designator = parser.get_designator();
+            u32 count = parser.get_s32();
+            u32 timer = parser.get_s32();
+
+            for (Unit* unit : designator.search({.sort = count != 0}).take(count)) {
+                unit->sprite->selection_timer = timer ? timer : 45;
+            }
+        } else if (parser.equals("set_ally_alert_blacklist")) {
+            auto player = parser.get_player();
+            auto players = parser.get_player_bitset();
+            if (player) {
+                player -= 1;
+                g_globals->players[player].ally_alert_blacklist = players;
             }
         } else if (parser.equals("set_nydus_link")) {
             Designator designator_entry = parser.get_designator();
@@ -1695,6 +1706,36 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                 auto& cm_player = g_globals->players[player];
                 cm_player.disable_burrow = value;
             }
+        } else if (parser.equals("set_burrow_infrastructure_override")) {
+            const auto players = parser.get_player_bitset();
+            const auto value = parser.get_bool();
+
+            for (u32 player = 0; player < PlayerLimit; player++) {
+                if (!players[player]) continue;
+
+                auto& cm_player = g_globals->players[player];
+                cm_player.override_infrastructure_burrow = value;
+            }
+        } else if (parser.equals("disable_tactical_ai")) {
+            const auto players = parser.get_player_bitset();
+            const auto value = parser.get_bool();
+
+            for (u32 player = 0; player < PlayerLimit; player++) {
+                if (!players[player]) continue;
+
+                auto& cm_player = g_globals->players[player];
+                cm_player.disable_tactical_ai = value;
+            }
+        } else if (parser.equals("disable_extended_waves")) {
+            const auto players = parser.get_player_bitset();
+            const auto value = parser.get_bool();
+
+            for (u32 player = 0; player < PlayerLimit; player++) {
+                if (!players[player]) continue;
+
+                auto& cm_player = g_globals->players[player];
+                cm_player.disable_extended_waves = value;
+            }
         } else if (parser.equals("set_units_disabled")) {
             const auto players = parser.get_player_bitset();
             const auto unit_ids = parser.get_unit_id_bitset();
@@ -1710,6 +1751,7 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
             const auto players = parser.get_player_bitset();
             const auto unit_ids = parser.get_unit_id_bitset();
             const auto disable = parser.get_bool(true);
+            const auto hide = parser.get_bool(false);
 
             // Currently only disables train buttons, ergo won't work on AI and on hackers
             for (u32 player = 0; player < PlayerLimit; player++) {
@@ -1718,8 +1760,12 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                 auto& cm_player = g_globals->players[player];
                 if (disable) {
                     cm_player.disabled_units |= unit_ids;
+                    if (hide) {
+                        cm_player.hidden_units |= unit_ids;
+                    }
                 } else {
                     cm_player.disabled_units &= ~unit_ids;
+                    cm_player.hidden_units &= ~unit_ids;
                 }
             }
         } else if (parser.equals("announce_player_defeat")) {

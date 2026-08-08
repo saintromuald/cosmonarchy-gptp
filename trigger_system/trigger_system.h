@@ -166,7 +166,12 @@ struct CmPlayer {
     bool hide_in_team_ui;
     bool disable_liftoff;
     bool disable_burrow;
+    bool override_infrastructure_burrow;
+    bool disable_tactical_ai;
+    bool disable_extended_waves;
     UnitIdBitset disabled_units;
+    UnitIdBitset hidden_units;
+    PlayerBitset ally_alert_blacklist;
     GameModeRace game_mode_race;
     u32 build_multiplier = 1;
 
@@ -251,8 +256,8 @@ struct Globals {
     std::vector<EcoMeasurements> eco_measurements;
     std::vector<char> uuid_rand;
 
-	void sample_eco();
-	f32 calculate_hype() const;
+    void sample_eco();
+    f32 calculate_hype() const;
 };
 
 enum TriggerStat : u8 {
@@ -267,6 +272,7 @@ enum TriggerStat : u8 {
     TriggerStat_Wireframe,
     TriggerStat_Buttonset,
     TriggerStat_HealRange,
+    TriggerStat_Portrait,
 
     TriggerStat_Count,
 };
@@ -283,6 +289,7 @@ static const char* trigger_stat_names[] = {
     "wireframe",
     "buttonset",
     "heal_range",
+    "portrait",
 };
 C_ASSERT(ARRAY_SIZE(trigger_stat_names) == TriggerStat_Count);
 
@@ -295,6 +302,7 @@ enum TriggerBehavior : u8 {
     TriggerBehavior_NoCollision,
     TriggerBehavior_AirTransport,
     TriggerBehavior_NoEnergyOverlay,
+    TriggerBehavior_InfrastructureBurrow,
 
     TriggerBehavior_Count,
 };
@@ -308,6 +316,7 @@ static const char* trigger_behavior_names[] = {
     "no_collision",
     "air_transport",
     "no_energy_overlay",
+    "infrastructure_burrow",
 };
 C_ASSERT(ARRAY_SIZE(trigger_behavior_names) == TriggerBehavior_Count);
 

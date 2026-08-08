@@ -7,6 +7,7 @@
 #include "hooks/weapons/weapon_damage.h"
 #include "hooks/unit_stats/armor_bonus.h"
 #include <algorithm>
+#include "trigger_system/trigger_system.h"
 
 #define ENABLE_KITE_DEBUG_MESSAGES 0
 
@@ -269,18 +270,19 @@ enum KiterType {
     KiterType_Count,
 };
 
-static KiterType get_kiter_type(u32 unit_id) {
+static KiterType get_kiter_type(u32 unit_id, u32 player) {
     if (units_dat::base_property[unit_id] & UnitProperty::Building
     || (units_dat::ground_weapon[unit_id]	!= WeaponId::None && weapons_dat::max_range[units_dat::ground_weapon[unit_id]]	< 3 * 32)
     || (units_dat::air_weapon[unit_id]		!= WeaponId::None && weapons_dat::max_range[units_dat::air_weapon[unit_id]]		< 3 * 32)
-    ||	unit_id == UnitId::TerranMadcap) // For passive efficiency
+    ||  unit_id == UnitId::TerranMadcap // For passive efficiency
+    ||  g_globals->players[player].disable_tactical_ai)
     {
         // No kiting; Just smart targeting
         // Currently overrides KiterType_Melee; results in improved AI performance! -Pr0nogo 21 Sep 2023
         return KiterType_TargetingOnly;
     }
 
-    switch(unit_id) {
+    switch (unit_id) {
         case UnitId::TerranPhalanxSiegeMode:
         case UnitId::TerranPhalanxSiegeModeTurret:
         case UnitId::TerranDilettante:
@@ -337,11 +339,11 @@ static s32 get_effect_value(Unit* unit, EffectField* effect) {
     UnitExt* unit_ext = get_unit_ext(unit);
     s32 value = 0;
 
-    bool flyer = unit->status & UnitStatus::InAir;
+    bool flyer = unit->is_in_air();
     u32 total_hp = unit->get_total_hp_plus_shields();
     fp32 hp_percentage = total_hp / static_cast<fp32>(unit->get_max_hp_ingame() + unit->get_max_shields_in_game());
 
-    KiterType type = get_kiter_type(unit->id);
+    KiterType type = get_kiter_type(unit->id, unit->player);
     switch (effect->id) {
         case EffectId::SalamanderFire: {
             if (!flyer) {
@@ -566,17 +568,17 @@ static bool unit_could_kite(Unit* unit) {
 }
 
 static bool unit_can_kite(Unit* unit) {
-    UnitExt* unit_ext = get_unit_ext(unit);
-    if (unit_ext->values[ValueAI_KitingSignal] < 256 && unit->id != UnitId::ProtossSolarion) {
+    auto& unit_ext = unit->ext();
+    if (unit_ext.values[ValueAI_KitingSignal] < 256 && unit->id != UnitId::ProtossSolarion) {
         return false;
     }
     // ComputerReturn was patched away, still keeping the unreliable hardcode just in case
-    return get_kiter_type(unit->id) != KiterType_TargetingOnly && (unit_ext->timers[TimerAI_KitingCooldown] == 0 || unit->main_order_id == OrderId::ComputerReturn);
+    return get_kiter_type(unit->id, unit->player) != KiterType_TargetingOnly && (unit_ext.timers[TimerAI_KitingCooldown] == 0 || unit->main_order_id == OrderId::ComputerReturn);
 }
 
 static bool unit_kiting_can_attack(Unit* unit) {
-    UnitExt* unit_ext = get_unit_ext(unit);
-    if (unit_ext->values[ValueAI_PreventTargeting]) {
+    auto& unit_ext = unit->ext();
+    if (unit_ext.values[ValueAI_PreventTargeting]) {
         return false;
     }
     if (unit->id == UnitId::ProtossSolarion) {
@@ -641,7 +643,7 @@ static void kiting_ai(Unit* unit, UnitExt* unit_ext) {
 
         if (unit_kiting_can_attack(unit)) {
             unit_ext->timers[TimerAI_KitingActive] = 24 * 24;
-            if (get_kiter_type(unit->id) != KiterType_TargetingOnly) {
+            if (get_kiter_type(unit->id, unit->player) != KiterType_TargetingOnly) {
                 if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
                     if (!unit_ext->timers[TimerAI_KitingLeash]) {
                         unit_ext->timers[TimerAI_KitingLeash] = 6 * 24;
@@ -781,7 +783,7 @@ static void kiting_ai(Unit* unit, UnitExt* unit_ext) {
                 fp32 hostile_advantage = result.hostile_strength / std::max(static_cast<fp32>(result.ally_strength), static_cast<fp32>(1));
                 u32 distance = result.distance;
                 u32 max_range = get_max_range(unit->id);
-                switch (get_kiter_type(unit->id)) {
+                switch (get_kiter_type(unit->id, unit->player)) {
                     case KiterType_Melee: {
                         if (!prefer_kiting_forward && unit->hitpoints < s32(unit->get_total_hp_plus_shields() * 0.2fp)) {
                             unit_ext->timers[TimerAI_KitingCooldown] = 24;

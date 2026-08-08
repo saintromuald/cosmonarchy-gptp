@@ -3,7 +3,7 @@
 
 namespace UnitId {
     enum Enum {
-        // Cosmonarchy BW \\
+        // Cosmonarchy \\
 
     // AI
     //	Personality											= 105,		// Disruption Field

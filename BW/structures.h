@@ -1161,24 +1161,24 @@ struct TownReq {
 };
 
 struct AiTown {
-    AiTown* prev;							//	0x00
-    AiTown* next;							//	0x04
-    WorkerAiList workers;					//	0x08
-    BuildingAiList buildings;				//	0x10
-    u8 player;								//	0x18
-    u8 inited;								//	0x19
-    u8 worker_count;						//	0x1A
-    u8 worker_limit;						//	0x1B
-    u8 resarea;								//	0x1C
-    u8 resource_units_not_set;				//	0x1D
-    u8 in_battle;							//	0x1E
-    u8 unk1f;								//	0x1F
-    v2u16 position;						//	0x20
-    Unit* main_building;					//	0x24
-    Unit* building_scv;						//	0x28
-    Unit* mineral;							//	0x2C
-    Unit* old_gas_buildings[3];				//	0x30
-    TownReq requests[0x64];					//	0x3C
+    AiTown* prev;				// 0x00
+    AiTown* next;				// 0x04
+    WorkerAiList workers;		// 0x08
+    BuildingAiList buildings;	// 0x10
+    u8 player;					// 0x18
+    u8 inited;					// 0x19
+    u8 worker_count;			// 0x1A
+    u8 worker_limit;			// 0x1B
+    u8 resarea;					// 0x1C
+    u8 resource_units_not_set;	// 0x1D
+    u8 in_battle;				// 0x1E
+    u8 unk1f;					// 0x1F
+    Point16 position;			// 0x20
+    Unit* main_building;		// 0x24
+    Unit* building_scv;			// 0x28
+    Unit* mineral;				// 0x2C
+    Unit* old_gas_buildings[3];	// 0x30
+    TownReq requests[0x64];		// 0x3C
 };
 C_ASSERT(sizeof(AiTown) == 0x1cc);
 

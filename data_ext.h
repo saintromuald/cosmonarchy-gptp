@@ -265,6 +265,10 @@ enum ExtValueId {
     ValueAshHeap,
     ValueAshHeapPlayer,
     ValueWarringWindsStacks,
+    ValueSermonSalveCloak,
+    ValuePortraitOverrideSet,
+    ValuePortraitOverrideId,
+    ValueOverrideInfrastructureBurrow,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,

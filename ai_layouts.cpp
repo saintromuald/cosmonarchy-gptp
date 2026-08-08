@@ -126,7 +126,7 @@ void AiLayouts::update() {
             }
 
             if (g_show_player_layouts[town.player]) {
-                bw::printf("Player %u started Town #%u at resarea %u", town.player + 1, town_id, town.resarea);
+                bw::printf("Player %u started town #%u at resarea %u", town.player + 1, town_id, town.resarea);
             }
         }
         if (layouts_town.inited) {

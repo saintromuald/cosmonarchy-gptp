@@ -152,7 +152,20 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
     if (active_unit) {
         player = active_unit->player;
     }
+
+    // Override with player settings first
     portrait_id = get_player_portrait_id_override(portrait_id, player);
+
+    if (active_unit) {
+        // Override with unit specific crigs second
+        auto& unit_ext = active_unit->ext();
+        if (unit_ext.values[ValuePortraitOverrideSet]) {
+            portrait_id = unit_ext.values[ValuePortraitOverrideId];
+        }
+    }
+
+    // Override with map-specific hardcodes last
+    // Once briefing crigs are achieved, we can remove these. -Pr0nogo
     if (g_current_map_name == "Anad's Greatsword"sv) {
         switch (portrait_id) {
             case PortraitId::Maverick: {

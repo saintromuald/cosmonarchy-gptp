@@ -36,8 +36,6 @@ public:
             else if (stat == "movement_flags")      alter_flags<MovementFlags>(unit_ids, units_dat::movement_flags);
             else if (stat == "base_property")       alter_flags<UnitProperty::Enum>(unit_ids, units_dat::base_property);
             else if (stat == "group_flags")         alter_flags_value<GroupFlags>(unit_ids, units_dat::group_flags);
-            else if (stat == "seek_range")          alter_stat(unit_ids, units_dat::seek_range);
-            else if (stat == "sight_range")         alter_stat(unit_ids, units_dat::sight_range);
             else if (stat == "sound_ready")         set_stat(unit_ids, units_dat::sound_ready);
             else if (stat == "sound_what_first")    set_stat(unit_ids, units_dat::sound_what_first);
             else if (stat == "sound_what_last")     set_stat(unit_ids, units_dat::sound_what_last);
