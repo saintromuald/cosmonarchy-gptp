@@ -590,8 +590,7 @@ namespace hooks {
                 if (unit->id == UnitId::TerranMadcap) {
                     s32 stacks = unit_ext.values[ValueMadcapStacks];
                     if (stacks >= 108 && !unit_ext.values[ValueMadcapFullChargeRead]) { // 9 stacks
-                        const auto sound_id = bw::rand_between(SoundId::MadcapPassiveCharge01, SoundId::MadcapPassiveCharge03);
-                        helper::play_sound_from_unit(sound_id, unit, 1, 0);
+                        bw::play_sound({SoundId::MadcapPassiveCharge01, SoundId::MadcapPassiveCharge03}, unit->position);
                         unit->sprite->create_top_overlay(ImageId::MaverickStimpackInject);
                         unit_ext.values[ValueMadcapFullChargeRead] = 1;
                     }
@@ -617,7 +616,7 @@ namespace hooks {
                                     unit_ext.values[ValuePhobosDischarge] = 1;
                                     unit->ground_weapon_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
                                     unit->air_weapon_cooldown = get_modified_weapon_cooldown(unit, WeaponId::PhobosArgosLaserBatteries);
-                                    helper::play_sound_from_unit(SoundId::PhobosArgentCapacitorsProc, unit, 1, 0);
+                                    bw::play_sound(SoundId::PhobosArgentCapacitorsProc, unit->position);
                                     unit->sprite->create_overlay(ImageId::OpticalFlareHit_Large);
                                 }
                             } else {
@@ -732,7 +731,6 @@ namespace hooks {
                             apply_weapon_cooldown(unit, weapon_id);
                             Thingy* muzzle_flash = helper::create_thingy(SpriteId::PlasmaTorpedoImpact, unit->position.x, unit->position.y, unit->player);
                             muzzle_flash->sprite->elevation = unit->sprite->elevation + 1;
-                        //  bw::play_sound({SoundId::AnthelionWeaponFire01, SoundId::AnthelionWeaponFire03}, unit);
                         }
                     } break;
                     case WeaponId::QuazrokorQuazrokSpray: {
@@ -895,7 +893,7 @@ namespace hooks {
                 g_iquare_globals->add_bullet_multihit(bullet, target);
                 bw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
                 hooks::weapon_bullet_hit(bullet, target, 1);
-                bw::play_sound(SoundId::RamessesWeaponhit01, target);
+                bw::play_sound(SoundId::RamessesWeaponhit01, target->position);
             } break;
             case WeaponId::WyvernJacksonCannon:
             case WeaponId::MagnetarNewtonianShockCannon:
@@ -920,8 +918,7 @@ namespace hooks {
                 // pierce targets
                 g_iquare_globals->add_bullet_multihit(bullet, target);
                 bw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);
-                u32 sound_id = bw::rand_between(SoundId::ClaymoreWeaponHit01, SoundId::ClaymoreWeaponHit02);
-                helper::play_sound_from_unit(sound_id, target, 1, 0);
+                bw::play_sound({SoundId::ClaymoreWeaponHit01, SoundId::ClaymoreWeaponHit02}, target->position);
                 hooks::weapon_bullet_hit(bullet, target, 1);
 
                 // Claymore - Kelvin Munitions - slow pierced targets
@@ -1074,8 +1071,7 @@ namespace hooks {
             u32 period = 1 * 32;
             if (bullet_ext->distance_traveled / period > old_distance_traveled / period) {
                 bw::create_and_init_thingy(SpriteId::AntiMatterMissileHit, bullet->position.x, bullet->position.y, bullet->player, bullet->sprite->elevation - 1);
-                u32 sound_id = bw::rand_between(SoundId::PositronWeaponHit01, SoundId::PositronWeaponHit03);
-                helper::play_sound_at_pos(sound_id, bullet->position, 1, 0);
+                bw::play_sound({SoundId::PositronWeaponHit01, SoundId::PositronWeaponHit03}, bullet->position);
 
                 // Let's filter with no flags, since that should remove untargetable stuff and what not
                 for (Unit* target : g_unit_search.radial(bullet->position, weapons_dat::outer_splash_radius[bullet->weapon_id]).filter()) {
@@ -1139,7 +1135,7 @@ namespace hooks {
                             new_bullet->position = bullet->position;
                             g_iquare_globals->add_multihit_empty_bullet(new_bullet, 1);
                             if (++fired == splits) {
-                                helper::play_sound_from_unit(SoundId::ArchitectWeaponSplit01, (Unit*)bullet, 1, 0);
+                                bw::play_sound(SoundId::ArchitectWeaponSplit01, bullet->position);
                                 break;
                             }
                         }

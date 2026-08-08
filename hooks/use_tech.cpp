@@ -190,7 +190,7 @@ namespace hooks {
                 queue_toggle_ability(RustId::ToggleDisruptionField, unit);
             } break;
             case TechId::DimensionalRecall: {
-                if (unit->id == UnitId::ProtossDidact && can_play_local_sound) {
+                if ((unit->id == UnitId::ProtossDidact || unit->id == UnitId::ProtossSaladius) && can_play_local_sound) {
                     bw::play_action_sound(SoundId::Protoss_ARBITER_PAbPss00_WAV, *g_active_portrait_unit);
                 }
                 helper::issue_tri_target_order(OrderId::Teleport, 0, 0);
@@ -234,7 +234,8 @@ namespace hooks {
                             queue_generic_ability(RustId::CancelLandGrab, 1);
                         } break;
                         case UnitId::ProtossXenolith:
-                        case UnitId::ProtossDidact: {
+                        case UnitId::ProtossDidact:
+                        case UnitId::ProtossSaladius: {
                             queue_generic_ability(RustId::CancelRecall, 1);
                         } break;
                         case UnitId::ProtossCantavis:

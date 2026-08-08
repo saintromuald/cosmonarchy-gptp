@@ -459,6 +459,13 @@ struct Unit : public UnitLayout {
     void preylock_cast();
     void lobotomy_warhead_cast();
     void hijack(Unit* hijacker);
+    void proc_askosi_embed();
+    void psi_storm_cancel();
+    void proc_ensnaring_brood();
+    bool sermon_salve_cloak(Unit* cloaker);
+    void puppeteer_cast(Unit* victim);
+    void ashbind_cast();
+    void mimicry_tick();
 };
 
 C_ASSERT(sizeof(Flingy) == 76);

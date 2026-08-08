@@ -1114,6 +1114,7 @@ static bool can_use_cliff_advantage(Unit* unit, u8 weapon_id) {
     switch (unit->id) {
         case UnitId::TerranHarakan:
         case UnitId::TerranHarakanGolden:
+        case UnitId::TerranNuriel:
         case UnitId::TerranStriga:
         case UnitId::TerranMatadorTankMode:
         case UnitId::TerranMatadorTurretTankMode:
@@ -1309,6 +1310,7 @@ UnitId::Enum get_trap_id(Unit* unit) {
         case UnitId::TerranVultureHecaton: return UnitId::TerranTartarusMine;
         case UnitId::AskosiProselyte:      return UnitId::AskosiEyelet;
         case UnitId::TerranVultureUpstart: return UnitId::TerranGoremast;
+        case UnitId::RaynorVulture:        return UnitId::TerranSpiderMine;
     }
     return UnitId::None;
 }
@@ -1322,12 +1324,14 @@ bool unit_is_ranged_attacker(Unit* unit) {
         // Prohibited IDs
         case UnitId::ProtossAmaranth:
         case UnitId::ZergAkistrokor:
-        case UnitId::ZergUltrokor: {
+        case UnitId::ZergUltrokor:
+        case UnitId::ZergZoltorokor: {
             return false;
         } break;
         // Allowed IDs
         case UnitId::TerranHarakan:
         case UnitId::TerranHarakanGolden:
+        case UnitId::TerranNuriel:
         case UnitId::TerranGoliathTurret:
         case UnitId::TerranMatadorTankMode:
         case UnitId::TerranMatadorCinderMode:
@@ -1436,7 +1440,9 @@ bool unit_id_is_available_without_an_addon(u16 id) {
         || id == UnitId::TerranCannibal
         || id == UnitId::TerranVultureUpstart
         || id == UnitId::TerranSouthpaw
-        || id == UnitId::TerranWendigo;
+        || id == UnitId::TerranWendigo
+
+        || id == UnitId::TerranNuriel;
 }
 
 void apply_hallucinating(Unit* unit, u8 player, u32 time) {
@@ -2497,6 +2503,9 @@ u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit) {
         case WeaponId::CrematoriumOkliQuadshard: {
             return unit->id == UnitId::AskosiCrematorium ? 4 : 1;
         }
+        case WeaponId::PanoptusPlasmaMissiles: {
+            return unit->id == UnitId::ProtossPathlight ? 4 : 2;
+        }
         case WeaponId::HotshotDispatchShotgun:
         case WeaponId::SirenCharybdalRifle: {
             return 3;
@@ -3317,7 +3326,8 @@ u32 get_fore_castle_armor_bonus(Unit* unit) {
     switch (unit->id) {
         case UnitId::TerranMatadorTankMode:
         case UnitId::TerranBroadside:
-        case UnitId::TerranMinotaur: {
+        case UnitId::TerranMinotaur:
+        case UnitId::DukeMinotaur: {
             bonus += 2;
         }
     }
@@ -4082,7 +4092,14 @@ u32 get_weapon_fire_sound(u32 weapon_id, Unit* unit) {
         case WeaponId::TiangouMoonboundSalvo:               return bw::rand_between(SoundId::TiangouWeaponfire01, SoundId::TiangouWeaponfire05);
         case WeaponId::ValkyrieHaloRockets:                 return SoundId::Bullet_Tfrshoot_wav;
         case WeaponId::ValkyrieHecatonLogiRockets:          return bw::rand_between(SoundId::ValkyrieHecatonWeaponfire01, SoundId::ValkyrieHecatonWeaponfire04);
-        case WeaponId::QuadrigaGodhandRockets:              return SoundId::Bullet_Tfrshoot_wav;
+        case WeaponId::QuadrigaGodhandRockets: {
+            if (unit->id == UnitId::TerranQuadriga) {
+                return SoundId::Bullet_Tfrshoot_wav;
+            }
+            if (unit->id == UnitId::ForerunnerExigo) {
+                return bw::rand_between(SoundId::ExigoWeaponfire01, SoundId::ExigoWeaponfire04);
+            }
+        }
         case WeaponId::GorgonArtificeBattery: {
             if (unit->id == UnitId::TerranGorgon) {
                 return bw::rand_between(SoundId::GorgonWeaponfire01, SoundId::GorgonWeaponfire02);
@@ -4102,6 +4119,13 @@ u32 get_weapon_fire_sound(u32 weapon_id, Unit* unit) {
         case WeaponId::AnalogueCylindricalBlaster:	        return bw::rand_between(SoundId::AnalogueWeaponfire01, SoundId::AnalogueWeaponfire03);
         case WeaponId::AuroraPhotonBlasters:                return SoundId::Bullet_BlastGn2_wav;
         case WeaponId::ExtatusRepeatingBlaster:             return bw::rand_between(SoundId::ExtatusWeaponfire01, SoundId::ExtatusWeaponfire03);
+        case WeaponId::StarSovereignCelestialCannon: {
+            if (unit->id == UnitId::ProtossStarSovereign) {
+                return bw::rand_between(SoundId::StarSovereignWeaponfire01, SoundId::StarSovereignWeaponfire04);
+            }
+            // TODO: Extend weapons and remove this. -Pr0nogo
+            return bw::rand_between(SoundId::VicereWeaponfire01, SoundId::VicereWeaponfire02);
+        }
 
         case WeaponId::QuaziliskAcridBarbs:                 return bw::rand_between(SoundId::QuaziliskWeaponfire01, SoundId::QuaziliskWeaponfire03);
         case WeaponId::QuazrokorQuazrokSpray:               return bw::rand_between(SoundId::QuazrokorWeaponfire01, SoundId::QuazrokorWeaponfire01);
@@ -4137,6 +4161,13 @@ u32 get_weapon_hit_sound(WeaponId::Enum weapon_id, Unit* unit) {
         case WeaponId::PenumbraErebolShockCannon:         return bw::rand_between(SoundId::PenumbraWeaponhit01, SoundId::PenumbraWeaponhit02);
         case WeaponId::ClaymoreHarpoonRailgun:            return SoundId::Bullet_LASRHIT3_wav;
         case WeaponId::WraithBurstLasers:                 return SoundId::Bullet_LASRHIT3_wav;
+        case WeaponId::GorgonArtificeBattery: {
+            if (unit->id == UnitId::TerranGorgon) {
+                return SoundId::None;
+            }
+            // TODO: Extend weapons and remove this. -Pr0nogo
+            return bw::rand_between(SoundId::FerrumWeaponhit01, SoundId::FerrumWeaponhit04);
+        }
         case WeaponId::WyvernJacksonCannon:               return SoundId::Bullet_LASRHIT3_wav;
         case WeaponId::MinotaurAsterionLaserBattery:      return SoundId::Bullet_LASRHIT3_wav;
         case WeaponId::MagnetarNewtonianShockCannon:      return SoundId::Bullet_LASRHIT3_wav;
@@ -4387,6 +4418,7 @@ bool unit_id_blocked_in_dark_ages(UnitId::Enum unit_id) {
         case UnitId::ProtossWitness:
         case UnitId::ProtossEnvoy:
         case UnitId::ProtossDidact:
+        case UnitId::ProtossSaladius:
         case UnitId::ProtossClarion:
             return false;
 

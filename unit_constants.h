@@ -368,6 +368,7 @@ namespace Matraleth {
 inline constexpr s32 AIParasiteTimer = 75;
 inline constexpr s32 AIEnsnaringBroodTimer = 75;
 inline constexpr s32 EnsnareTimer = 5;
+inline constexpr s32 EnsnaringBroodRange = 4tiles;
 }
 
 namespace Vilgoleth {

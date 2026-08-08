@@ -459,7 +459,8 @@ namespace hooks {
                     case UnitId::ProtossClarion: {
                         g_graphics.draw_circle(source.x, source.y, ProtossClarion::PhaseLinkRange, graphics::GREEN, graphics::ON_MAP);
                     } break;
-                    case UnitId::ProtossDidact: {
+                    case UnitId::ProtossDidact:
+                    case UnitId::ProtossSaladius: {
                         g_graphics.draw_circle(source.x, source.y, 4 * 32, graphics::GREEN, graphics::ON_MAP);
                     } break;
                     case UnitId::ProtossCrucible: {
@@ -1518,7 +1519,8 @@ namespace hooks {
                     }
                 }
             } break;
-            case UnitId::ZergUltrokor: {
+            case UnitId::ZergUltrokor:
+            case UnitId::ZergZoltorokor: {
                 // Kaiser Rampage - Ultrokor behavior
                 if (!unit->is_burrowed() && !unit_ext.timers[TimerKaiserRampageTimeout]) {
                     u32 radius = 1 * 32;
@@ -1985,26 +1987,17 @@ namespace hooks {
             case UnitId::TerranOlympian: {
                 fire_secondary_melee_weapon_if_needed(unit, WeaponId::OlympianTitansFist);
             } break;
-            case UnitId::ZergMatraleth:
-            case UnitId::ExtInfestedKerrigan:
-            case UnitId::BigInfestedKerrigan: {
-                // Matraleth - Ensnaring Brood
-                if (!unit->is_frozen()) {
-                    for (Unit* target : g_unit_search.radial_ex(unit, 4 * 32, FilterAlly | FilterNoBuilding | FilterCompleted)) {
-                        if (!unit_is_combatant(target)) {
-                            continue;
-                        }
-                        auto& target_ext = target->ext();
-                        target_ext.timers[TimerEnsnaringBrood] = 3;
-                        if (!target->is_burrowed()) {
-                            bw::add_unit_overlay(target, ImageId::EnsnaringBroodOverlay);
-                        }
-                    }
-                }
-                if (unit->id == UnitId::ZergMatraleth && unit->order_signal & 32) {
+            case UnitId::ZergMatraleth: {
+                unit->proc_ensnaring_brood();
+                if (unit->order_signal & 32) {
                     unit->order_signal &= ~32;
                     bw::decloak_passive_proc(unit);
                 }
+            } break;
+            case UnitId::ExtInfestedKerrigan:
+            case UnitId::BigInfestedKerrigan: {
+                unit->proc_ensnaring_brood();
+                unit->psi_storm_cancel();
             } break;
             case UnitId::ZergSasyrvoleth: {
                 // Sasyrvoleth - Lucilleri Pheremones
@@ -2560,7 +2553,8 @@ namespace hooks {
             } break;
             case UnitId::TerranVulture:
             case UnitId::TerranVultureHecaton:
-            case UnitId::TerranVultureUpstart: {
+            case UnitId::TerranVultureUpstart:
+            case UnitId::RaynorVulture: {
                 if (unit->mine_carrier.mine_count > 3) {
                     unit->mine_carrier.mine_count = 3;
                 }
@@ -2606,7 +2600,7 @@ namespace hooks {
                 }
             } break;
             case UnitId::ProtossCantavis:
-            case UnitId::ExtTassadar: {
+            case UnitId::ExtTassadar:{
                 if (unit->order_signal & 64) {
                     unit->order_signal &= ~64;
                     bw::decloak_passive_proc(unit);
@@ -2614,14 +2608,7 @@ namespace hooks {
                 if (unit_ext.values[ValueJustCastedHallucination] && unit->order_signal & 32) {
                     unit_ext.values[ValueJustCastedHallucination] = 0;
                 }
-                if (bw::get_generic_rust_value(unit, RustId::CancelPsiStorm)) {
-                    bw::set_generic_rust_value(unit, RustId::CancelPsiStorm, 0);
-                    if (auto effect = g_iquare_globals->get_effect(unit_ext.current_storm)) {
-                        effect->destroy();
-                    }
-                    unit_ext.current_storm = 0;
-                    unit->spell_cooldown = u8(get_modified_weapon_cooldown(unit, WeaponId::PsiStorm) * 1.25fp);
-                }
+                unit->psi_storm_cancel();
             } break;
             case UnitId::ProtossAmaranth: {
                 Unit* target = unit->order_target.unit;
@@ -2749,7 +2736,8 @@ namespace hooks {
                     }
                 }
             } break;
-            case UnitId::ProtossDidact: {
+            case UnitId::ProtossDidact:
+            case UnitId::ProtossSaladius: {
                 if (unit->order_signal & 32) {
                     unit->order_signal &= ~32;
                     bw::decloak_passive_proc(unit);

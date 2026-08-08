@@ -5,7 +5,7 @@
 namespace hooks {
 	void cloak_nearby_units(Unit* cloaker) {
 		auto& cloaker_ext = cloaker->ext();
-		if (cloaker_ext.values[ValueDidactChannelIndex] || cloaker_ext.values[ValueDidactRecalling]) {
+		if (cloaker_ext.values[ValueDidactChannelIndex] || cloaker_ext.values[ValueDimensionalRecalling]) {
 			return;
 		}
 

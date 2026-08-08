@@ -23,6 +23,8 @@ namespace UnitId {
         Stroluum											= 501,
         Tuzor												= 502,
         BigInfestedKerrigan                                 = 612,
+        RaynorVulture                                       = 613,
+        DukeMinotaur                                        = 614,
 
     // Special
         Omnivale											= 383,
@@ -181,6 +183,12 @@ namespace UnitId {
         TerranMaverickUpstart                               = 573,
         TerranEidolonUpstart                                = 575,
         TerranAjax                                          = 576,
+        TerranMaverickGolden                                = 580,
+        TerranShamanUpstartSupport                          = 581,
+        TerranShamanUpstartAdrenaline                       = 582,
+        TerranNuriel                                        = 598,
+        TerranPhoenix                                       = 599,
+        TerranArchbishop                                    = 600,
 
     // Terran-Building
         TerranVestry										= 119,		// Starbase / Terran Unused 1
@@ -278,6 +286,9 @@ namespace UnitId {
         ProtossSimulacrumAstral                             = 522,
         ProtossWarlock                                      = 523,
         ProtossEcclesiastAstral                             = 574,
+        ProtossPathlight                                    = 601,
+        ProtossSaladius                                     = 602,
+        ProtossGarantis                                     = 603,
 
     // Protoss-Building
         ProtossAutomatonRegister							= 158,		// Unused Protoss 1
@@ -366,6 +377,7 @@ namespace UnitId {
         ZergGarvrokor                                       = 521,
         ZergZethalor                                        = 559,
         ZergScrylyleth                                      = 560,
+        ZergZoltorokor                                      = 604,
 
     // Zerg-Building
         ZergAxtothAxis										= 130,		// Infested Command Center

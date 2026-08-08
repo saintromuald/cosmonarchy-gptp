@@ -595,6 +595,18 @@ namespace hooks {
                     }
                 } break;
 
+                // Heroes
+                case WeaponId::VultureFragmentationGrenade: {
+                    if (data.attacker->id == UnitId::RaynorVulture) {
+                        data.damage += 10 * 256;
+                    }
+                } break;
+                case WeaponId::MinotaurAsterionLaserBattery: {
+                    if (data.attacker->id == UnitId::DukeMinotaur) {
+                        data.damage += 10 * 256;
+                    }
+                } break;
+
                 // Behaviors
                 case WeaponId::CabalistWarpBlades: {
                     auto& attacker_ext = data.attacker->ext();
@@ -1490,15 +1502,7 @@ namespace hooks {
             case UnitId::AskosiPetract:
             case UnitId::AskosiTirade: {
                 if (!target_ext.values[ValueReassemblyActive]) {
-                    target_ext.values[ValueReassemblyActive] = true;
-                    data.target->heal_hp(data.target->get_max_hp_raw());
-                    data.target->play_iscript_animation(IscriptAnimation::SpecialState1);
-                    data.target->update_speed();
-                    bw::play_sound({SoundId::AskosiDeploy01, SoundId::AskosiDeploy03}, data.target->position);
-                    data.target->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
-                    if (data.target->id == UnitId::AskosiObject) {
-                        data.target->status |= UnitStatus::CanNotReceiveOrders;
-                    }
+                    data.target->proc_askosi_embed();
                     fatal_deal_damage = false;
                 }
             } break;

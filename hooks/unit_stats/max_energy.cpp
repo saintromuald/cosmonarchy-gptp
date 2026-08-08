@@ -45,7 +45,9 @@ namespace hooks {
 			case UnitId::ProtossMindTyrant: {
 				energy = 200;
 			} break;
+			case UnitId::TerranArchbishop:
 			case UnitId::ProtossCantavis:
+			case UnitId::ProtossSaladius:
 			case UnitId::ExtTassadar:
 			case UnitId::Goska: {
 				energy = 250;

@@ -13,7 +13,7 @@
 #include "hooks/target_related.h"
 #include "data_ext.h"
 #include "BW/stat_txt_spec.h"
-#include "trigger_system/trigger_system.h"
+#include "hooks\weapons\weapon_cooldown.h"
 
 UnitRef::UnitRef(Unit* unit) : index{unit->get_unit_index()}, unique_id{unit->unique_id} {}
 
@@ -2153,4 +2153,44 @@ void Unit::hijack(Unit* hijacker) {
     // TODO: Own audiovisuals
     bw::play_sound({SoundId::AskosiDeploy01, SoundId::AskosiDeploy03}, this->position);
     this->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
+}
+
+void Unit::proc_askosi_embed() {
+    this->ext().values[ValueReassemblyActive] = true;
+    this->heal_hp(this->get_max_hp_raw());
+    this->play_iscript_animation(IscriptAnimation::SpecialState1);
+    this->update_speed();
+    bw::play_sound({SoundId::AskosiDeploy01, SoundId::AskosiDeploy03}, this->position);
+    this->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
+    if (this->id == UnitId::AskosiObject) {
+        this->status |= UnitStatus::CanNotReceiveOrders;
+    }
+}
+
+void Unit::psi_storm_cancel() {
+    if (bw::get_generic_rust_value(this, RustId::CancelPsiStorm)) {
+        bw::set_generic_rust_value(this, RustId::CancelPsiStorm, 0);
+        auto& unit_ext = this->ext();
+        if (auto effect = g_iquare_globals->get_effect(unit_ext.current_storm)) {
+            effect->destroy();
+        }
+        unit_ext.current_storm = 0;
+        this->spell_cooldown = u8(hooks::get_modified_weapon_cooldown(this, WeaponId::PsiStorm) * 1.25fp);
+    }
+}
+
+void Unit::proc_ensnaring_brood() {
+    if (this->is_frozen()) {
+        return;
+    }
+    for (Unit* target : g_unit_search.radial_ex(this, Matraleth::EnsnaringBroodRange, FilterAlly | FilterNoBuilding | FilterCompleted)) {
+        if (!unit_is_combatant(target)) {
+            continue;
+        }
+        auto& target_ext = target->ext();
+        target_ext.timers[TimerEnsnaringBrood] = 3;
+        if (!target->is_burrowed()) {
+            bw::add_unit_overlay(target, ImageId::EnsnaringBroodOverlay);
+        }
+    }
 }

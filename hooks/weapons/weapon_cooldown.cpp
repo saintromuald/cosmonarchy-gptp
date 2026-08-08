@@ -45,9 +45,12 @@ namespace hooks {
 			case UnitId::TerranCutlass:				  cooldown /= 1.35fp; break;
 			case UnitId::TerranCutlassTurret:		  cooldown /= 1.35fp; break;
 			case UnitId::TerranBroadsideTurret:		  cooldown /= 1.06fp; break;
+			case UnitId::TerranPhoenix:			      cooldown /= 1.50fp; break;
 			case UnitId::ProtossCicatus:		      cooldown /= 1.13fp; break;
 			case UnitId::ProtossRenesair:		      cooldown *= 1.10fp; break;
 			case UnitId::ProtossSimulacrumAstral:     cooldown /= 1.20fp; break;
+			case UnitId::ProtossGarantis:			  cooldown /= 1.50fp; break;
+			case UnitId::ZergZoltorokor:			  cooldown /= 1.50fp; break;
 			case UnitId::AskosiAvatar:				  cooldown *= 3.00fp; break;
 			case UnitId::AskosiPhontis:		          cooldown *= 1.33fp; break;
 			case UnitId::AskosiZonguard: {
@@ -198,7 +201,8 @@ namespace hooks {
 					cooldown /= 1 + (0.05fp * unit_ext.values[ValueMortothrokorStacks]);
 				}
 			} break;
-			case UnitId::ZergUltrokor: {
+			case UnitId::ZergUltrokor:
+			case UnitId::ZergZoltorokor: {
 				// Kaiser Rampage upgrade: gains double attack speed for 1 second on kill
 				if (unit_ext.timers[TimerKaiserRampage] > 0) {
 					cooldown /= 2;
