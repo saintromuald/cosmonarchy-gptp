@@ -2898,7 +2898,7 @@ namespace hooks {
                 u32 range = CommonBehavior::MeleeWeaponDistance;
                 if (!helper::is_target_within_min_range(unit, range, target)) {
                     helper::spell_order_move_towards_target(unit, range);
-                    unit_ext.values[ValueTalosAnimationTimer] = 0;
+                    unit_ext.values[ValueSalvageAnimationTimer] = 0;
                     break;
                 }
 
@@ -2925,7 +2925,7 @@ namespace hooks {
                     unit->order_to_idle();
                 }
 
-                if (!(unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving) && !unit_ext.timers[TimerTalosAnimationSubtimer]) {
+                if (!(unit->movement_flags & MovementFlags_Accelerating || unit->movement_flags & MovementFlags_Moving) && !unit_ext.timers[TimerSalvageAnimationSubtimer]) {
                     u32 width = u32(units_dat::building_dimensions[target->id].x * 0.75fp);
                     u32 height = u32(units_dat::building_dimensions[target->id].y * 0.75fp);
                     s32 x_offset = bw::random() % width - width / 2;
@@ -2939,7 +2939,7 @@ namespace hooks {
                     }
                     final_target->sprite->create_top_overlay(ImageId::SalvagePeriodicZap, x_offset, y_offset);
                     u32 subtimer = bw::rand_between(3, 7);
-                    unit_ext.timers[TimerTalosAnimationSubtimer] = subtimer;
+                    unit_ext.timers[TimerSalvageAnimationSubtimer] = subtimer;
                 }
                 if (!unit_ext.values[ValueTalosAnimationTimer] || unit_ext.values[ValueTalosAnimationTimer] % 128 == 0) {
                     v2u16 pos = target->sprite->position;
@@ -2963,7 +2963,7 @@ namespace hooks {
                     }
                     helper::set_move_target_xy(unit, pos.x, pos.y);
                 }
-                unit_ext.values[ValueTalosAnimationTimer] += 1;
+                unit_ext.values[ValueSalvageAnimationTimer] += 1;
             } break;
             case UnitId::AskosiScepter: {
                 if (unit_ext.values[ValueReassemblyActive] && unit->is_completed() && !unit->is_frozen()) {
