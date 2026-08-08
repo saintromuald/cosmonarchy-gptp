@@ -646,9 +646,9 @@ enum Enum {
 }
 
 enum MovableState {
-    MovableState_NotReachedDestination = 0,
-    MovableState_ReachedDestination = 1,
-    MovableState_UnmovableAtDestination = 2
+    MovableState_NotReachedDestination  = 0,
+    MovableState_ReachedDestination     = 1,
+    MovableState_UnmovableAtDestination = 2,
 };
 
 namespace BinDlgFlags {

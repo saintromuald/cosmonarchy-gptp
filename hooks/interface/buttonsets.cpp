@@ -2879,6 +2879,7 @@ namespace hooks {
                                 
                                 case UnitId::TerranEidolon:
                                 case UnitId::TerranWraith:
+                                case UnitId::TerranPhoenix:
                                 case UnitId::TerranSundog: {
                                     if (current_button->icon_id == IconId::SensorArray) { // Proximity Cloak
                                         current_button_state = Button_State::Enabled;
@@ -2951,6 +2952,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranHarakan:
+                                case UnitId::TerranNuriel:
                                 case UnitId::Ackmed: {
                                     if (current_button->icon_id == IconId::FlyerAttack) { // Apollyoid Adhesive
                                         current_button_state = Button_State::Enabled;
@@ -3255,6 +3257,43 @@ namespace hooks {
                                 case UnitId::TerranHippogriff: {
                                     if (current_button->icon_id == IconId::KineticPenetration) {
                                         current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::TerranVestry: {
+                                    switch (current_button->icon_id) {
+                                        case IconId::Cleric:
+                                        case IconId::ClericFuturist:
+                                        case IconId::ShamanSupportMode: {
+                                            current_button_state = Button_State::Enabled;
+                                        } break;
+                                    }
+                                } break;
+                                case UnitId::TerranCovenant: {
+                                    switch (current_button->icon_id) {
+                                        case IconId::Eidolon:
+                                        case IconId::SavantEntropyGauntlets: {
+                                            current_button_state = Button_State::Enabled;
+                                        } break;
+                                    }
+                                } break;
+                                case UnitId::TerranScrapyard: {
+                                    switch (current_button->icon_id) {
+                                        case IconId::Blackjack:
+                                        case IconId::Tiangou:
+                                        case IconId::MatadorTankMode:
+                                        case IconId::Cutlass: {
+                                            current_button_state = Button_State::Enabled;
+                                        } break;
+                                    }
+                                } break;
+                                case UnitId::TerranPalladium: {
+                                    switch (current_button->icon_id) {
+                                        case IconId::PhalanxTankMode:
+                                        case IconId::Tarasque:
+                                        case IconId::Broadside:
+                                        case IconId::MadrigalImperiosoMode: {
+                                            current_button_state = Button_State::Enabled;
+                                        } break;
                                     }
                                 } break;
                                 case UnitId::TerranAnvil: {
