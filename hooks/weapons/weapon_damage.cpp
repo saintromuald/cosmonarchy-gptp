@@ -565,6 +565,9 @@ namespace hooks {
                     if (data.attacker->id == UnitId::AskosiZonguard) {
                         data.damage -= 5 * 256;
                     }
+                    if (data.attacker->id == UnitId::ZergRozirokor) {
+                        data.damage -= 17hp;
+                    }
                 } break;
                 case WeaponId::GrandstandArteDriver: {
                     if (data.attacker->id == UnitId::AskosiZonguard) {

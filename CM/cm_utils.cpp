@@ -510,6 +510,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         case Faction::ZergImicrenTendril: {
             switch (unit_id) {
                 case UnitId::ZergQuazilisk:     return UnitId::ZergQuazrokor;
+                case UnitId::ZergIzirokor:      return UnitId::ZergRozirokor;
                 case UnitId::ZergZoryusthaleth: return UnitId::ZergInzorthrokor;
             }
         } break;
@@ -548,14 +549,15 @@ u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id) {
         damage += unit_ext.unar_solitary_focus_stacks;
     }
     switch (unit->id) {
-        case UnitId::TerranCutlass:           damage -= 9; break;
-        case UnitId::TerranCutlassTurret:     damage -= 9; break;
-        case UnitId::TerranBroadside:         damage -= 5; break;
-        case UnitId::TerranBroadsideTurret:   damage -= 5; break;
-        case UnitId::ProtossCicatus:          damage -= 3; break;
-        case UnitId::ProtossSimulacrumAstral: damage -= 2; break;
-        case UnitId::ZergGarvrokor:           damage += 1; break;
-        case UnitId::ZergZethalor:            damage -= 4; break;
+        case UnitId::TerranCutlass:           damage -= 9;  break;
+        case UnitId::TerranCutlassTurret:     damage -= 9;  break;
+        case UnitId::TerranBroadside:         damage -= 5;  break;
+        case UnitId::TerranBroadsideTurret:   damage -= 5;  break;
+        case UnitId::ProtossCicatus:          damage -= 3;  break;
+        case UnitId::ProtossSimulacrumAstral: damage -= 2;  break;
+        case UnitId::ZergGarvrokor:           damage += 1;  break;
+        case UnitId::ZergZethalor:            damage -= 4;  break;
+        case UnitId::ZergRozirokor:           damage -= 17; break;
         case UnitId::AskosiAvatar:            damage += 10; break;
         case UnitId::AskosiInsurant:          damage += 1;  break;
         case UnitId::AskosiSilversoul:        damage -= 1;  break;
@@ -632,6 +634,7 @@ UnitId::Enum get_factional_regression(UnitId::Enum unit_id, Faction faction) {
         } break;
         case UnitId::ZergTethzorokor: {
             switch (faction) {
+                case Faction::ZergImicrenTendril: return UnitId::ZergRozirokor;
                 case Faction::ZergZorthosTendril: return UnitId::ZergIziralisk;
             }
             return UnitId::ZergIzirokor;
@@ -828,7 +831,14 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::NathrokorVestigialStrike:            return "Vestigial Strike";
         case WeaponId::HydraliskNeedleSpines:               return "Needle Spines";
         case WeaponId::PenumbraErebolShockCannon:           return "Erebol Shock Cannon";
-        case WeaponId::UltrokorKaiserBlades:                return unit_id == UnitId::AskosiZonguard ? "Azgok Beastblades" : "Kaiser Blades";
+        case WeaponId::UltrokorKaiserBlades: {
+            switch (unit_id) {
+                case UnitId::ZergUltrokor:
+                case UnitId::ZergZoltorokor:                return "Kaiser Blades";
+                case UnitId::ZergRozirokor:                 return "Bladed Appendage";
+                case UnitId::AskosiZonguard:                return "Azgok Beastblades";
+            }
+        }
         case WeaponId::KeskathalorScreamingVenom:           return "Screaming Venom";
         case WeaponId::RilirokorToxicSpores:                return "Toxic Spores";
         case WeaponId::DrolethSpines:                       return "Spines";

@@ -616,6 +616,7 @@ bool is_conventional_unit_morph_source(u16 id, bool allow_larvae) {
         case UnitId::ZergHydralisk:
         case UnitId::ZergHydraliskOrkoti:
         case UnitId::ZergIzirokor:
+        case UnitId::ZergRozirokor:
         case UnitId::ZergIziralisk:
         case UnitId::ZergSkithrokor:
         case UnitId::ZergKagralisk:

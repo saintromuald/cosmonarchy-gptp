@@ -454,6 +454,7 @@ bool unit_id_is_factional(u16 unit_id) {
         || unit_id == UnitId::ZergGarvrokor
         || unit_id == UnitId::ZergZethalor
         || unit_id == UnitId::ZergNathrelisk
+        || unit_id == UnitId::ZergRozirokor
         || unit_id == UnitId::ZergIziralisk
         || unit_id == UnitId::ZergInzorthrokor
         || unit_id == UnitId::ZergQuazrokor
@@ -1167,6 +1168,7 @@ u32 get_mutate_image_id(u32 unit_id) {
         case UnitId::ZergCikralisk:		return ImageId::CikraliskMutate;
         case UnitId::ZergProtathalor:	return ImageId::ProtathalorMutate;
         case UnitId::ZergIzirokor:		return ImageId::IzirokorMutate;
+        case UnitId::ZergRozirokor:		return ImageId::RozirokorMutate;
         case UnitId::ZergIziralisk:		return ImageId::IziraliskMutate;
         case UnitId::ZergSkithrokor:	return ImageId::SkithrokorMutate;
         case UnitId::ZergKagralisk:		return ImageId::KagraliskMutate;
@@ -1699,62 +1701,63 @@ SpriteId::Enum get_corpse_sprite_id(UnitId::Enum unit_id) {
         case UnitId::TerranAncile:                       return SpriteId::Corpse_Ancile;
         case UnitId::TerranTrojan:                       return SpriteId::Corpse_Trojan;
                                                    
-        case UnitId::ProtossScribe:                return SpriteId::Corpse_Scribe;
-        case UnitId::ProtossEnvoy:                 return SpriteId::Corpse_Envoy;
-        case UnitId::ProtossWitness:               return SpriteId::Corpse_Witness;
-        case UnitId::ProtossArtisan:               return SpriteId::Corpse_Artisan;
-        case UnitId::ProtossZealot:                return SpriteId::Corpse_Zealot;
-        case UnitId::ProtossZealotStarbound:       return SpriteId::Corpse_Zealot;
-        case UnitId::ProtossDracadin:              return SpriteId::Corpse_Dracadin;
-        case UnitId::ProtossDracadinOrder:         return SpriteId::Corpse_DracadinOrder;
-        case UnitId::ProtossEcclesiast:            return SpriteId::Corpse_Ecclesiast;
-        case UnitId::ProtossLegionnaire:           return SpriteId::Corpse_Legionnaire;
-        case UnitId::ProtossHierophant:            return SpriteId::Corpse_Hierophant;
-        case UnitId::ProtossSimulacrum:            return SpriteId::Corpse_Simulacrum;
-        case UnitId::ProtossManifold:              return SpriteId::Corpse_Manifold;
-        case UnitId::ProtossVassal:                return SpriteId::Corpse_Vassal;
-        case UnitId::ProtossIdol:                  return SpriteId::Corpse_Idol;
-        case UnitId::ProtossGolem:                 return SpriteId::Corpse_Golem;
-        case UnitId::ProtossRenesair:              return SpriteId::Corpse_Renesair;
-        case UnitId::ProtossLanifect:              return SpriteId::Corpse_Lanifect;
-
-        case UnitId::ZergLarva:                    return SpriteId::Corpse_Larva;
-        case UnitId::ZergOcsalLarva:               return SpriteId::Corpse_Larva;
-        case UnitId::ZergEgg:                      return SpriteId::Corpse_Egg;
-        case UnitId::ZergDroleth:                  return SpriteId::Corpse_Droleth;
-        case UnitId::ZergAgrileth:                 return SpriteId::Corpse_Agrileth;
-        case UnitId::ZergOvileth:                  return SpriteId::Corpse_Ovileth;
-        case UnitId::ZergZethrokor:                return SpriteId::Corpse_Zethrokor;
-        case UnitId::ZergSovrokor:                 return SpriteId::Corpse_Zethrokor;
-        case UnitId::ZergQuazilisk:                return SpriteId::Corpse_Quazilisk;
-        case UnitId::ZergQuazrokor:                return SpriteId::Corpse_Quazilisk;
-        case UnitId::ZergVorvrokor:                return SpriteId::Corpse_Vorvrokor;
-        case UnitId::ZergGarvrokor:                return SpriteId::Corpse_Vorvrokor;
-        case UnitId::ZergNathrokor:                return SpriteId::Corpse_Nathrokor;
-        case UnitId::ZergLiiralisk:                return SpriteId::Corpse_ZergUnitSmall;
-        case UnitId::ZergKalkalisk:                return SpriteId::Corpse_ZergUnitSmall;
-        case UnitId::ZergGhitorokor:               return SpriteId::Corpse_ZergUnitMedium;
-        case UnitId::ZergSovroleth:                return SpriteId::Corpse_ZergUnitSmall;
-        case UnitId::ZergTosgrilisk:               return SpriteId::Corpse_ZergUnitMedium;
-        case UnitId::ZergMortothrokor:             return SpriteId::Corpse_Mortothrokor;
-        case UnitId::ZergHydralisk:                return SpriteId::Corpse_Hydralisk;
-        case UnitId::ZergHydraliskOrkoti:          return SpriteId::Corpse_HydraliskOrkoti;
-        case UnitId::ZergIzirokor:                 return SpriteId::Corpse_Izirokor;
-        case UnitId::ZergIziralisk:                return SpriteId::Corpse_Izirokor;
-        case UnitId::ZergBactalisk:                return SpriteId::Corpse_Bactalisk;
-        case UnitId::ZergKagralisk:                return SpriteId::Corpse_Kagralisk;
-        case UnitId::ZergEvigrilisk:               return SpriteId::Corpse_Evigrilisk;
-        case UnitId::ZergAlkajelisk:               return SpriteId::Corpse_ZergBuildingLarge;
-        case UnitId::ZergZoryusthaleth:            return SpriteId::Corpse_Zoryusthaleth;
-        case UnitId::ZergInzorthrokor:             return SpriteId::Corpse_Inzorthrokor;
-        case UnitId::ZergLakizilisk:               return SpriteId::Corpse_Lakizilisk;
-        case UnitId::ZergLakiziliskZorthos:        return SpriteId::Corpse_Lakizilisk;
-        case UnitId::ZergGorgrokor:                return SpriteId::Corpse_Gorgrokor;
-        case UnitId::ZergAzanthrokor:              return SpriteId::Corpse_ZergUnitMedium;
-        case UnitId::ZergKonvilisk:                return SpriteId::Corpse_Konvilisk;
-        case UnitId::ZergRilirokor:                return SpriteId::Corpse_Rilirokor;
-        case UnitId::ZergUltrokor:                 return SpriteId::Corpse_Ultrokor;
-        case UnitId::ZergIsthrathaleth:            return SpriteId::Corpse_Isthrathaleth;
+        case UnitId::ProtossScribe:                      return SpriteId::Corpse_Scribe;
+        case UnitId::ProtossEnvoy:                       return SpriteId::Corpse_Envoy;
+        case UnitId::ProtossWitness:                     return SpriteId::Corpse_Witness;
+        case UnitId::ProtossArtisan:                     return SpriteId::Corpse_Artisan;
+        case UnitId::ProtossZealot:                      return SpriteId::Corpse_Zealot;
+        case UnitId::ProtossZealotStarbound:             return SpriteId::Corpse_Zealot;
+        case UnitId::ProtossDracadin:                    return SpriteId::Corpse_Dracadin;
+        case UnitId::ProtossDracadinOrder:               return SpriteId::Corpse_DracadinOrder;
+        case UnitId::ProtossEcclesiast:                  return SpriteId::Corpse_Ecclesiast;
+        case UnitId::ProtossLegionnaire:                 return SpriteId::Corpse_Legionnaire;
+        case UnitId::ProtossHierophant:                  return SpriteId::Corpse_Hierophant;
+        case UnitId::ProtossSimulacrum:                  return SpriteId::Corpse_Simulacrum;
+        case UnitId::ProtossManifold:                    return SpriteId::Corpse_Manifold;
+        case UnitId::ProtossVassal:                      return SpriteId::Corpse_Vassal;
+        case UnitId::ProtossIdol:                        return SpriteId::Corpse_Idol;
+        case UnitId::ProtossGolem:                       return SpriteId::Corpse_Golem;
+        case UnitId::ProtossRenesair:                    return SpriteId::Corpse_Renesair;
+        case UnitId::ProtossLanifect:                    return SpriteId::Corpse_Lanifect;
+                                                   
+        case UnitId::ZergLarva:                          return SpriteId::Corpse_Larva;
+        case UnitId::ZergOcsalLarva:                     return SpriteId::Corpse_Larva;
+        case UnitId::ZergEgg:                            return SpriteId::Corpse_Egg;
+        case UnitId::ZergDroleth:                        return SpriteId::Corpse_Droleth;
+        case UnitId::ZergAgrileth:                       return SpriteId::Corpse_Agrileth;
+        case UnitId::ZergOvileth:                        return SpriteId::Corpse_Ovileth;
+        case UnitId::ZergZethrokor:                      return SpriteId::Corpse_Zethrokor;
+        case UnitId::ZergSovrokor:                       return SpriteId::Corpse_Zethrokor;
+        case UnitId::ZergQuazilisk:                      return SpriteId::Corpse_Quazilisk;
+        case UnitId::ZergQuazrokor:                      return SpriteId::Corpse_Quazilisk;
+        case UnitId::ZergVorvrokor:                      return SpriteId::Corpse_Vorvrokor;
+        case UnitId::ZergGarvrokor:                      return SpriteId::Corpse_Vorvrokor;
+        case UnitId::ZergNathrokor:                      return SpriteId::Corpse_Nathrokor;
+        case UnitId::ZergLiiralisk:                      return SpriteId::Corpse_ZergUnitSmall;
+        case UnitId::ZergKalkalisk:                      return SpriteId::Corpse_ZergUnitSmall;
+        case UnitId::ZergGhitorokor:                     return SpriteId::Corpse_ZergUnitMedium;
+        case UnitId::ZergSovroleth:                      return SpriteId::Corpse_ZergUnitSmall;
+        case UnitId::ZergTosgrilisk:                     return SpriteId::Corpse_ZergUnitMedium;
+        case UnitId::ZergMortothrokor:                   return SpriteId::Corpse_Mortothrokor;
+        case UnitId::ZergHydralisk:                      return SpriteId::Corpse_Hydralisk;
+        case UnitId::ZergHydraliskOrkoti:                return SpriteId::Corpse_HydraliskOrkoti;
+        case UnitId::ZergIzirokor:                       return SpriteId::Corpse_Izirokor;
+        case UnitId::ZergRozirokor:                      return SpriteId::Corpse_Rozirokor;
+        case UnitId::ZergIziralisk:                      return SpriteId::Corpse_Izirokor;
+        case UnitId::ZergBactalisk:                      return SpriteId::Corpse_Bactalisk;
+        case UnitId::ZergKagralisk:                      return SpriteId::Corpse_Kagralisk;
+        case UnitId::ZergEvigrilisk:                     return SpriteId::Corpse_Evigrilisk;
+        case UnitId::ZergAlkajelisk:                     return SpriteId::Corpse_ZergBuildingLarge;
+        case UnitId::ZergZoryusthaleth:                  return SpriteId::Corpse_Zoryusthaleth;
+        case UnitId::ZergInzorthrokor:                   return SpriteId::Corpse_Inzorthrokor;
+        case UnitId::ZergLakizilisk:                     return SpriteId::Corpse_Lakizilisk;
+        case UnitId::ZergLakiziliskZorthos:              return SpriteId::Corpse_Lakizilisk;
+        case UnitId::ZergGorgrokor:                      return SpriteId::Corpse_Gorgrokor;
+        case UnitId::ZergAzanthrokor:                    return SpriteId::Corpse_ZergUnitMedium;
+        case UnitId::ZergKonvilisk:                      return SpriteId::Corpse_Konvilisk;
+        case UnitId::ZergRilirokor:                      return SpriteId::Corpse_Rilirokor;
+        case UnitId::ZergUltrokor:                       return SpriteId::Corpse_Ultrokor;
+        case UnitId::ZergIsthrathaleth:                  return SpriteId::Corpse_Isthrathaleth;
 
         case UnitId::AskosiMissionary:             return SpriteId::Corpse_Missionary;
         case UnitId::AskosiCardinal:               return SpriteId::Corpse_Cardinal;

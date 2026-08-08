@@ -958,6 +958,13 @@ namespace SpriteId {
 
         Corpse_MaverickUpstart          = 1117,
 
+        Corpse_Silversoul               = 1154,
+
+        Corpse_Civilian                 = 1158,
+        Corpse_Pilgrim                  = 1159,
+
+        Corpse_Rozirokor                = 1161,
+
         Corpse_ZergBuildingSmall	    = 186,
         Corpse_ZergBuildingLarge	    = 187,
     };
