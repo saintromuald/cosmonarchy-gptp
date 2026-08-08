@@ -90,7 +90,7 @@ namespace {
 
 namespace hooks {
 	// Calculates the attack priority of the @p target for the @p attacker.
-	u32 get_attack_priority(Unit* target, Unit* attacker) { // 00442160
+	u32 get_attack_priority(Unit* attacker, Unit* target) { // 00442160
 		Unit* actual_target = target;
 		if (unit_id_is_garrison(target->id)) {
 			Unit* first_loaded_unit = target->get_first_loaded_unit();
@@ -100,7 +100,7 @@ namespace hooks {
 		}
 
 		// Units that are not important
-		if (bw::is_zerg_egg(target->id)) {
+		if (bw::is_zerg_egg(target->id) || unit_id_is_larva(target->id)) {
 			return 5;
 		}
 		// Normal units
@@ -108,15 +108,19 @@ namespace hooks {
 		// Workers
 		if (actual_target->is_worker()) {
 			attack_priority = 2;
-		} else if (actual_target->can_attack_target(attacker)) {
-			attack_priority = 0;
-		} else if (actual_target->has_weapon()) {
-			attack_priority = 2;
-		} else if (actual_target->status & UnitStatus::Reacts) {
-			attack_priority = 3;
+		} else {
+			if (actual_target->can_attack_target(attacker)) {
+				attack_priority = 0;
+			} else {
+				if (helper::ai_unit_can_attack(actual_target)) {
+					attack_priority = 2;
+				} else if (actual_target->status & UnitStatus::Reacts) {
+					attack_priority = 3;
+				}
+			}
 		}
 
-		if (actual_target->is_completed() || actual_target != target) {
+		if (!actual_target->is_completed() || actual_target != target) {
 			attack_priority += 1;
 		}
 		// Units that cannot attack are less important

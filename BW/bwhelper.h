@@ -129,7 +129,7 @@ namespace helper {
     void unit_stat_act_standard(void* a1);
 
     // For ai_target_enemy_proc
-    bool ai_unit_can_attack(Unit* a1);
+    bool ai_unit_can_attack(Unit* unit);
 
     // For draw_building_info
     s32 ui_needs_redraw();
