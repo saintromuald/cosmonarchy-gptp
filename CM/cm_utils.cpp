@@ -567,6 +567,8 @@ u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id) {
                 case WeaponId::GrandstandArteDriver: damage -= 3; break;
             }
         } break;
+        case UnitId::ForerunnerFerrum:     damage -= 3; break;
+        case UnitId::ForerunnerChalyb:     damage -= 3; break;
     }
     return damage;
 }
@@ -796,7 +798,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::BlackjackMonogun:                    return "Monogun";
         case WeaponId::WraithBurstLasers:                   return "Burst Lasers";
         case WeaponId::SalamanderPerditionBarrage:          return "Perdition Barrage";
-        case WeaponId::GorgonArtificeBattery:               return "Artifice Battery";
+        case WeaponId::GorgonArtificeBattery:               return unit_id == UnitId::TerranGorgon ? "Artifice Battery" : "Sentinel Beam";
         case WeaponId::MinotaurAsterionLaserBattery:        return "Asterion Laser Battery";
         case WeaponId::CohortGaussPistols:                  return "Gauss Pistols";
         case WeaponId::MadrigalFuriaMissiles:               return "Furia Missiles";
@@ -868,7 +870,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::AkistrokorHarryingTalons:            return "Harrying Talons";
         case WeaponId::SavantDiscoidRailgun:                return "Discoid Railgun";
         case WeaponId::CutlassCortoRailgun:                 return "Corto Railgun"; // unused
-        case WeaponId::StarSovereignCelestialCannon:        return "Celestial Cannons";
+        case WeaponId::StarSovereignCelestialCannon:        return unit_id == UnitId::ProtossStarSovereign ? "Celestial Cannons" : "Champion Stormbeam";
         case WeaponId::StarSovereignInterventionMissiles:   return "Intervention Missiles";
         case WeaponId::SovrolethSpores:                     return "Sovrol Spores";
         case WeaponId::CyclopsFlakCannons:                  return "Flak Cannons";
@@ -939,7 +941,12 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::ZarcavrokorBisectingBlades:          return "Bisecting Blades";
         case WeaponId::ZergBonesofReflection:               return "Bones of Reflection";
         case WeaponId::ScepterOrmaScrapray:                 return "Orma Scrapray";
-        case WeaponId::IntendentErsaDriver:                 return unit_id == UnitId::AskosiIntendent ? "Ersa Driver" : "Alru Driver";
+        case WeaponId::IntendentErsaDriver: {
+            if (unit_id == UnitId::ForerunnerCircitor) {
+                return "Sentinel Boltbeam";
+            }
+            return unit_id == UnitId::AskosiIntendent ? "Ersa Driver" : "Alru Driver";
+        }
         case WeaponId::HippogriffChimeraCannons:            return "Chimera Cannons";
         case WeaponId::BoomingBlast:                        return "Booming Blast";
         case WeaponId::HippogriffPegasusMissiles:           return "Pegasus Missiles";
@@ -967,7 +974,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::SkortrithCesiantSkortraTendril:      return "Skortra Tentacle";
         case WeaponId::TiradeIktaDriver:                    return "Ikta Driver";
         case WeaponId::GrandstandArteDriver:                return unit_id == UnitId::AskosiGrandstand ? "Arte Driver" : "Agturrik Beaststick";
-        case WeaponId::QuadrigaGodhandRockets:              return "Godhand Rockets";
+        case WeaponId::QuadrigaGodhandRockets:              return unit_id == UnitId::TerranQuadriga ? "Godhand Rockets" : "Enforcer Rift-Rocket";
         case WeaponId::SilvertongueWordsmithRailgun:        return "Wordsmith Railgun";
         case WeaponId::OptectonSunsplitBeam:                return "Sunsplit Beam";
         case WeaponId::AutocortParticleRay:                 return "Particle Ray";

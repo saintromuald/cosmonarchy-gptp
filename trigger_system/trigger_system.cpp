@@ -1383,9 +1383,9 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                 rescue_unit(unit, target_player - 1);
             }
         } else if (parser.equals("highlight_unit")) {
-            Designator designator = parser.get_designator();
-            u32 count = parser.get_s32();
-            u32 timer = parser.get_s32();
+            auto designator = parser.get_designator();
+            auto count = parser.get_s32();
+            auto timer = parser.get_s32();
 
             for (Unit* unit : designator.search({.sort = count != 0}).take(count)) {
                 unit->sprite->selection_timer = timer ? timer : 45;
@@ -1552,6 +1552,16 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                         }
                     }
                 }
+            }
+        } else if (parser.equals("tyrannize")) {
+            auto designator = parser.get_designator();
+            auto player = parser.get_s32(0);
+            auto source_unit_id = parser.get_unit_id();
+
+            for (Unit* unit : designator.search()) {
+                mind_control(player ? player - 1 : unit->player, source_unit_id, unit, true);
+                bw::play_sound(SoundId::Protoss_Darchon_mind_wav, unit->position);
+                unit->order_to_idle();
             }
         } else if (parser.equals("blissful_embrace")) {
             Designator designator = parser.get_designator();

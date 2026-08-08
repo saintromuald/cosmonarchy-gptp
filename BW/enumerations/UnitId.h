@@ -22,6 +22,7 @@ namespace UnitId {
         Goska												= 500,
         Stroluum											= 501,
         Tuzor												= 502,
+        BigInfestedKerrigan                                 = 612,
 
     // Special
         Omnivale											= 383,
@@ -36,6 +37,15 @@ namespace UnitId {
         ScenarioUnit6                                       = 529,
         ScenarioUnit7                                       = 530,
         ScenarioUnit8                                       = 531,
+
+    // Forerunner -- for Marchcrap 2026
+        ForerunnerFerrum                                    = 605,
+        ForerunnerChalyb                                    = 606,
+        ForerunnerCircitor                                  = 607,
+        ForerunnerExigo                                     = 608,
+        ForerunnerAthla                                     = 609,
+        ForerunnerVicere                                    = 610,
+        ForerunnerMachinamentum                             = 611,
 
     // Neutral
         TownCenterMarker									= 192,		// Terran Marker

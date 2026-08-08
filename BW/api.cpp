@@ -4083,6 +4083,13 @@ u32 get_weapon_fire_sound(u32 weapon_id, Unit* unit) {
         case WeaponId::ValkyrieHaloRockets:                 return SoundId::Bullet_Tfrshoot_wav;
         case WeaponId::ValkyrieHecatonLogiRockets:          return bw::rand_between(SoundId::ValkyrieHecatonWeaponfire01, SoundId::ValkyrieHecatonWeaponfire04);
         case WeaponId::QuadrigaGodhandRockets:              return SoundId::Bullet_Tfrshoot_wav;
+        case WeaponId::GorgonArtificeBattery: {
+            if (unit->id == UnitId::TerranGorgon) {
+                return bw::rand_between(SoundId::GorgonWeaponfire01, SoundId::GorgonWeaponfire02);
+            }
+            // TODO: Extend weapons and remove this. -Pr0nogo
+            return bw::rand_between(SoundId::FerrumWeaponfire01, SoundId::FerrumWeaponfire03);
+        }
 
         case WeaponId::LegionnairePhaseSpear:	            return SoundId::LegionnaireWeaponfire01;
         case WeaponId::HierophantPhaseSignifier:	        return bw::rand_between(SoundId::HierophantWeaponfire01, SoundId::HierophantWeaponfire02);
