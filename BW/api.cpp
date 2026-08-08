@@ -420,6 +420,17 @@ s32 get_polar_y(s32 distance, u8 angle) {
     return distance * g_angle_distance[angle].y >> 8;
 }
 
+Point16 polar_point(Point16 center, f32 rads, f32 distance) {
+    return {
+        static_cast<u16>(center.x + cosf(rads) * distance),
+        static_cast<u16>(center.y + sinf(rads) * distance),
+    };
+}
+
+Point16 random_polar_point(Point16 center, f32 max_distance) {
+    return polar_point(center, bw::random_float() * 2 * PI, max_distance * sqrt(bw::random_float()));
+}
+
 //-------- Player information --------//
 
 s32 get_supply_remaining(u8 player, u8 raceId) {
@@ -2819,7 +2830,7 @@ Quad quad_from_rect(Box16 rect) {
     };
 }
 
-static bool sat_collision_internal(v2* a, u32 a_count, v2* b, u32 b_count) {
+static bool sat_collision_internal(Vec32f* a, u32 a_count, Vec32f* b, u32 b_count) {
     for (u32 i = 0; i < a_count; ++i) {
         v2 dir = a[i].dir_to(a[(i + 1) % a_count]);
         v2 proj = {-dir.y, dir.x};
@@ -2849,7 +2860,7 @@ static bool sat_collision_internal(v2* a, u32 a_count, v2* b, u32 b_count) {
     return true;
 }
 
-bool sat_collision(v2* a, u32 a_count, v2* b, u32 b_count) {
+bool sat_collision(Vec32f* a, u32 a_count, Vec32f* b, u32 b_count) {
     return sat_collision_internal(a, a_count, b, b_count) && sat_collision_internal(b, b_count, a, a_count);
 }
 
@@ -2861,7 +2872,7 @@ void find_closest_point_to_line(v2 from, v2 to, v2 point, fp32* out_distance, fp
     t /= ab.dot(ab);
     t = std::clamp(t, 0.0fp, 1.0fp);
 
-    v2 cp = from;
+    Vec32f cp = from;
     cp.x += ab.x * t;
     cp.y += ab.y * t;
 
@@ -2933,11 +2944,11 @@ static std::pair<v2, v2> closest_points_on_segments(v2 a0, v2 a1, v2 b0, v2 b1) 
     s = std::clamp(s, 0.0fp, 1.0fp);
     t = std::clamp(t, 0.0fp, 1.0fp);
 
-    v2 cp0 = {
+    Vec32f cp0 = {
         P1.x + V1.x * s,
         P1.y + V1.y * s,
     };
-    v2 cp1 = {
+    Vec32f cp1 = {
         P2.x + V2.x * t,
         P2.y + V2.y * t,
     };
@@ -2956,8 +2967,8 @@ std::optional<LineTraceResult> line_trace(v2u16 from, v2u16 to, fp32 line_width,
     v2 line1 = v2(to);
     Quad quad = quad_from_rect(rect);
     for (u32 i = 0; i < 4; i++) {
-        v2 rect0 = quad.corners[i];
-        v2 rect1 = quad.corners[(i + 1) % 4];
+        Vec32f rect0 = quad.corners[i];
+        Vec32f rect1 = quad.corners[(i + 1) % 4];
 
         const auto intersect = line_line_intersection(line0, line1, rect0, rect1);
         // Note that parallel line to line intersection is impossible, however this should not be a problem for any real shapes
@@ -3775,7 +3786,7 @@ bool has_custom_advisor(u32 player) {
     return g_globals->current_advisor != Advisor::Default;
 }
 
-const v2 perimeter[] = {
+const Vec32f perimeter[] = {
     {64, -258}, {64, -252}, {198, -198}, {250, -66}, {258, -66},
     {258, 66}, {250, 66}, {198, 198}, {64, 252}, {64, 258},
     {-64, 258}, {-64, 252}, {-198, 198}, {-250, 66}, {-258, 66},
@@ -3871,7 +3882,8 @@ u32 get_cloak_sound_id(Unit* unit) {
     switch (unit->get_race()) {
         case RaceId::Terran:  return SoundId::CloakTerranOn;
         case RaceId::Protoss: return SoundId::Terran_PHOENIX_TPhClo00_WAV;
-        case RaceId::Askosi:  return SoundId::CloakTerranOn;
+        case RaceId::Zerg:    return SoundId::CloakZergOn;
+        case RaceId::Askosi:  return SoundId::CloakAskosiOn;
     }
     return SoundId::Terran_PHOENIX_TPhClo00_WAV;
 }
@@ -3883,7 +3895,8 @@ u32 get_decloak_sound_id(Unit* unit) {
     switch (unit->get_race()) {
         case RaceId::Terran:  return SoundId::CloakTerranOff;
         case RaceId::Protoss: return SoundId::Terran_PHOENIX_TPhClo01_WAV;
-        case RaceId::Askosi:  return SoundId::CloakTerranOff;
+        case RaceId::Zerg:    return SoundId::CloakZergOff;
+        case RaceId::Askosi:  return SoundId::CloakAskosiOff;
     }
     return SoundId::Terran_PHOENIX_TPhClo01_WAV;
 }
@@ -4221,7 +4234,6 @@ bool unit_regenerates_hp(Unit* unit) {
 
 fp32 get_regeneration_factor(Unit* unit) {
     auto& unit_ext = unit->ext();
-
     fp32 base = 0;
     if (unit_ext.damage_taken_timer > 2secs) {
         base += unit->is_burrowed() ? 2 : 1;
@@ -4229,16 +4241,13 @@ fp32 get_regeneration_factor(Unit* unit) {
     if (unit_ext.timers[TimerNathreliskMitosalFog]) {
         base += 2;
     }
-    if (unit_ext.timers[TimerImpactDissipation]) {
-        base += 4;
-    }
     if (unit->id == UnitId::ZergMalkothrokor && unit->is_burrowed()) {
         base += 3;
     }
     
     fp32 factor = 1;
     if (unit->id == UnitId::TerranEidolonNydus && unit->is_cloaked) {
-        factor += 0.33fp;
+        factor += 1fp;
     }
     if (!unit_ext.unit_vectors[UnitVectorCrucibles].empty()) {
         factor += 0.25fp;
