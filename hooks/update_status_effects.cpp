@@ -4,6 +4,7 @@
 #include "hooks/weapons/weapon_spellhit.h"
 #include "hooks/weapons/weapon_damage.h"
 #include "globals.h"
+#include "trigger_system/trigger_system.h"
 #include "weapons/weapon_damage.h"
 	
 namespace hooks {
@@ -165,39 +166,38 @@ namespace hooks {
 		if (unit_ext.values[ValueDisableAutoBurrow]) {
 			return;
 		}
+		if (!(units_dat::base_property[unit->id] & UnitProperty::Burrowable)) {
+			return;
+		}
+		if (unit->is_burrowed() || unit->id == UnitId::ZergDroleth) {
+			return;
+		}
+		if (unit->main_order_id != OrderId::ComputerAI && unit->main_order_id != OrderId::Guard) {
+			return;
+		}
 
-		if (units_dat::base_property[unit->id] & UnitProperty::Burrowable) {
-			if (!unit->is_burrowed() && unit->id != UnitId::ZergDroleth) {
-				if (unit->main_order_id == OrderId::ComputerAI || unit->main_order_id == OrderId::Guard) {
-					if (unit->move_target.pt.x == unit->sprite->position.x && unit->move_target.pt.y == unit->sprite->position.y) {
-						// Originally checked for burrow tech in the above conditional.
-						bool can_burrow = true;
-						ActiveTile* tile = bw::get_active_tile_at_coords(unit->position.x, unit->position.y);
-						if (tile->currently_occupied) {
-							Unit* nearest = bw::UnitFinder::get_nearest_target(
-								unit->get_left() - 32,
-								unit->get_top() - 32,
-								unit->get_right() + 32,
-								unit->get_bottom() + 32,
-								unit, [&](Unit* target) {
-								return safety_unburrow_check(unit, target);
-							});
-							if (nearest) {
-								can_burrow = false;
-							}
-						}
-						if (can_burrow) {
-							if (!unit_id_is_burrowed_attacker(unit->id)) {
-								auto units = g_unit_search.radial_ex(unit, 10 * 32, FilterAlly | FilterBuilding);
-								if (units.count()) {
-									return; // Disable idle burrowing close to infrastructure
-								}
-							}
-							helper::issue_order_targeting_nothing(unit, OrderId::Burrow);
-						}
-					}
+		if (unit->move_target.pt.x == unit->sprite->position.x && unit->move_target.pt.y == unit->sprite->position.y) {
+			// Originally checked for burrow tech in the above conditional.
+			bool can_burrow = true;
+			ActiveTile* tile = bw::get_active_tile_at_coords(unit->position.x, unit->position.y);
+			if (tile->currently_occupied) {
+				Unit* nearest = bw::UnitFinder::get_nearest_target(unit->get_left() - 32, unit->get_top() - 32, unit->get_right() + 32, unit->get_bottom() + 32, unit, [&](Unit* target) {
+					return safety_unburrow_check(unit, target);
+				});
+				if (nearest) {
+					can_burrow = false;
 				}
 			}
+			if (!can_burrow) {
+				return;
+			}
+			if (!unit_id_is_burrowed_attacker(unit->id) && !g_globals->players[unit->player].override_infrastructure_burrow) {
+				auto units = g_unit_search.radial_ex(unit, 10tiles, FilterAlly | FilterBuilding);
+				if (units.count() && !unit_ext.values[ValueOverrideInfrastructureBurrow]) {
+					return; // Disable idle burrowing close to infrastructure
+				}
+			}
+			helper::issue_order_targeting_nothing(unit, OrderId::Burrow);
 		}
 	}
 

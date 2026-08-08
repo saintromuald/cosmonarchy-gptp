@@ -20,8 +20,7 @@ void update_spawn() {
 		switch (seq->type) {
 			case SpawnType_Augur: {
 				Thingy* thingy = helper::create_thingy(SpriteId::AugurDeathExplosion, seq->source_pos.x, seq->source_pos.y, seq->player);
-				u32 sound_id = bw::rand_between(SoundId::AugurDeath01, SoundId::AugurDeath04);
-				helper::play_sound_from_unit(sound_id, (Unit*)thingy, 1, 0);
+				bw::play_sound({SoundId::AugurDeath01, SoundId::AugurDeath04}, thingy->sprite->position);
 			} break;
 			case SpawnType_AugurDamage: {
 				Unit* augur = bw::create_unit_in_game(UnitId::ProtossAugur, seq->player, seq->source_pos.x, seq->source_pos.y);
@@ -76,7 +75,7 @@ void update_spawn() {
 				}
 				bw::create_and_init_thingy(rubble, seq->source_pos.x, seq->source_pos.y, seq->player, 0);
 				bw::create_and_init_thingy(explo, seq->source_pos.x, seq->source_pos.y, seq->player, unit->sprite->elevation + 1);
-				helper::play_sound_at_pos(SoundId::Zerg_Bldg_ZBldgDth_WAV, seq->source_pos, 1, 0);
+				bw::play_sound(SoundId::Zerg_Bldg_ZBldgDth_WAV, seq->source_pos);
 			} break;
 		}
 

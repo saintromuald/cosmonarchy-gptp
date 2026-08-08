@@ -1443,7 +1443,8 @@ bool unit_id_has_custom_weapon_handling(u32 unit_id) { // TODO: better name
 }
 
 bool unit_id_is_burrowed_attacker(u32 unit_id) {
-    return unit_id == UnitId::ZergLakizilisk;
+    return unit_id == UnitId::ZergLakizilisk
+        || unit_id == UnitId::ZergLakiziliskZorthos;
 }
 
 bool buttonset_id_is_faction_selection(u32 buttonset_id) {

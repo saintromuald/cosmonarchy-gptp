@@ -544,7 +544,7 @@ namespace hooks {
     }
 
     static bool is_valid_attack_unit(AiRegion* ai_region, Unit* unit, bool strict) {
-        if (!(unit->status & UnitStatus::Completed) || !helper::is_valid_for(unit->id, unit, 0)) {
+        if (!unit->is_completed() || !helper::is_valid_for(unit->id, unit, 0)) {
             return false;
         }
         if (!unit->unit_ai || (unit->unit_ai->type != AiType::Guard && unit->unit_ai->type != AiType::Military)) {
@@ -610,7 +610,7 @@ namespace hooks {
     void ai_region_train_attack_force(AiRegion* ai_region) { // 0043E670
         u32 attack_wave[63] = {};
         u32 priority = 90;
-        u32 count = helper::get_missing_attack_force_units(ai_region, attack_wave, false); // Last arg used to be g_aiscript_controller[region->player].ai_flags.is_use_map_settings. We use melee for now, but we should invesitage it. -Veeq7
+        u32 count = helper::get_missing_attack_force_units(ai_region, attack_wave, false); // Last arg used to be g_aiscript_controller[region->player].ai_flags.is_use_map_settings. We use melee for now, but we should investigate it. -Veeq7
         for (u32 i = 0; i < count; ++i) {
             u32 unit_id = attack_wave[i];
             if (unit_id != UnitId::None && !add_attack_unit(ai_region, unit_id)) { // used to call !helper::ai_add_to_region_military(ai_region, unit_id, priority), now calling a custom function
@@ -623,6 +623,9 @@ namespace hooks {
 
         u32 player = ai_region->player;
         Region* region = bw::get_region(ai_region->region);
+        if (g_globals->players[ai_region->player].disable_extended_waves) {
+            return;
+        }
         for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
             if (!is_valid_attack_unit(ai_region, unit, true)) {
                 continue;

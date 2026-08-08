@@ -4203,6 +4203,11 @@ namespace hooks {
                         current_button_state = Button_State::Disabled;
                         return true;
                     };
+                    const auto hide_button = [&] {
+                        if (current_button_state == Button_State::Invisible) return false;
+                        current_button_state = Button_State::Invisible;
+                        return true;
+                    };
                     const auto disable_buttons_if = [&](bool condition, auto... icon_ids) {
                         if (!condition) return;
                         ((current_button->icon_id == icon_ids && disable_button()), ...);
@@ -4211,6 +4216,11 @@ namespace hooks {
                         if (current_button->requirement_func != (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding) return;
                         if (!unit_id_bitset[current_button->requirement_var]) return;
                         disable_button();
+                    };
+                    const auto hide_buttons_unit_ids = [&](UnitIdBitset unit_id_bitset) {
+                        if (current_button->requirement_func != (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding) return;
+                        if (!unit_id_bitset[current_button->requirement_var]) return;
+                        hide_button();
                     };
                     const auto dark_ages_hide_flyers = [&] {
                         if (bw::get_game_kind() != GameKind::DarkAges) return;
@@ -4221,6 +4231,7 @@ namespace hooks {
                     disable_buttons_if(cm_player.disable_liftoff, IconId::Liftoff, IconId::Land);
                     disable_buttons_if(cm_player.disable_burrow, IconId::Burrow, IconId::Unburrow);
                     disable_buttons_unit_ids(cm_player.disabled_units);
+                    hide_buttons_unit_ids(cm_player.hidden_units);
                     dark_ages_hide_flyers();
 
                     // TODO: Reenable and test
