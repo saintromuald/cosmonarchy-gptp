@@ -24,11 +24,11 @@ public:
 
 	template <typename T>
 	GameLogger& operator<<(const T& t) {
+        print_frame();
 		if (try_open_log_file()) {
-			print_frame();
 			m_log_file << t;
-			m_game_buffer << t;
 		}
+        m_game_buffer << t;
 		return *this;
 	}
 

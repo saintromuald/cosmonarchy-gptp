@@ -65,14 +65,17 @@ u32 RandomLogger::log_random(LogType log_type, u32 value, RandMessage message, s
     if (g_config.log_randoms && m_output.is_open()) log_randoms_to(m_output);
     log_randoms_to(m_buffer);
 
+    static int i = 0;
+    bw::println("{:08}: {}", i++, enum_name_or_value(log_type));
+
     return value;
 }
 
 u16 random(RandMessage message, std::source_location src) {
     if (g_is_in_game_loop) {
         u32 old_last_random = g_last_random_number;
-        g_last_random_number = 22695477 * g_last_random_number + 1;
-        return g_random_logger.log_random(LogType::Sync, (g_last_random_number >> 16) % 32768, std::move(message), src, old_last_random);
+        g_last_random_number = static_cast<u32>((u64(22695477) * g_last_random_number + 1) & std::numeric_limits<u32>::max());
+        return g_random_logger.log_random(LogType::Sync, (g_last_random_number >> 16) % 32768u, std::move(message), src, old_last_random);
     }
     return 0;
 }
@@ -83,15 +86,20 @@ u32 rand_between(u32 min, u32 max, RandMessage message, std::source_location src
     return min + ((max - min + 1) * random(std::move(message), src) >> 15);
 }
 
+struct LocalRandomContext {
+    std::random_device rd;
+    std::mt19937 mt{rd()};
+};
+static LocalRandomContext g_local_random_context;
+
+u16 random_local(RandMessage message, std::source_location src) {
+    return g_random_logger.log_random(LogType::Local, g_local_random_context.mt() % 32768, std::move(message), src, 0);
+}
+
 u32 rand_between_local(u32 min, u32 max, RandMessage message, std::source_location src) {
     assert(min <= max);
     message.assign_if_empty("rand_between_local {} - {}", min, max);
-    struct LocalRandomContext {
-        std::random_device rd;
-        std::mt19937 mt{rd()};
-    };
-    static LocalRandomContext context;
-    return g_random_logger.log_random(LogType::Local, context.mt() % (max - min + 1) + min, std::move(message), src, 3);
+    return g_random_logger.log_random(LogType::Local, g_local_random_context.mt() % (max - min + 1) + min, std::move(message), src, 3);
 }
 
 } // namespace bw
