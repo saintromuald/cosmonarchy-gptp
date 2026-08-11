@@ -65,9 +65,6 @@ u32 RandomLogger::log_random(LogType log_type, u32 value, RandMessage message, s
     if (g_config.log_randoms && m_output.is_open()) log_randoms_to(m_output);
     log_randoms_to(m_buffer);
 
-    static int i = 0;
-    bw::println("{:08}: {}", i++, enum_name_or_value(log_type));
-
     return value;
 }
 
