@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <fstream>
 
 #include <uuid.h>
 #include <httplib.h>
@@ -25,8 +26,14 @@ public:
 
     bool authenticate();
 
-    bool upload_replay(const std::vector<char>& uuid_data, const std::string& game_version,
-        const std::vector<char>& replay_file, const std::vector<char>& desync_file, const std::vector<char>& randoms_file);
+    bool upload_replay(
+        const std::vector<char>& uuid_data,
+        const std::string& game_version,
+        const std::vector<char>& replay_file,
+        const std::vector<char>& desync_file,
+        const std::vector<char>& randoms_file,
+        std::ofstream& logs
+    );
 
     std::string token() const { return m_token; }
     std::string username() const { return m_username; }

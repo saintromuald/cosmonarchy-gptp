@@ -488,7 +488,7 @@ void AudioSystem::shuffle_playlist() {
 				continue;
 			}
 			SoundMainBuffer* music_b = m_playlist.tracks[j];
-			if (rand() % 2 == 0) {
+			if (bw::random_local() % 2 == 0) {
 				SoundMainBuffer temp = *music_a;
 				*music_a = *music_b;
 				*music_b = temp;

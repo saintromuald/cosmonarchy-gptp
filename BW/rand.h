@@ -58,45 +58,13 @@ private:
 
 inline RandomLogger g_random_logger;
 
-// Generates a pseudorandom number between 0 and 32767, inclusive. This is
-// identical to the function used internally by StarCraft, and is guaranteed to
-// generate the same sequence in a replay.
-u16 random(RandMessage message = {"random"}, std::source_location src = std::source_location::current());
-
-// Generates a pseudorandom number between min and max, inclusive. This is
-// identical to the function used internally by StarCraft, and is guaranteed to
-// generate the same sequence in a replay.
-// NOTE: The RNG has a maximum distance of 0 - 32767.
-u32 rand_between(u32 min, u32 max, RandMessage message = {}, std::source_location src = std::source_location::current());
-
 template <typename T> requires std::is_enum_v<T>
 std::string enum_name_or_value(T value) {
     const auto name = magic_enum::enum_name(value);
     return !name.empty() ? std::string{name} : std::to_string(std::to_underlying(value));
 }
 
-template <typename T> requires std::is_enum_v<T>
-T rand_between(T min, T max, RandMessage message = {}, std::source_location src = std::source_location::current()) {
-    message.assign_if_empty("rand_between {} - {}", enum_name_or_value(min), enum_name_or_value(max));
-    return static_cast<T>(rand_between(static_cast<u32>(min), static_cast<u32>(max), std::move(message), src));
-}
-
-// Similar to above, but isn't synced, meaning it should be used for local only code
-// Uses C stdlib rand
-u32 rand_between_local(u32 min, u32 max, RandMessage message = {}, std::source_location src = std::source_location::current());
-
-template <typename T> requires std::is_enum_v<T>
-T rand_between_local(T min, T max, RandMessage message = {}, std::source_location src = std::source_location::current()) {
-    message.assign_if_empty("rand_between_local {} - {}", enum_name_or_value(min), enum_name_or_value(max));
-    return static_cast<T>(rand_between_local(static_cast<u32>(min), static_cast<u32>(max), std::move(message), src));
-}
-
-template <utils::FloatLike F = fp32>
-F random_float(RandMessage message = {"random_float"}, std::source_location src = std::source_location::current()) {
-    return F(random(std::move(message), src)) / F(MaxRandom);
-}
-
-std::string range_str(const std::ranges::range auto& range) {
+inline std::string range_str(const std::ranges::range auto& range) {
     std::stringstream ss;
     ss << "[";
     for (const auto& [i, it] : range | std::views::enumerate) {
@@ -109,9 +77,47 @@ std::string range_str(const std::ranges::range auto& range) {
     return ss.str();
 }
 
+// Generates a pseudorandom number between 0 and 32767, inclusive. This is
+// identical to the function used internally by StarCraft, and is guaranteed to
+// generate the same sequence in a replay.
+u16 random(RandMessage message = {"random"}, std::source_location src = std::source_location::current());
+
+// Generates a pseudorandom number between min and max, inclusive. This is
+// identical to the function used internally by StarCraft, and is guaranteed to
+// generate the same sequence in a replay.
+// NOTE: The RNG has a maximum distance of 0 - 32767.
+u32 rand_between(u32 min, u32 max, RandMessage message = {}, std::source_location src = std::source_location::current());
+
+template <typename T> requires std::is_enum_v<T>
+T rand_between(T min, T max, RandMessage message = {}, std::source_location src = std::source_location::current()) {
+    message.assign_if_empty("rand_between {} - {}", enum_name_or_value(min), enum_name_or_value(max));
+    return static_cast<T>(rand_between(static_cast<u32>(min), static_cast<u32>(max), std::move(message), src));
+}
+
+template <utils::FloatLike F = fp32>
+F random_float(RandMessage message = {"random_float"}, std::source_location src = std::source_location::current()) {
+    return F(random(std::move(message), src)) / F(MaxRandom);
+}
+
 auto rand_one(const std::ranges::range auto& range, RandMessage message = {}, std::source_location src = std::source_location::current()) -> decltype(*std::ranges::begin(range)) {
     message.assign_if_empty("rand_one {}", range_str(range));
     return *std::ranges::next(std::ranges::begin(range), bw::rand_between(0, std::ranges::size(range) - 1, std::move(message), src));
+}
+
+// Similar to above, but isn't synced, meaning it should be used for local only code
+u16 random_local(RandMessage message = {"random_local"}, std::source_location src = std::source_location::current());
+
+u32 rand_between_local(u32 min, u32 max, RandMessage message = {}, std::source_location src = std::source_location::current());
+
+template <typename T> requires std::is_enum_v<T>
+T rand_between_local(T min, T max, RandMessage message = {}, std::source_location src = std::source_location::current()) {
+    message.assign_if_empty("rand_between_local {} - {}", enum_name_or_value(min), enum_name_or_value(max));
+    return static_cast<T>(rand_between_local(static_cast<u32>(min), static_cast<u32>(max), std::move(message), src));
+}
+
+template <utils::FloatLike F = fp32>
+F random_float_local(RandMessage message = {"random_float"}, std::source_location src = std::source_location::current()) {
+    return F(random_local(std::move(message), src)) / F(MaxRandom);
 }
 
 auto rand_one_local(const std::ranges::range auto& range, RandMessage message = {}, std::source_location src = std::source_location::current()) -> decltype(*std::ranges::begin(range)) {
