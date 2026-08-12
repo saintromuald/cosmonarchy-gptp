@@ -54,7 +54,7 @@ namespace PortraitId {
         /*0x0031*/	Cabalist = 49,
         /*0x0032*/	FenixZealot = 50,
         /*0x0033*/	FenixDragoon = 51,
-        /*0x0034*/	Zeratul = 52,
+        /*0x0034*/	Zeratul = 52, // Used by Plasma Shell
         /*0x0035*/	Tassadar = 53,
         /*0x0036*/	GantrithorUnused = 54,
         /*0x0037*/	Witness = 55,
@@ -81,7 +81,7 @@ namespace PortraitId {
         /*0x004C*/	ProtossGasOrb = 76,
         /*0x004D*/	ZergGasSac = 77,
         /*0x004E*/	MineralCluster = 78,
-        /*0x004F*/	DataDisc = 79,
+        /*0x004F*/	DataDisc = 79, // Used by Town Center Marker
         /*0x0050*/	PsiEmitter = 80,
         /*0x0051*/	KhaydarinCrystal = 81,
         /*0x0052*/	FlagRedPl01 = 82,
