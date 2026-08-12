@@ -291,38 +291,34 @@ namespace hooks {
         }
     }
 
-    void orders_attack_move_ep(Unit* unit) // 00478DE0
-    {
-        u8 previous_main_order_id = unit->main_order_id;
-        if (helper::attack_move_react_to_attack(unit, unit->main_order_id) && unit->main_order_timer == 0) {
-            unit->main_order_timer = 0; // used to be 15
-            if (helper::get_region_id(unit->position.x, unit->position.y) == helper::get_region_id(unit->order_target.pt.x, unit->order_target.pt.y)) {
-                helper::make_to_hold_position(unit);
-                unit->order_to_idle();
+    void orders_attack_move_ep(Unit* unit) { // 00478DE0
+        auto prev_order_id = unit->main_order_id;
+        if (!helper::attack_move_react_to_attack(unit, unit->main_order_id) || unit->main_order_timer != 0) {
+            return;
+        }
+        unit->main_order_timer = 0; // used to be 15
+        if (helper::get_region_id(unit->position.x, unit->position.y) == helper::get_region_id(unit->order_target.pt.x, unit->order_target.pt.y)) {
+            helper::make_to_hold_position(unit);
+            unit->order_to_idle();
+        } else {
+            if (unit->order_target.pt.x != unit->position.x || unit->order_target.pt.y != unit->position.y) {
+                if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y)) {
+                    helper::attack_move_try_pick_target(unit, prev_order_id);
+                } else if (helper::ai_is_unreachable_position(unit, (s32)unit->order_target.pt.x, (s32)unit->order_target.pt.y)) {
+                    helper::make_to_hold_position(unit);
+                }
             } else {
-                bool jump_to_78EAE = false;
-                if (unit->get_movable_state() != 0 && (unit->order_target.pt.x != unit->position.x || unit->order_target.pt.y != unit->position.y)) {
-                    if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y)) {
-                        jump_to_78EAE = true;
-                    } else if (helper::ai_is_unreachable_position(unit, (s32)unit->order_target.pt.x, (s32)unit->order_target.pt.y)) {
-                        helper::make_to_hold_position(unit);
-                    }
-                } else {
-                    jump_to_78EAE = true;
-                }
-
-                if (jump_to_78EAE) {
-                    helper::attack_move_try_pick_target(unit, previous_main_order_id);
-                }
+                helper::attack_move_try_pick_target(unit, prev_order_id);
             }
         }
     }
 
     void orders_attack_move(Unit* unit) { // 00479040
+        auto prev_order_id = unit->main_order_id;
         if (helper::attack_move_react_to_attack(unit, unit->main_order_id) != 0 && unit->main_order_timer == 0) {
             unit->main_order_timer = 0; // used to be 15
             if (unit->move_target.pt.x != unit->position.x || unit->move_target.pt.y != unit->position.y) {
-                helper::attack_move_try_pick_target(unit, unit->main_order_id);
+                helper::attack_move_try_pick_target(unit, prev_order_id);
             } else {
                 unit->order_to_idle();
             }
