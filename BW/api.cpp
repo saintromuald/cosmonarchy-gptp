@@ -1270,7 +1270,7 @@ bool is_passive_decloakable(Unit* unit) {
     if (unit->is_burrowed() || unit_id_has_proximity_cloak(unit->id)) {
         return false;
     }
-    if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak) {
+    if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak && !UnitId::has_damage_cloak((UnitId::Enum)unit->id)) {
         return true;
     }
     auto& unit_ext = unit->ext();
@@ -1281,6 +1281,16 @@ bool is_passive_decloakable(Unit* unit) {
         return true;
     }
     return unit->status & UnitStatus::CloakingForFree; // Didact
+}
+
+bool is_damage_cloakable(Unit* unit) {
+    if (unit->is_burrowed() || unit_id_has_proximity_cloak(unit->id)) {
+        return false;
+    }
+    if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak && UnitId::has_damage_cloak((UnitId::Enum)unit->id)) {
+        return true;
+    }
+    return false;
 }
 
 bool is_proximity_decloakable(Unit* unit) {
