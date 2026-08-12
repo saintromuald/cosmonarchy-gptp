@@ -45,6 +45,11 @@ namespace TerranOgun {
 inline constexpr s32 NaniteDronesRange = 4tiles;
 }
 
+namespace NydusTrinityCamazotz {
+inline constexpr s32 OnhitHeal = 3hp;
+inline constexpr s32 OnhitRange = 2tiles;
+}
+
 namespace UpstartCannibal {
 inline constexpr s32 ReintegrationTimer = 10secs;
 }

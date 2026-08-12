@@ -955,8 +955,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     hooks::inject_custom_glues();
     hooks::inject_snp_hooks();
     hooks::inject_lobby_command_hooks();
-
-    hooks::inject_replay_hooks();
+    hooks::inject_SAI_Scripts_hooks();
+    hooks::inject_resarea_hooks();
 
     return TRUE;
 }

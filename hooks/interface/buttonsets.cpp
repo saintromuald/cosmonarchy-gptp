@@ -126,7 +126,8 @@ namespace hooks {
                     } break;
                     case UnitId::ZergHachirosk:
                     case UnitId::ZergGathtelosk:
-                    case UnitId::ZergLarvoskCesiant: {
+                    case UnitId::ZergLarvoskCesiant:
+                    case UnitId::ZergZytryleth: {
                         count_zerg_production_base++;
                     } break;
                     case UnitId::ZergCaphrolosk:
@@ -1017,7 +1018,7 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::TerranHarakan: {
-                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction == Faction::TerranGoldenRepublic) {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction == Faction::TerranGoldenRepublic || faction == Faction::TerranNydusTrinity) {
                                             current_button_state = Button_State::Invisible;
                                         } else {
                                             current_button_state = Button_State::Enabled;
@@ -1025,6 +1026,13 @@ namespace hooks {
                                     } break;
                                     case UnitId::TerranHarakanGolden: {
                                         if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranGoldenRepublic) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::TerranCamazotz: {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranNydusTrinity) {
                                             current_button_state = Button_State::Invisible;
                                         } else {
                                             current_button_state = Button_State::Enabled;
@@ -2618,6 +2626,19 @@ namespace hooks {
                                     current_button_state = Button_State::Invisible;
                                 }
                             } break;
+                            case UnitId::ZergScrylyleth: {
+                                if (current_button->requirement_var == UnitId::ZergZytryleth) {
+                                    if (unit->is_burrowed() || unit->get_first_loaded_unit()) {
+                                        current_button_state = Button_State::Invisible;
+                                    } else if (player_has_completed_unit_id(unit->player, UnitId::ZergOthstolOviform)) {
+                                        current_button_state = Button_State::Enabled;
+                                    } else {
+                                        current_button_state = Button_State::Disabled;
+                                    }
+                                } else {
+                                    current_button_state = Button_State::Invisible;
+                                }
+                            } break;
 
                             case UnitId::AskosiPilgrim:
                             case UnitId::AskosiDyad: 
@@ -2985,6 +3006,11 @@ namespace hooks {
                                 case UnitId::TerranNuriel:
                                 case UnitId::Ackmed: {
                                     if (current_button->icon_id == IconId::FlyerAttack) { // Apollyoid Adhesive
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::TerranCamazotz: {
+                                    if (current_button->icon_id == IconId::GeszithalorAcidSpore) { // Tragyle's Coagulants
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3661,9 +3687,18 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::ZergYblyleth:
-                                case UnitId::ZergScrylyleth: {
+                                case UnitId::ZergYblyleth: {
                                     if (current_button->icon_id == IconId::PneumatizedCaparace      // Cagra Autophagy
+                                    ||  current_button->icon_id == IconId::ZergAdvancedBuildings) { // Cagragenesis
+                                        if (unit->is_burrowed()) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    }
+                                } break;
+                                case UnitId::ZergScrylyleth: {
+                                    if (current_button->icon_id == IconId::PneumatizedCaparace      // Ambush Agent
                                     ||  current_button->icon_id == IconId::ZergAdvancedBuildings) { // Cagragenesis
                                         if (unit->is_burrowed()) {
                                             current_button_state = Button_State::Enabled;
@@ -3795,6 +3830,7 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::ZergZytryleth:
                                 case UnitId::ZergOkrimnilisk: {
                                     if (current_button->icon_id == IconId::EndlessLimbs) {
                                         current_button_state = Button_State::Enabled;

@@ -198,7 +198,7 @@ namespace hooks {
                     }
                 } break;
                 case UnitId::TerranHarakan: {
-                    if (faction != Faction::TerranGoldenRepublic) {
+                    if (faction != Faction::TerranGoldenRepublic && faction != Faction::TerranNydusTrinity) {
                         return true;
                     }
                 } break;
@@ -209,6 +209,11 @@ namespace hooks {
                 } break;
                 case UnitId::TerranHarakanGolden: {
                     if (faction == Faction::TerranGoldenRepublic) {
+                        return true;
+                    }
+                } break;
+                case UnitId::TerranCamazotz: {
+                    if (faction == Faction::TerranNydusTrinity) {
                         return true;
                     }
                 } break;
@@ -1228,6 +1233,16 @@ namespace hooks {
             }
         }
 
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergScrylyleth)) {
+            switch (unit_id) {
+                case UnitId::ZergZytryleth: {
+                    if (TierUnlocked[RaceId::Zerg][Tier3]) {
+                        return true;
+                    }
+                } break;
+            }
+        }
+
         // Structure morphs
         if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergCagrantCesiant)) {
             if (unit_id == UnitId::ZergSurkithCesiant
@@ -1657,7 +1672,7 @@ namespace hooks {
                         return TECH_HIDDEN;
                     }
                     case UnitId::TerranHarakan: {
-                        if (faction != Faction::TerranGoldenRepublic) {
+                        if (faction != Faction::TerranGoldenRepublic && faction != Faction::TerranNydusTrinity) {
                             if (in_air || is_adding_on) {
                                 return TECH_HIDDEN;
                             }
@@ -1734,6 +1749,15 @@ namespace hooks {
                     }
                     case UnitId::TerranHarakanGolden: {
                         if (faction == Faction::TerranGoldenRepublic) {
+                            if (in_air || is_adding_on) {
+                                return TECH_HIDDEN;
+                            }
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::TerranCamazotz: {
+                        if (faction == Faction::TerranNydusTrinity) {
                             if (in_air || is_adding_on) {
                                 return TECH_HIDDEN;
                             }
@@ -3334,6 +3358,17 @@ namespace hooks {
                     case UnitId::ZergEzigrisant:
                     case UnitId::ZergBegrozithBarrow:
                     case UnitId::ZergKethrajKeep: {
+                        if (TierUnlocked[RaceId::Zerg][Tier3]) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_LOCKED;
+                    }
+                }
+                return TECH_HIDDEN;
+            }
+            case UnitId::ZergScrylyleth: {
+                switch (unit_id) {
+                    case UnitId::ZergZytryleth: {
                         if (TierUnlocked[RaceId::Zerg][Tier3]) {
                             return TECH_ACTIVE;
                         }

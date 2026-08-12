@@ -81,6 +81,7 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
 
     // @TODO: Extend weapon ids and remove this
     switch (unit->id) {
+        case UnitId::TerranCamazotz:              final_range =  3; break;
         case UnitId::TerranBlackjackGolden:       final_range -= 1; break;
         case UnitId::TerranCutlass:               final_range -= 4; break;
         case UnitId::TerranCutlassTurret:         final_range -= 4; break;
@@ -109,6 +110,7 @@ u32 get_base_weapon_range(u8 weapon_id, u16 unit_id) {
     }
     // @TODO: Extend weapons and remove these
     switch (unit_id) {
+        case UnitId::TerranCamazotz:              final_range -= 3tiles; break;
         case UnitId::TerranBlackjackGolden:       final_range -= 1tiles; break;
         case UnitId::TerranCutlass:               final_range -= 4tiles; break;
         case UnitId::TerranCutlassTurret:         final_range -= 4tiles; break;
@@ -198,6 +200,7 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
         final_range = unit_ext.values[ValueTriggerWeaponRangeBaseAmount];
     } else {
         switch (unit->id) {
+            case UnitId::TerranCamazotz:              final_range -= 3tiles; break;
             case UnitId::TerranBlackjackGolden:       final_range -= 1tiles; break;
             case UnitId::TerranCutlass:               final_range -= 4tiles; break;
             case UnitId::TerranCutlassTurret:         final_range -= 4tiles; break;

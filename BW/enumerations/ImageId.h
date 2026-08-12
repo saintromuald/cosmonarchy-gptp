@@ -1346,6 +1346,8 @@ namespace ImageId {
 
         RozirokorMutate                             = 2405,
 
+        InzorthrokorMutate                          = 2412,
+
         // Used for damage overlay crash fix
         FirstMinorDamageOverlay						= 450,
         LastMinorDamageOverlay						= 471,

@@ -464,6 +464,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         } break;
         case Faction::TerranNydusTrinity: {
             switch (unit_id) {
+                case UnitId::TerranHarakan:         return UnitId::TerranCamazotz;
                 case UnitId::TerranCyprian:         return UnitId::TerranCohort;
                 case UnitId::TerranEidolon:         return UnitId::TerranEidolonNydus;
                 case UnitId::TerranPhalanxTankMode: return UnitId::TerranTarasque;
@@ -475,7 +476,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
                 case UnitId::TerranCyprian:         return UnitId::TerranCannibal;
                 case UnitId::TerranVulture:         return UnitId::TerranVultureUpstart;
                 case UnitId::TerranGoliath:         return UnitId::TerranSouthpaw;
-            //  case UnitId::TerranPhalanxTankMode: return UnitId::TerranBroadside;
+                case UnitId::TerranPhalanxTankMode: return UnitId::TerranBroadside;
                 case UnitId::TerranAncile:          return UnitId::TerranWendigo;
             }
         } break;
@@ -549,6 +550,7 @@ u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id) {
         damage += unit_ext.unar_solitary_focus_stacks;
     }
     switch (unit->id) {
+        case UnitId::TerranCamazotz:          damage += 2;  break;
         case UnitId::TerranCutlass:           damage -= 9;  break;
         case UnitId::TerranCutlassTurret:     damage -= 9;  break;
         case UnitId::TerranBroadside:         damage -= 5;  break;
@@ -970,7 +972,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::HippogriffPegasusMissiles:           return "Pegasus Missiles";
         case WeaponId::AionLazarusSalvo:                    return "Lazarus Salvo";
         case WeaponId::HeraldStellarTorch:                  return "Stellar Torch";
-        case WeaponId::CikraliskAcidSalvo:                  return "Acid Salvo";
+        case WeaponId::CikraliskAcidSalvo:                  return unit_id == UnitId::ZergCikralisk ? "Acid Salvo" : "Horlain Chemthrower";
         case WeaponId::TethzorokorSaberArray:               return "Saber Array";
         case WeaponId::ProtathalorPungentSpores:            return "Pungent Spores";
         case WeaponId::VilgorokorDissolvingSabers:          return "Dissolving Sabers";

@@ -272,6 +272,7 @@ namespace hooks {
             case UnitId::AskosiThaumalogue: {
                 speed *= 1.1fp;
             } break;
+            case UnitId::TerranCamazotz:
             case UnitId::TerranCyclops:
             case UnitId::TerranDurendal: {
                 speed *= 1.15fp;

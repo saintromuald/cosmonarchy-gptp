@@ -556,6 +556,11 @@ namespace hooks {
                         data.damage += 6 * 256;
                     }
                 } break;
+                case WeaponId::CikraliskAcidSalvo: {
+                    if (data.attacker->id == UnitId::TerranCamazotz) {
+                        data.damage += 2hp;
+                    }
+                } break;
                 case WeaponId::KethrostalorStaggeredSpores: {
                     if (data.attacker->id == UnitId::ZergZethalor) {
                         data.damage -= 4 * 256;
@@ -757,6 +762,12 @@ namespace hooks {
                 target_ext.units[UnitHijacker] = auxine;
                 auxine->ext().units[UnitHijackTarget] = data.target;
             } break;
+        }
+
+        if (target_ext.values[ValueInfested]) {
+            if (!bw::is_allied_to(data.target->player, data.attacking_player_id) && !UnitId::incubates_on_damage_taken((UnitId::Enum)data.target->id)) {
+                incubate(data.target, 1, UnitId::ZergRilirokor, data.target->player);
+            }
         }
 
         switch (data.target->id) {
@@ -1219,6 +1230,11 @@ namespace hooks {
                     case WeaponId::GhitorokorGnashingTendrils: {
                         attacker_ext.values[ValueGhitorokorRelentlessAggressionStacks]++;
                         attacker_ext.timers[TimerGhitorokorRelentlessAggression] = 2secs + 1;
+                    } break; {
+                    case WeaponId::CikraliskAcidSalvo:
+                        if (data.attacker->id == UnitId::TerranCamazotz) {
+                            bw::heal_proc(data.target, data.attacking_player_id, NydusTrinityCamazotz::OnhitRange, NydusTrinityCamazotz::OnhitHeal);
+                        }
                     } break;
                     case WeaponId::IziraliskCorrosiveBioplasma: {
                         helper::apply_corrosive_spores(data.target);
@@ -1750,7 +1766,7 @@ namespace hooks {
             helper::react_to_hit(attacker, victim);
         }
         if (!victim->unit_ai) {
-            for (Unit* unit : g_unit_search.radial(victim->position, 96)) {
+            for (Unit* unit : g_unit_search.radial(victim->position, 3tiles)) {
                 if (unit != victim && unit->player == victim->player) {
                     helper::ask_for_help(attacker, unit);
                 }

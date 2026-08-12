@@ -217,7 +217,8 @@ namespace hooks {
             case UnitId::ZergHachirosk:
             case UnitId::ZergCagrantCesiant:
             case UnitId::ZergCerebrateTheFall:
-            case UnitId::ZergOvermindTheFall: {
+            case UnitId::ZergOvermindTheFall:
+            case UnitId::ZergZytryleth: {
                 return is_complete;
             }
             case UnitId::ZergCaphrolosk:

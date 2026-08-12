@@ -149,6 +149,12 @@ bool has_forward_march(UnitId::Enum unit_id);
 bool spreads_cagra_while_burrowed(UnitId::Enum unit_id);
 bool has_swarming_spite(UnitId::Enum unit_id);
 bool is_askosi(UnitId::Enum unit_id);
+bool has_power_breach(UnitId::Enum unit_id);
+bool has_far_transport_range(UnitId::Enum unit_id);
+bool is_carrier(UnitId::Enum unit_id);
+bool has_impact_dissipation(UnitId::Enum unit_id);
+bool has_disruption_field(UnitId::Enum unit_id);
+bool incubates_on_damage_taken(UnitId::Enum unit_id);
 } // namespace UnitId
 
 namespace WeaponId {
