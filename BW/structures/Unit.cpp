@@ -335,14 +335,13 @@ bool Unit::is_valid_caster() const {
 
 // Identical to function @ 0x00401DC0
 u32 Unit::get_movable_state() {
-    if (this->move_target.pt != this->position) {
+    if (this->move_target.pt.x != this->position.x || this->move_target.pt.y != this->position.y) {
         return MovableState_NotReachedDestination;
     } else {
         if (!(this->status & UnitStatus::Unmovable)) {
             return MovableState_ReachedDestination;
-        } else {
-            return MovableState_UnmovableAtDestination;
         }
+        return MovableState_UnmovableAtDestination;
     }
 }
 
