@@ -381,7 +381,8 @@ bool unit_id_is_tank_mode(UnitId::Enum unit_id) {
 
 bool unit_id_is_broodspawn(u32 unit_id) {
     return unit_id == UnitId::ZergRilirokor
-        || unit_id == UnitId::ZergRililisk;
+        || unit_id == UnitId::ZergRililisk
+        || unit_id == UnitId::ZergSkryrokor;
 }
 
 bool unit_id_is_zerg_production(u16 unit_id, bool town_center_only) {
@@ -427,6 +428,7 @@ bool unit_id_is_factional(u16 unit_id) {
         || unit_id == UnitId::TerranPietyWard
         || unit_id == UnitId::TerranClericFuturist
         || unit_id == UnitId::TerranBlackjackGolden
+        || unit_id == UnitId::TerranCamazotz
         || unit_id == UnitId::TerranEidolonNydus
         || unit_id == UnitId::TerranTiangou
         || unit_id == UnitId::TerranMaverickFuturist
@@ -1090,7 +1092,8 @@ bool unit_id_spawns_larva_by_order(u32 unit_id) {
         || unit_id == UnitId::ZergOcsalCesiant
         || unit_id == UnitId::ZergCerebrateTheFall
         || unit_id == UnitId::ZergOvermindWithShellTheFall
-        || unit_id == UnitId::ZergOvermindTheFall;
+        || unit_id == UnitId::ZergOvermindTheFall
+        || unit_id == UnitId::ZergZytryleth;
 }
 
 u32 get_worker_construction_distance(u32 structure_id) {
@@ -1175,6 +1178,7 @@ u32 get_mutate_image_id(u32 unit_id) {
         case UnitId::ZergEvigrilisk:	return ImageId::EvigriliskMutate;
         case UnitId::ZergAlmaksalisk:	return ImageId::AlmaksaliskMutate;
         case UnitId::ZergZoryusthaleth:	return ImageId::ZoryusthalethMutate;
+        case UnitId::ZergInzorthrokor:	return ImageId::InzorthrokorMutate;
         case UnitId::ZergLakizilisk:	return ImageId::LakiziliskMutate;
         case UnitId::ZergGorgrokor:		return ImageId::GorgrokorMutate;
         case UnitId::ZergAzanthrokor:	return ImageId::AzanthrokorMutate;
@@ -1423,6 +1427,7 @@ bool unit_id_ignores_ground_collision(u32 unit_id) {
 bool unit_id_has_projection_attack(u32 unit_id) {
     return unit_id == UnitId::TerranHarakan
         || unit_id == UnitId::TerranHarakanGolden
+        || unit_id == UnitId::TerranCamazotz
         || unit_id == UnitId::TerranNuriel
         || unit_id == UnitId::TerranStriga
         || unit_id == UnitId::TerranMatadorTankMode
@@ -2150,6 +2155,34 @@ bool has_swarming_spite(UnitId::Enum unit_id) {
     return unit_id == UnitId::ZergSkryrokor;
 }
 
+bool has_far_transport_range(UnitId::Enum unit_id) {
+    return unit_id == UnitId::AskosiEmissary;
+}
+
+bool is_carrier(UnitId::Enum unit_id) {
+    return unit_id == UnitId::ProtossSolarion;
+}
+
+bool has_impact_dissipation(UnitId::Enum unit_id) {
+    return unit_id == UnitId::AskosiMissionary
+    ||     unit_id == UnitId::AskosiAphorist
+    ||     unit_id == UnitId::AskosiThaumalogue
+    ||     unit_id == UnitId::AskosiDoronin
+    ||     unit_id == UnitId::AskosiInsurant
+    ||     unit_id == UnitId::AskosiRove
+    ||     unit_id == UnitId::AskosiAgonist
+    ||     unit_id == UnitId::AskosiEmissary
+    ||     unit_id == UnitId::AskosiAkreno;
+}
+
+bool has_disruption_field(UnitId::Enum unit_id) {
+    return unit_id == UnitId::ProtossLanifect;
+}
+
+bool incubates_on_damage_taken(UnitId::Enum unit_id) {
+    return unit_id == UnitId::ZergZoryusthaleth
+        || unit_id == UnitId::ZergVithrilisk;
+}
 } // namespace UnitId
 
 namespace WeaponId {

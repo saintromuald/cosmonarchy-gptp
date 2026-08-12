@@ -189,6 +189,7 @@ namespace UnitId {
         TerranNuriel                                        = 598,
         TerranPhoenix                                       = 599,
         TerranArchbishop                                    = 600,
+        TerranCamazotz                                      = 620,
 
     // Terran-Building
         TerranVestry										= 119,		// Starbase / Terran Unused 1
@@ -210,7 +211,7 @@ namespace UnitId {
         TerranStarpad										= 254,
         TerranFutureStation									= 257,
         TerranCestus        								= 259,
-        TerranAerie											= 260,
+        TerranAerie											= 260,      // unused
         TerranMantle										= 280,
         TerranApothecary									= 284,
         TerranParthenon										= 288,      // unused
@@ -406,6 +407,9 @@ namespace UnitId {
         ZergSkibactScab										= 397,		// Morphed from Hydrith Den
         ZergEskigant                                        = 421,
         ZergZozarcGorge                                     = 493,      // Morphed from Ulgorg Cavern
+    
+    // Zerg-Building-Factional
+        ZergZytryleth                                       = 619,
 
     // Askosi-Unit
         AskosiPilgrim                                       = 439,

@@ -641,8 +641,8 @@ namespace units_dat {
     BW_DATA_REF(u16*,			sound_annoyed_last,		unitsDat[33].address);	// 00661EE8
     BW_DATA_REF(u16*,			sound_yes_first,		unitsDat[34].address);	// 00663C10
     BW_DATA_REF(u16*,			sound_yes_last,			unitsDat[35].address);	// 00661440
-    BW_DATA_REF(v2u16*,		building_dimensions,	unitsDat[36].address);	// 00662860	// Placement Box in PyDAT
-    BW_DATA_REF(v2u16*,		addon_placement,		unitsDat[37].address);	// 006626E0 // Addon Position in PyDAT
+    BW_DATA_REF(v2u16*,		    building_dimensions,	unitsDat[36].address);	// 00662860	// Placement Box in PyDAT
+    BW_DATA_REF(v2u16*,		    addon_placement,		unitsDat[37].address);	// 006626E0 // Addon Position in PyDAT
     BW_DATA_REF(Box16*,			unit_bounds,			unitsDat[38].address);	// 006617C8	// Unit Dimensions in PyDAT
     BW_DATA_REF(u16*,			portrait_id,			unitsDat[39].address);	// 00662F88
     BW_DATA_REF(u16*,			mineral_cost,			unitsDat[40].address);	// 00663888

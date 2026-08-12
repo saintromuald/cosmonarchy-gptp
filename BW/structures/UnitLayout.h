@@ -204,9 +204,9 @@ struct UnitLayout {
     /*0x008*/ s32       hitpoints;						// Hit points of unit, note that the displayed value in broodwar is ceil(healthPoints/256). Officially called "xLife"
     /*0x00C*/ Sprite*	sprite;
     /*0x010*/ Target    move_target;					// The position or unit to move to. It is NOT an order target.
-    /*0x018*/ v2u16   next_movement_waypoint;			// The next way point in the path the unit is following to get to its destination.
+    /*0x018*/ v2u16     next_movement_waypoint;			// The next way point in the path the unit is following to get to its destination.
                                                         // Equal to moveToPos for edge units since they don't need to navigate around buildings.
-    /*0x01C*/ v2u16   next_target_waypoint;			// The desired position
+    /*0x01C*/ v2u16     next_target_waypoint;			// The desired position
     /*0x020*/ u8        movement_flags;					// sound_flags specifying movement type, MovementFlags::Enum contains possible explanations
     /*0x021*/ u8        current_direction_1;			// The current direction the unit is facing
     /*0x022*/ u8        flingy_turn_rate;				// AKA flingy turn radius
@@ -218,7 +218,7 @@ struct UnitLayout {
     /*0x024*/ u16       flingy_id;
     /*0x026*/ u8        new_flags_1;					// Enum NewFlags1 | was unused
     /*0x027*/ u8        flingy_movement_type;
-    /*0x028*/ v2u16   position;						// Current position of the unit
+    /*0x028*/ v2u16     position;						// Current position of the unit
     /*0x02C*/ v2s32		halt;
     /*0x034*/ u32       flingy_top_speed;				// top speed
     /*0x038*/ u32       current_speed_1;				// current speed

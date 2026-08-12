@@ -97,7 +97,7 @@ namespace hooks {
 			}
 
 			// Wyvern Reverse Thrust - fire while moving
-			if (unit->status & UnitStatus::Completed && unit_ext.timers[TimerWyvernAttackCooldown] == 0) {
+			if (unit->is_completed() && unit_ext.timers[TimerWyvernAttackCooldown] == 0) {
 				u32 range = weapons_dat::max_range[WeaponId::WyvernJacksonCannon];
 				s32 forward_offset = weapons_dat::forward_offset[WeaponId::WyvernJacksonCannon];
 				u32 x = unit->get_x() + bw::get_polar_x(forward_offset, unit->current_direction_1);

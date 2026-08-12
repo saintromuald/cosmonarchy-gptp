@@ -2081,6 +2081,9 @@ u32 get_zerg_regression(UnitId::Enum unit_id, Faction faction, bool completed, b
             }
             return UnitId::None;
         }
+        case UnitId::ZergZytryleth: {
+            return UnitId::ZergScrylyleth;
+        }
 
         // Unit Morphs
         case UnitId::ZergGosvileth:				return UnitId::ZergDroleth;
@@ -2100,6 +2103,7 @@ u32 get_zerg_regression(UnitId::Enum unit_id, Faction faction, bool completed, b
         case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;
         case UnitId::ZergIsthrathaleth:			return UnitId::ZergVilgorokor;
         case UnitId::ZergAkistrokor:			return UnitId::ZergMatraleth;
+        case UnitId::ZergScrylyleth:			return UnitId::ZergYblyleth;
 
         case UnitId::ZergIroleth:
         case UnitId::ZergLiiralisk:
@@ -3121,7 +3125,7 @@ void regress(Unit* unit, u32 regression_id) {
     }
     helper::increment_unit_death_scores(unit, unit->player);
     bool is_building = units_dat::base_property[regression_id] & UnitProperty::Building;
-    is_building = true; // Disable custom eggs for now, since they seem to yield null sprite units sometimes.
+    is_building = true; // Disable custom eggs for now, since they seem to yield null sprite units sometimes. -Veeq7
     u32 old_id = unit->id;
     u32 regress_to = regression_id;
     if (!is_building) {
@@ -4014,6 +4018,9 @@ bool game_kind_supports_kills(GameKind game_kind) {
 }
 
 bool unit_can_fire_secondary_weapon(Unit* unit) {
+    if (!unit->is_completed()) {
+        return false;
+    }
     auto& unit_ext = unit->ext();
     if (unit_ext.timers[TimerSecondaryWeaponCooldown]) {
         return false;
@@ -4239,7 +4246,7 @@ fp32 get_regeneration_factor(Unit* unit) {
     }
     
     fp32 factor = 1;
-    if (unit->id == UnitId::TerranEidolonNydus && unit->is_cloaked) {
+    if (unit->id == UnitId::TerranEidolonNydus && unit->status & UnitStatus::Cloaked) {
         factor += 1fp;
     }
     if (!unit_ext.unit_vectors[UnitVectorCrucibles].empty()) {

@@ -2429,8 +2429,9 @@ namespace hooks {
                     }
                 }
             } break;
-            case UnitId::ZergOkrimnilisk: {
-                if (!(unit->status & UnitStatus::Burrowed) && bw::unit_can_fire_secondary_weapon(unit)) {
+            case UnitId::ZergOkrimnilisk:
+            case UnitId::ZergZytryleth: {
+                if (!unit->is_burrowed() && bw::unit_can_fire_secondary_weapon(unit)) {
                     if (fire_multiple(unit, WeaponId::OkrimniliskOmnispores, 0, FilterEnemy, {.fire_opts = {.apply_cooldown = false}, .use_weapon_factor = false})) {
                         unit->sprite->create_top_overlay(ImageId::OkrimniliskOmnisporesFire);
                         u32 sound_id = bw::rand_between(SoundId::SpirtithWeaponfire01, SoundId::SpirtithWeaponfire03);

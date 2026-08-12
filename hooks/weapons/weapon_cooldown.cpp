@@ -25,6 +25,7 @@ namespace hooks {
 
 		// @TODO: Extend weapon ids and remove this
 		switch (unit->id) {
+			case UnitId::TerranCamazotz:      armor_pen -= 1; break;
 			case UnitId::TerranCutlass:       armor_pen -= 1; break;
 			case UnitId::TerranCutlassTurret: armor_pen -= 1; break;
 			case UnitId::ProtossRenesair:	  armor_pen += 1; break;
