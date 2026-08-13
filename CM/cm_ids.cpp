@@ -450,9 +450,6 @@ bool unit_id_is_factional(u16 unit_id) {
         || unit_id == UnitId::ProtossAshguard
         || unit_id == UnitId::ProtossDracadinOrder
         || unit_id == UnitId::ProtossManifoldStarbound
-        || unit_id == UnitId::ProtossSimulacrumKhalendric
-        || unit_id == UnitId::ProtossIdolKhalendric
-        || unit_id == UnitId::ProtossVestige
         || unit_id == UnitId::ProtossEcclesiastAstral
         || unit_id == UnitId::ProtossWarlock
 
