@@ -1664,9 +1664,22 @@ namespace hooks {
                                 switch (current_button->requirement_var) {
                                     case UnitId::TerranRamesses:
                                     case UnitId::TerranDurendal:
-                                    case UnitId::TerranCataphract:
                                     case UnitId::TerranTriton: {
                                         if (unit->is_grounded_building()) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
+                                    case UnitId::TerranCataphract: {
+                                        if (unit->is_grounded_building() && faction != Faction::TerranHecatonCoalition) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
+                                    case UnitId::TerranArquebus: {
+                                        if (unit->is_grounded_building() && faction == Faction::TerranHecatonCoalition) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Invisible;
@@ -3085,6 +3098,13 @@ namespace hooks {
                                 case UnitId::TerranCataphract: {
                                     if (current_button->icon_id == IconId::AtreusDauntlessDisruptionCannon		// Prolonged Arms
                                     ||  current_button->icon_id == IconId::PsiAssault) {						// Offset: Cone
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::TerranArquebus: {
+                                    if (current_button->icon_id == IconId::ProlongedArms
+                                    ||  current_button->icon_id == IconId::OffsetCone
+                                    ||  current_button->icon_id == IconId::FlyerAttack) { // Incineration
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

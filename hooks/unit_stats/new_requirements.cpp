@@ -388,9 +388,18 @@ namespace hooks {
             switch (unit_id) {
                 case UnitId::TerranRamesses:
                 case UnitId::TerranDurendal:
-                case UnitId::TerranCataphract:
                 case UnitId::TerranTriton: {
                     return true;
+                } break;
+                case UnitId::TerranCataphract: {
+                    if (faction != Faction::TerranHecatonCoalition) {
+                        return true;
+                    }
+                } break;
+                case UnitId::TerranArquebus: {
+                    if (faction == Faction::TerranHecatonCoalition) {
+                        return true;
+                    }
                 } break;
             }
         }
@@ -405,15 +414,13 @@ namespace hooks {
                 } break;
                 case UnitId::TerranClaymore:
                 case UnitId::TerranPenumbra: {
-                    if (player_has_completed_addon_unit_id(player_id, UnitId::TerranFutureStation))
-                    {
+                    if (player_has_completed_addon_unit_id(player_id, UnitId::TerranFutureStation)) {
                         return true;
                     }
                 } break;
                 case UnitId::TerranAnticthon:
                 case UnitId::TerranAion: {
-                    if (player_has_completed_addon_unit_id(player_id, UnitId::TerranBioticBastion))
-                    {
+                    if (player_has_completed_addon_unit_id(player_id, UnitId::TerranBioticBastion)) {
                         return true;
                     }
                 }
@@ -2078,12 +2085,27 @@ namespace hooks {
                 switch (unit_id) {
                     case UnitId::TerranRamesses:
                     case UnitId::TerranDurendal:
-                    case UnitId::TerranCataphract:
                     case UnitId::TerranTriton: {
                         if (in_air) {
                             return TECH_HIDDEN;
                         }
                         return TECH_ACTIVE;
+                    }
+                    case UnitId::TerranCataphract: {
+                        if (faction != Faction::TerranHecatonCoalition) {
+                            if (in_air) {
+                                return TECH_HIDDEN;
+                            }
+                            return TECH_ACTIVE;
+                        }
+                    }
+                    case UnitId::TerranArquebus: {
+                        if (faction == Faction::TerranHecatonCoalition) {
+                            if (in_air) {
+                                return TECH_HIDDEN;
+                            }
+                            return TECH_ACTIVE;
+                        }
                     }
                 }
             } break;

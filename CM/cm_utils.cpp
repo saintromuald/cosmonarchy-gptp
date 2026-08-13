@@ -437,6 +437,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
                 case UnitId::TerranVulture:               return UnitId::TerranVultureHecaton;
                 case UnitId::TerranGoliath:               return UnitId::TerranArhaun;
                 case UnitId::TerranMadrigalImperiosoMode: return UnitId::TerranMadrigalHecatonImperiosoMode;
+                case UnitId::TerranCataphract:            return UnitId::TerranArquebus;
                 case UnitId::TerranValkyrie:              return UnitId::TerranValkyrieHecaton;
                 case UnitId::TerranTrojan:                return UnitId::TerranQilin;
                 case UnitId::TerranSeraph:                return UnitId::TerranSerathiel;
@@ -984,7 +985,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::RamessesPharoahCannons:              return "Pharoah Cannons";
         case WeaponId::DurendalAbaddonFlamethrowers:        return "Abaddon Flamethrowers";
         case WeaponId::DurendalPhilistineSalvo:             return "Philistine Salvo";
-        case WeaponId::CataphractLonginiusCannons:          return "Longinius Cannons";
+        case WeaponId::CataphractLonginiusCannons:          return unit_id == UnitId::TerranCataphract ? "Longinius Cannons" : "Lukankazi Railguns";
         case WeaponId::DilettanteUpstartRifle:              return "Upstart Rifle";
         case WeaponId::SevenstepGeometricRifle:             return "Geometric Rifle";
         case WeaponId::HypnagogueKaleidoscopeCannon:        return "Kaleidoscope Cannon";

@@ -87,6 +87,7 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
         case UnitId::TerranCutlassTurret:         final_range -= 4; break;
         case UnitId::TerranBroadside:             final_range -= 2; break;
         case UnitId::TerranBroadsideTurret:       final_range -= 2; break;
+        case UnitId::TerranArquebus:              final_range -= 1; break;
         case UnitId::ProtossEcclesiastKhalendric: final_range -= 1; break;
         case UnitId::ProtossRenesair:             final_range += 1; break;
         case UnitId::ZergZethalor:                final_range -= 6; break;
@@ -116,6 +117,7 @@ u32 get_base_weapon_range(u8 weapon_id, u16 unit_id) {
         case UnitId::TerranCutlassTurret:         final_range -= 4tiles; break;
         case UnitId::TerranBroadside:             final_range -= 2tiles; break;
         case UnitId::TerranBroadsideTurret:       final_range -= 2tiles; break;
+        case UnitId::TerranArquebus:              final_range -= 1tiles; break;
         case UnitId::ProtossEcclesiastKhalendric: final_range -= 1tiles; break;
         case UnitId::ProtossRenesair:             final_range += 1tiles; break;
         case UnitId::ZergZethalor:                final_range -= 6tiles; break;
@@ -206,6 +208,7 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
             case UnitId::TerranCutlassTurret:         final_range -= 4tiles; break;
             case UnitId::TerranBroadside:             final_range -= 2tiles; break;
             case UnitId::TerranBroadsideTurret:       final_range -= 2tiles; break;
+            case UnitId::TerranArquebus:              final_range -= 1tiles; break;
             case UnitId::ProtossEcclesiastKhalendric: final_range -= 1tiles; break;
             case UnitId::ProtossRenesair:             final_range += 1tiles; break;
             case UnitId::ZergZethalor:                final_range -= 6tiles; break;

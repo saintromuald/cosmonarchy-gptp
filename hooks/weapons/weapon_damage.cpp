@@ -704,6 +704,12 @@ namespace hooks {
             case WeaponId::CyclopsBrontesPayload: {
                 data.target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
             } break;
+            case WeaponId::CataphractLonginiusCannons: { // TODO: Extend weapons and remove this
+                if (data.attacker && data.attacker->id == UnitId::TerranArquebus) {
+                    target_ext.values[ValueIncineratePlayer] = data.attacking_player_id;
+                    target_ext.timers[TimerIncinerateDamage] = HecatonAuriel::IncinerateTimer;
+                }
+            } break;
             case WeaponId::WendigoFusionSaw: {
                 target_ext.values[ValueWendigoShatteredWindsStacks]++;
                 target_ext.timers[TimerWendigoShatteredWinds] = UpstartWendigo::ShatteredWindsDuration;

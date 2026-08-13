@@ -416,6 +416,7 @@ bool unit_id_is_factional(u16 unit_id) {
         || unit_id == UnitId::TerranAspirant
         || unit_id == UnitId::TerranSouthpaw
         || unit_id == UnitId::TerranTarasque
+        || unit_id == UnitId::TerranArquebus
         || unit_id == UnitId::TerranPhiloc
         || unit_id == UnitId::TerranValkyrieHecaton
         || unit_id == UnitId::TerranQuadriga
@@ -449,6 +450,11 @@ bool unit_id_is_factional(u16 unit_id) {
         || unit_id == UnitId::ProtossAshguard
         || unit_id == UnitId::ProtossDracadinOrder
         || unit_id == UnitId::ProtossManifoldStarbound
+        || unit_id == UnitId::ProtossSimulacrumKhalendric
+        || unit_id == UnitId::ProtossIdolKhalendric
+        || unit_id == UnitId::ProtossVestige
+        || unit_id == UnitId::ProtossEcclesiastAstral
+        || unit_id == UnitId::ProtossWarlock
 
         || unit_id == UnitId::ZergYblyleth
         || unit_id == UnitId::ZergScrylyleth
