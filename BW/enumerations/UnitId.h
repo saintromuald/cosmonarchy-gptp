@@ -480,6 +480,14 @@ namespace UnitId {
         AskosiDorminge                                      = 577,
         AskosiLotiro                                        = 578,
         AskosiDomain                                        = 579,
+        AskosiLekrot                                        = 596,
+        AskosiHearthshard                                   = 597,
+
+    // Bloodsummon-Unit
+        BloodsummonThrombocyte                              = 617,
+
+    // Bloodsummon-Building
+        BloodsummonGrimoire                                 = 618,
 
     // Special-Unit
         ExtTerranCivilian									= 332,

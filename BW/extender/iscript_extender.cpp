@@ -9,6 +9,7 @@ char* g_iscript_filenames[] = {
     (char*)"scripts\\iscript_protoss.bin",
     (char*)"scripts\\iscript_zerg.bin",
     (char*)"scripts\\iscript_askosi.bin",
+    (char*)"scripts\\iscript_bloodsummon.bin",
 };
 
 static constexpr u32 IscriptFileCount = sizeof(g_iscript_filenames) / 4;

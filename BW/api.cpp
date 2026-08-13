@@ -1743,7 +1743,7 @@ bool is_unit_isolated(Unit* unit) {
 }
 
 bool transport_is_full(Unit* transport) {
-    UnitExt& transport_ext = transport->ext();
+    auto& transport_ext = transport->ext();
     for (u32 i = 0; i < TransportCap; ++i) {
         if (!transport_ext.loaded_unit[i].index) {
             return false;
@@ -1753,7 +1753,7 @@ bool transport_is_full(Unit* transport) {
 }
 
 bool transport_is_empty(Unit* transport) {
-    UnitExt& transport_ext = transport->ext();
+    auto& transport_ext = transport->ext();
     for (u32 i = 0; i < TransportCap; ++i) {
         if (transport_ext.loaded_unit[i].index) {
             return false;

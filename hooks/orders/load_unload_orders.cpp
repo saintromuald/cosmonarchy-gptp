@@ -389,34 +389,34 @@ void orders_unload(Unit* unit) { // 004E80D0
 
 bool can_enter_transport(Unit* transport, Unit* unit) { // 004E6E00
     if (!transport->is_completed()) {
-        return 0;
+        return false;
     }
     if (transport->is_frozen()) {
-        return 0;
+        return false;
     }
     if (!unit->is_completed()) {
-        return 0;
+        return false;
     }
     if (unit->is_burrowed()) {
-        return 0;
+        return false;
     }
     if (!bw::are_mutual_allies(unit->player, transport->player)) {
-        return 0;
+        return false;
     }
     if (bw::transport_is_full(transport)) {
-        return 0;
+        return false;
     }
     if (unit->is_in_air() && !transport->can_transport_air()) {
-        return 0;
+        return false;
     }
     if (unit->player == 11) {
-        return 0;
+        return false;
     }
     if (unit->is_building() && transport->is_building()) {
-        return 0;
+        return false;
     }
     if (unit->ext().units[UnitHiveOrgan]) {
-        return 0;
+        return false;
     }
 
     u32 space_provided_transport = units_dat::space_provided[transport->id];
@@ -434,6 +434,12 @@ bool can_enter_transport(Unit* transport, Unit* unit) { // 004E6E00
         if (loaded_unit) {
             space_required += units_dat::space_required[loaded_unit->id];
         }
+    }
+    if (transport->id = UnitId::BloodsummonGrimoire) {
+        if (transport->get_first_loaded_unit()) {
+            return false;
+        }
+        space_provided_transport = units_dat::space_required[unit->id];
     }
     return space_provided_transport - space_required >= units_dat::space_required[unit->id];
 }

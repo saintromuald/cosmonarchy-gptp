@@ -643,3 +643,33 @@ void apply_tartarus_effect(v2u16 position, u32 timer, bool do_damage, u8 attacki
 		}
 	}
 }
+
+void unload_unit_on_transport_death(Unit* transport, u32 index) {
+	auto& transport_ext = transport->ext();
+	Unit* unit = hooks::get_loaded_unit_from_index(transport, index);
+	if (unit) {
+		transport->main_order_timer = 0;
+		if (helper::unload_unit_proc(unit)) {
+			if (!unit_id_is_garrison(transport->id) || transport_ext.timers[TimerEmergencyDetonation] == 1) {
+				helper::orders_self_destructing(unit); // Just kill it! -Veeq7
+			}
+		} else {
+			helper::orders_self_destructing(unit);
+		}
+	}
+	transport_ext.loaded_unit[index].value = 0;
+}
+
+void necromastery_proc(UnitId::Enum unit_id) {
+	for (Unit* grimoire = *g_first_visible_unit; grimoire; grimoire = grimoire->link.next) {
+		if (grimoire->id == UnitId::BloodsummonGrimoire && grimoire->build_queue[grimoire->build_queue_slot] == UnitId::None) {
+			Unit* cargo = grimoire->get_first_loaded_unit(); // The Grimoire can only have one unit at a time. If that ever changes, modify this! -Pr0nogo
+			if (cargo && cargo->id == unit_id) {
+				// TODO: Visual overlay
+				bw::play_sound(SoundId::GrimoirePassive01, grimoire->position);
+				grimoire->build_queue[grimoire->build_queue_slot] = cargo->id;
+				grimoire->set_secondary_order(OrderId::TrainUnit);
+			}
+		}
+	}
+}

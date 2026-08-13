@@ -69,6 +69,9 @@ namespace UpgradeId {
 
         ForerunnerAlloy			= 61, // Units
         ForerunnerLattice		= 62, // Structures
+        BloodsummonStigmata     = 63, // Ground units
+        BloodsummonAtar         = 64, // Air units
+        BloodsummonSacrament    = 65, // Structures
 
         None                    = 100, // UpgradesIdLimit - 1
 

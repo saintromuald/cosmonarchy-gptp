@@ -333,7 +333,7 @@ void unit_on_death_behaviors(Unit* unit) {
                 unit->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel); // TODO: Own visuals
                 bw::play_sound({SoundId::AkrenoPassiveCharge01, SoundId::AkrenoPassiveCharge03}, unit->position);
                 g_iquare_globals->create_effect(EffectId::ScrapworldImplosion, 1 * 24, {unit->position.x, unit->position.y}, 6 * 32, SpriteId::DivineDisciplineField, 5, unit->player, 0);
-            }
+            } break;
         }
 
         Unit* hijacker = unit_ext.units[UnitHijacker];
@@ -377,9 +377,9 @@ void unit_on_death_behaviors(Unit* unit) {
         Unit* attacker = unit_ext.units[UnitPlagueSource];
         u32 attacking_player = attacker ? attacker->player : 11;
         if (unit_ext.values[ValueMiasma]) {
-            g_iquare_globals->create_effect(EffectId::MiasmaPlagueField, 2 * 24, { (u16)unit->position.x, (u16)unit->position.y }, 1.5 * 32, SpriteId::PlagueField, 5, attacking_player, attacker);
+            g_iquare_globals->create_effect(EffectId::MiasmaPlagueField, 2secs, { (u16)unit->position.x, (u16)unit->position.y }, 1.5tiles, SpriteId::PlagueField, 5, attacking_player, attacker);
         } else {
-            g_iquare_globals->create_effect(EffectId::IsthrathalethPlagueField, 5 * 24, { (u16)unit->position.x, (u16)unit->position.y }, 1.5 * 32, SpriteId::PlagueField, 5, attacking_player, attacker);
+            g_iquare_globals->create_effect(EffectId::IsthrathalethPlagueField, 5secs, { (u16)unit->position.x, (u16)unit->position.y }, 1.5tiles, SpriteId::PlagueField, 5, attacking_player, attacker);
         }
     }
 
@@ -397,6 +397,8 @@ void unit_on_death_behaviors(Unit* unit) {
     if (unit_ext.values[ValueSignifyStacks] >= 5) {
         play_unit_banter(unit, UnitId::ProtossHierophant);
     }
+
+    necromastery_proc((UnitId::Enum)unit->id);
 }
 
 void unit_destructor_special_cases(Unit* unit) {

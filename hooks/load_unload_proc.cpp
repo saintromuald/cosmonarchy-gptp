@@ -106,10 +106,22 @@ static bool fix_unload_pos(Unit* unit, v2u16* pos) {
 
 static SoundId::Enum get_transport_load_sound_id(Unit* transport) {
     switch (transport->get_race()) {
-        case RaceId::Terran:  return SoundId::Misc_TDrTra00_wav;
-        case RaceId::Protoss: return SoundId::Misc_PShTra00_wav;
-        case RaceId::Zerg:    return SoundId::Misc_ZOvTra00_wav;
-        case RaceId::Askosi:  return SoundId::Misc_PShTra00_wav;
+        case RaceId::Terran:      return SoundId::Misc_TDrTra00_wav;
+        case RaceId::Protoss:     return SoundId::Misc_PShTra00_wav;
+        case RaceId::Zerg:        return SoundId::Misc_ZOvTra00_wav;
+        case RaceId::Askosi:      return SoundId::AskosiLoad01;
+        case RaceId::Bloodsummon: return SoundId::BloodsummonLoad01;
+    }
+    return SoundId::None;
+}
+
+static SoundId::Enum get_transport_unload_sound_id(Unit* transport) {
+    switch (transport->get_race()) {
+        case RaceId::Terran:      return SoundId::Misc_TDrTra01_wav;
+        case RaceId::Protoss:     return SoundId::Misc_PShTra01_wav;
+        case RaceId::Zerg:        return SoundId::Misc_ZOvTra01_wav;
+        case RaceId::Askosi:      return SoundId::AskosiUnload01;
+        case RaceId::Bloodsummon: return SoundId::BloodsummonUnload01;
     }
     return SoundId::None;
 }

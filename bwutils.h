@@ -106,7 +106,12 @@ namespace SpriteId {
             case SpriteId::Corpse_Silversoul:
             case SpriteId::Corpse_Civilian:
             case SpriteId::Corpse_Pilgrim:
-            case SpriteId::Corpse_Rozirokor: {
+            case SpriteId::Corpse_Rozirokor:
+            case SpriteId::Corpse_BloodsummonBuildingSmall:
+            case SpriteId::Corpse_BloodsummonBuildingLarge:
+            case SpriteId::Corpse_BloodsummonUnitTiny:
+            case SpriteId::Corpse_BloodsummonUnitSmall:
+            case SpriteId::Corpse_BloodsummonUnitMedium: {
                 return true;
             } break;
         }
