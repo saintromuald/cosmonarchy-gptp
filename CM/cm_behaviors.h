@@ -56,3 +56,6 @@ void tick_psi_storm_damage(EffectField& effect, u32 update_period, u32 tick_scal
 void apply_lobotomy_effect(v2u16 position, u32 timer, bool do_stun);
 void apply_tartarus_effect(v2u16 position, u32 timer, bool do_damage, u8 attacking_player);
 void apply_goremast_effect(v2u16 position, u32 timer, bool do_damage);
+
+void unload_unit_on_transport_death(Unit* transport, u32 index);
+void necromastery_proc(UnitId::Enum unit_id);

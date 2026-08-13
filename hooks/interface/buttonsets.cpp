@@ -4207,6 +4207,14 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+
+                                // BLOODSUMMON \\
+
+                                case UnitId::BloodsummonGrimoire: {
+                                    if (current_button->icon_id == IconId::BloodyRain) { // Necromastery
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                             }
 
                             // Passive icons: END \\

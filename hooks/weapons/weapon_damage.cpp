@@ -1449,6 +1449,7 @@ namespace hooks {
                 fatal_deal_damage = false;
             } break;
             case UnitId::ProtossVagrant: {
+                necromastery_proc(UnitId::ProtossVagrant);
                 helper::increment_unit_death_scores(data.target, data.target->player);
                 helper::replace_unit_with_id(data.target, UnitId::ProtossVagrantShade);
                 data.target->shields = units_dat::max_shield_points[data.target->id] * 256;
@@ -1486,6 +1487,7 @@ namespace hooks {
                 }
             } break;
             case UnitId::ZergAxitrilisk: {
+                necromastery_proc(UnitId::ZergAxitrilisk);
                 helper::increment_unit_death_scores(data.target, data.target->player);
                 helper::replace_unit_with_id(data.target, UnitId::ZergAxitriliskWeaponless);
                 data.target->set_hitpoints(units_dat::max_hitpoints[data.target->id]);
@@ -1496,8 +1498,8 @@ namespace hooks {
             } break;
             case UnitId::ZergVilgorokor: {
                 // Vilgorokor - On Death behavior
-                bw::create_unit_from_ability(UnitId::ZergVilgoleth, 1, data.target->player, data.target->position);
-                bw::create_unit_from_ability(UnitId::ZergRilirokor, 2, data.target->player, data.target->position);
+                bw::create_unit_from_ability(UnitId::ZergVilgoleth, 1, data.target->player, data.target->position, data.target);
+                bw::create_unit_from_ability(UnitId::ZergRilirokor, 2, data.target->player, data.target->position, data.target);
             } break;
             case UnitId::TerranCohort: {
                 if (target_ext.values[ValueCohortServileVigor]) {
@@ -1582,6 +1584,7 @@ namespace hooks {
             // Zerg Regression
             u32 regression_id = bw::get_zerg_regression(data.target);
             if (data.damage > 0 && regression_id != UnitId::None) {
+                necromastery_proc((UnitId::Enum)data.target->id);
                 if (data.target->id != UnitId::ZergEskigant && data.target->id != UnitId::ZergExcisant && !(units_dat::base_property[regression_id] & UnitProperty::Worker) && !unit_id_is_larva(regression_id)) {
                     fatal_deal_damage = false;
                 }

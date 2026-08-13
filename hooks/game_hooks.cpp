@@ -1161,7 +1161,11 @@ namespace hooks {
             case UnitId::TerranDilettante: {
                 unit_ext.timers[ValueDilettanteLuck] = 1;
             } break;
-            case UnitId::AskosiEyelet: {
+            case UnitId::ZergAxitriliskWeaponless: {
+                unit_ext.timers[TimerAxitriliskPerpetualWind] = Axitrilisk::PerpetualWindTimer;
+            } break;
+            case UnitId::AskosiEyelet:
+            case UnitId::AskosiEgocent: {
                 helper::play_sound_from_unit(SoundId::SpiderMineDeploy01, unit, 1, 0);
                 unit->status |= UnitStatus::NoCollide;
             } break;

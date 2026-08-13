@@ -211,7 +211,7 @@ RaceId::Enum Unit::get_race() const {
 RaceId::Enum Unit::get_race(u16 unit_id) {
     assert(unit_id < UnitsIdLimit);
     if (units_dat::group_flags[unit_id].is_zerg) {
-        return RaceId::Zerg;
+        return UnitId::is_bloodsummon((UnitId::Enum)unit_id) ? RaceId::Bloodsummon : RaceId::Zerg;
     } else if (units_dat::group_flags[unit_id].is_protoss) {
         return RaceId::Protoss;
     } else if (units_dat::group_flags[unit_id].is_terran) {
@@ -1668,7 +1668,7 @@ bool Unit::can_be_passive_cloaked(Unit* source) {
 }
 
 bool Unit::can_transport_air() {
-    return this->ext().values[ValueAirTransport] || this->id == UnitId::AskosiGrandstandHoldout;
+    return this->ext().values[ValueAirTransport] || this->id == UnitId::AskosiGrandstandHoldout || this->id == UnitId::BloodsummonGrimoire;
 }
 
 bool Unit::can_play_training_sfx() {

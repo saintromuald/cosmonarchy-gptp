@@ -967,6 +967,12 @@ namespace SpriteId {
 
         Corpse_ZergBuildingSmall	    = 186,
         Corpse_ZergBuildingLarge	    = 187,
+
+        Corpse_BloodsummonBuildingSmall = 1165,
+        Corpse_BloodsummonBuildingLarge = 1166,
+        Corpse_BloodsummonUnitTiny      = 1167,
+        Corpse_BloodsummonUnitSmall     = 1168,
+        Corpse_BloodsummonUnitMedium    = 1169,
     };
 }
 

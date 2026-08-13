@@ -1037,11 +1037,10 @@ namespace hooks {
     // Ported from GPTP to show timed life beneath Rililisks. -Pr0nogo
     void stats_text_energy_timer(BinDlg* dialog) { // 00425A30
         Unit* unit = *g_active_portrait_unit;
-        if (!(units_dat::base_property[unit->id] & UnitProperty::Spellcaster)
-        ||	  unit->status & UnitStatus::IsHallucination
-        ||	(g_is_in_replay == 0 && unit->player != g_local_nation_id))
+        if (!(units_dat::base_property[unit->id] & UnitProperty::Spellcaster) || unit->is_hallucination()
+        || (g_is_in_replay == 0 && unit->player != g_local_nation_id))
         {
-            if ((unit->status & UnitStatus::IsHallucination || unit_id_is_broodspawn(unit->id)) && (g_is_in_replay != 0 || unit->player == g_local_nation_id)) {
+            if ((unit->is_hallucination() || unit_id_is_broodspawn(unit->id)) && (g_is_in_replay != 0 || unit->player == g_local_nation_id)) {
                 u32 timer_max = 0; // 1/10 of internal value for display
                 if (unit->status & UnitStatus::IsHallucination) {
                     timer_max = 135;
