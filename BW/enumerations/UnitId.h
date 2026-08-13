@@ -181,7 +181,6 @@ namespace UnitId {
         TerranCutlass                                       = 571,
         TerranCutlassTurret                                 = 572,
         TerranMaverickUpstart                               = 573,
-        TerranEidolonUpstart                                = 575,
         TerranAjax                                          = 576,
         TerranMaverickGolden                                = 580,
         TerranShamanUpstartSupport                          = 581,
