@@ -126,16 +126,6 @@ static SoundId::Enum get_transport_unload_sound_id(Unit* transport) {
     return SoundId::None;
 }
 
-static SoundId::Enum get_transport_unload_sound_id(Unit* transport) {
-    switch (transport->get_race()) {
-        case RaceId::Terran:  return SoundId::Misc_TDrTra01_wav;
-        case RaceId::Protoss: return SoundId::Misc_PShTra01_wav;
-        case RaceId::Zerg:    return SoundId::Misc_ZOvTra01_wav;
-        case RaceId::Askosi:  return SoundId::Misc_PShTra01_wav;
-    }
-    return SoundId::None;
-}
-
 void load_unit_proc(Unit* transport, Unit* cargo_unit) { // 004E78E0
     s32 counter = 0;
     auto& transport_ext = transport->ext();

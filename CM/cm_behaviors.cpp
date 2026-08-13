@@ -1,6 +1,7 @@
 #include "cm_behaviors.h"
 #include "BW\api.h"
 #include "globals.h"
+#include "hooks\load_unload_proc.h"
 
 bool is_any_corpse(Thingy* thingy) {
 	if (thingy->sprite && SpriteId::is_corpse((SpriteId::Enum)thingy->sprite->id) && !(thingy->sprite->flags & SpriteFlags::RemoveAfterDeath)) {
