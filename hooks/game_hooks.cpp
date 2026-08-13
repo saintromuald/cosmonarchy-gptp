@@ -5095,4 +5095,4 @@ namespace hooks {
             }
         }
     }
-}
+} // namespace hooks

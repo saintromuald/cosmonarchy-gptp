@@ -1938,4 +1938,6 @@ namespace helper {
     void map_ui_colors_to_palette(Palette* palette, void* map_function);                            // 0041e450
 
     void set_fog_mask(u32 tile_flags, u32 x_tile, u32 y_tile, u32 x_final, u32 y_final);            // 00472E50
+
+    u32 get_system_time(LPSYSTEMTIME system_time);                 // 0040C7DF
 }

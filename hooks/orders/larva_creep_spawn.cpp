@@ -6,6 +6,7 @@
 
 namespace hooks {
     helper::SetCreepRelationalData_callback run_creep_randomizer_ptr = &run_creep_randomizer;
+
     void create_building_larva(Unit* building) {
         u32 unit_id = unit_id_get_larva_type(building->id);
         if (unit_id == UnitId::None) {
@@ -251,17 +252,14 @@ namespace hooks {
         }
 
         u16 creep_tile = 0;
-        if ((g_last_random_number % 100) >= 4) {
-            creep_tile = g_last_random_number % 6; // normal tiles
+        const auto creep_number = bw::random();
+        if ((creep_number % 100) >= 4) {
+            creep_tile = creep_number % 6; // normal tiles
         } else {
-            creep_tile = (g_last_random_number % 7) + 6;
+            creep_tile = (creep_number % 7) + 6;
         }
         *tile = creep_tile + 0x10; // tile in creep group
         *return_value = 0;
-
-        // Change random number; it's used weirdly here, original func can protentially call bw::random() twice. -Pr0nogo
-        // TODO: Figure out whether this is actually necessary.
-        bw::random();
 
         return true;
     }

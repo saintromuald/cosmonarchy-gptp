@@ -16115,4 +16115,18 @@ namespace helper {
             POPAD
         }
     }
+
+    u32 get_system_time(LPSYSTEMTIME system_time) {
+        const u32 func_address = 0x0040C7DF;
+        static u32 result;
+        __asm {
+            PUSHAD
+            PUSH system_time
+            CALL func_address
+            ADD ESP, 4
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
 }
