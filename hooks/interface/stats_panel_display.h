@@ -23,6 +23,10 @@ struct tooltip_resource_cost {
     bool use_race_offset;
 };
 
+enum class StatPanel : s16 {
+    ForceName = -21,
+};
+
 namespace hooks {
 void stats_panel_display(BinDlg* dialog);																										// 00426C60
 const char* get_unit_rank_string(Unit* unit);																									// 0042F370

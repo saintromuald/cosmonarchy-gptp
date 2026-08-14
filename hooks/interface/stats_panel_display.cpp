@@ -239,19 +239,21 @@ namespace hooks {
         if (key_held_this_frame(VK_MENU)) {
             UnitExt* unit_ext = get_unit_ext(unit);
             sprintf_s(g_kills_buffer, 260, "Damage dealt: %d", unit_ext->total_damage_dealt / 256);
-            helper::add_text_to_dialog(dialog, -21, g_kills_buffer);
+            helper::add_text_to_dialog(dialog, (s16)StatPanel::ForceName, g_kills_buffer);
         } else if (!bw::game_kind_supports_kills(bw::get_game_kind())) {
             if (unit->player < PlayerLimit) {
-                helper::add_text_to_dialog(dialog, -21, g_player_data.full_force_names[unit->player]);
+                helper::add_text_to_dialog(dialog, (s16)StatPanel::ForceName, g_player_data.full_force_names[unit->player]);
+            } else {
+                BinDlg* other = helper::get_control_from_index(dialog, (s16)StatPanel::ForceName);
+                helper::hide_dialog(other);
             }
         } else if (unit->kill_count) {
             const char* text = "";
             if (g_stat_txt_buffer.get_string_count32() > 763) {
                 text = g_stat_txt_buffer.get_string32(764);
             }
-
             sprintf_s(g_kills_buffer, 260, "%s %d", text, unit->kill_count);
-            helper::add_text_to_dialog(dialog, -21, g_kills_buffer);
+            helper::add_text_to_dialog(dialog, (s16)StatPanel::ForceName, g_kills_buffer);
         } else if (unit->player == g_local_nation_id && !g_is_in_replay) {
             BinDlg* actual_dialog = dialog->control_type != DialogControlType::DialogBoxDC ? dialog->parent : dialog;
             BinDlg* child = actual_dialog->child_dialog;
@@ -262,7 +264,7 @@ namespace hooks {
                 helper::hide_dialog(child);
             }
         } else {
-            BinDlg* other = helper::get_control_from_index(dialog, -21);
+            BinDlg* other = helper::get_control_from_index(dialog, (s16)StatPanel::ForceName);
             helper::hide_dialog(other);
         }
     }
