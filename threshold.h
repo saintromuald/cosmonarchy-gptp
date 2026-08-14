@@ -1,25 +1,25 @@
 #pragma once
 #include <BW/api.h>
 
-enum Campaign {
-	Campaign_OneForTheFuture = 2,
-	Campaign_TheLostGods = 3,
-	Campaign_Veeq7 = 7,
+enum class ThresholdCampaign {
+	OneForTheFuture = 2,
+	TheLostGods = 3,
+	Veeq7 = 7,
 };
 
-enum Mission {
-	Mission_OFTF_WallStreetWar = 1,
-	Mission_OFTF_TheLostHandOfGod,
-	Mission_OFTF_AutisticYears,
-	Mission_OFTF_PastaMasta,
-	Mission_OFTF_ThreeHongKong,
-	Mission_OFTF_SeventhCue,
-	Mission_OFTF_FavoredFiction,
-	Mission_OFTF_TheShitflingSinners,
-	Mission_OFTF_TheCosmonarch,
+enum class ThresholdMission {
+	OFTF_WallStreetWar = 1,
+	OFTF_TheLostHandOfGod,
+	OFTF_AutisticYears,
+	OFTF_PastaMasta,
+	OFTF_ThreeHongKong,
+	OFTF_SeventhCue,
+	OFTF_FavoredFiction,
+	OFTF_TheShitflingSinners,
+	OFTF_TheCosmonarch,
 
-	Mission_Veeq7_Fraudscendence1 = 1,
-	Mission_Veeq7_Fraudscendence2,
+	Veeq7_Fraudscendence1 = 1,
+	Veeq7_Fraudscendence2,
 };
 
 struct ThresholdConfig {
