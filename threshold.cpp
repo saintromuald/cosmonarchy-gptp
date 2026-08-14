@@ -12,9 +12,9 @@ u32 get_transmission_playing() {
 	return g_unit_deaths_table[UnitId::Special_PitDoor].player[0];
 }
 
-bool is_map(u32 campaign, u32 map) {
-	return g_unit_deaths_table[UnitId::Spell_ScannerSweep].player[0] == campaign
-		&& g_unit_deaths_table[UnitId::Special_RightPitDoor].player[0] == map;
+static bool is_map(ThresholdCampaign campaign, ThresholdMission map) {
+	return g_unit_deaths_table[UnitId::Spell_ScannerSweep].player[0] == static_cast<u32>(campaign)
+		&& g_unit_deaths_table[UnitId::Special_RightPitDoor].player[0] == static_cast<u32>(map);
 }
 
 /*
@@ -1105,15 +1105,15 @@ static void update_config() {
 
 static bool try_prepare_threshold() {
 	// Scenario Defaults
-	if (is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch) ||
-		is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence1) ||
-		is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence2)) {
+	if (is_map(ThresholdCampaign::OneForTheFuture, ThresholdMission::OFTF_TheCosmonarch) ||
+		is_map(ThresholdCampaign::Veeq7, ThresholdMission::Veeq7_Fraudscendence1) ||
+		is_map(ThresholdCampaign::Veeq7, ThresholdMission::Veeq7_Fraudscendence2)) {
 		threshold_config.enabled = true;
 		for (u32 player = 1; player <= 6; ++player) {
 			threshold_config.fraud_allowed[player] = true;
 		}
-		if (is_map(Campaign_OneForTheFuture, Mission_OFTF_TheCosmonarch) ||
-			is_map(Campaign_Veeq7, Mission_Veeq7_Fraudscendence1)) {
+		if (is_map(ThresholdCampaign::OneForTheFuture, ThresholdMission::OFTF_TheCosmonarch) ||
+			is_map(ThresholdCampaign::Veeq7, ThresholdMission::Veeq7_Fraudscendence1)) {
 			threshold_config.witness_enabled[7] = true;
 		}
 	}
