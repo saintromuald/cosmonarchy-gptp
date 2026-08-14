@@ -435,7 +435,7 @@ bool can_enter_transport(Unit* transport, Unit* unit) { // 004E6E00
             space_required += units_dat::space_required[loaded_unit->id];
         }
     }
-    if (transport->id = UnitId::BloodsummonGrimoire) {
+    if (transport->id == UnitId::BloodsummonGrimoire) {
         if (transport->get_first_loaded_unit()) {
             return false;
         }
