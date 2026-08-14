@@ -4248,6 +4248,12 @@ namespace hooks {
                                 } break;
 
                                 // BLOODSUMMON \\
+                                
+                                case UnitId::ProtossVestige: {
+                                    if (current_button->icon_id == IconId::VibranceSensoryOverload) { // Portents
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
 
                                 case UnitId::BloodsummonGrimoire: {
                                     if (current_button->icon_id == IconId::BloodyRain) { // Necromastery
@@ -4255,14 +4261,6 @@ namespace hooks {
                                     }
                                 } break;
                             }
-
-                            // BLOODSUMMON \\
-                                
-                            case UnitId::ProtossVestige: {
-                                if (current_button->icon_id == IconId::VibranceSensoryOverload) { // Portents
-                                    current_button_state = Button_State::Enabled;
-                                }
-                            } break;
 
                             // Passive icons: END \\
 
