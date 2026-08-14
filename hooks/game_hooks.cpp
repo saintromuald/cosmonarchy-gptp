@@ -1171,6 +1171,10 @@ namespace hooks {
             } break;
         }
 
+        if (UnitId::has_damage_cloak((UnitId::Enum)unit->id)) {
+            bw::decloak_proc(unit, 0);
+        }
+
         // Fixes first attack from Paladin (and maybe other units) aiming upwards
         unit->velocity_direction_2 = unit->velocity_direction_1;
 
@@ -3758,6 +3762,11 @@ namespace hooks {
                     unit_ext.values[ValueCabalistSilentStridesDamage] = 0;
                 }
             }
+        }
+
+        // Damage cloaking - decloak after 2 seconds of no damage taken
+        if (bw::is_damage_cloakable(unit) && unit_ext.timers[TimerDecloak] == 0 && unit->status & UnitStatus::Cloaked) {
+            bw::decloak_proc(unit, 0);
         }
 
         // Autovitality - Clone after a small delay

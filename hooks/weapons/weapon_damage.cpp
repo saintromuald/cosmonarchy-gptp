@@ -617,6 +617,9 @@ namespace hooks {
 
                 // Behaviors
                 case WeaponId::CabalistWarpBlades: {
+                    if (data.attacker->id == UnitId::ProtossVestige) {
+                        break;
+                    }
                     auto& attacker_ext = data.attacker->ext();
                     if (attacker_ext.values[ValueCabalistSilentStridesDamage] || data.attacker->status & UnitStatus::Cloaked) {
                         data.damage = static_cast<s32>(data.damage * 1.5fp);
@@ -831,6 +834,14 @@ namespace hooks {
         // Refresh Apollyoid Adhesive on damage taken
         if (weapon_id_can_proc_onhits(data.weapon_id) && target_ext.timers[TimerApollyoidAdhesive]) {
             target_ext.timers[TimerApollyoidAdhesive] = ApollyoidAdhesive::Timer;
+        }
+
+        // Initiate damage cloak
+        if (bw::is_damage_cloakable(data.target)) {
+            if (!(data.target->status & UnitStatus::Cloaked)) {
+                helper::begin_cloak(data.target, SoundId::CloakAskosiOn); // TODO: Bloodsummon cloak SFX
+            }
+            target_ext.timers[TimerDecloak] = 2secs + 1;
         }
 
         if (data.attacker) {

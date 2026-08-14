@@ -500,6 +500,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
                 case UnitId::ProtossZealot:      return UnitId::ProtossZealotStarbound;
                 case UnitId::ProtossLegionnaire: return UnitId::ProtossCicatus;
                 case UnitId::ProtossManifold:    return UnitId::ProtossManifoldStarbound;
+                case UnitId::ProtossCabalist:    return UnitId::ProtossVestige;
             }
         } break;
         case Faction::ProtossAstralOmen: {
@@ -912,7 +913,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::MindTyrantMaelstrom:                 return "Maelstrom";
         case WeaponId::LakiziliskSubterraneanSpines:        return "Subterranean Spines";
         case WeaponId::AlmaksaliskPiercingSpines:           return "Piercing Spines";
-        case WeaponId::CabalistWarpBlades:                  return "Warp Blades";
+        case WeaponId::CabalistWarpBlades:                  return unit_id == UnitId::ProtossCabalist ? "Warp Blade" : "Omen Blade";
         case WeaponId::IdolPrismaticBlaster:                return "Prismatic Blaster";
         case WeaponId::GolemPhaseLances:                    return "Phase Lances";
         case WeaponId::BarghestRayOfAgony:                  return "Ray of Agony";

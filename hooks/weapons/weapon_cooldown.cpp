@@ -55,6 +55,7 @@ namespace hooks {
 			case UnitId::TerranArquebus:			  cooldown *= 1.35fp; break;
 			case UnitId::TerranPhoenix:			      cooldown /= 1.50fp; break;
 			case UnitId::ProtossCicatus:		      cooldown /= 1.13fp; break;
+			case UnitId::ProtossVestige:			  cooldown /= 1.38fp; break;
 			case UnitId::ProtossRenesair:		      cooldown *= 1.10fp; break;
 			case UnitId::ProtossSimulacrumAstral:     cooldown /= 1.20fp; break;
 			case UnitId::ProtossGarantis:			  cooldown /= 1.50fp; break;

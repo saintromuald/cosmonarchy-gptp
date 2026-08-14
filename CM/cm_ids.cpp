@@ -2193,6 +2193,10 @@ bool incubates_on_damage_taken(UnitId::Enum unit_id) {
     return unit_id == UnitId::ZergZoryusthaleth
         || unit_id == UnitId::ZergVithrilisk;
 }
+
+bool has_damage_cloak(UnitId::Enum unit_id) {
+    return unit_id == UnitId::ProtossVestige;
+}
 } // namespace UnitId
 
 namespace WeaponId {

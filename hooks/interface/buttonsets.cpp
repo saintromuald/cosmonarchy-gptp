@@ -1826,6 +1826,25 @@ namespace hooks {
                                     } break;
                                 }
                             } break;
+                            case UnitId::ProtossRogueGallery: {
+                                switch (current_button->requirement_var) {
+                                    case UnitId::ProtossVagrant:
+                                    case UnitId::ProtossCharlatan:
+                                    case UnitId::ProtossBarghest: {
+                                        current_button_state = Button_State::Enabled;
+                                    } break;
+                                    case UnitId::ProtossCabalist: {
+                                        if (faction != Faction::ProtossStarbound) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::ProtossVestige: {
+                                        if (faction == Faction::ProtossStarbound) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                }
+                            } break;
                             case UnitId::ProtossGrandLibrary: {
                                 if (current_button->requirement_var == UnitId::ProtossAmaranth
                                 ||  current_button->requirement_var == UnitId::ProtossHerald
@@ -4236,6 +4255,14 @@ namespace hooks {
                                     }
                                 } break;
                             }
+
+                            // BLOODSUMMON \\
+                                
+                            case UnitId::ProtossVestige: {
+                                if (current_button->icon_id == IconId::VibranceSensoryOverload) { // Portents
+                                    current_button_state = Button_State::Enabled;
+                                }
+                            } break;
 
                             // Passive icons: END \\
 

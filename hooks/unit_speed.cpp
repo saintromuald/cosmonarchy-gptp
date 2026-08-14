@@ -283,6 +283,7 @@ namespace hooks {
             case UnitId::TerranSevenstep:
             case UnitId::ProtossAtreus:
             case UnitId::ProtossCabalist:
+            case UnitId::ProtossVestige:
             case UnitId::ProtossSimulacrum:
             case UnitId::ProtossSimulacrumAstral:
             case UnitId::ZergAgrileth:

@@ -640,10 +640,19 @@ namespace hooks {
         if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossRogueGallery)) {
             switch (unit_id) {
                 case UnitId::ProtossVagrant:
-                case UnitId::ProtossCabalist:
                 case UnitId::ProtossCharlatan:
                 case UnitId::ProtossBarghest: {
                     return true;
+                } break;
+                case UnitId::ProtossCabalist: {
+                    if (faction != Faction::ProtossStarbound) {
+                        return true;
+                    }
+                } break;
+                case UnitId::ProtossVestige: {
+                    if (faction == Faction::ProtossStarbound) {
+                        return true;
+                    }
                 } break;
             }
         }
@@ -2441,10 +2450,19 @@ namespace hooks {
             case UnitId::ProtossRogueGallery: {
                 switch (unit_id) {
                     case UnitId::ProtossVagrant:
-                    case UnitId::ProtossCabalist:
                     case UnitId::ProtossCharlatan:
                     case UnitId::ProtossBarghest: {
                         return TECH_ACTIVE;
+                    }
+                    case UnitId::ProtossCabalist: {
+                        if (faction != Faction::ProtossStarbound) {
+                            return TECH_ACTIVE;
+                        }
+                    }
+                    case UnitId::ProtossVestige: {
+                        if (faction == Faction::ProtossStarbound) {
+                            return TECH_ACTIVE;
+                        }
                     }
                     return TECH_HIDDEN;
                 }

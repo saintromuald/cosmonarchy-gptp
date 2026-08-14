@@ -810,6 +810,7 @@ void decloak_proc(Unit* unit, u32 timer);
 void decloak_passive_proc(Unit* unit);
 void decloak_proximity_proc(Unit* unit);
 bool is_passive_decloakable(Unit* unit);
+bool is_damage_cloakable(Unit* unit);
 bool is_proximity_decloakable(Unit* unit);
 bool unit_can_nuke(Unit* unit);
 UnitId::Enum get_trap_id(Unit* unit);
