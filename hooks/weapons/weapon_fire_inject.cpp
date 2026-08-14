@@ -346,29 +346,26 @@ namespace {
 	}
 }
 
-namespace hooks
-{
-	void inject_weapon_fire_hooks()
-	{
-		jump_patch(fire_weapon_wrapper,						0x00479C90, 0);
-		jump_patch(progress_bullet_flight_wrapper,			0x0048B3B0, 3);
-		jump_patch(bullet_behavior_bounce_wrapper,			0x0048B2D0, 0);
-		jump_patch(find_next_bounce_target_proc_wrapper,	0x0048AFD0, 3);
-		jump_patch(delete_bullet_wrapper,					0x0048A560, 0);
-		jump_patch(create_bullet_wrapper,					0x0048C260, 5);
-		jump_patch(initialize_bullet_wrapper,				0x0048BEC0, 0);
-	//	jump_patch(progress_bullet_frames_wrapper,			0x0048C3D0, 2);
-	//	jump_patch(find_next_bounce_target_wrapper,			0x0048B1E0, 1);
-		jump_patch(bullet_behavior_reassign_wrapper,		0x0048BD50, 1); // Not fully functional
-	//	jump_patch(get_weapon_iscript_init_wrapper,			0x00476ED0, 2);
-		jump_patch(use_weapon_iscript_wrapper,				0x00476C90, 1);
-		jump_patch(should_stay_at_range_wrapper,			0x00475A10, 3);
-		jump_patch(move_for_melee_range_wrapper,			0x00477F10, 0);
-		jump_patch(assign_weapon_data_wrapper,				0x0048AA80, 0);
-		jump_patch(bullet_behavior_follow_wrapper,			0x0048B500, 0);
-		
-		jump_patch(bullet_damage_bullet_nullcheck,			0x0048B770, 1);
-		call_patch(unit_id_is_melee_air_unit_wrapper,		0x00475A10, 3);
-		call_patch(unit_id_is_melee_air_unit_wrapper,		0x004788AB);
-	}
+namespace hooks {
+void inject_weapon_fire_hooks() {
+	jump_patch(fire_weapon_wrapper,						0x00479C90, 0);
+	jump_patch(progress_bullet_flight_wrapper,			0x0048B3B0, 3);
+	jump_patch(bullet_behavior_bounce_wrapper,			0x0048B2D0, 0);
+	jump_patch(find_next_bounce_target_proc_wrapper,	0x0048AFD0, 3);
+	jump_patch(delete_bullet_wrapper,					0x0048A560, 0);
+	jump_patch(create_bullet_wrapper,					0x0048C260, 5);
+	jump_patch(initialize_bullet_wrapper,				0x0048BEC0, 0);
+//	jump_patch(progress_bullet_frames_wrapper,			0x0048C3D0, 2);
+//	jump_patch(find_next_bounce_target_wrapper,			0x0048B1E0, 1);
+	jump_patch(bullet_behavior_reassign_wrapper,		0x0048BD50, 1); // Not fully functional
+//	jump_patch(get_weapon_iscript_init_wrapper,			0x00476ED0, 2);
+	jump_patch(use_weapon_iscript_wrapper,				0x00476C90, 1);
+	jump_patch(should_stay_at_range_wrapper,			0x00475A10, 3);
+	jump_patch(move_for_melee_range_wrapper,			0x00477F10, 0);
+	jump_patch(assign_weapon_data_wrapper,				0x0048AA80, 0);
+	jump_patch(bullet_behavior_follow_wrapper,			0x0048B500, 0);
+	
+	jump_patch(bullet_damage_bullet_nullcheck,			0x0048B770, 1);
+	call_patch(unit_id_is_melee_air_unit_wrapper,		0x004788AB);
 }
+} // namespace hooks

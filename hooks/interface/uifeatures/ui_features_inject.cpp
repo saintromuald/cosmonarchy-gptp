@@ -522,7 +522,7 @@ namespace {
     // Non-hooks \\
 
     const u32 replayStatBtns_27AB5 = 0x00427AB5;
-    const u32 replayStatBtns_27AE4 = 0x00427AE4;
+    const u32 replayStatBtns_27AE9 = 0x00427AE9;
     const u32 show_dialog = 0x004186A0;
     void __declspec(naked) replayStatBtns_patch_27AB0() {
         static b32 cfg_value = g_config.show_replay_progress_bar;
@@ -532,10 +532,11 @@ namespace {
             JE		offset hide_progress_bar
             CALL	show_dialog
             JMP		replayStatBtns_27AB5
-            hide_progress_bar :
+        hide_progress_bar:
             MOV		byte ptr[EBP - 3], 0
             MOV		byte ptr[EBP - 4], 3
-            JMP		replayStatBtns_27AE4
+            MOV     EAX, 0x00501B7D
+            JMP		replayStatBtns_27AE9
         }
     }
 
