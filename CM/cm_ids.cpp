@@ -289,14 +289,16 @@ bool unit_id_is_garrison(u32 unit_id) {
 }
 
 bool unit_id_is_melee_air_unit(u32 unit_id) {
-    return unit_id == UnitId::ZergNathrokor
+    return unit_id == UnitId::TerranWendigo
+        || unit_id == UnitId::ZergNathrokor
+        || unit_id == UnitId::ZergGhitorokor
         || unit_id == UnitId::ZergGorgrokor
         || unit_id == UnitId::ZergAzanthrokor
         || unit_id == UnitId::ZergTetcaerokor
         || unit_id == UnitId::ZergAkistrokor
         || unit_id == UnitId::ZergZarcavrokor
         || unit_id == UnitId::ZergSkryrokor
-        || unit_id == UnitId::TerranWendigo;
+        || unit_id == UnitId::AskosiAkreno;
 }
 
 bool unit_id_is_morphed_from_double_unit(u32 unit_id) {
@@ -701,7 +703,8 @@ bool tech_id_has_custom_targeting(u32 tech_id) {
         && tech_id != TechId::AskosiSalvage
         && tech_id != TechId::AskosiHijack
         && tech_id != TechId::AskosiRapidRendezvous
-        && tech_id != TechId::AskosiRemoteHijack;
+        && tech_id != TechId::AskosiRemoteHijack
+        && tech_id != TechId::AskosiAshbind;
 }
 
 bool image_id_is_powerup(u32 image_id) {
@@ -1336,7 +1339,8 @@ bool unit_id_is_trap(u32 unit_id) {
         || unit_id == UnitId::TerranLobotomyMine
         || unit_id == UnitId::TerranTartarusMine
         || unit_id == UnitId::TerranGoremast
-        || unit_id == UnitId::AskosiEyelet;
+        || unit_id == UnitId::AskosiEyelet
+        || unit_id == UnitId::AskosiEgocent;
 }
 
 bool unit_building_can_act(Unit* unit) {
@@ -1522,7 +1526,8 @@ bool unit_id_is_tiny_unit(u32 unit_id) {
         || unit_id == UnitId::TerranTartarusMine
         || unit_id == UnitId::TerranGoremast
         || unit_id == UnitId::ZergRilirokor
-        || unit_id == UnitId::AskosiEyelet;
+        || unit_id == UnitId::AskosiEyelet
+        || unit_id == UnitId::AskosiEgocent;
 }
 
 bool unit_id_is_spell(u32 unit_id) {
@@ -1648,10 +1653,13 @@ bool has_manual_weapon_fire_sfx(UnitId::Enum unit_id) {
         || unit_id == UnitId::ProtossManifold
         || unit_id == UnitId::ProtossManifoldStarbound
         || unit_id == UnitId::AskosiAvatar
+        || unit_id == UnitId::AskosiGhostwrit
         || unit_id == UnitId::AskosiAgonist
         || unit_id == UnitId::AskosiPhontis
+        || unit_id == UnitId::AskosiHistrion
         || unit_id == UnitId::AskosiAkreno
-        || unit_id == UnitId::AskosiCrematorium;
+        || unit_id == UnitId::AskosiCrematorium
+        || unit_id == UnitId::AskosiEndbore;
 }
 
 bool is_atg_regression(UnitId::Enum old_unit_id, UnitId::Enum new_unit_id) {
@@ -1810,6 +1818,7 @@ SpriteId::Enum get_corpse_sprite_id(UnitId::Enum unit_id) {
 bool is_askosi(UnitId::Enum unit_id) {
     return unit_id == UnitId::AskosiPilgrim
         || unit_id == UnitId::AskosiProselyte
+        || unit_id == UnitId::AskosiEyelet
         || unit_id == UnitId::AskosiDyad
         || unit_id == UnitId::AskosiMissionary
         || unit_id == UnitId::AskosiCardinal
@@ -1837,6 +1846,19 @@ bool is_askosi(UnitId::Enum unit_id) {
         || unit_id == UnitId::AskosiCrematorium
         || unit_id == UnitId::AskosiParaclete
         || unit_id == UnitId::AskosiAuxine
+        || unit_id == UnitId::AskosiInsurant
+        || unit_id == UnitId::AskosiSilversoul
+        || unit_id == UnitId::AskosiGhostwrit
+        || unit_id == UnitId::AskosiAzjoran
+        || unit_id == UnitId::AskosiElgird
+        || unit_id == UnitId::AskosiHistrion
+        || unit_id == UnitId::AskosiEgocent
+        || unit_id == UnitId::AskosiAlacyne
+        || unit_id == UnitId::AskosiBegolor
+        || unit_id == UnitId::AskosiLimire
+        || unit_id == UnitId::AskosiEndbore
+        || unit_id == UnitId::AskosiTortare
+        || unit_id == UnitId::AskosiCybrene
 
         || unit_id == UnitId::AskosiLandlock
         || unit_id == UnitId::AskosiArch
@@ -1859,7 +1881,9 @@ bool is_askosi(UnitId::Enum unit_id) {
         || unit_id == UnitId::AskosiAstrolabe
         || unit_id == UnitId::AskosiDomain
         || unit_id == UnitId::AskosiPanoply
+        || unit_id == UnitId::AskosiLekrot
         || unit_id == UnitId::AskosiLotiro
+        || unit_id == UnitId::AskosiHearthshard
         || unit_id == UnitId::AskosiObelisk;
 }
 
@@ -2063,6 +2087,9 @@ SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {
         case UnitId::AskosiMissionary: {
             ready_sound = helper::get_random_unit_response(SoundId::MissionaryReady01, SoundId::MissionaryReady03);
         } break;
+        case UnitId::AskosiVicar: {
+            ready_sound = helper::get_random_unit_response(SoundId::VicarReady01, SoundId::VicarReady03);
+        } break;
         case UnitId::AskosiRove: {
             ready_sound = helper::get_random_unit_response(SoundId::RoveReady01, SoundId::RoveReady03);
         } break;
@@ -2115,6 +2142,12 @@ bool is_zerg_worker(UnitId::Enum unit_id) {
         || unit_id == UnitId::ZergGosvileth;
 }
 
+bool is_askosi_worker(UnitId::Enum unit_id) {
+    return unit_id == UnitId::AskosiPilgrim
+        || unit_id == UnitId::AskosiDyad
+        || unit_id == UnitId::AskosiConstituent;
+}
+
 bool is_beacon(UnitId::Enum unit_id) {
     return unit_id == UnitId::ExtBeaconTerran
         || unit_id == UnitId::ExtBeaconProtoss
@@ -2163,6 +2196,10 @@ bool spreads_cagra_while_burrowed(UnitId::Enum unit_id) {
 
 bool has_swarming_spite(UnitId::Enum unit_id) {
     return unit_id == UnitId::ZergSkryrokor;
+}
+
+bool has_power_breach(UnitId::Enum unit_id) {
+    return unit_id == UnitId::AskosiIntendent || unit_id == UnitId::AskosiEndbore;
 }
 
 bool has_far_transport_range(UnitId::Enum unit_id) {
@@ -2227,6 +2264,6 @@ bool can_attack_target(WeaponId::Enum weapon_id, Unit* target) {
 }
 
 bool bounces_power_breach(WeaponId::Enum weapon_id) {
-    return weapon_id == WeaponId::IntendentErsaDriver;
+    return weapon_id == WeaponId::IntendentErsaDriver || weapon_id == WeaponId::CrematoriumOkliQuadshard;
 }
 } // namespace WeaponId

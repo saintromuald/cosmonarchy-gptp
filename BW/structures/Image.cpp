@@ -213,8 +213,16 @@ namespace hooks {
                 final_anim = IscriptAnimation::AirAttkInit;
             }
             u32 offset = image->iscript_header_offset;
-            image->set_iscript(final_anim);
-            helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
+            IscriptHeader* iscript_header = (IscriptHeader*)(hooks::get_iscript_file(image) + image->iscript_header_offset);
+
+            if (final_anim > (*iscript_header).type) {
+                bw::printf("ISCRIPT_EXTENDER: Header type is too short! Image id %u, animation type %u", image->id, final_anim);
+            } else if (!(*iscript_header).data[final_anim]) {
+                bw::printf("ISCRIPT_EXTENDER: Animation is NONE! Image id %u, animation type %u", image->id, final_anim);
+            } else {
+                image->set_iscript(final_anim);
+                helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
+            }
         }
     }
 

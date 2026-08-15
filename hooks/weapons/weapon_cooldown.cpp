@@ -37,6 +37,9 @@ namespace hooks {
 			case UnitId::AskosiHistrion:      armor_pen += 4; break;
 			case UnitId::AskosiAlacyne:       armor_pen += 2; break;
 			case UnitId::AskosiParaclete:     armor_pen += 1; break;
+			case UnitId::AskosiLimire:	      armor_pen += 2; break;
+			case UnitId::AskosiEndbore:	      armor_pen += 2; break;
+			case UnitId::AskosiTortare:	      armor_pen += 5; break;
 		}
 
 		return armor_pen;
@@ -62,6 +65,9 @@ namespace hooks {
 			case UnitId::ZergRozirokor:				  cooldown *= 1.43fp; break;
 			case UnitId::ZergZoltorokor:			  cooldown /= 1.50fp; break;
 			case UnitId::AskosiAvatar:				  cooldown *= 3.00fp; break;
+			case UnitId::AskosiInsurant:		      cooldown /= 1.33fp; break;
+			case UnitId::AskosiSilversoul:		      cooldown *= 1.20fp; break;
+			case UnitId::AskosiGhostwrit:		      cooldown /= 1.45fp; break;
 			case UnitId::AskosiPhontis:		          cooldown *= 1.33fp; break;
 			case UnitId::AskosiZonguard: {
 				if (cooldown != 24fp) {
@@ -69,24 +75,15 @@ namespace hooks {
 				}
 			} break;
 			case UnitId::AskosiElgird:		          cooldown *= 1.10fp; break;
-			case UnitId::AskosiAlacyne:		          cooldown /= 1.33fp; break;
+			case UnitId::AskosiHistrion:	          cooldown /= 1.48fp; break;
+			case UnitId::AskosiAlacyne:		          cooldown *= 1.33fp; break;
 			case UnitId::AskosiIconoclast:		      cooldown /= 1.13fp; break;
 			case UnitId::AskosiParaclete:		      cooldown *= 1.33fp; break;
+			case UnitId::AskosiLimire:				  cooldown *= 1.50fp; break;
+			case UnitId::AskosiEndbore:				  cooldown *= 5.06fp; break;
+			case UnitId::AskosiTortare:				  cooldown *= 1.33fp; break;
 			case UnitId::ForerunnerFerrum:		      cooldown *= 1.33fp; break;
 			case UnitId::ForerunnerChalyb:		      cooldown *= 1.33fp; break;
-		}
-
-		// @TODO: Extend weapon ids and remove this
-		switch (unit->id) {
-			case UnitId::TerranCutlass:				  cooldown /= 1.35fp; break;
-			case UnitId::TerranCutlassTurret:		  cooldown /= 1.35fp; break;
-			case UnitId::TerranBroadsideTurret:		  cooldown /= 1.06fp; break;
-			case UnitId::ProtossCicatus:		      cooldown /= 1.13fp; break;
-			case UnitId::ProtossRenesair:		      cooldown *= 1.10fp; break;
-			case UnitId::ProtossSimulacrumAstral:     cooldown /= 1.20fp; break;
-			case UnitId::AskosiAvatar:				  cooldown *= 3.00fp; break;
-			case UnitId::AskosiPhontis:		          cooldown *= 1.33fp; break;
-			case UnitId::AskosiIconoclast:		      cooldown /= 1.13fp; break;
 		}
 
 		// Stimpack
@@ -137,22 +134,7 @@ namespace hooks {
 			cooldown /= 1.33fp;
 		}
 
-		if (unit_ext.values[ValueReassemblyActive]) {
-			switch (unit->id) {
-				case UnitId::AskosiScepter: {
-					cooldown /= 1.33fp;
-				} break;
-				case UnitId::AskosiTirade: {
-					cooldown *= 2;
-				} break;
-			}
-		}
-
-		if (unit_ext.timers[TimerRetaliationAssembly]) {
-			cooldown /= 2;
-		}
-
-		if (unit_ext.timers[TimerNewDominion]) {
+		if (unit_ext.timers[TimerImpactPrevarication]) {
 			cooldown /= 1.33fp;
 		}
 

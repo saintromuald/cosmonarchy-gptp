@@ -63,8 +63,8 @@ namespace hooks {
 		unit->rally.pt.y = target->get_y();
 	}
 
-	// Hooked to allow rally for morphing Larval Colonies - Pr0nogo
-	// Possible downstream effect: need to clear rally for the creep colony if the morph cancelled?
+	// Hooked to allow rally for morphing Larvosks - Pr0nogo
+	// Possible downstream effect: need to clear rally for the Cagrant if the morph cancelled / regressed?
 	u32 btnscond_rally(u32 unused, u32 player, Unit* unit) { // 00429520
 		*g_last_internal_error = 0;
 		if (orders_dat::req_offset[OrderId::RallyPointToTile] == -1) {
@@ -233,8 +233,17 @@ namespace hooks {
 									right_click_order = OrderId::ConstructingBuilding;
 								}
 							} break;
+							case OrderId::Repair1: {
+								if (unit->get_race() == RaceId::Askosi && unit->is_constructor() && target->is_completed()) {
+									if (!bw::is_allied_to(unit->player, target->player)) {
+										right_click_order = units_dat::attack_unit_order[unit->id];
+									} else {
+										right_click_order = target->is_building() ? OrderId::Move : OrderId::Follow;
+									}
+								}
+							} break;
 							case OrderId::ConstructingBuilding: {
-								if (unit->get_race() != RaceId::Askosi && unit->is_constructor() && !target->is_completed() && target->get_race() == RaceId::Askosi) {
+								if (!unit->get_race() == RaceId::Askosi && unit->is_constructor() && !target->is_completed() && target->get_race() == RaceId::Askosi) {
 									right_click_order = OrderId::Move;
 								}
 							} break;

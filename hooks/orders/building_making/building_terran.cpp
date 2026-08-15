@@ -50,22 +50,24 @@ namespace hooks {
     void orders_scv_build_2(Unit* unit) { // 00467A70
         Unit* built_unit = unit->order_target.unit;
         auto& builder_ext = unit->ext();
-        bool is_askosi = unit->get_race() == RaceId::Askosi;
+        bool is_askosi_worker = unit->get_race() == RaceId::Askosi;
         if (built_unit && !built_unit->is_completed()) {
+            bool is_askosi_structure = built_unit->get_race() == RaceId::Askosi;
             switch (unit->main_order_state) {
                 case 0: {
                     if (!helper::order_to_move_to_target(unit, built_unit)) {
                         return;
                     }
                     unit->main_order_state = 2;
-                } break;
+                } // fallthrough intended
                 case 2: {
                     u32 movable_state = unit->get_movable_state();
                     if (movable_state == MovableState_UnmovableAtDestination) {
                         unit->order_to_idle();
                     } else if (movable_state != MovableState_NotReachedDestination) {
                         bw::refresh_console();
-                        if (is_askosi) {
+                        bw::decloak_passive_proc(unit);
+                        if (is_askosi_worker && is_askosi_structure) {
                             auto& built_ext = built_unit->ext();
                             auto& vec = built_ext.unit_vectors[UnitVectorAskosiBuilders];
                             if (vec.size() < 5) {
@@ -74,10 +76,13 @@ namespace hooks {
                                 }
                                 unit->sprite->elevation = units_dat::elevation[unit->id] + 1;
                                 unit->order_simple(units_dat::return_to_idle_order[unit->id], false);
+                                helper::turn_unit(unit, bw::get_angle(unit->position, built_unit->position));
                                 ++unit->main_order_state;
                             }
                         } else if (built_unit->connected_unit && built_unit->connected_unit != unit && (built_unit->connected_unit)->order_target.unit == built_unit) {
                             unit->order_to_idle(); // another worker is already on the job
+                        } else if (is_askosi_worker && !is_askosi_structure) {
+                            unit->order_to_idle(); // race mismatch, cancel order
                         } else {
                             builder_ext.values[ValueTerranConstruction] = built_unit->id;
                             built_unit->connected_unit = unit;
@@ -101,6 +106,10 @@ namespace hooks {
                     return;
                 } break;
                 case 4: {
+                    if (is_askosi_worker) {
+                        unit->main_order_state = 7;
+                        return;
+                    }
                     s16 x_min = built_unit->sprite->position.x - units_dat::unit_bounds[built_unit->id].left   + units_dat::unit_bounds[unit->id].left;
                     s16 x_max = built_unit->sprite->position.x + units_dat::unit_bounds[built_unit->id].right  - units_dat::unit_bounds[unit->id].right;
                     s16 y_min = built_unit->sprite->position.y - units_dat::unit_bounds[built_unit->id].top    + units_dat::unit_bounds[unit->id].top;
@@ -168,13 +177,13 @@ namespace hooks {
                         for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
                             image->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
                         }
-                        unit->main_order_state = 4;
+                        unit->main_order_state = is_askosi_worker ? 7 : 4;
                     }
                 } break;
             }
 
             fp32 hp_gain{built_unit->build_repair_hp_gain};
-            if (is_askosi) {
+            if (is_askosi_worker) {
                 auto& built_ext = built_unit->ext();
                 auto askosi_builder_count = built_ext.unit_vectors[UnitVectorAskosiBuilders].size();
                 if (askosi_builder_count > 1) {
@@ -205,7 +214,7 @@ namespace hooks {
         if (built_unit) {
             built_unit->connected_unit = 0;
             helper::play_building_complete_sound(unit);
-            SoundId::Enum sound_id = is_askosi ? SoundId::AskosiConstructionEnd01 : SoundId::TerranConstructionEnd01;
+            SoundId::Enum sound_id = is_askosi_worker ? SoundId::AskosiConstructionEnd01 : SoundId::TerranConstructionEnd01;
             bw::play_sound(sound_id, built_unit->position);
             bw::play_sound((SoundId::Enum)units_dat::sound_what_first[built_unit->id], built_unit);
             if (unit_id_is_tech_tier_structure(built_unit->id)) {
@@ -265,6 +274,7 @@ namespace hooks {
                     return;
                 }
                 if (!(unit->status & UnitStatus::Unmovable) && helper::start_building(unit)) {
+                    bw::decloak_passive_proc(unit);
                     auto& builder_ext = unit->ext();
                     builder_ext.terran_build_pos = unit->position;
 
@@ -301,6 +311,7 @@ namespace hooks {
                             if (std::find(vec.begin(), vec.end(), unit) == vec.end()) {
                                 vec.push_back(unit);
                             }
+                            helper::turn_unit(unit, bw::get_angle(unit->position, built_unit->position));
                         } else {
                             built_unit->connected_unit = unit;
                         }
@@ -322,7 +333,8 @@ namespace hooks {
                         if (unit_id_is_tech_tier_structure(built_unit->id)) {
                             replay_witness_event(built_unit, SpectatorEvent_Tech);
                         }
-                        bw::play_sound(SoundId::TerranConstructionStart01, built_unit->position);
+                        auto sound_id = is_askosi ? SoundId::AskosiConstructionStart01 : SoundId::TerranConstructionStart01;
+                        bw::play_sound(sound_id, built_unit->position);
                     } else {
                         helper::refund_unit_train_cost(build_id, unit->player);
                         helper::display_last_network_error_for_player(unit->player);
@@ -451,6 +463,9 @@ namespace hooks {
                 } break;
                 case RaceId::Askosi: {
                     u32 sound_id = bw::get_advisor_sound_from_event_type(g_local_nation_id, AdvisorEvent_Assembly);
+                    if (!sound_id) {
+                        sound_id = SoundId::PilgrimConstructionComplete01;
+                    }
                     helper::play_sound_from_unit(sound_id, unit, 1, 99);
                     helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (building_complete_something[0] / 1000), 1, sound_id);
                 } break;

@@ -33,6 +33,7 @@ namespace hooks {
 		}
 		if (unit_ext.values[ValueReassemblyActive]) {
 			switch (unit->id) {
+				case UnitId::AskosiSilversoul:
 				case UnitId::AskosiTirade: {
 					armor_modifier += 1;
 				} break;

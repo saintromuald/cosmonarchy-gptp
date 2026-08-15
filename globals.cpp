@@ -353,8 +353,7 @@ static void tick_effect(EffectField& effect) {
             } break;
             case EffectId::VilgolethHeal: {
                 for (Unit* target : g_unit_search.search_ex(effect, FilterIncludingSelf | FilterNoAir)) {
-                    UnitExt* target_ext = get_unit_ext(target);
-                    target_ext->timers[TimerNathreliskMitosalFog] = 1secs;
+                    target->ext().timers[TimerNathreliskMitosalFog] = 1secs;
                 }
             } break;
             case EffectId::CyclopsRecursionRound: {
@@ -380,8 +379,7 @@ static void tick_effect(EffectField& effect) {
             case EffectId::SevenstepMindMatter: {
                 if (effect.source && effect.source->sprite && !effect.source->is_in_transport() && !effect.current_time) {
                     if (effect.origin && effect.origin->sprite) {
-                        UnitExt* origin_ext = get_unit_ext(effect.origin);
-                        origin_ext->timers[TimerSevenstepMindMatterCarrier] = 8;
+                        effect.origin->ext().timers[TimerSevenstepMindMatterCarrier] = 8;
                     }
                     bw::artificial_bullet_from(WeaponId::SevenstepGeometricRiflePiercing, effect.player, effect.source, 0, effect.source->position, effect.position);
                 }

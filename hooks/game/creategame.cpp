@@ -68,7 +68,8 @@ namespace hooks {
 			case UnitId::TerranGoremast:
 			case UnitId::ProtossSteward:
 			case UnitId::ProtossPlasmaShell:
-			case UnitId::AskosiEyelet: {
+			case UnitId::AskosiEyelet: 
+			case UnitId::AskosiEgocent: {
 				return 0;
 			}
 			case UnitId::TerranHarakan:

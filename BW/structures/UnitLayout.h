@@ -139,6 +139,7 @@ namespace RustId {
         DirgeAttacker,
 
         MalkothrokorHiveTissue,
+        CastPuppeteer,
     };
 }
 

@@ -517,8 +517,13 @@ namespace hooks {
             switch (data.weapon_id) {
                 // @TODO: Extend weapons and remove these
                 case WeaponId::SentinelCerberusRailgun: {
-                    if (data.attacker->id == UnitId::TerranCutlass|| data.attacker->id == UnitId::TerranCutlassTurret) {
+                    if (data.attacker->id == UnitId::TerranCutlass || data.attacker->id == UnitId::TerranCutlassTurret) {
                         data.damage -= 9 * 256;
+                    }
+                } break;
+                case WeaponId::HeraclesJavelinCannons: {
+                    if (data.attacker->id == UnitId::AskosiInsurant) {
+                        data.damage += 1 * 256;
                     }
                 } break;
                 case WeaponId::PhalanxArcliteCannon: {
@@ -534,6 +539,11 @@ namespace hooks {
                 case WeaponId::ZealotPhaseBlades: {
                     if (data.attacker->id == UnitId::ProtossCicatus) {
                         data.damage -= 3 * 256;
+                    }
+                } break;
+                case WeaponId::PotentateTalismanicWeaver: {
+                    if (data.attacker->id == UnitId::AskosiGhostwrit) {
+                        data.damage -= 20 * 256;
                     }
                 } break;
                 case WeaponId::VassalPulseBlaster: {
@@ -580,13 +590,16 @@ namespace hooks {
                     }
                 } break;
                 case WeaponId::RoveElreScaleshot: {
-                    if (data.attacker->id == UnitId::AskosiThaumalogue) {
-                        data.damage += 2 * 256;
+                    if (data.attacker->id == UnitId::AskosiAlacyne) {
+                        data.damage -= 4 * 256;
                     }
                 } break;
                 case WeaponId::IntendentErsaDriver: {
                     if (data.attacker->id == UnitId::AskosiPhontis) {
                         data.damage -= 2 * 256;
+                    }
+                    if (data.attacker->id == UnitId::AskosiTortare) {
+                        data.damage += 15 * 256;
                     }
                 } break;
                 case WeaponId::VicarOspoTwinshard: {
@@ -597,9 +610,27 @@ namespace hooks {
                         data.damage += 3 * 256;
                     }
                 } break;
+                case WeaponId::ThaumalogueUtsoCarbine: {
+                    if (data.attacker->id == UnitId::AskosiSilversoul) {
+                        data.damage -= 1 * 256;
+                    }
+                } break;
+                case WeaponId::AgonistOnlaDrivers: {
+                    if (data.attacker->id == UnitId::AskosiHistrion) {
+                        data.damage -= 2 * 256;
+                    }
+                } break;
                 case WeaponId::CrematoriumOkliQuadshard: {
                     if (data.attacker->id == UnitId::AskosiAvatar) {
                         data.damage += 10 * 256;
+                    }
+                    if (data.attacker->id == UnitId::AskosiEndbore) {
+                        data.damage += 6 * 256;
+                    }
+                } break;
+                case WeaponId::HelionUskoScrapray: {
+                    if (data.attacker->id == UnitId::AskosiLimire) {
+                        data.damage -= 8 * 256;
                     }
                 } break;
 
@@ -762,6 +793,9 @@ namespace hooks {
             case WeaponId::PilgrimMiningSaber:
             case WeaponId::ScepterOrmaScrapray:
             case WeaponId::HelionUskoScrapray: {
+                if (data.attacker && data.attacker->id == UnitId::TerranHeracles) {
+                    break;
+                }
                 target_ext.timers[TimerGoldRush] = Askosi::ScrapworldGoldRushTimer;
                 target_ext.values[ValueGoldRushPlayer] = data.attacking_player_id;
             } break;
@@ -805,7 +839,9 @@ namespace hooks {
                 }
             } break;
             case UnitId::AskosiMissionary:
+            case UnitId::AskosiAphorist:
             case UnitId::AskosiDoronin:
+            case UnitId::AskosiInsurant:
             case UnitId::AskosiRove:
             case UnitId::AskosiAgonist:
             case UnitId::AskosiEmissary:
@@ -823,6 +859,19 @@ namespace hooks {
                         target_ext.timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
                         data.target->update_speed();
                     }
+                }
+            } break;
+            case UnitId::AskosiHistrion: {
+                if (!target_ext.timers[TimerHatedReflectionCooldown]) {
+                    target_ext.timers[TimerHatedReflectionCooldown] = AskosiHistrion::HatedReflectionCooldown;
+                    bw::create_unit_from_ability(UnitId::AskosiEgocent, 1, data.target->player, data.target->position, data.target);
+                    // TODO: Audiovisuals
+                }
+            } break;
+            case UnitId::AskosiAlacyne: {
+                if (!bw::is_allied_to(data.target->player, data.attacking_player_id)) {
+                    target_ext.timers[TimerImpactPrevarication] = Askosi::ImpactPrevaricationDuration;
+                    data.target->update_speed();
                 }
             } break;
         }
@@ -891,6 +940,13 @@ namespace hooks {
                     data.attacker->remove_timer += 1secs;
                     if (data.attacker->remove_timer > Broodspawn::LifeTimer) {
                         data.attacker->remove_timer = Broodspawn::LifeTimer;
+                    }
+                } break;
+                case UnitId::AskosiGhostwrit: {
+                    if (attacker_ext.units[UnitPuppeteerTarget] != data.target) {
+                        attacker_ext.units[UnitPuppeteerTarget] = data.target;
+                        target_ext.timers[TimerPuppeteerDebuff] = 2secs;
+                        // TODO: Audiovisuals
                     }
                 } break;
             }
@@ -1037,19 +1093,20 @@ namespace hooks {
                     if (data.target != data.attacker && !bw::are_mutual_allies(data.target->player, data.attacking_player_id) && !target_ext.timers[TimerWarringWindsCooldown]) {
                         target_ext.timers[TimerWarringWindsCooldown] = Askosi::WarringWindsCooldown;
                         target_ext.values[ValueWarringWindsStacks]++;
-                        data.target->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
+
+                        data.target->sprite->create_top_overlay(ImageId::WarringWindsOverlay);
+                        bw::play_sound({SoundId::WarringWindsProc01, SoundId::WarringWindsProc03}, data.target->position);
                         for (Unit* ally : g_unit_search.radial_ex(data.target, Askosi::WarringWindsRange, FilterAlly | FilterIncludingSelf)) {
                             ally->heal_hp(Askosi::WarringWindsHealAmount);
-
-                            // TODO: Own audiovisuals
-                            ally->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
+                            ally->sprite->create_top_overlay(ImageId::WarringWindsOverlay);
                         }
                         if (target_ext.values[ValueWarringWindsStacks] >= 10) {
                             target_ext.values[ValueWarringWindsStacks] = 0;
-                            for (Unit* pull_victim : g_unit_search.radial_ex(data.target, Askosi::WarringWindsRange, FilterNoBuilding)) {
+                            data.target->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
+                            bw::play_sound(SoundId::WarringWindsProcFinal, data.target->position);
+                            for (Unit* pull_victim : g_unit_search.radial_ex(data.target, Askosi::WarringWindsRange, FilterEnemy | FilterNoBuilding)) {
                                 if (unit_can_be_repulsed(pull_victim)) {
                                     pull_victim->pull_towards(data.target);
-
                                     // TODO: Own audiovisuals
                                     pull_victim->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
                                 }
@@ -1160,28 +1217,42 @@ namespace hooks {
                             }
                         }
                     } break;
-                    case WeaponId::HeraclesJavelinCannons:
+                    case WeaponId::HeraclesJavelinCannons: {
+                        if (data.attacker->id == UnitId::AskosiInsurant) { // TODO: Extend weapons.datex and remove this
+                            target_ext.timers[TimerGoldRush] = Askosi::ScrapworldGoldRushTimer;
+                            target_ext.values[ValueGoldRushPlayer] = data.attacking_player_id;
+                        } else {
+                            target_ext.timers[TimerKelvinMunitions] = 3secs + 1;
+                        }
+                    } break;
                     case WeaponId::ClaymoreHarpoonRailgun:
                     case WeaponId::TritonHydriaCannons: {
-                        // Kelvin Munitions - Slow targets
                         target_ext.timers[TimerKelvinMunitions] = 3secs + 1;
                     } break;
-                    case WeaponId::VicarOspoTwinshard: {
-                        if (data.attacker->id == UnitId::AskosiParaclete) {
-                            break;
+                    case WeaponId::VicarOspoTwinshard:
+                    case WeaponId::ThaumalogueUtsoCarbine:
+                    case WeaponId::HelionUskoScrapray: {
+                        if (data.attacker->id == UnitId::AskosiThaumalogue || data.attacker->id == UnitId::AskosiHelion || data.attacker->id == UnitId::AskosiParaclete) {
+                            break; // TODO: Extend weapons.datex and remove this
                         }
                         if (!target_ext.timers[TimerBoomingBlast]) {
                             target_ext.timers[TimerBoomingBlast] = Askosi::BoomingBlastTimer;
                             target_ext.values[ValueBoomingBlastPlayer] = data.attacking_player_id;
                         }
-                        if (data.attacker->id == UnitId::AskosiIconoclast) {
+                        if (data.attacker->id == UnitId::AskosiIconoclast) { // TODO: Extend weapons.datex and remove this
                             target_ext.timers[TimerGoldRush] = Askosi::ScrapworldGoldRushTimer;
                             target_ext.values[ValueGoldRushPlayer] = data.attacking_player_id;
                         }
+                        if (data.attacker->id == UnitId::AskosiLimire) { // TODO: Extend weapons.datex and remove this
+                            target_ext.timers[TimerAshHeap] = Askosi::ScrapworldAshHeapDuration;
+                            target_ext.timers[TimerAshHeapArmorRend] += Askosi::ScrapworldAshHeapDuration;
+                            target_ext.values[ValueAshHeapPlayer] = data.attacking_player_id;
+                        }
                     } break;
+                    case WeaponId::RoveElreScaleshot:
                     case WeaponId::GrandstandArteDriver:
                     case WeaponId::IntendentErsaDriver: {
-                        if (data.attacker && data.attacker->id == UnitId::AskosiZonguard) {
+                        if (data.attacker && (data.attacker->id == UnitId::AskosiZonguard || data.attacker->id == UnitId::AskosiRove || data.attacker->id == UnitId::AskosiTortare)) {
                             break;
                         }
                         if (!target_ext.timers[TimerPowerOverload]) {
@@ -1340,15 +1411,17 @@ namespace hooks {
                         bw::refresh_debuffs(data.target);
                     } break;
                     case WeaponId::CardinalInoaTwinaxe: {
-                        // Every second strike, the Cardinal's weapon releases a restorative pulse, granting to all allies within 3 range a heal equal to damage dealt.
                         if (data.attacker->order_signal & 0x20) {
                             data.attacker->order_signal &= ~0x20;
                             bw::heal_proc(data.attacker, data.attacking_player_id, AskosiCardinal::SustainingSermonRange, AskosiCardinal::SustainingSermonHeal);
                         }
                     } break;
                     case WeaponId::CrematoriumOkliQuadshard: {
+                        if (data.attacker->id == UnitId::AskosiEndbore) {
+                            break;
+                        }
                         target_ext.timers[TimerAshHeap] = Askosi::ScrapworldAshHeapDuration;
-                        target_ext.timers[TimerAshHeapArmorRend] += Askosi::ScrapworldAshHeapDuration - 1;
+                        target_ext.timers[TimerAshHeapArmorRend] += Askosi::ScrapworldAshHeapDuration;
                         target_ext.values[ValueAshHeapPlayer] = data.attacking_player_id;
                     } break;
                 }
@@ -1535,10 +1608,12 @@ namespace hooks {
                 return true;
             } break;
             case UnitId::AskosiThaumalogue:
+            case UnitId::AskosiSilversoul:
             case UnitId::AskosiObject:
             case UnitId::AskosiScepter:
             case UnitId::AskosiPetract:
-            case UnitId::AskosiTirade: {
+            case UnitId::AskosiTirade:
+            case UnitId::AskosiTortare: {
                 if (!target_ext.values[ValueReassemblyActive]) {
                     data.target->proc_askosi_embed();
                     fatal_deal_damage = false;

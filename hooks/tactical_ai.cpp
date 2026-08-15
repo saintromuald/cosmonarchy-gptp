@@ -209,14 +209,14 @@ s32 get_targeting_cost(Unit* source, Unit* target) {
         cost -= 100;
     }
 
-    // Value splitting Simulacra more
-    UnitExt* target_ext = get_unit_ext(target);
-    if (target_ext->timers[TimerAutovitalityClone]) {
+    // Value units with certain buffs more
+    auto& target_ext = target->ext();
+    if (target_ext.timers[TimerAutovitalityClone] || target_ext.timers[TimerImpactDissipation] || target_ext.timers[TimerImpactPrevarication]) {
         cost -= 20;
     }
 
     // Value hallucinating enemies more
-    if (target_ext->timers[TimerHallucinating]) {
+    if (target_ext.timers[TimerHallucinating]) {
         cost -= 25;
     }
 

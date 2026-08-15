@@ -421,6 +421,7 @@ namespace hooks {
 		add_status(statuses, "Booming Blast", -1, 1, unit_ext.timers[TimerBoomingBlast], TimerType::Gptp);
 		add_status(statuses, "Segmented Expansion", -1, 1, unit_ext.timers[TimerSegmentedExpansion], TimerType::Gptp);
 		add_status(statuses, "Impact Dissipation", -1, 1, unit_ext.timers[TimerImpactDissipation], TimerType::Gptp);
+		add_status(statuses, "Impact Prevarication", -1, 1, unit_ext.timers[TimerImpactPrevarication], TimerType::Gptp);
 		add_status(statuses, "Retaliation Protocol", -1, 1, unit_ext.timers[TimerRetaliationAssembly], TimerType::Gptp);
 		add_status(statuses, "New Dominion", -1, 1, unit_ext.timers[TimerNewDominion], TimerType::Gptp);
 		add_status(statuses, "Imploded", -1, 1, unit_ext.timers[TimerScrapworldImplosion], TimerType::Gptp);

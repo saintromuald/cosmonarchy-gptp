@@ -143,6 +143,7 @@ SoundId::Enum get_windup_sfx(UnitId::Enum unit_id);
 bool has_automandate(UnitId::Enum unit_id);
 bool is_terran_worker(UnitId::Enum unit_id);
 bool is_zerg_worker(UnitId::Enum unit_id);
+bool is_askosi_worker(UnitId::Enum unit_id);
 bool is_beacon(UnitId::Enum unit_id);
 bool has_fusion_sealers(Unit* unit);
 bool match_id_to_base(UnitId::Enum match_id, UnitId::Enum baseline_id);
