@@ -1248,6 +1248,9 @@ void decloak_passive_proc(Unit* unit) {
     if (is_passive_decloakable(unit)) {
         decloak_proc(unit, 60);
         unit->status &= ~UnitStatus::CloakingForFree;
+        if (unit->ext().values[ValueSermonSalveCloak]) {
+            unit->ext().values[ValueSermonSalveCloak] = false;
+        }
     }
     if (unit->is_subunit() && unit->subunit) {
         decloak_passive_proc(unit->subunit);
@@ -1276,6 +1279,9 @@ bool is_passive_decloakable(Unit* unit) {
     auto& unit_ext = unit->ext();
     if (unit_ext.timers[TimerFacadePryingEyesCloak]) {
         return false;
+    }
+    if (unit_ext.values[ValueSermonSalveCloak]) {
+        return true;
     }
     if (unit_ext.values[ValueTriggerBehaviorSteadyShroud]) {
         return true;
@@ -2512,14 +2518,34 @@ GuardAi* create_guard_ai(u32 player, u32 unit_id, v2u16 position) {
 // Returns the special damage multiplier factor for units that don't use the "Damage Factor" property in weapons.dat.
 u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit) {
     switch (weapon_id) {
+        // @TODO: Extend weapon ids and remove these
         case WeaponId::KethrostalorStaggeredSpores: {
             return unit->id == UnitId::ZergKethrostalor ? 5 : 1;
         }
         case WeaponId::CrematoriumOkliQuadshard: {
-            return unit->id == UnitId::AskosiCrematorium ? 4 : 1;
+            switch (unit->id) {
+                case UnitId::AskosiAvatar:  return 1;
+                case UnitId::AskosiEndbore: return 8;
+            }
+            return 4;
         }
         case WeaponId::PanoptusPlasmaMissiles: {
             return unit->id == UnitId::ProtossPathlight ? 4 : 2;
+        }
+        case WeaponId::ThaumalogueUtsoCarbine: {
+            return unit->id == UnitId::AskosiSilversoul ? 3 : 1;
+        }
+        case WeaponId::RoveElreScaleshot: {
+            if (unit->id == UnitId::AskosiAlacyne) {
+                return 6;
+            }
+            return 1;
+        }
+        case WeaponId::HelionUskoScrapray: {
+            if (unit->id == UnitId::AskosiLimire) {
+                return 3;
+            }
+            return 1;
         }
         case WeaponId::HotshotDispatchShotgun:
         case WeaponId::SirenCharybdalRifle: {
@@ -2553,15 +2579,18 @@ u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit) {
             return 2;
         }
         case WeaponId::IntendentErsaDriver: {
-            return unit->id == UnitId::AskosiIntendent ? 1 : 2;
+            switch (unit->id) {
+                case UnitId::AskosiPhontis:      return 2;
+                case UnitId::AskosiTortare:      return 1;
+                case UnitId::ForerunnerCircitor: return 1;
+            }
+            return 1;
         }
         case WeaponId::StarSovereignInterventionMissiles: {
             return 1;
         }
-        default: {
-            return weapons_dat::damage_factor[weapon_id];
-        }
     }
+    return weapons_dat::damage_factor[weapon_id];
 }
 
 void delete_ai_script(AiScript* ai_script) {
@@ -3174,7 +3203,7 @@ void regress(Unit* unit, u32 regression_id) {
     if (new_unit) {
         if (is_building) {
             auto& new_unit_ext = new_unit->ext();
-            new_unit_ext.timers[TimerStun] = 1 * 24;
+            new_unit_ext.timers[TimerStun] = 1secs;
             // TODO: Try calling a cagra-related function to stop regression from ruining cagra spread. -Pr0nogo
             // TODO: Add stun audio visuals. -Veeq7
             if (!new_unit->is_building()) {
@@ -3748,6 +3777,22 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type) {
                     case Advisor::Bloodsummon:	  return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_AddonAbandon01, SoundId::BloodsummonAdvisor_AddonAbandon02);
                 }
             } break;
+            case AdvisorEvent_Assembly: {
+                switch (advisor) {
+                    case Advisor::Terran:	      return SoundId::PilgrimConstructionComplete01;
+                    case Advisor::Protoss:	      return SoundId::PilgrimConstructionComplete01;
+                    case Advisor::Zerg:		      return SoundId::PilgrimConstructionComplete01;
+                    case Advisor::Ackmed:	      return SoundId::PilgrimConstructionComplete01;
+                    case Advisor::HADRAL:	      return SoundId::PilgrimConstructionComplete01;
+                    case Advisor::Artemis:	      return SoundId::PilgrimConstructionComplete01;
+                    case Advisor::Furen:	      return SoundId::FurenAdvisor_AddonAbandon01;
+                    case Advisor::Kortar:	      return helper::get_random_unit_response(SoundId::KortarAdvisor_Build01, SoundId::KortarAdvisor_Build02);
+                    case Advisor::GoldenRepublic: return SoundId::GoldenRepublicAdvisor_Assembly01;
+                    case Advisor::Goku:		      return helper::get_random_unit_response(SoundId::GokuAdvisor_Assembly01, SoundId::GokuAdvisor_Assembly01);
+                    case Advisor::Askosi:		  return helper::get_random_unit_response(SoundId::AskosiAdvisor_Assembly01, SoundId::AskosiAdvisor_Assembly02);
+                    case Advisor::Bloodsummon:	  return helper::get_random_unit_response(SoundId::BloodsummonAdvisor_Assembly01, SoundId::BloodsummonAdvisor_Assembly02);
+                }
+            } break;
         }
     }
     return SoundId::None;
@@ -4088,11 +4133,14 @@ u32 get_unit_weapon_fire_sound(Unit* unit, u32 weapon_id) {
         case UnitId::ProtossManifold:              return bw::rand_between(SoundId::ManifoldWeaponfire01, SoundId::ManifoldWeaponfire03);
         case UnitId::ProtossManifoldStarbound:     return bw::rand_between(SoundId::ManifoldStarboundWeaponfire01, SoundId::ManifoldStarboundWeaponfire04);
         case UnitId::AskosiAvatar:                 return bw::rand_between(SoundId::AvatarWeaponfire01, SoundId::AvatarWeaponfire03);
+        case UnitId::AskosiGhostwrit:              return bw::rand_between(SoundId::GhostwritWeaponfire01, SoundId::GhostwritWeaponfire03);
         case UnitId::AskosiIntendent:              return bw::rand_between(SoundId::IntendentWeaponfireA01, SoundId::IntendentWeaponfireA03);
         case UnitId::AskosiAgonist:                return bw::rand_between(SoundId::AgonistWeaponfire01, SoundId::AgonistWeaponfire03);
         case UnitId::AskosiPhontis:                return bw::rand_between(SoundId::PhontisWeaponfire01, SoundId::PhontisWeaponfire03);
+        case UnitId::AskosiHistrion:               return bw::rand_between(SoundId::HistrionWeaponfire01, SoundId::HistrionWeaponfire03);
         case UnitId::AskosiAkreno:                 return bw::rand_between(SoundId::AkrenoWeaponfire01, SoundId::AkrenoWeaponfire03);
         case UnitId::AskosiCrematorium:            return bw::rand_between(SoundId::CrematoriumWeaponfire01, SoundId::CrematoriumWeaponfire03);
+        case UnitId::AskosiEndbore:                return bw::rand_between(SoundId::EndboreWeaponfire01, SoundId::EndboreWeaponfire04);
     }
     if (!sound_id) {
         sound_id = get_weapon_fire_sound(weapon_id, unit);
@@ -4109,6 +4157,20 @@ u32 get_weapon_fire_sound(u32 weapon_id, Unit* unit) {
         case WeaponId::EidolonCoronerRifle:                 return bw::rand_between(SoundId::EidolonWeaponfire01, SoundId::EidolonWeaponfire03);
         case WeaponId::EidolonNydusRevenantRifle:           return bw::rand_between(SoundId::EidolonNydusWeaponfire01, SoundId::EidolonNydusWeaponfire05);
         case WeaponId::MadcapDanannAutogun:                 return bw::rand_between(SoundId::MadcapWeaponfire01, SoundId::MadcapWeaponfire05);;
+        case WeaponId::OlympianMountainGun: {
+            // TODO: Extend weapons and remove this. -Pr0nogo
+            if (unit->id == UnitId::AskosiElgird) {
+                return bw::rand_between(SoundId::ElgirdWeaponfire01, SoundId::ElgirdWeaponfire04);
+            }
+            return SoundId::None;
+        }
+        case WeaponId::HeraclesJavelinCannons: {
+            // TODO: Extend weapons and remove this. -Pr0nogo
+            if (unit->id == UnitId::AskosiInsurant) {
+                return bw::rand_between(SoundId::InsurantWeaponfire01, SoundId::InsurantWeaponfire03);
+            }
+            return SoundId::None;
+        }
         case WeaponId::BlackguardAsoniCarbine:              return bw::rand_between(SoundId::BlackguardWeaponfire01, SoundId::BlackguardWeaponfire04);;
         case WeaponId::ApostleCharonRifle:                  return bw::rand_between(SoundId::ApostleWeaponfire01, SoundId::ApostleWeaponfire05);;
         case WeaponId::CyclopsFuturistFlakCannons:          return bw::rand_between(SoundId::CyclopsWeaponfireFuturist01, SoundId::CyclopsWeaponfireFuturist02);
@@ -4162,9 +4224,33 @@ u32 get_weapon_fire_sound(u32 weapon_id, Unit* unit) {
         case WeaponId::MissionaryAruoTwinshot:              return bw::rand_between(SoundId::MissionaryWeaponfire01, SoundId::MissionaryWeaponfire03);
         case WeaponId::VicarOspoTwinshard:                  return bw::rand_between(SoundId::VicarWeaponfire01, SoundId::VicarWeaponfire03);
         case WeaponId::AphoristAnsaSunshot:                 return bw::rand_between(SoundId::AphoristWeaponfire01, SoundId::AphoristWeaponfire03);
-        case WeaponId::ThaumalogueUtsoCarbine:              return bw::rand_between(SoundId::ThaumalogueWeaponfire01, SoundId::ThaumalogueWeaponfire03);
-        case WeaponId::RoveElreScaleshot:                   return bw::rand_between(SoundId::RoveWeaponfire01, SoundId::RoveWeaponfire03);
-        case WeaponId::IntendentErsaDriver:                 return bw::rand_between(SoundId::IntendentWeaponfireA01, SoundId::IntendentWeaponfireA03);
+        case WeaponId::ThaumalogueUtsoCarbine: {
+            if (unit->id == UnitId::AskosiSilversoul) {
+                return bw::rand_between(SoundId::SilversoulWeaponfire01, SoundId::SilversoulWeaponfire03);
+            }
+            // TODO: Extend weapons and remove this. -Pr0nogo
+            return bw::rand_between(SoundId::ThaumalogueWeaponfire01, SoundId::ThaumalogueWeaponfire03);
+        }
+        case WeaponId::RoveElreScaleshot: {
+            if (unit->id == UnitId::AskosiAlacyne) {
+                return bw::rand_between(SoundId::AlacyneWeaponfire01, SoundId::AlacyneWeaponfire03);
+            }
+            // TODO: Extend weapons and remove this. -Pr0nogo
+            return bw::rand_between(SoundId::RoveWeaponfire01, SoundId::RoveWeaponfire03);
+        }
+        case WeaponId::IntendentErsaDriver: {
+            switch (unit->id) {
+                case UnitId::AskosiPhontis: return bw::rand_between(SoundId::PhontisWeaponfire01, SoundId::PhontisWeaponfire03);
+                case UnitId::AskosiTortare: return bw::rand_between(SoundId::TortareWeaponfire01, SoundId::TortareWeaponfire03);
+            }
+            return bw::rand_between(SoundId::IntendentWeaponfireA01, SoundId::IntendentWeaponfireA03);
+        }
+        case WeaponId::HelionUskoScrapray: {
+            switch (unit->id) {
+                case UnitId::AskosiLimire: return bw::rand_between(SoundId::LimireWeaponfire01, SoundId::LimireWeaponfire03);
+            }
+            return SoundId::None; // TODO: Helion weaponfire SFX
+        }
         case WeaponId::TiradeIktaDriver:                    return bw::rand_between(SoundId::TiradeWeaponfire01, SoundId::TiradeWeaponfire03);
 
         case WeaponId::SmoochieBoyKissingEmoji:             return bw::rand_between(SoundId::SmoochieBoyWeaponfire01, SoundId::SmoochieBoyWeaponfire03);
@@ -4239,7 +4325,8 @@ bool unit_regenerates_hp(Unit* unit) {
     return units_dat::base_property[unit->id] & UnitProperty::RegeneratesHP
         || unit_ext.values[ValueInfested]
         || unit_ext.timers[TimerNathreliskMitosalFog]
-        || unit_ext.timers[TimerImpactDissipation];
+        || unit_ext.timers[TimerImpactDissipation]
+        || unit_ext.timers[TimerImpactPrevarication];
 }
 
 fp32 get_regeneration_factor(Unit* unit) {
@@ -4250,6 +4337,9 @@ fp32 get_regeneration_factor(Unit* unit) {
     }
     if (unit_ext.timers[TimerNathreliskMitosalFog]) {
         base += 2;
+    }
+    if (unit_ext.timers[TimerImpactPrevarication]) {
+        base += 8;
     }
     if (unit->id == UnitId::ZergMalkothrokor && unit->is_burrowed()) {
         base += 3;

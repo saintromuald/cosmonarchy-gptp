@@ -1258,9 +1258,19 @@ b32 __fastcall parse_comment_action(TriggerAction* action) {
                 switch (trigger_behavior) {
                     case TriggerBehavior_CloakProximity: {
                         unit_ext.values[ValueTriggerBehaviorProximityCloak] = enable;
+                        if (enable) {
+                            unit_ext.timers[TimerDecloak] = 2secs + 1;
+                        } else if (!unit_ext.timers[TimerFacadePryingEyesCloak]) {
+                            bw::decloak_proximity_proc(unit);
+                        }
                     } break;
                     case TriggerBehavior_CloakSteady: {
                         unit_ext.values[ValueTriggerBehaviorSteadyShroud] = enable;
+                        if (!enable) {
+                            bw::decloak_passive_proc(unit);
+                        } else {
+                            unit_ext.timers[TimerDecloak] = 2secs + 1;
+                        }
                     } break;
                     case TriggerBehavior_Hallucination: {
                         if (enable && !(unit->status & UnitStatus::IsHallucination)) {

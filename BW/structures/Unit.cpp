@@ -1636,7 +1636,7 @@ bool Unit::is_plainly_visible() {
 }
 
 bool Unit::can_use_passive_ability() {
-    return this->is_completed() && !this->is_frozen() && !this->is_in_transport() && !this->ext().values[ValueDisablePassive];
+    return this->is_completed() && !this->is_frozen() && !this->is_in_transport() && !this->ext().values[ValueDisablePassive] && !this->ext().timers[TimerSalvageStun];
 }
 
 u32 Unit::get_adaptive_amitosis_range() {
@@ -1925,10 +1925,16 @@ void Unit::rematerialize_cast() {
     }
     u16 energy_cost = 0;
     if (helper::spell_order(this, TechId::AskosiRematerialize, &energy_cost, range, 1330)) {
+        bw::decloak_passive_proc(this);
         this->spend_energy(energy_cost);
-        bw::teleport_to_unit(target, this, 24, {.check_distance = false}, SpriteId::LegionnaireTeleportEffect);
-        target->ext().timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
-        target->update_speed();
+        for (Unit* ally : g_unit_search.radial_ex(target, Askosi::RematerializeTeleportRange, FilterAlly | FilterIncludingSelf | FilterNoBuilding)) {
+            if (ally == this) {
+                continue;
+            }
+            bw::teleport_to_unit(ally, this, 24, {.check_distance = false}, SpriteId::LegionnaireTeleportEffect);
+            ally->ext().timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
+            ally->update_speed();
+        }
         try_cast = false;
     }
 }
@@ -1965,10 +1971,14 @@ bool Unit::rapid_rendezvous_cast() {
     }
     u16 energy_cost = 0;
     if (helper::spell_order(this, TechId::AskosiRapidRendezvous, &energy_cost, range, 1330)) {
+        bw::decloak_passive_proc(this);
         this->spend_energy(energy_cost);
         bw::teleport_to_unit(this, target, 24, {.check_distance = false}, SpriteId::LegionnaireTeleportEffect);
         unit_ext.timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
         for (Unit* ally : g_unit_search.radial_ex(target, Askosi::RapidRendezvousBuffRange, FilterAlly | FilterIncludingSelf)) {
+            if (ally == this) {
+                continue;
+            }
             ally->ext().timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
             ally->update_speed();
         }
@@ -2016,6 +2026,7 @@ void Unit::hijack_cast() {
     }
     u16 energy_cost = 0;
     if (helper::spell_order(this, TechId::AskosiHijack, &energy_cost, range, 1330)) {
+        bw::decloak_passive_proc(this);
         this->status |= UnitStatus::NoCollide;
         this->status |= UnitStatus::CanNotReceiveOrders;
         bw::teleport_to_unit(this, target, 24, {.check_distance = false}, SpriteId::LegionnaireTeleportEffect);
@@ -2065,6 +2076,7 @@ void Unit::remote_hijack_cast() {
     }
     u16 energy_cost = 0;
     if (helper::spell_order(this, TechId::AskosiRemoteHijack, &energy_cost, range, 1330)) {
+        bw::decloak_passive_proc(this);
         this->spend_energy(energy_cost);
         fire_bullet(this, WeaponId::RemoteHijack, this->order_target);
         this->order_to_idle();
@@ -2104,8 +2116,14 @@ void Unit::preylock_cast() {
     }
     u16 energy_cost = 0;
     if (helper::spell_order(this, TechId::AskosiPreylock, &energy_cost, range, 1330)) {
+        bw::decloak_passive_proc(this);
         this->spend_energy(energy_cost);
         bw::teleport_to_unit(target, this, 24, {.check_distance = false}, SpriteId::LegionnaireTeleportEffect);
+        auto& target_ext = target->ext();
+        if (!target_ext.timers[TimerBoomingBlast]) {
+            target_ext.timers[TimerBoomingBlast] = Askosi::BoomingBlastTimer;
+            target_ext.values[ValueBoomingBlastPlayer] = this->player;
+        }
         try_cast = false;
     }
 }
@@ -2137,6 +2155,7 @@ void Unit::lobotomy_warhead_cast() {
     }
     u16 energy_cost = 0;
     if (helper::spell_order(this, TechId::TritonLobotomyWarhead, &energy_cost, range, 1330)) {
+        bw::decloak_passive_proc(this);
         this->spend_energy(energy_cost);
         fire_bullet(this, WeaponId::TritonLobotomyWarhead, this->order_target);
         try_cast = false;
@@ -2144,7 +2163,7 @@ void Unit::lobotomy_warhead_cast() {
 }
 
 void Unit::hijack(Unit* hijacker) {
-    this->set_hitpoints(100 * 256);
+    this->set_hitpoints(std::max((u32)100 * 256, this->get_current_hp_ingame() * 256));
     auto& unit_ext = this->ext();
     unit_ext.values[ValueHijackOriginalPlayer] = this->player;
     this->give_to(hijacker->player);
@@ -2190,6 +2209,115 @@ void Unit::proc_ensnaring_brood() {
         target_ext.timers[TimerEnsnaringBrood] = 3;
         if (!target->is_burrowed()) {
             bw::add_unit_overlay(target, ImageId::EnsnaringBroodOverlay);
+        }
+    }
+}
+
+bool Unit::sermon_salve_cloak(Unit* cloaker) {
+    auto& unit_ext = this->ext();
+    if (bw::unit_in_combat_within_seconds(this, 2)) {
+        return false;
+    }
+    if (this->is_building() || !this->can_be_passive_cloaked(cloaker) || unit_ext.timers[TimerDecloak] || unit_ext.values[ValueSermonSalveCloak]) {
+        return false;
+    }
+    unit_ext.values[ValueSermonSalveCloak] = true;
+    unit_ext.timers[TimerDecloak] = 3;
+    helper::secondary_order_cloak(this);
+    if (!(this->status & UnitStatus::CloakingForFree)) {
+        this->status |= UnitStatus::CloakingForFree;
+    }
+    return true;
+}
+
+void Unit::puppeteer_cast(Unit* victim) {
+    if (!bw::get_generic_rust_value(this, RustId::CastPuppeteer)) {
+        return;
+    }
+    bw::set_generic_rust_value(this, RustId::CastPuppeteer, 0);
+    auto energy_cost = TechId::energy_cost(TechId::AskosiPuppeteer);
+    if (this->energy >= energy_cost && victim) {
+        // TODO: Own audiovisuals
+        bw::play_sound({ SoundId::AkrenoPassiveProc01, SoundId::AkrenoPassiveProc03 }, victim->position);
+        Thingy* recall_effect_sprite = helper::create_thingy(SpriteId::LegionnaireTeleportEffect, victim->position.x, victim->position.y, 0);
+        if (recall_effect_sprite) {
+            recall_effect_sprite->sprite->elevation = this->sprite->elevation + 1;
+            helper::set_thingy_visibility_flags(recall_effect_sprite);
+        }
+
+        bw::decloak_passive_proc(this);
+        this->spend_energy(energy_cost);
+        for (Unit* target : g_unit_search.radial_ex(victim, Askosi::PuppeteerPullRange)) {
+            if (bw::is_allied_to(target->player, this->player)) {
+                continue;
+            }
+            if (unit_can_be_repulsed(target)) {
+                target->pull_towards(victim);
+            }
+        }
+        victim->ext().timers[TimerStun] = 1secs;
+        victim->order_to_idle();
+        this->ext().units[UnitPuppeteerTarget] = 0;
+    }
+}
+
+void Unit::ashbind_cast() {
+    auto& unit_ext = this->ext();
+    auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
+    if (try_cast && (this->main_order_id != OrderId::AskosiAshbind || this->is_frozen())) {
+        try_cast = false;
+    }
+    if (!try_cast || unit_ext.timers[TimerTryCastCustomSpell]) {
+        return;
+    }
+    Unit* target = this->order_target.unit;
+    if (!target) {
+        this->order_to_idle();
+        return;
+    }
+    if (bw::are_mutual_allies(this->player, target->player) || target->is_in_air()) {
+        this->order_to_idle();
+        helper::display_error_message_id_with_sfx(this->player, 967, get_racial_error_sfx(RaceId::Enum(g_player_table[this->player].race)));
+        return;
+    }
+    Point16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
+    u32 range = Askosi::RapidRendezvousCastRange;
+    if (!helper::is_target_within_min_range(this, range, target)) {
+        if (this->order_target.unit) {
+            helper::spell_order_move_towards_target(this, range);
+        } else {
+            helper::set_move_target_xy(this, target_pos.x, target_pos.y);
+        }
+        unit_ext.timers[TimerTryCastCustomSpell] = 3;
+        return;
+    }
+    u16 energy_cost = 0;
+    if (helper::spell_order(this, TechId::AskosiAshbind, &energy_cost, range, 1330)) {
+        bw::decloak_passive_proc(this);
+        this->spend_energy(energy_cost);
+        bw::teleport_to_unit(this, target, 24, {.check_distance = false}, SpriteId::LegionnaireTeleportEffect);
+        for (Unit* enemy : g_unit_search.radial_ex(target, Askosi::AshbindDebuffRange, FilterIncludingSelf)) {
+            if (bw::are_mutual_allies(this->player, enemy->player)) {
+                continue;
+            }
+            auto& enemy_ext = enemy->ext();
+            enemy_ext.timers[TimerAshHeap] = Askosi::ScrapworldAshHeapDuration;
+            enemy_ext.timers[TimerAshHeapArmorRend] += Askosi::ScrapworldAshHeapDuration;
+            enemy_ext.values[ValueAshHeapPlayer] = this->player;
+        }
+        try_cast = false;
+        return;
+    }
+}
+
+void Unit::mimicry_tick() {
+    if (!this->can_use_passive_ability()) {
+        return;
+    }
+    for (Unit* ally : g_unit_search.radial(this->position, Askosi::MimicryRange).filter(this, FilterAlly | FilterCombatant)) {
+        ally->ext().timers[TimerMimicryCheck] = 3;
+        if (ally->subunit && ally->subunit->is_subunit()) {
+            ally->subunit->ext().timers[TimerMimicryCheck] = 3;
         }
     }
 }

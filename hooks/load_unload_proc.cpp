@@ -13,6 +13,10 @@ static void special_load_unit(Unit* unit, Unit* transport) {
         hive_tissue->status |= UnitStatus::InTransport;
         helper::hide_and_disable_unit(hive_tissue);
     }
+    if (UnitId::has_far_transport_range((UnitId::Enum)transport->id)) {
+        bw::add_unit_overlay(transport, ImageId::LegionnaireTeleportEffect);
+        helper::create_thingy(SpriteId::LegionnaireTeleportEffect, unit->position.x, unit->position.y, unit->player);
+    }
 }
 
 static void special_unload_unit(Unit* unit, Unit* transport) {

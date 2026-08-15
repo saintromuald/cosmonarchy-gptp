@@ -72,6 +72,15 @@ u32 get_tech_use_error_message(Unit* target, u8 player, u16 tech_id) { // 00491E
 				}
 				return 0;
 			} break;
+			case TechId::AskosiAshbind: {
+				if (bw::are_mutual_allies(player, target->player)) {
+					return 967;
+				}
+				if (!target->is_completed()) {
+					return 905;
+				}
+				return 0;
+			} break;
 			default: {
 				return 876; // Invalid target.<0>
 			}

@@ -372,7 +372,8 @@ namespace hooks {
 			case OrderId::AskosiHijack:
 			case OrderId::AskosiSalvage:
 			case OrderId::AskosiRemoteHijack:
-			case OrderId::AskosiPreylock: {
+			case OrderId::AskosiPreylock:
+			case OrderId::AskosiAshbind: {
 				auto& unit_ext = unit->ext();
 				if (!unit_ext.values[ValueTryCastCustomSpell]) {
 					unit_ext.values[ValueTryCastCustomSpell] = true;

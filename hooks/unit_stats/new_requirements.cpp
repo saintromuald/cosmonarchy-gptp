@@ -1368,7 +1368,7 @@ namespace hooks {
 
         // ASKOSI
         // Units
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiLandlock)) {
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiLandlock) || player_has_completed_unit_id(player_id, UnitId::AskosiDomain)) {
             switch (unit_id) {
                 case UnitId::AskosiPilgrim: {
                     return true;
@@ -1381,6 +1381,132 @@ namespace hooks {
                 }
                 case UnitId::AskosiConstituent: {
                     return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiProscenium) || player_has_completed_unit_id(player_id, UnitId::AskosiZylode);
+                }
+            }
+        }
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiRadix)) {
+            switch (unit_id) {
+                case UnitId::AskosiMissionary:
+                case UnitId::AskosiCardinal: {
+                    return true;
+                }
+                case UnitId::AskosiMimic: {
+                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiCipher);
+                }
+                case UnitId::AskosiVicar: {
+                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
+                }
+            }
+        }
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiFunction)) {
+            switch (unit_id) {
+                case UnitId::AskosiRove:
+                case UnitId::AskosiObject: {
+                    return true;
+                }
+                case UnitId::AskosiScepter: {
+                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiCipher);
+                }
+                case UnitId::AskosiIntendent: {
+                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
+                }
+            }
+        }
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiCosmoscope)) {
+            switch (unit_id) {
+                case UnitId::AskosiHelion:
+                case UnitId::AskosiEmissary: {
+                    return true;
+                }
+                case UnitId::AskosiInkblot: {
+                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiCipher);
+                }
+                case UnitId::AskosiTirade: {
+                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
+                }
+            }
+        }
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiProscenium)) {
+            switch (unit_id) {
+                case UnitId::AskosiAphorist:
+                case UnitId::AskosiThaumalogue: {
+                    return true;
+                }
+                case UnitId::AskosiAvatar: {
+                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiConduit);
+                }
+                case UnitId::AskosiDoronin: {
+                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiBestiary);
+                }
+            }
+        }
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiZylode)) {
+            switch (unit_id) {
+                case UnitId::AskosiAgonist:
+                case UnitId::AskosiPetract: {
+                    return true;
+                }
+                case UnitId::AskosiPhontis: {
+                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiConduit);
+                }
+                case UnitId::AskosiZonguard: {
+                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiBestiary);
+                }
+            }
+        }
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiAstrolabe)) {
+            switch (unit_id) {
+                case UnitId::AskosiAkreno:
+                case UnitId::AskosiIconoclast: {
+                    return true;
+                }
+                case UnitId::AskosiCrematorium: {
+                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiConduit);
+                }
+                case UnitId::AskosiParaclete: {
+                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiBestiary);
+                }
+            }
+        }
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiPanoply)) {
+            switch (unit_id) {
+                case UnitId::AskosiInsurant:
+                case UnitId::AskosiSilversoul: {
+                    return true;
+                }
+                case UnitId::AskosiGhostwrit: {
+                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiLekrot);
+                }
+                case UnitId::AskosiAzjoran: {
+                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiHearthshard);
+                }
+            }
+        }
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiLotiro)) {
+            switch (unit_id) {
+                case UnitId::AskosiElgird:
+                case UnitId::AskosiHistrion: {
+                    return true;
+                }
+                case UnitId::AskosiAlacyne: {
+                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiLekrot);
+                }
+                case UnitId::AskosiBegolor: {
+                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiHearthshard);
+                }
+            }
+        }
+        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiObelisk)) {
+            switch (unit_id) {
+                case UnitId::AskosiLimire:
+                case UnitId::AskosiEndbore: {
+                    return true;
+                }
+                case UnitId::AskosiTortare: {
+                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiLekrot);
+                }
+                case UnitId::AskosiCybrene: {
+                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiHearthshard);
                 }
             }
         }
@@ -1415,6 +1541,20 @@ namespace hooks {
                 case UnitId::AskosiBestiary:
                 case UnitId::AskosiAstrolabe: {
                     if (player_has_completed_unit_id(player_id, UnitId::AskosiProscenium) || player_has_completed_unit_id(player_id, UnitId::AskosiZylode)) {
+                        return true;
+                    }
+                }
+                case UnitId::AskosiDomain:
+                case UnitId::AskosiPanoply:
+                case UnitId::AskosiLotiro: {
+                    if (player_has_completed_unit_id(player_id, UnitId::AskosiProscenium) || player_has_completed_unit_id(player_id, UnitId::AskosiZylode)) {
+                        return true;
+                    }
+                }
+                case UnitId::AskosiLekrot:
+                case UnitId::AskosiHearthshard:
+                case UnitId::AskosiObelisk: {
+                    if (player_has_completed_unit_id(player_id, UnitId::AskosiPanoply) || player_has_completed_unit_id(player_id, UnitId::AskosiLotiro)) {
                         return true;
                     }
                 }
@@ -3548,7 +3688,8 @@ namespace hooks {
 
             // ASKOSI
             // Units
-            case UnitId::AskosiLandlock: {
+            case UnitId::AskosiLandlock:
+            case UnitId::AskosiDomain: {
                 switch (unit_id) {
                     case UnitId::AskosiPilgrim: {
                         return TECH_ACTIVE;
@@ -3700,6 +3841,69 @@ namespace hooks {
                 }
                 return TECH_HIDDEN;
             }
+            case UnitId::AskosiPanoply: {
+                switch (unit_id) {
+                    case UnitId::AskosiInsurant:
+                    case UnitId::AskosiSilversoul: {
+                        return TECH_ACTIVE;
+                    }
+                    case UnitId::AskosiGhostwrit: {
+                        if (player_has_completed_unit_id(player_id, UnitId::AskosiLekrot)) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_LOCKED;
+                    }
+                    case UnitId::AskosiAzjoran: {
+                        if (player_has_completed_unit_id(player_id, UnitId::AskosiHearthshard)) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_LOCKED;
+                    }
+                }
+                return TECH_HIDDEN;
+            }
+            case UnitId::AskosiLotiro: {
+                switch (unit_id) {
+                    case UnitId::AskosiElgird:
+                    case UnitId::AskosiHistrion: {
+                        return TECH_ACTIVE;
+                    }
+                    case UnitId::AskosiAlacyne: {
+                        if (player_has_completed_unit_id(player_id, UnitId::AskosiLekrot)) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_LOCKED;
+                    }
+                    case UnitId::AskosiBegolor: {
+                        if (player_has_completed_unit_id(player_id, UnitId::AskosiHearthshard)) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_LOCKED;
+                    }
+                }
+                return TECH_HIDDEN;
+            }
+            case UnitId::AskosiObelisk: {
+                switch (unit_id) {
+                    case UnitId::AskosiLimire:
+                    case UnitId::AskosiEndbore: {
+                        return TECH_ACTIVE;
+                    }
+                    case UnitId::AskosiTortare: {
+                        if (player_has_completed_unit_id(player_id, UnitId::AskosiLekrot)) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_LOCKED;
+                    }
+                    case UnitId::AskosiCybrene: {
+                        if (player_has_completed_unit_id(player_id, UnitId::AskosiHearthshard)) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_LOCKED;
+                    }
+                }
+                return TECH_HIDDEN;
+            }
 
             // Structures
             case UnitId::AskosiPilgrim:
@@ -3726,16 +3930,32 @@ namespace hooks {
                     case UnitId::AskosiAbutment:
                     case UnitId::AskosiDorminge:
                     case UnitId::AskosiProscenium:
-                    case UnitId::AskosiZylode:
-                    case UnitId::AskosiAstrolabe: {
+                    case UnitId::AskosiZylode: {
                         if (player_has_completed_unit_id(player_id, UnitId::AskosiCipher) && player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet)) {
                             return TECH_ACTIVE;
                         }
                         return TECH_LOCKED;
                     }
                     case UnitId::AskosiConduit:
-                    case UnitId::AskosiBestiary: {
+                    case UnitId::AskosiBestiary:
+                    case UnitId::AskosiAstrolabe: {
                         if (player_has_completed_unit_id(player_id, UnitId::AskosiProscenium) || player_has_completed_unit_id(player_id, UnitId::AskosiZylode)) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_LOCKED;
+                    }
+                    case UnitId::AskosiDomain:
+                    case UnitId::AskosiPanoply:
+                    case UnitId::AskosiLotiro: {
+                        if (player_has_completed_unit_id(player_id, UnitId::AskosiConduit) || player_has_completed_unit_id(player_id, UnitId::AskosiBestiary)) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_LOCKED;
+                    }
+                    case UnitId::AskosiLekrot:
+                    case UnitId::AskosiHearthshard:
+                    case UnitId::AskosiObelisk: {
+                        if (player_has_completed_unit_id(player_id, UnitId::AskosiPanoply) || player_has_completed_unit_id(player_id, UnitId::AskosiLotiro)) {
                             return TECH_ACTIVE;
                         }
                         return TECH_LOCKED;

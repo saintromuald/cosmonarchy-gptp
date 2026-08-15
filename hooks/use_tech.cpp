@@ -114,6 +114,9 @@ namespace hooks {
                 helper::issue_tri_target_order(OrderId::LobotomyWarhead, 0, 0);
             } break;
             case TechId::AskosiRematerialize: {
+                if (can_play_local_sound && (*g_active_portrait_unit)->id == UnitId::AskosiVicar) {
+                    bw::play_action_sound(SoundId::VicarAbilityUse01, *g_active_portrait_unit);
+                }
                 helper::issue_tri_target_order(OrderId::AskosiRematerialize, 0, 0);
             } break;
             case TechId::AskosiRapidRendezvous: {
@@ -121,6 +124,9 @@ namespace hooks {
             } break;
             case TechId::AskosiHijack: {
                 helper::issue_tri_target_order(OrderId::AskosiHijack, 0, 0);
+            } break;
+            case TechId::AskosiAshbind: {
+                helper::issue_tri_target_order(OrderId::AskosiAshbind, 0, 0);
             } break;
             case TechId::DefensiveMatrix: {
                 helper::issue_tri_target_order(OrderId::DefensiveMatrix, 0, 0);
@@ -222,6 +228,9 @@ namespace hooks {
             } break;
             case TechId::StroluumSkryspawn: {
                 queue_generic_ability_simple();
+            } break;
+            case TechId::AskosiPuppeteer: {
+                queue_toggle_ability(RustId::CastPuppeteer, unit);
             } break;
             case TechId::CancelNewAbility: {
                 Unit* selected = *g_active_portrait_unit;

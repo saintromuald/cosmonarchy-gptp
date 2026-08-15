@@ -94,7 +94,13 @@ namespace hooks {
 			case TechId::AskosiHijack:
 			case TechId::AskosiRemoteHijack: {
 				if (target) {
-					return bw::are_mutual_allies(caster->player, target->player) || (bw::are_mutual_allies(caster->player, target->player) && target->is_askosi_embedded());
+					return !bw::are_mutual_allies(caster->player, target->player) || (bw::are_mutual_allies(caster->player, target->player) && target->is_askosi_embedded());
+				}
+				return false;
+			}
+			case TechId::AskosiAshbind: {
+				if (target) {
+					return !bw::are_mutual_allies(caster->player, target->player);
 				}
 				return false;
 			}
@@ -372,7 +378,8 @@ namespace hooks {
 				} break;
 				case OrderId::AskosiHijack:
 				case OrderId::AskosiRemoteHijack:
-				case OrderId::AskosiPreylock: {
+				case OrderId::AskosiPreylock:
+				case OrderId::AskosiAshbind: {
 					if (!target) {
 						return false;
 					}
@@ -420,7 +427,8 @@ namespace hooks {
 			case TechId::AskosiSalvage:
 			case TechId::AskosiHijack:
 			case TechId::AskosiRemoteHijack:
-			case TechId::AskosiPreylock: {
+			case TechId::AskosiPreylock:
+			case TechId::AskosiAshbind: {
 				return false;
 			} break;
 			default: {

@@ -329,6 +329,7 @@ void unit_on_death_behaviors(Unit* unit) {
                     apply_corrosive_spores_internal(hostile, Broodspawn::DeathCycleCorrosiveTouchTimer);
                 }
             } break;
+            case UnitId::AskosiElgird:
             case UnitId::AskosiAkreno: {
                 unit->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel); // TODO: Own visuals
                 bw::play_sound({SoundId::AkrenoPassiveCharge01, SoundId::AkrenoPassiveCharge03}, unit->position);
@@ -360,14 +361,26 @@ void unit_on_death_behaviors(Unit* unit) {
         }
     }
 
-    if (!unit_id_is_spell(unit->id)) { // Mortothrokor - Whetted Appetite - Add stacks when in vision
+    if (!unit_id_is_spell(unit->id)) {
+        // Mortothrokor - Whetted Appetite - Add stacks when in vision
         auto mortothrokors = g_unit_search.radial_ex(unit, units_dat::sight_range[UnitId::ZergMortothrokor] * 32, 0, {UnitId::ZergMortothrokor});
         for (Unit* mortothrokor : mortothrokors) {
             if (bw::distance_between(unit->position, mortothrokor->position) <= mortothrokor->get_sight_range() * 32) {
-                UnitExt* unit_ext = get_unit_ext(mortothrokor);
-                unit_ext->values[ValueMortothrokorStacks]++;
-                unit_ext->timers[TimerMortothrokorPassive] = 2 * 24;
+                auto& unit_ext = mortothrokor->ext();
+                unit_ext.values[ValueMortothrokorStacks]++;
+                unit_ext.timers[TimerMortothrokorPassive] = 2 * 24;
             }
+        }
+
+        // Tortare - Deathrattle Assembly - Pull dying units near embedded Tortare
+        auto tortares = g_unit_search.radial_ex(unit, units_dat::sight_range[UnitId::AskosiTortare] * 32, 0, {UnitId::AskosiTortare});
+        for (Unit* tortare : tortares) {
+            if (!tortare->ext().values[ValueReassemblyActive] || bw::distance_between(unit->position, tortare->position) > 8tiles) {
+                continue;
+            }
+            bw::play_sound({SoundId::AkrenoPassiveCharge01, SoundId::AkrenoPassiveCharge03}, unit->position);
+            g_iquare_globals->create_effect(EffectId::ScrapworldImplosion, 1 * 24, {unit->position.x, unit->position.y}, 6 * 32, SpriteId::DivineDisciplineField, 5, unit->player, 0);
+            break;
         }
     }
 

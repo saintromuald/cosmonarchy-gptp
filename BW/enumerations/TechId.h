@@ -14,7 +14,6 @@ namespace TechId {
         DivineDiscipline                    = 10, // Ghost Personnel Cloaking
         RejoinderOfService                  = 12, // Infestation
         ApostleLazarusAgent					= 32, // Lakizilisk Aspect
-        PaladinSkyfall						= 37, // Unknown Tech 37
         EmergencyDetonation					= 39, // Unknown Tech 39
         AzazelSublimeShepherd				= 40, // Unknown Tech 40
         HypnagogueThroughTheLookingGlass	= 42, // Unknown Tech 42
@@ -40,7 +39,9 @@ namespace TechId {
         AskosiPreylock					    = 24, // Restoration
         AskosiRematerialize     			= 23, // Archon Warp
         AskosiHijack                        = 36, // Unknown Tech 36
+        AskosiAshbind                       = 37, // Unknown Tech 37
         AskosiSalvage						= 41, // Unknown Tech 41
+        AskosiPuppeteer                     = 52,
 
         // Brood War \\
 

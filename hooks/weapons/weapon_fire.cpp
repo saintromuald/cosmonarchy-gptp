@@ -814,7 +814,7 @@ namespace hooks {
 
                 // After successfully firing the weapon...
                 if (unit_ext.timers[TimerMimicryCheck]) {
-                    for (Unit* mimic : g_unit_search.radial(unit->position, AskosiMimic::MimicryRange).filter(unit, FilterAlly, {UnitId::AskosiMimic})) {
+                    for (Unit* mimic : g_unit_search.radial(unit->position, Askosi::MimicryRange).filter(unit, FilterAlly, {UnitId::AskosiMimic, UnitId::AskosiEgocent})) {
                         auto mimic_ext = mimic->ext();
                         if (mimic->ground_weapon_cooldown) {
                             continue;
@@ -1640,8 +1640,8 @@ namespace hooks {
                     default: {
                         if (weapon_id_bounces_crushing_tide(weapon_id)) {
                             bullet->remaining_bounces = 2;
-                        } else if (WeaponId::bounces_power_breach(WeaponId::Enum(bullet->weapon_id))) {
-                            if (bullet->source_unit && bullet->source_unit->id == UnitId::AskosiIntendent) {
+                        } else if (bullet->source_unit && WeaponId::bounces_power_breach(WeaponId::Enum(bullet->weapon_id))) {
+                            if (UnitId::has_power_breach((UnitId::Enum)bullet->source_unit->id)) {
                                 bullet->remaining_bounces = 4;
                             } else {
                                 bullet->remaining_bounces = 1;
@@ -1675,8 +1675,7 @@ namespace hooks {
             case WeaponBehavior_GoToMaxRange: {
                 s32 max_range;
                 if (weapon_id == WeaponId::LakiziliskSubterraneanSpines) {
-                    UnitExt* parent_ext = get_unit_ext(parent);
-                    max_range = parent_ext->values[ValueHasFiredReturnAttack];
+                    max_range = parent->ext().values[ValueHasFiredReturnAttack];
                     if (!max_range) {
                         max_range = get_max_weapon_range(parent, weapon_id, parent->order_target.unit) + 16;
                     }

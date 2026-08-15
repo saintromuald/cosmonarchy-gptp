@@ -33,7 +33,7 @@ namespace hooks {
 		Unit** units_in_area_of_effect = helper::get_all_units_in_bounds(&area_of_effect);
 		Unit* current_unit = *units_in_area_of_effect;
 		while (current_unit) {
-			UnitExt& unit_ext = current_unit->ext();
+			auto& unit_ext = current_unit->ext();
 			if (current_unit->can_be_passive_cloaked(cloaker) && cloaker->is_target_within_min_range(current_unit, cloak_radius) && !unit_ext.timers[TimerDecloak]) {
 				helper::secondary_order_cloak(current_unit);
 				if (!(current_unit->status & UnitStatus::CloakingForFree)) {

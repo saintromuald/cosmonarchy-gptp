@@ -438,29 +438,39 @@ namespace AskosiBounty {
 inline constexpr s32 GoldVeinRange = 8tiles;
 }
 
+namespace AskosiDomain {
+inline constexpr s32 EarthlyProfusionRange = 12tiles;
+inline constexpr s32 EarthlyProfusionTimer = 10secs;
+}
+
 namespace AskosiDorminge {
 inline constexpr s32 CrushingDeliveryRange = 8tiles;
 }
 
 namespace AskosiCardinal {
 inline constexpr s32 SustainingSermonRange = 3tiles;
-inline constexpr s32 SustainingSermonHeal = 5 * 256;
-}
-
-namespace AskosiMimic {
-inline constexpr s32 MimicryRange = 5tiles;
-}
-
-namespace AskosiScepter {
-inline constexpr s32 PrincipalityRange = 8tiles;
+inline constexpr s32 SustainingSermonHeal = 10hp;
 }
 
 namespace AskosiThaumalogue {
 inline constexpr s32 RetaliationAssemblyDuration = 3secs;
 }
 
+namespace AskosiSilversoul{
+inline constexpr s32 ImpactDissipationRange = 8tiles;
+inline constexpr s32 CloakRange = 6tiles;
+}
+
+namespace AskosiScepter {
+inline constexpr s32 PrincipalityRange = 8tiles;
+}
+
 namespace AskosiZonguard {
 inline constexpr s32 MechanicalRageDuration = 2secs + 1;
+}
+
+namespace AskosiHistrion {
+inline constexpr s32 HatedReflectionCooldown = 2secs;
 }
 
 namespace Askosi {
@@ -469,12 +479,16 @@ inline constexpr s32 ScrapworldGoldRushTimer = 2secs;
 inline constexpr s32 BoomingBlastTimer = 2secs + 1;
 inline constexpr s32 PowerOverloadTimer = 1secs;
 
+inline constexpr s32 MimicryRange = 5tiles;
+
 inline constexpr s32 HijackCastRange = 2tiles;
 inline constexpr s32 HijackTimer = 5secs + 1;
 
-inline constexpr s32 ImpactDissipationDuration = 2secs + 1;
+inline constexpr s32 ImpactDissipationDuration = 3secs + 1;
+inline constexpr s32 ImpactPrevaricationDuration = 3secs + 1;
 
 inline constexpr s32 RematerializeCastRange = 6tiles;
+inline constexpr s32 RematerializeTeleportRange = 3tiles;
 
 inline constexpr s32 RapidRendezvousCastRange = 5tiles;
 inline constexpr s32 RapidRendezvousBuffRange = 3tiles;
@@ -484,12 +498,15 @@ inline constexpr s32 VitalRemainsRange = 5tiles;
 inline constexpr s32 VitalRemainsArmorPenDuration = 4secs;
 
 inline constexpr s32 ScrapworldAshHeapDuration = 2secs + 1;
+inline constexpr s32 AshbindJumpRange = 5tiles;
+inline constexpr s32 AshbindDebuffRange = 3tiles;
+inline constexpr s32 AshbindAshHeapDuration = 2secs + 1;
 
 inline constexpr s32 PreylockCastRange = 6tiles;
 
 inline constexpr s32 NewDominionDuration = 10secs + 1;
 
-inline constexpr s32 WarringWindsCooldown = 3;
+inline constexpr s32 WarringWindsCooldown = 6;
 inline constexpr s32 WarringWindsHealAmount = 5 * 256;
 inline constexpr s32 WarringWindsRange = 8tiles;
 
@@ -497,4 +514,6 @@ inline constexpr s32 ScrapworldImplosionRange = 6tiles;
 inline constexpr s32 ScrapworldImplosionSlowDuration = 5secs + 1;
 
 inline constexpr s32 RemoteHijackCastRange = 6tiles;
+
+inline constexpr s32 PuppeteerPullRange = 5tiles;
 }

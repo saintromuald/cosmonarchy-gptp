@@ -207,6 +207,9 @@ namespace hooks {
                 case UnitId::AskosiMissionary: {
                     return helper::get_random_unit_response(SoundId::MissionaryOrderAggressive01, SoundId::MissionaryOrderAggressive04);
                 } break;
+                case UnitId::AskosiVicar: {
+                    return helper::get_random_unit_response(SoundId::VicarOrderAggressive01, SoundId::VicarOrderAggressive04);
+                } break;
                 case UnitId::AskosiRove: {
                     return helper::get_random_unit_response(SoundId::RoveOrderAggressive01, SoundId::RoveOrderAggressive04);
                 } break;

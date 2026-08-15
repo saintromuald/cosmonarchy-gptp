@@ -578,6 +578,9 @@ u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id) {
         case UnitId::AskosiAkreno:            damage += 6;  break;
         case UnitId::AskosiIconoclast:        damage += 1;  break;
         case UnitId::AskosiParaclete:         damage += 3;  break;
+        case UnitId::AskosiLimire:            damage -= 8;  break;
+        case UnitId::AskosiEndbore:           damage += 6;  break;
+        case UnitId::AskosiTortare:           damage += 15;  break;
         case UnitId::ForerunnerFerrum:        damage -= 3;  break;
         case UnitId::ForerunnerChalyb:        damage -= 3;  break;
 
@@ -796,7 +799,7 @@ const char* get_name(Unit* unit, WeaponId::Enum weapon_id) {
 const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
     switch (weapon_id) {
         case WeaponId::MaverickGaussRifle:                  return "Gauss Rifle";
-        case WeaponId::HeraclesJavelinCannons:              return "Javelin Cannons";
+        case WeaponId::HeraclesJavelinCannons:              return unit_id == UnitId::TerranHeracles ? "Javelin Cannons" : "Elxe Twinshot";
         case WeaponId::EidolonCoronerRifle:                 return "Coroner Rifle";
         case WeaponId::ApostleCharonRifle:                  return "Charon Rifle";
         case WeaponId::VultureFragmentationGrenade:         return "Fragmentation Grenade";
@@ -932,9 +935,9 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
             }
         }
         case WeaponId::OlympianTitansFist:                  return "Titan's Fist";
-        case WeaponId::OlympianMountainGun:                 return "Mountain Gun";
+        case WeaponId::OlympianMountainGun:                 return unit_id == UnitId::TerranOlympian ? "Mountain Gun" : "Ardi Tripshot";
         case WeaponId::WyvernJacksonCannon:                 return "Jackson Cannon";
-        case WeaponId::RoveElreScaleshot:                   return "Elre Scaleshot";
+        case WeaponId::RoveElreScaleshot:                   return unit_id == UnitId::AskosiRove ? "Elre Scaleshot" : "Inqo Scaleshot";
         case WeaponId::ObjectOrliMallet:                    return "Orli Mallet";
         case WeaponId::AugurFinalHour:                      return "Final Hour";
         case WeaponId::DiademHammerfallBeacon:              return "Hammerfall Beacon";
@@ -964,10 +967,12 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::ZergBonesofReflection:               return "Bones of Reflection";
         case WeaponId::ScepterOrmaScrapray:                 return "Orma Scrapray";
         case WeaponId::IntendentErsaDriver: {
-            if (unit_id == UnitId::ForerunnerCircitor) {
-                return "Sentinel Boltbeam";
+            switch (unit_id) {
+                case UnitId::AskosiPhontis:      return "Alru Driver";
+                case UnitId::AskosiTortare:      return "Kalgolok Beaststick";
+                case UnitId::ForerunnerCircitor: return "Sentinel Boltbeam";
             }
-            return unit_id == UnitId::AskosiIntendent ? "Ersa Driver" : "Alru Driver";
+            return "Ersa Driver";
         }
         case WeaponId::HippogriffChimeraCannons:            return "Chimera Cannons";
         case WeaponId::BoomingBlast:                        return "Booming Blast";
@@ -992,7 +997,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::HypnagogueKaleidoscopeCannon:        return "Kaleidoscope Cannon";
         case WeaponId::TetcaerokorCleavingMaw:              return "Cleaving Maw";
         case WeaponId::SpirtithCesiantSpirtilSpores:        return "Spirtil Spores";
-        case WeaponId::HelionUskoScrapray:                  return "Usko Scrapray";
+        case WeaponId::HelionUskoScrapray:                  return unit_id == UnitId::AskosiHelion ? "Usko Scrapray" : "Ofra Ashray";
         case WeaponId::SkortrithCesiantSkortraTendril:      return "Skortra Tentacle";
         case WeaponId::TiradeIktaDriver:                    return "Ikta Driver";
         case WeaponId::GrandstandArteDriver:                return unit_id == UnitId::AskosiGrandstand ? "Arte Driver" : "Agturrik Beaststick";
@@ -1019,7 +1024,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::PhilocHeirloomBatteries:             return "Heirloom Batteries";
         case WeaponId::NathrokorNathrokClaws:               return unit_id == UnitId::ZergNathrokor ? "Nathrok Claws" : "Biotic Wingblades";
         case WeaponId::GorgrokorCalcification:              return "Calcification";
-        case WeaponId::PotentateTalismanicWeaver:           return "Talismanic Weaver";
+        case WeaponId::PotentateTalismanicWeaver:           return unit_id == UnitId::ProtossPotentate ? "Talismanic Weaver" : "Ondo Moonbeam";
         case WeaponId::RemoteHijack:                        return "Remote Hijack";
         case WeaponId::HotshotDispatchShotgun:              return "Dispatch Shotgun";
         case WeaponId::AurielQuarternaryRifle:              return "Quarternary Rifle";
@@ -1036,7 +1041,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::AgonistOnlaDrivers:                  return "Onla Drivers";
         case WeaponId::IziraliskCorrosiveBioplasma:         return "Corrosive Bioplasma";
         case WeaponId::DoroninKorozzetBeastblades:          return "Korozzet Beastblades";
-        case WeaponId::ThaumalogueUtsoCarbine:              return "Utso Carbine";
+        case WeaponId::ThaumalogueUtsoCarbine:              return unit_id == UnitId::AskosiThaumalogue ? "Utso Carbine" : "Oldu Tripshard";
         case WeaponId::CrematoriumOkliQuadshard:            return unit_id == UnitId::AskosiCrematorium ? "Okli Quadshard" : "Reforming Carbine";
         case WeaponId::OscilliantRotatingRay:               return "Rotating Ray";
         case WeaponId::AphoristAnsaSunshot:                 return "Ansa Sunshot";

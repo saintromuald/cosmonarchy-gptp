@@ -671,11 +671,15 @@ namespace hooks {
                             case UnitId::Buttons_FactionSelectProtoss:
                             case UnitId::Buttons_FactionSelectZerg:
                             case UnitId::ZergLarva:
-                            case UnitId::ZergOcsalLarva:
+                            case UnitId::ZergOcsalLarva: {
+                                current_button_state = Button_State::Enabled;
+                            } break;
                             case UnitId::AskosiPilgrim:
                             case UnitId::AskosiDyad:
                             case UnitId::AskosiConstituent: {
-                                current_button_state = Button_State::Enabled;
+                                if (g_client_selection_count == 1) {
+                                    current_button_state = Button_State::Enabled;
+                                }
                             } break;
                             case UnitId::TerranMason:
                             case UnitId::TerranTalos:
@@ -771,6 +775,16 @@ namespace hooks {
                                 if (unit->id == UnitId::TerranVultureHecaton || unit->id == UnitId::TerranVultureUpstart) {
                                     current_button_state = unit->mine_carrier.mine_count ? Button_State::Enabled : Button_State::Invisible;
                                 }
+                            } break;
+                            case TechId::AskosiPuppeteer: {
+                                if (unit->id == UnitId::AskosiGhostwrit && unit_ext.units[UnitPuppeteerTarget]) {
+                                    current_button_state = Button_State::Enabled;
+                                } else {
+                                    current_button_state = Button_State::Disabled;
+                                }
+                            } break;
+                            case TechId::AskosiAshbind: {
+                                current_button_state = Button_State::Enabled;
                             } break;
                         }
 
@@ -2716,10 +2730,29 @@ namespace hooks {
                                             current_button_state = Button_State::Disabled;
                                         }
                                     } break;
+                                    case UnitId::AskosiDomain:
+                                    case UnitId::AskosiPanoply:
+                                    case UnitId::AskosiLotiro: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiConduit) && player_has_completed_unit_id(unit->player, UnitId::AskosiBestiary)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    case UnitId::AskosiLekrot:
+                                    case UnitId::AskosiHearthshard:
+                                    case UnitId::AskosiObelisk: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiPanoply) || player_has_completed_unit_id(unit->player, UnitId::AskosiLotiro)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
                                 }
                             } break;
 
-                            case UnitId::AskosiLandlock: {
+                            case UnitId::AskosiLandlock:
+                            case UnitId::AskosiDomain: {
                                 switch (current_button->requirement_var) {
                                     case UnitId::AskosiPilgrim: {
                                         current_button_state = Button_State::Enabled;
@@ -2890,6 +2923,81 @@ namespace hooks {
                                     } break;
                                     case UnitId::AskosiParaclete: {
                                         if (player_has_completed_unit_id(unit->player, UnitId::AskosiBestiary)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    default: {
+                                        current_button_state = Button_State::Invisible;
+                                    } break;
+                                }
+                            } break;
+                            case UnitId::AskosiPanoply: {
+                                switch (current_button->requirement_var) {
+                                    case UnitId::AskosiInsurant:
+                                    case UnitId::AskosiSilversoul: {
+                                        current_button_state = Button_State::Enabled;
+                                    } break;
+                                    case UnitId::AskosiGhostwrit: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiLekrot)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    case UnitId::AskosiAzjoran: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiHearthshard)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    default: {
+                                        current_button_state = Button_State::Invisible;
+                                    }
+                                }
+                            } break;
+                            case UnitId::AskosiLotiro: {
+                                switch (current_button->requirement_var) {
+                                    case UnitId::AskosiElgird:
+                                    case UnitId::AskosiHistrion: {
+                                        current_button_state = Button_State::Enabled;
+                                    } break;
+                                    case UnitId::AskosiAlacyne: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiLekrot)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    case UnitId::AskosiBegolor: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiHearthshard)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    default: {
+                                        current_button_state = Button_State::Invisible;
+                                    } break;
+                                }
+                            } break;
+                            case UnitId::AskosiObelisk: {
+                                switch (current_button->requirement_var) {
+                                    case UnitId::AskosiLimire:
+                                    case UnitId::AskosiEndbore: {
+                                        current_button_state = Button_State::Enabled;
+                                    } break;
+                                    case UnitId::AskosiTortare: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiLekrot)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    case UnitId::AskosiCybrene: {
+                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiHearthshard)) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Disabled;
@@ -4114,6 +4222,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::AskosiMissionary:
+                                case UnitId::AskosiAphorist:
                                 case UnitId::AskosiDoronin:
                                 case UnitId::AskosiRove: {
                                     if (current_button->icon_id == IconId::ShoulderedBurden) { // Impact Dissipation
@@ -4144,6 +4253,18 @@ namespace hooks {
                                 case UnitId::AskosiAvatar:
                                 case UnitId::AskosiCrematorium: {
                                     if (current_button->icon_id == IconId::DestinationScrapworld) { // Scrapworld: Ash Heap
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiInsurant: {
+                                    if (current_button->icon_id == IconId::ShoulderedBurden       // Impact Dissipation
+                                    ||  current_button->icon_id == IconId::FusionCutterHarvest) { // Scrapworld: Gold Rush
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiSilversoul: {
+                                    if (current_button->icon_id == IconId::KelvinMunitions // Booming Blast
+                                    ||  current_button->icon_id == IconId::ShroudOfAdun) { // Spirited Assembly
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -4189,6 +4310,27 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::AskosiElgird: {
+                                    if (current_button->icon_id == IconId::DestinationScrapworld) { // Scrapworld: Implosion
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiHistrion: {
+                                    if (current_button->icon_id == IconId::ShoulderedBurden) { // Hated Reflection
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiEgocent: {
+                                    if (current_button->icon_id == IconId::Mimicry) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiAlacyne: {
+                                    if (current_button->icon_id == IconId::Mimicry             // Power Overload
+                                    ||  current_button->icon_id == IconId::ShoulderedBurden) { // Impact Prevarication
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::AskosiHelion: {
                                     if (current_button->icon_id == IconId::FusionCutterHarvest) { // Scrapworld: Gold Rush
                                         current_button_state = Button_State::Enabled;
@@ -4211,6 +4353,22 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::AskosiLimire: {
+                                    if (current_button->icon_id == IconId::KelvinMunitions          // Booming Blast
+                                    ||  current_button->icon_id == IconId::DestinationScrapworld) { // Scrapworld: Ash Heap
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiEndbore: {
+                                    if (current_button->icon_id == IconId::ShroudOfAdun) { // Power Breach
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiTortare: {
+                                    if (current_button->icon_id == IconId::FusionCutterHarvest) { // Deathrattle Assembly
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::AskosiGrandstand: {
                                     if (current_button->icon_id == IconId::Mimicry) { // Power Overload
                                         current_button_state = Button_State::Enabled;
@@ -4223,6 +4381,11 @@ namespace hooks {
                                 } break;
                                 case UnitId::AskosiDorminge: {
                                     if (current_button->icon_id == IconId::SustainingSermon) { // Crushing Delivery
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiDomain: {
+                                    if (current_button->icon_id == IconId::KhaydarinCore) { // Earthly Profusion
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

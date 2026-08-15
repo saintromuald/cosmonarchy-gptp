@@ -2874,6 +2874,16 @@ namespace SoundId {
         BloodsummonUnload01                                 = 4270,
 
         GrimoirePassive01                                   = 4272,
+        VicarReady01                                        = 4273,
+        VicarReady02                                        = 4274,
+        VicarReady03                                        = 4275,
+        
+        VicarOrderAggressive01                              = 4284,
+        VicarOrderAggressive02                              = 4285,
+        VicarOrderAggressive03                              = 4286,
+        VicarOrderAggressive04                              = 4287,
+
+        VicarAbilityUse01                                   = 4292,
     };
 }
 

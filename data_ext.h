@@ -465,6 +465,10 @@ enum ExtTimerId {
     TimerVitalRemainsArmorPen,
     TimerMechanicalRage,
     TimerCrushingDelivery,
+    TimerEarthlyProfusion,
+    TimerPuppeteerDebuff,
+    TimerImpactPrevarication,
+    TimerHatedReflectionCooldown,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,
@@ -510,6 +514,7 @@ enum ExtUnitId {
     UnitHiveOrgan,
     UnitHiveTissue,
     UnitPowerOverloadSource,
+    UnitPuppeteerTarget,
 
     UnitCount,
 };

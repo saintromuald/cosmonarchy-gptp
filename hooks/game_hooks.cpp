@@ -676,7 +676,7 @@ namespace hooks {
 
         // Connect addons
         for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
-            if (units_dat::base_property[unit->id] & UnitProperty::Building && !unit->building.addon) {
+            if (unit->is_building() && !unit->building.addon) {
                 Unit* addon = helper::connect_addon_check(unit);
                 if (addon) {
                     helper::complete_addon(unit, addon);
@@ -2039,7 +2039,7 @@ namespace hooks {
                 if (!unit_ext.timers[TimerFacadePryingEyesChannel] && bw::get_generic_rust_value(unit, RustId::CastPryingEyes)) {
                     bw::set_generic_rust_value(unit, RustId::CastPryingEyes, 0);
                     auto energy_cost = TechId::energy_cost(TechId::FacadePryingEyes);
-                    if (unit->energy == energy_cost) {
+                    if (unit->energy >= energy_cost) {
                         bw::play_sound(SoundId::FacadeCast01, unit->position);
                         helper::create_image_overlay(unit->sprite, ImageId::PryingEyesChannel, 8, -24, 0); // Used this because we do not have offset support in add_unit_overlay
                         bw::decloak_passive_proc(unit);
@@ -2281,6 +2281,7 @@ namespace hooks {
             } break;
             case UnitId::AskosiEyelet:
             case UnitId::AskosiVicar:
+            case UnitId::AskosiHistrion:
             case UnitId::AskosiEmissary: {
                 unit->rematerialize_cast();
             } break;
@@ -2836,11 +2837,16 @@ namespace hooks {
                         unit_ext.timers[TimerSermonSalveOverlay] = 1secs;
                         bw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id));
                     }
+                    bool needs_refresh = false;
                     for (Unit* target : g_unit_search.radial(unit->position, AskosiChantry::SermonSalveRange).filter(unit, FilterAlly)) {
                         auto& target_ext = target->ext();
                         if (!target_ext.timers[TimerSermonSalve]) {
                             target_ext.timers[TimerSermonSalve] = 3;
                         }
+                        needs_refresh = target->sermon_salve_cloak(unit);
+                    }
+                    if (needs_refresh) {
+                        bw::refresh_console();
                     }
                 }
             } break;
@@ -2863,34 +2869,58 @@ namespace hooks {
                     }
                 }
             } break;
-            case UnitId::AskosiMimic: {
-                if (unit->can_use_passive_ability() && !unit_ext.timers[TimerCorpseConsumptionDelay]) {
-                    for (Unit* ally : g_unit_search.radial(unit->position, AskosiMimic::MimicryRange).filter(unit, FilterAlly | FilterCombatant)) {
-                        ally->ext().timers[TimerMimicryCheck] = 3;
-                        if (ally->subunit && ally->subunit->is_subunit()) {
-                            ally->subunit->ext().timers[TimerMimicryCheck] = 3;
+            case UnitId::AskosiDomain: {
+                if (unit->can_use_passive_ability() && !unit_ext.timers[TimerEarthlyProfusion]) {
+                    unit_ext.timers[TimerEarthlyProfusion] = AskosiDomain::EarthlyProfusionTimer;
+                    bool harvested = false;
+                    for (Unit* nearby : g_unit_search.radial(unit->position, AskosiDomain::EarthlyProfusionRange)) {
+                        if (!nearby->is_completed()) {
+                            continue;
                         }
-                    }
-                    bool consumed = false;
-                    for (Thingy* corpse : g_corpse_search.radial(unit->position, 32)) {
-                        bw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
-                        corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
-                        corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
-                        bw::play_sound({SoundId::AskosiScrap01, SoundId::AskosiScrap03}, corpse->sprite->position);
-                        consumed = true;
-                        unit_ext.timers[TimerCorpseConsumptionDelay] = 1secs;
-                        break;
-                    }
-                    if (consumed) {
-                        for (Unit* ally : g_unit_search.radial(unit->position, Askosi::VitalRemainsRange).filter(unit, FilterAlly | FilterCompleted | FilterNoBuilding)) {
-                            if (ally->hitpoints < ally->get_max_hp_raw()) {
-                                ally->heal_hp(Askosi::VitalRemainsHeal, unit);
-                                helper::add_overlay_below_main(ally->sprite, ImageId::HealingPulseUnderlay, 0, 0, 0);
-                            }
-                            ally->ext().timers[TimerVitalRemainsArmorPen] = Askosi::VitalRemainsArmorPenDuration;
+                        if (!unit_id_is_minerals(nearby->id) && !unit_id_is_vespene_node(nearby->id)) {
+                            continue;
                         }
+                        if (!bw::are_mutual_allies(unit->player, nearby->player) && nearby->player != 11) {
+                            continue;
+                        }
+                        helper::transfer_resource_to_worker(nearby, unit);
+                        helper::return_resources_from_unit(unit);
+                        node->sprite->create_top_overlay(ImageId::ArtisanResourceProc);
+                        harvested = true;
+                    }
+                    unit->sprite->create_top_overlay(ImageId::ArtisanResourceProc);
+                    if (harvested) {
+                        bw::play_sound({SoundId::DomainPassive01, SoundId::DomainPassive03}, unit->position);
                     }
                 }
+            } break;
+            case UnitId::AskosiMimic: {
+                unit->mimicry_tick();
+                if (unit_ext.timers[TimerCorpseConsumptionDelay]) {
+                    break;
+                }
+                bool consumed = false;
+                for (Thingy* corpse : g_corpse_search.radial(unit->position, 32)) {
+                    bw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
+                    corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
+                    corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
+                    bw::play_sound({SoundId::AskosiScrap01, SoundId::AskosiScrap03}, corpse->sprite->position);
+                    consumed = true;
+                    unit_ext.timers[TimerCorpseConsumptionDelay] = 1secs;
+                    break;
+                }
+                if (consumed) {
+                    for (Unit* ally : g_unit_search.radial(unit->position, Askosi::VitalRemainsRange).filter(unit, FilterAlly | FilterCompleted | FilterNoBuilding)) {
+                        if (ally->hitpoints < ally->get_max_hp_raw()) {
+                            ally->heal_hp(Askosi::VitalRemainsHeal, unit);
+                            helper::add_overlay_below_main(ally->sprite, ImageId::HealingPulseUnderlay, 0, 0, 0);
+                        }
+                        ally->ext().timers[TimerVitalRemainsArmorPen] = Askosi::VitalRemainsArmorPenDuration;
+                    }
+                }
+            } break;
+            case UnitId::AskosiEgocent: {
+                unit->mimicry_tick();
             } break;
             case UnitId::AskosiDyad: {
                 if (unit->main_order_id != OrderId::AskosiSalvage) {
@@ -2912,7 +2942,7 @@ namespace hooks {
                 }
 
                 auto& target_ext = target->ext();
-                target_ext.timers[TimerSalvageStun] = 2 * 24 + 1;
+                target_ext.timers[TimerSalvageStun] = 2secs + 1;
                 u32 mineral_cost = units_dat::mineral_cost[target->id];
                 u32 vespene_cost = units_dat::vespene_cost[target->id];
                 u32 time = units_dat::time_cost[target->id] / 2;
@@ -2987,6 +3017,38 @@ namespace hooks {
                     }
                 }
             } break;
+            case UnitId::AskosiSilversoul: {
+                if (!unit->is_completed() || unit->is_frozen()) {
+                    break;
+                }
+                if (unit_ext.values[ValueReassemblyActive]) {
+                    for (Unit* target : g_unit_search.radial_ex(unit, AskosiSilversoul::ImpactDissipationRange, FilterAlly)) {
+                        if (!target->is_completed()) {
+                            continue;
+                        }
+                        target->ext().timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
+                        target->update_speed();
+                    }
+                } else {
+                    bool needs_refresh = false;
+                    for (Unit* target : g_unit_search.radial_ex(unit, AskosiSilversoul::CloakRange, FilterAlly)) {
+                        needs_refresh = target->sermon_salve_cloak(unit);
+                    }
+                    if (needs_refresh) {
+                        bw::refresh_console();
+                    }
+                }
+            } break;
+            case UnitId::AskosiGhostwrit: {
+                Unit* target = unit_ext.units[UnitPuppeteerTarget];
+                if (target && (bw::distance_between(unit->position, target->position) > 10tiles || target->ext().timers[TimerPuppeteerDebuff] == 0)) {
+                    unit_ext.units[UnitPuppeteerTarget] = 0;
+                }
+                unit->puppeteer_cast(target);
+            } break;
+            case UnitId::AskosiElgird: {
+                unit->ashbind_cast();
+            } break;
         }
         // Huge switch statement ends
 
@@ -3002,7 +3064,7 @@ namespace hooks {
             if (unit_ext.timers[TimerAshHeap] > 1) {
                 bw::add_unit_overlay(unit, image_id);
             }
-            if (unit_ext.timers[TimerAshHeapArmorRend] && unit_ext.timers[TimerAshHeapArmorRend] % 48 == 0) {
+            if (unit_ext.timers[TimerAshHeapArmorRend] && unit_ext.timers[TimerAshHeapArmorRend] % 2secs == 0) {
                 unit_ext.values[ValueAshHeap]++;
             }
             if (unit_ext.timers[TimerAshHeap] == 1) {
@@ -3026,10 +3088,10 @@ namespace hooks {
             unit_ext.timers[TimerAdaptiveAmitosisGrowth] = unit->is_burrowed() ? 0 : AdaptiveAmitosis::GrowthTimer;
         }
 
-        if (unit_ext.timers[TimerImpactDissipation] > 1 || unit_ext.timers[TimerRetaliationAssembly] > 1) {
+        if (unit_ext.timers[TimerImpactDissipation] > 1 || unit_ext.timers[TimerImpactPrevarication] > 1 || unit_ext.timers[TimerRetaliationAssembly] > 1) {
             bw::add_unit_overlay(unit, ImageId::ImpactDissipationSmall + bw::get_overlay_offset(unit->id, true));
         }
-        if (unit_ext.timers[TimerImpactDissipation] == 1 || unit_ext.timers[TimerScrapworldImplosion] == 1) {
+        if (unit_ext.timers[TimerImpactDissipation] == 1 || unit_ext.timers[TimerImpactPrevarication] == 1 || unit_ext.timers[TimerScrapworldImplosion] == 1) {
             should_update_speed = true;
         }
 

@@ -107,7 +107,7 @@ namespace hooks {
             speed *= 1.33fp;
         }
 
-        if (unit_ext.timers[TimerImpactDissipation] > 1) {
+        if (unit_ext.timers[TimerImpactDissipation] > 1 || unit_ext.timers[TimerImpactPrevarication] > 1) {
             speed *= 1.33fp;
         }
 
@@ -317,7 +317,8 @@ namespace hooks {
             case UnitId::ZergLakiziliskZorthos:
             case UnitId::ZergZobriolisk:
             case UnitId::AskosiProselyte:
-            case UnitId::AskosiAvatar: {
+            case UnitId::AskosiAvatar:
+            case UnitId::AskosiInsurant: {
                 speed *= 1.3fp;
             } break;
             case UnitId::TerranHarakanGolden:

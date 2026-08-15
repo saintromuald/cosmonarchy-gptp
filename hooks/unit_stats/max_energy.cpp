@@ -20,7 +20,9 @@ namespace hooks {
 			case UnitId::TerranFacade:
 			case UnitId::ProtossDemiurge:
 			case UnitId::AskosiCardinal:
-			case UnitId::AskosiRove: {
+			case UnitId::AskosiRove:
+			case UnitId::AskosiElgird:
+			case UnitId::AskosiHistrion: {
 				energy = 100;
 			} break;
 			case UnitId::TerranAncile:
