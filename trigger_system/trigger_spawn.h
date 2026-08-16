@@ -1,26 +1,16 @@
 #pragma once
 #include "BW/api.h"
 
-enum SpawnType {
-	SpawnType_None,
-	SpawnType_Augur,
-	SpawnType_AugurDamage,
-	SpawnType_Terran,
-	SpawnType_Zerg,
-	SpawnType_Teleport,
-	SpawnType_Burrow,
+enum class SpawnType {
+	None,
+	Augur,
+	AugurDamage,
+	Terran,
+	Zerg,
+	Teleport,
+	Burrow,
 
-	SpawnType_Count,
-};
-
-const char* spawn_type_names[SpawnType_Count] = {
-	"None",
-	"Augur",
-	"AugurDamage",
-	"Terran",
-	"Zerg",
-	"Teleport",
-	"Burrow",
+	Count,
 };
 
 struct SpawnSequence {

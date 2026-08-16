@@ -277,7 +277,8 @@ void AiLayouts::update() {
                     pos.x = unit_box.left + 5;
                     pos.y = unit_box.top + 5;
 
-                    snprintf(buffer, 256, "#%u %s (%u)", (u32)idx, get_short_unit_name(placeholder.unit_id).string().c_str(), player + 1);
+                    const auto unit_name = get_short_unit_name(placeholder.unit_id);
+                    snprintf(buffer, 256, "#%u %.*s (%u)", (u32)idx, (int)unit_name.size(), unit_name.data(), player + 1);
                     g_graphics.draw_text(pos.x, pos.y, buffer, graphics::FONT_SMALL, graphics::CoordType::ON_MAP);
                     pos.y += 10;
 

@@ -1,18 +1,20 @@
 #pragma once
 #include "trigger_parser.h"
 
+namespace trigger {
+
 class TableEditor {
 public:
     TableEditor(Parser& parser) : m_parser{parser} {}
 
     void run() {
-        const auto target = m_parser.get_word();
+        const auto target = m_parser.get_word().value_or({});
         if (target == "unit") {
-            const auto unit_ids = m_parser.get_unit_id_bitset();
+            const auto unit_ids = m_parser.get_unit_id_bitset().value_or({});
             if (unit_ids.none()) {
                 m_parser.error("No valid unit ids specified");
             }
-            const auto stat = m_parser.get_word();
+            const auto stat = m_parser.get_word().value_or({});
             if      (stat == "health")              alter_stat(unit_ids, units_dat::max_hitpoints);
             else if (stat == "armor")               alter_stat(unit_ids, units_dat::armor_amount);
             else if (stat == "shields")             alter_stat(unit_ids, units_dat::max_shield_points);
@@ -46,13 +48,13 @@ public:
             else if (stat == "building_dimensions") alter_point(unit_ids, units_dat::building_dimensions);
             else if (stat == "addon_placement")     alter_point(unit_ids, units_dat::addon_placement);
             else if (stat == "unit_bounds")         alter_box(unit_ids, units_dat::unit_bounds);
-            else m_parser.error("Invalid stat", stat.sv);
+            else m_parser.error("Invalid stat", stat);
         } else if (target == "weapon") {
-            const auto weapon_ids = m_parser.get_weapon_id_bitset();
+            const auto weapon_ids = m_parser.get_weapon_id_bitset().value_or({});
             if (weapon_ids.none()) {
                 m_parser.error("No valid weapon ids specified");
             }
-            const auto stat = m_parser.get_word();
+            const auto stat = m_parser.get_word().value_or({});
             if      (stat == "damage")          alter_stat(weapon_ids, weapons_dat::damage_amount);
             else if (stat == "armor_pen")       alter_stat(weapon_ids, weapons_dat::armor_pen);
             else if (stat == "cooldown")        alter_stat(weapon_ids, weapons_dat::cooldown);
@@ -73,29 +75,29 @@ public:
             else if (stat == "behavior")        set_enum<WeaponBehaviors>(weapon_ids, weapons_dat::behavior);
             else if (stat == "remove_after")    alter_stat(weapon_ids, weapons_dat::remove_after);
             else if (stat == "explosion_type")  set_enum<WeaponEffect::Enum>(weapon_ids, weapons_dat::explosion_type);
-            else m_parser.error("Invalid stat", stat.sv);
+            else m_parser.error("Invalid stat", stat);
         } else if (target == "flingy") {
-            const auto flingy_ids = m_parser.get_flingy_id_bitset();
+            const auto flingy_ids = m_parser.get_flingy_id_bitset().value_or({});
             if (flingy_ids.none()) {
                 m_parser.error("No valid flingy ids specified");
             }
-            const auto stat = m_parser.get_word();
+            const auto stat = m_parser.get_word().value_or({});
             if      (stat == "sprite_id")        set_stat(flingy_ids, flingy_dat::sprite_id);
             else if (stat == "top_speed")        alter_stat(flingy_ids, flingy_dat::top_speed);
             else if (stat == "acceleration")     alter_stat(flingy_ids, flingy_dat::acceleration);
             else if (stat == "halt_distance")    alter_stat(flingy_ids, flingy_dat::halt_distance);
             else if (stat == "turn_speed")       set_stat(flingy_ids, flingy_dat::turn_speed);
             else if (stat == "movement_control") set_enum<MovementType>(flingy_ids, flingy_dat::movement_control);
-            else m_parser.error("Invalid stat", stat.sv);
+            else m_parser.error("Invalid stat", stat);
         } else {
-            m_parser.error("Invalid token", target.sv);
+            m_parser.error("Invalid token", target);
         }
     }
 
     template <size_t N, typename T>
     void set_stat(const std::bitset<N>& bitset, T* table) {
-        const auto op = m_parser.get_stat_operator();
-        const auto value = m_parser.get_s32();
+        const auto op = m_parser.get_stat_operator().value_or(StatOperator::Set);
+        const auto value = m_parser.get_integer().value_or(0);
         for (const auto i : IterateBitset<size_t, N>{bitset}) {
             switch (op) {
                 case StatOperator::Set: table[i] = value; break;
@@ -106,8 +108,8 @@ public:
 
     template <size_t N, typename T>
     void alter_stat(const std::bitset<N>& bitset, T* table) {
-        const auto op = m_parser.get_stat_operator();
-        const auto value = m_parser.get_s32();
+        const auto op = m_parser.get_stat_operator().value_or(StatOperator::Set);
+        const auto value = m_parser.get_integer().value_or(0);
         for (const auto i : IterateBitset<size_t, N>{bitset}) {
             switch (op) {
                 case StatOperator::Set:      table[i] = value; break;
@@ -123,24 +125,24 @@ public:
     template <typename E>
     u32 get_enum() {
         if constexpr (std::is_enum_v<E>) {
-            return u32(m_parser.get_magic_enum<E>());
+            return u32(m_parser.get_magic_enum<E>().value_or(E::None));
         } else {
-            return m_parser.get_u32();
+            return m_parser.get_integer<u32>().value_or(0);
         }
     }
 
     template <typename E>
     u32 get_flags() {
         if constexpr (std::is_enum_v<E>) {
-            return u32(m_parser.get_magic_flags<E>());
+            return u32(m_parser.get_magic_flags<E>().value_or({}));
         } else {
-            return m_parser.get_u32();
+            return m_parser.get_integer<u32>().value_or(0);
         }
     }
 
     template <typename E = void, size_t N, typename T>
     void set_enum(const std::bitset<N>& bitset, T* table) {
-        const auto op = m_parser.get_stat_operator();
+        const auto op = m_parser.get_stat_operator().value_or(StatOperator::Set);
         const auto value = get_enum<T>();
         for (const auto i : IterateBitset<size_t, N>{bitset}) {
             switch (op) {
@@ -152,7 +154,7 @@ public:
 
     template <typename E = void, size_t N, typename T>
     void alter_flags(const std::bitset<N>& bitset, T* table) {
-        const auto op = m_parser.get_stat_operator();
+        const auto op = m_parser.get_stat_operator().value_or(StatOperator::Set);
         const auto value = get_flags<E>();
         for (const auto i : IterateBitset<size_t, N>{bitset}) {
             switch (op) {
@@ -167,7 +169,7 @@ public:
 
     template <typename E = void, size_t N, typename T>
     void alter_flags_value(const std::bitset<N>& bitset, T* table) {
-        const auto op = m_parser.get_stat_operator();
+        const auto op = m_parser.get_stat_operator().value_or(StatOperator::Set);
         const auto value = get_flags<E>();
         for (const auto i : IterateBitset<size_t, N>{bitset}) {
             switch (op) {
@@ -182,8 +184,8 @@ public:
 
     template <size_t N, typename T>
     void set_bool(const std::bitset<N>& bitset, T* table) {
-        const auto op = m_parser.get_stat_operator();
-        const auto value = op != StatOperator::Negate ? m_parser.get_bool() : false;
+        const auto op = m_parser.get_stat_operator().value_or(StatOperator::Set);
+        const auto value = op != StatOperator::Negate ? m_parser.get_bool().value_or(false) : false;
         for (const auto i : IterateBitset<size_t, N>{bitset}) {
             switch (op) {
                 case StatOperator::Set:    table[i] = value; break;
@@ -195,7 +197,7 @@ public:
 
     template <size_t N, typename T>
     void set_weapon(const std::bitset<N>& bitset, T* table) {
-        const auto value = m_parser.get_weapon_id();
+        const auto value = m_parser.get_weapon_id().value_or(WeaponId::None);
         for (const auto i : IterateBitset<size_t, N>{bitset}) {
             table[i] = value;
         }
@@ -203,10 +205,10 @@ public:
 
     template <size_t N, typename T>
     void alter_point(const std::bitset<N>& bitset, T* table) {
-        const auto x_op = m_parser.get_stat_operator();
-        const auto x_value = m_parser.get_s32();
-        const auto y_op = m_parser.get_stat_operator();
-        const auto y_value = m_parser.get_s32();
+        const auto x_op = m_parser.get_stat_operator().value_or(StatOperator::Set);
+        const auto x_value = m_parser.get_integer().value_or(0);
+        const auto y_op = m_parser.get_stat_operator().value_or(StatOperator::Set);
+        const auto y_value = m_parser.get_integer().value_or(0);
         for (const auto i : IterateBitset<size_t, N>{bitset}) {
             switch (x_op) {
                 case StatOperator::Set:      table[i].x = x_value; break;
@@ -229,14 +231,14 @@ public:
 
     template <size_t N, typename T>
     void alter_box(const std::bitset<N>& bitset, T* table) {
-        const auto x_op = m_parser.get_stat_operator();
-        const auto x_value = m_parser.get_s32();
-        const auto y_op = m_parser.get_stat_operator();
-        const auto y_value = m_parser.get_s32();
-        const auto w_op = m_parser.get_stat_operator();
-        const auto w_value = m_parser.get_s32();
-        const auto h_op = m_parser.get_stat_operator();
-        const auto h_value = m_parser.get_s32();
+        const auto x_op = m_parser.get_stat_operator().value_or(StatOperator::Set);
+        const auto x_value = m_parser.get_integer().value_or(0);
+        const auto y_op = m_parser.get_stat_operator().value_or(StatOperator::Set);
+        const auto y_value = m_parser.get_integer().value_or(0);
+        const auto w_op = m_parser.get_stat_operator().value_or(StatOperator::Set);
+        const auto w_value = m_parser.get_integer().value_or(0);
+        const auto h_op = m_parser.get_stat_operator().value_or(StatOperator::Set);
+        const auto h_value = m_parser.get_integer().value_or(0);
         for (const auto i : IterateBitset<size_t, N>{bitset}) {
             switch (x_op) {
                 case StatOperator::Set:      table[i].x = x_value; break;
@@ -275,3 +277,5 @@ public:
 private:
     Parser& m_parser;
 };
+
+} // namespace trigger

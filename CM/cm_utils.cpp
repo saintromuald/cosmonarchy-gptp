@@ -111,8 +111,8 @@ void init_omnipresence() {
         }
 
         auto& game_mode_race = g_globals->players[player].game_mode_race;
-        if (game_mode_race == GameModeRace_Default) {
-            game_mode_race = GameModeRace_All;
+        if (game_mode_race == GameModeRace::Default) {
+            game_mode_race = GameModeRace::All;
         }
     }
 }
@@ -124,17 +124,17 @@ void init_duopoly() {
         }
 
         auto& game_mode_race = g_globals->players[player].game_mode_race;
-        if (game_mode_race == GameModeRace_Default) {
-            game_mode_race = GameModeRace_None;
+        if (game_mode_race == GameModeRace::Default) {
+            game_mode_race = GameModeRace::None;
             switch (g_player_table[player].race) {
                 case RaceId::Terran: {
-                    game_mode_race = GameModeRace_TerranProtoss;
+                    game_mode_race = GameModeRace::TerranProtoss;
                 } break;
                 case RaceId::Protoss: {
-                    game_mode_race = GameModeRace_ProtossZerg;
+                    game_mode_race = GameModeRace::ProtossZerg;
                 } break;
                 case RaceId::Zerg: {
-                    game_mode_race = GameModeRace_ZergTerran;
+                    game_mode_race = GameModeRace::ZergTerran;
                 } break;
             }
         }

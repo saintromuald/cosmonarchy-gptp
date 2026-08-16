@@ -1356,7 +1356,7 @@ bool unit_could_spawn_custom_larva(Unit* unit) {
     }
     switch (unit->id) {
         case UnitId::Omnivale: {
-            if (unit->player < PlayerLimit && g_globals->players[unit->player].game_mode_race != GameModeRace_TerranProtoss) {
+            if (unit->player < PlayerLimit && g_globals->players[unit->player].game_mode_race != GameModeRace::TerranProtoss) {
                 return true;
             }
         } break;
@@ -1381,7 +1381,7 @@ bool unit_could_spread_custom_creep(Unit* unit) {
     auto& unit_ext = unit->ext();
     switch (unit->id) {
         case UnitId::Omnivale: {
-            if (unit->player < PlayerLimit && g_globals->players[unit->player].game_mode_race != GameModeRace_TerranProtoss) {
+            if (unit->player < PlayerLimit && g_globals->players[unit->player].game_mode_race != GameModeRace::TerranProtoss) {
                 return true;
             }
         } break;

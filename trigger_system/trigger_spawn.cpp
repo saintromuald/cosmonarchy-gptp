@@ -17,19 +17,19 @@ void update_spawn() {
 			continue;
 		}
 
-		switch (seq->type) {
-			case SpawnType_Augur: {
+		switch (SpawnType(seq->type)) {
+			case SpawnType::Augur: {
 				Thingy* thingy = helper::create_thingy(SpriteId::AugurDeathExplosion, seq->source_pos.x, seq->source_pos.y, seq->player);
 				bw::play_sound({SoundId::AugurDeath01, SoundId::AugurDeath04}, thingy->sprite->position);
 			} break;
-			case SpawnType_AugurDamage: {
+			case SpawnType::AugurDamage: {
 				Unit* augur = bw::create_unit_in_game(UnitId::ProtossAugur, seq->player, seq->source_pos.x, seq->source_pos.y);
 				if (augur) {
 					augur->user_action_flags |= UserActionFlags_SilentRemove;
 					augur_sacrifice(augur, 10 * 32);
 				}
 			} break;
-			case SpawnType_Teleport:
+			case SpawnType::Teleport:
 			{
 				Thingy* thingy = helper::create_thingy(SpriteId::LegionnaireTeleportEffect, seq->source_pos.x, seq->source_pos.y, seq->player);
 			} break;
@@ -37,7 +37,7 @@ void update_spawn() {
 
 		Unit* unit = bw::create_unit_in_game(seq->unit_id, seq->player, seq->source_pos.x, seq->source_pos.y);
 		if (unit) {
-			if (seq->type == SpawnType_Burrow) {
+			if (SpawnType(seq->type) == SpawnType::Burrow) {
 				u8 flag = 0;
 				flag |= 0x2;
 				helper::chk_unit_apply_burrow_flag(unit, flag, true);
@@ -55,8 +55,8 @@ void update_spawn() {
 			}
 		}
 
-		switch (seq->type) {
-			case SpawnType_Terran: {
+		switch (SpawnType(seq->type)) {
+			case SpawnType::Terran: {
 				u32 rubble = SpriteId::Terran_Building_Rubble_Small;
 				u32 explo = SpriteId::ExplosionMedium;
 				if (units_dat::base_property[seq->unit_id] & UnitProperty::LargeOverlay) {
@@ -66,7 +66,7 @@ void update_spawn() {
 				bw::create_and_init_thingy(rubble, seq->source_pos.x, seq->source_pos.y, seq->player, 0);
 				bw::create_and_init_thingy(explo, seq->source_pos.x, seq->source_pos.y, seq->player, unit->sprite->elevation + 1);
 			} break;
-			case SpawnType_Zerg: {
+			case SpawnType::Zerg: {
 				u32 rubble = SpriteId::Zerg_Building_Rubble_Small;
 				u32 explo = SpriteId::ZergAirExplosionSmall;
 				if (units_dat::base_property[seq->unit_id] & UnitProperty::LargeOverlay) {

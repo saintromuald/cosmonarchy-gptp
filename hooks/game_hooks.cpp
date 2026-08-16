@@ -345,8 +345,8 @@ namespace hooks {
             pos.y -= 4;
 
             {
-                Token short_unit_name = get_short_unit_name(transport);
-                std::string unit_name = std::format("{}{} [{}/{}]:", bw::get_player_color_code(transport->player, true).data, short_unit_name.string().c_str(), space_used, units_dat::space_provided[transport->id]);
+                const auto short_unit_name = get_short_unit_name(transport);
+                std::string unit_name = std::format("{}{} [{}/{}]:", bw::get_player_color_code(transport->player, true).data, short_unit_name, space_used, units_dat::space_provided[transport->id]);
                 g_graphics.draw_text(local_pos.x, local_pos.y, unit_name, graphics::FONT_SMALL, graphics::CoordType::ON_SCREEN);
                 local_pos.y += 13;
             }
@@ -355,7 +355,7 @@ namespace hooks {
             for (u32 j = 0; j < cargo_slots_count; ++j) {
                 CargoSlot cargo_slot = cargo_slots[j];
 
-                std::string short_unit_name = get_short_unit_name(cargo_slot.unit).string();
+                std::string short_unit_name = std::string{get_short_unit_name(cargo_slot.unit)};
                 if (unit_id_is_siege_mode(static_cast<UnitId::Enum>(cargo_slot.unit->id))) {
                     short_unit_name += " (Deployed)";
                 }

@@ -6,8 +6,8 @@ struct SoundMainBuffer;
 
 #define SoundReplacementCap 1600
 struct SoundReplacement {
-    PlayerBitset players;
-    UnitIdBitset unit_ids;
+    trigger::PlayerBitset players;
+    trigger::UnitIdBitset unit_ids;
     bool any_animation;
     bool any_sound;
     bool replace;
@@ -15,24 +15,17 @@ struct SoundReplacement {
     u32 old_sound_id;
     SoundMainBuffer* new_sound;
 
-    inline bool operator==(SoundReplacement& other) { return memcmp(this, &other, sizeof(*this)) == 0; }
-    inline bool operator!=(SoundReplacement& other) { return !(*this == other); }
+    bool operator==(const SoundReplacement& other) const { return memcmp(this, &other, sizeof(*this)) == 0; }
+    bool operator!=(const SoundReplacement& other) const { return !(*this == other); }
 };
 
 #define SpriteReplacementCap 800
 struct SpriteReplacement {
-    PlayerBitset players;
-    UnitIdBitset unit_ids;
+    trigger::PlayerBitset players;
+    trigger::UnitIdBitset unit_ids;
     u32 sprite_id;
 };
 
-static const char* race_names[] = {
-    "Zerg",
-    "Terran",
-    "Protoss",
-    "Askosi"
-};
-static_assert(std::size(race_names) == RaceId::FullCount);
 
 enum class CrigPlayerType {
     Human,
@@ -80,29 +73,17 @@ enum Celebration : u8 {
     Celebration_Count,
 };
 
-enum GameModeRace : u8 {
-    GameModeRace_Default,
-    GameModeRace_None,
+enum class GameModeRace : u8 {
+    Default,
+    None,
 
-    GameModeRace_All,
-    GameModeRace_TerranProtoss,
-    GameModeRace_ProtossZerg,
-    GameModeRace_ZergTerran,
+    All,
+    TerranProtoss,
+    ProtossZerg,
+    ZergTerran,
 
-    GameModeRace_Count,
+    Count,
 };
-
-// NOTE: This is case insensitive for parsing
-static const char* game_mode_race_symbol_names[] = {
-    "Default",
-    "None",
-
-    "All",
-    "TerranProtoss",
-    "ProtossZerg",
-    "ZergTerran",
-};
-C_ASSERT(ARRAY_SIZE(game_mode_race_symbol_names) == GameModeRace_Count);
 
 enum class Advisor : u8 {
     Default,
@@ -127,7 +108,8 @@ enum class Advisor : u8 {
     Artemis,
     GoldenRepublic,
 
-    Count,
+    None = Default,
+    Count = GoldenRepublic + 1,
 };
 
 // NOTE: This is case insensitive for parsing
@@ -169,9 +151,9 @@ struct CmPlayer {
     bool override_infrastructure_burrow;
     bool disable_tactical_ai;
     bool disable_extended_waves;
-    UnitIdBitset disabled_units;
-    UnitIdBitset hidden_units;
-    PlayerBitset ally_alert_blacklist;
+    trigger::UnitIdBitset disabled_units;
+    trigger::UnitIdBitset hidden_units;
+    trigger::PlayerBitset ally_alert_blacklist;
     GameModeRace game_mode_race;
     u32 build_multiplier = 1;
 
@@ -215,8 +197,8 @@ struct TriggerExt {
 };
 
 struct TriggerButton {
-    Token id;
-    Token display_name;
+    std::string id;
+    std::string display_name;
     s32 priority;
 };
 
@@ -260,69 +242,43 @@ struct Globals {
     f32 calculate_hype() const;
 };
 
-enum TriggerStat : u8 {
-    TriggerStat_Armor,
-    TriggerStat_WeaponRange,
-    TriggerStat_ArmorPenetration,
-    TriggerStat_Damage,
-    TriggerStat_SplashInner,
-    TriggerStat_SplashMedium,
-    TriggerStat_SplashOuter,
-    TriggerStat_TimedLife,
-    TriggerStat_Wireframe,
-    TriggerStat_Buttonset,
-    TriggerStat_HealRange,
-    TriggerStat_Portrait,
+enum class TriggerStat : u8 {
+    Armor,
+    WeaponRange,
+    ArmorPenetration,
+    Damage,
+    SplashInner,
+    SplashMedium,
+    SplashOuter,
+    TimedLife,
+    Wireframe,
+    Buttonset,
+    HealRange,
+    Portrait,
 
-    TriggerStat_Count,
+    Count,
+    None,
 };
 
-static const char* trigger_stat_names[] = {
-    "armor",
-    "weapon_range",
-    "armor_pen",
-    "damage",
-    "splash_inner",
-    "splash_medium",
-    "splash_outer",
-    "timed_life",
-    "wireframe",
-    "buttonset",
-    "heal_range",
-    "portrait",
-};
-C_ASSERT(ARRAY_SIZE(trigger_stat_names) == TriggerStat_Count);
+enum class TriggerBehavior : u8 {
+    CloakProximity,
+    CloakSteady,
+    Hallucination,
+    DisablePassive,
+    Critter,
+    NoCollision,
+    AirTransport,
+    NoEnergyOverlay,
+    InfrastructureBurrow,
 
-enum TriggerBehavior : u8 {
-    TriggerBehavior_CloakProximity,
-    TriggerBehavior_CloakSteady,
-    TriggerBehavior_Hallucination,
-    TriggerBehavior_DisablePassive,
-    TriggerBehavior_Critter,
-    TriggerBehavior_NoCollision,
-    TriggerBehavior_AirTransport,
-    TriggerBehavior_NoEnergyOverlay,
-    TriggerBehavior_InfrastructureBurrow,
-
-    TriggerBehavior_Count,
+    Count,
+    None,
 };
-
-static const char* trigger_behavior_names[] = {
-    "cloak_proximity",
-    "cloak_steady",
-    "hallucination",
-    "disable_passive",
-    "critter",
-    "no_collision",
-    "air_transport",
-    "no_energy_overlay",
-    "infrastructure_burrow",
-};
-C_ASSERT(ARRAY_SIZE(trigger_behavior_names) == TriggerBehavior_Count);
 
 inline auto g_globals = std::make_unique<Globals>();
 
 Advisor get_advisor_type_from_config(u32 race);
+void init_auto_celebration();
 void init_trigger_system();
 void update_trigger_system(bool in_game);
 
