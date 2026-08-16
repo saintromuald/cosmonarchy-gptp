@@ -742,7 +742,7 @@ namespace hooks {
                                     current_button_state = Button_State::Invisible;
                                     break;
                                 }
-                                if (unit->id != UnitId::Omnivale || g_globals->players[unit->player].game_mode_race == GameModeRace_TerranProtoss) {
+                                if (unit->id != UnitId::Omnivale || g_globals->players[unit->player].game_mode_race == GameModeRace::TerranProtoss) {
                                     current_button_state = Button_State::Invisible;
                                     break;
                                 }
@@ -808,7 +808,7 @@ namespace hooks {
                         {
                             if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory)
                                 || unit_id_is_larva(unit->id)
-                                || (unit->id == UnitId::Omnivale && g_globals->players[unit->player].game_mode_race != GameModeRace_TerranProtoss)) {
+                                || (unit->id == UnitId::Omnivale && g_globals->players[unit->player].game_mode_race != GameModeRace::TerranProtoss)) {
                                 current_button_state = Button_State::Enabled;
                             } else {
                                 current_button_state = Button_State::Invisible;
@@ -898,7 +898,7 @@ namespace hooks {
                     if (current_button->icon_id == IconId::Larva) {
                         if ((units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory)
                             || unit_id_is_larva(unit->id)
-                            || (unit->id == UnitId::Omnivale && g_globals->players[unit->player].game_mode_race != GameModeRace_TerranProtoss)) {
+                            || (unit->id == UnitId::Omnivale && g_globals->players[unit->player].game_mode_race != GameModeRace::TerranProtoss)) {
                             current_button_state = Button_State::Enabled;
                         } else {
                             current_button_state = Button_State::Invisible;
@@ -1528,21 +1528,21 @@ namespace hooks {
                                 GameModeRace duopoly_state = g_globals->players[unit->player].game_mode_race;
                                 switch (current_button->requirement_var) {
                                     case UnitId::TerranMason: {
-                                        if (is_omnipresence || duopoly_state != GameModeRace_ProtossZerg) {
+                                        if (is_omnipresence || duopoly_state != GameModeRace::ProtossZerg) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Invisible;
                                         }
                                     } break;
                                     case UnitId::ProtossScribe: {
-                                        if (is_omnipresence || duopoly_state != GameModeRace_ZergTerran) {
+                                        if (is_omnipresence || duopoly_state != GameModeRace::ZergTerran) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Invisible;
                                         }
                                     } break;
                                     case UnitId::ZergDroleth: {
-                                        if (is_omnipresence || duopoly_state != GameModeRace_TerranProtoss) {
+                                        if (is_omnipresence || duopoly_state != GameModeRace::TerranProtoss) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Invisible;
@@ -4542,12 +4542,12 @@ namespace hooks {
                         if (!condition) return;
                         ((current_button->icon_id == icon_ids && disable_button()), ...);
                     };
-                    const auto disable_buttons_unit_ids = [&](UnitIdBitset unit_id_bitset) {
+                    const auto disable_buttons_unit_ids = [&](trigger::UnitIdBitset unit_id_bitset) {
                         if (current_button->requirement_func != (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding) return;
                         if (!unit_id_bitset[current_button->requirement_var]) return;
                         disable_button();
                     };
-                    const auto hide_buttons_unit_ids = [&](UnitIdBitset unit_id_bitset) {
+                    const auto hide_buttons_unit_ids = [&](trigger::UnitIdBitset unit_id_bitset) {
                         if (current_button->requirement_func != (ReqFunc*)ButtonRequirements::Can_Create_UnitorBuilding) return;
                         if (!unit_id_bitset[current_button->requirement_var]) return;
                         hide_button();

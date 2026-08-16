@@ -100,6 +100,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <MinFilesInUnityFile>10000</MinFilesInUnityFile>
       <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -142,6 +143,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <MinFilesInUnityFile>10000</MinFilesInUnityFile>
       <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -185,6 +187,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <MinFilesInUnityFile>10000</MinFilesInUnityFile>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -306,6 +309,8 @@
     <ClCompile Include="GameModes\Uprising.cpp" />
     <ClCompile Include="ReplayKraken.cpp" />
     <ClCompile Include="systems\audio_system.cpp" />
+    <ClCompile Include="trigger_system\triggers.cpp" />
+    <ClCompile Include="trigger_system\trigger_system.cpp" />
     <ClCompile Include="utility\RegConfig.cpp" />
     <ClCompile Include="req_table.cpp" />
     <ClCompile Include="BW\extender\TileHeight_extender.cpp" />
@@ -589,7 +594,6 @@
     <ClCompile Include="trigger_system\trigger_objectives.cpp" />
     <ClCompile Include="trigger_system\trigger_recolor.cpp" />
     <ClCompile Include="trigger_system\trigger_spawn.cpp" />
-    <ClCompile Include="trigger_system\trigger_system.cpp" />
     <ClCompile Include="utility.cpp" />
     <ClCompile Include="trigger_system\trigger_vars.cpp" />
     <ClCompile Include="unit_search.cpp" />
@@ -688,6 +692,8 @@
     <ClInclude Include="main_menu.h" />
     <ClInclude Include="hooks/snp.h" />
     <ClInclude Include="systems\audio_system.h" />
+    <ClInclude Include="trigger_system\triggers.h" />
+    <ClInclude Include="trigger_system\trigger_eval.h" />
     <ClInclude Include="_vendor\magic_enum\magic_enum.hpp" />
     <ClInclude Include="_vendor\magic_enum\magic_enum_all.hpp" />
     <ClInclude Include="_vendor\magic_enum\magic_enum_containers.hpp" />

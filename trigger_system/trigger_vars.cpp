@@ -76,7 +76,7 @@ TriggerVar* TriggerVars::find(TriggerVarType type, std::string_view name) {
 	if (auto it = m_vars.find({std::string{name}, type}); it != m_vars.end()) {
 		return &it->second;
 	}
-	return 0;
+	return nullptr;
 }
 
 TriggerVar& TriggerVars::find_or_create(TriggerVarType type, std::string_view name) {

@@ -2,28 +2,20 @@
 #include "BW/api.h"
 #include "color_palette.h"
 
+#include <array>
 #include <bitset>
 #include <charconv>
+#include <concepts>
+#include <optional>
+#include <string>
 
 bool sv_iequals(std::string_view a, std::string_view b);
 bool sv_lazy_equals(std::string_view a, std::string_view b);
 
-struct Token {
-	std::string_view sv{};
+std::string_view get_short_unit_name(Unit* unit);
+std::string_view get_short_unit_name(u32 unit_id);
 
-	Token() = default;
-	Token(const char* cstr) : sv{cstr} {}
-	Token(std::string_view sv) : sv{sv} {}
-
-	std::string string() const { return std::string{sv}; }
-	operator bool() const { return !sv.empty(); }
-	bool operator==(const Token&) const = default;
-
-	bool iequals(std::string_view other) const { return sv_iequals(sv, other); }
-	bool lazy_equals(std::string_view other) const { return sv_lazy_equals(sv, other); }
-};
-Token get_short_unit_name(Unit* unit);
-Token get_short_unit_name(u32 unit_id);
+namespace trigger {
 
 enum LocationFlags {
 	LocationFlags_LowGround  = 0x01,
@@ -87,7 +79,7 @@ struct IterateBitset {
 		size_t index{};
 
 		Iterator(const std::bitset<N>& bitset, size_t index) : bitset{bitset}, index{index} { if (!bitset[index]) { ++*this; } }
-        I operator*() const { return static_cast<I>(index); }
+		I operator*() const { return I(index); }
 		Iterator& operator++() {
 			while (++index < MAX) {
 				if (bitset[index]) {
@@ -95,10 +87,10 @@ struct IterateBitset {
 				}
 			}
 			return *this;
-		}  
+		}
         Iterator operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
         friend bool operator==(const Iterator& a, const Iterator& b) { return a.index == b.index; };
-        friend bool operator!=(const Iterator& a, const Iterator& b) { return !(a == b); };  
+        friend bool operator!=(const Iterator& a, const Iterator& b) { return !(a == b); };
     };
 
 	Iterator begin() { return Iterator{bitset, 0}; }
@@ -132,9 +124,9 @@ struct Quota {
 			case QuotaType_Less:			return value <  this->value;
 			case QuotaType_GreaterOrEqual:	return value >= this->value;
 			case QuotaType_LessOrEqual:		return value <= this->value;
-			case QuotaType_Equal:			return value == this->value; 
-			case QuotaType_NotEqual:		return value != this->value; 
-			case QuotaType_Anything:		return true; 
+			case QuotaType_Equal:			return value == this->value;
+			case QuotaType_NotEqual:		return value != this->value;
+			case QuotaType_Anything:		return true;
 		}
 		return false;
 	}
@@ -153,11 +145,9 @@ enum class StatOperator {
 	Count,
 };
 
-class TriggerVar;
-
 struct ParserMarker {
 	const char* at;
-	Token token;
+	std::string_view token;
 };
 
 // Parses and handles <area> <players> <unit_ids>
@@ -197,6 +187,128 @@ struct Designator {
 	}
 };
 
+template <std::integral T>
+std::optional<T> sv_convert_to(std::string_view sv, int base = 10) {
+	T value{};
+	const auto result = std::from_chars(sv.data(), sv.data() + sv.size(), value, base);
+	if (result.ec != std::errc{}) {
+		return {};
+	}
+	return value;
+}
+
+template <std::floating_point T>
+std::optional<T> sv_convert_to(std::string_view sv, std::chars_format fmt = std::chars_format::general) {
+	T value{};
+	const auto result = std::from_chars(sv.data(), sv.data() + sv.size(), value, fmt);
+	if (result.ec != std::errc{}) {
+		return {};
+	}
+	return value;
+}
+
+template <typename T> requires std::same_as<T, fp32> || std::same_as<T, fp64>
+std::optional<T> sv_convert_to(std::string_view sv) {
+	using Raw = decltype(T{}.raw_value());
+	using Wide = boost::int128::int128_t;
+
+	if (sv.empty()) {
+		return {};
+	}
+
+	bool negative = false;
+	if (sv.front() == '+' || sv.front() == '-') {
+		negative = sv.front() == '-';
+		sv.remove_prefix(1);
+	}
+	if (sv.empty()) {
+		return {};
+	}
+
+	const auto decimal_point = sv.find('.');
+	const auto whole_sv = sv.substr(0, decimal_point);
+	const auto fraction_sv = decimal_point == std::string_view::npos ? std::string_view{} : sv.substr(decimal_point + 1);
+
+	u64 whole = 0;
+	if (!whole_sv.empty()) {
+		const auto result = std::from_chars(whole_sv.data(), whole_sv.data() + whole_sv.size(), whole);
+		if (result.ec != std::errc{} || result.ptr != whole_sv.data() + whole_sv.size()) {
+			return {};
+		}
+	}
+
+	u64 fraction = 0;
+	u64 denominator = 1;
+	for (const auto character : fraction_sv) {
+		if (!isdigit(character) || denominator > std::numeric_limits<u64>::max() / 10) {
+			return {};
+		}
+		fraction = fraction * 10 + u64(character - '0');
+		denominator *= 10;
+	}
+
+	constexpr auto fraction_bits = std::same_as<T, fp32> ? 12 : 32;
+	Wide raw = Wide(whole) << fraction_bits;
+	if (denominator > 1) {
+		const auto denominator_wide = Wide(denominator);
+		raw += ((Wide(fraction) << fraction_bits) + denominator_wide / 2) / denominator_wide;
+	}
+	if (negative) {
+		raw = -raw;
+	}
+	if (raw < std::numeric_limits<Raw>::min() || raw > std::numeric_limits<Raw>::max()) {
+		return {};
+	}
+	return T::from_raw_value(Raw(raw));
+}
+
+// Helper parameter types for parser getters that don't map to a unique C++ type.
+// Internal player index (0 - 7), or none. Users write 1 - 8 in crigs.
+template <bool AllowNeutral>
+struct PlayerId {
+	std::optional<u32> value;
+
+	operator bool() const { return value.has_value(); }
+	u32 operator*() const { return *value; }
+};
+using PlayablePlayer  = PlayerId<false>;
+using PlayerOrNeutral = PlayerId<true>;
+
+struct Identifier { std::string_view value; operator std::string_view() const { return value; } };
+struct Ticks      { u32 value; operator u32() const { return value; } };
+struct Seconds    { fp32 value; operator fp32() const { return value; } };
+
+struct TimeQuota  : Quota {};
+struct VarQuota   : Quota { bool create; };
+struct TimerQuota : Quota { bool create; };
+struct VarValue   { s32 value; operator s32() const { return value; } };
+struct TimerValue { s32 value; operator s32() const { return value; } };
+
+struct SpriteSelector { SpriteId::Enum value; bool valid; };
+
+template <typename T>
+struct Any {
+    T value;
+    bool any;
+};
+
+template <size_t N>
+struct StringLiteral {
+    char value[N];
+    constexpr StringLiteral(const char (&string)[N]) { for (size_t i = 0; i < N; ++i) { value[i] = string[i]; } }
+    constexpr operator std::string_view() const { return {value, N - 1}; }
+};
+
+template <StringLiteral... Patterns>
+struct OneOf {
+    std::string_view value;
+
+    operator std::string_view() const { return value; }
+    bool operator==(std::string_view other) const { return value == other; }
+};
+
+std::string enum_name_to_snake_case(std::string_view name);
+
 class Parser {
 public:
 	Parser(const char* at);
@@ -204,90 +316,107 @@ public:
 	void unwind(const ParserMarker& marker);
 
 	bool get_char(char c);
-	Token get_word(bool is_command = false);
+	std::optional<std::string_view> get_word(bool is_command = false);
+	bool has_next_token();
 	void load_command_pos(u32 position);
-	bool get_command();
+	std::optional<std::string_view> get_command();
 	bool get_keyword(const char* keyword);
 	bool eat_prefix(const char* chars);
-	Token get_string(bool allow_quotes = true);
-	Token get_identifier();
+	std::optional<std::string_view> get_string(bool allow_quotes = true);
+	std::optional<std::string_view> get_identifier();
 
-	TriggerVar* maybe_get_var();
-	s32 get_s32(s32 default_value = 0);
-	u32 get_u32(u32 default_value = 0);
-	u32 get_count(u32 default_value = UINT_MAX);
-	f32 get_f32(f32 default_value = 0);
-	bool get_bool(bool default_value = false);
-	f32 get_time_seconds();
-	u32 get_time_ticks();
-	s32 get_var_value(bool is_timer);
+	std::optional<s32> maybe_get_var_value();
+	std::optional<bool> get_bool();
+	std::optional<Seconds> get_time_seconds();
+	std::optional<Ticks> get_time_ticks();
+	std::optional<s32> get_var_value(bool is_timer);
+
+	std::optional<VarQuota> get_var_quota();
+	std::optional<TimerQuota> get_timer_quota();
+
+	std::optional<SpriteSelector> get_sprite_selector();
 
 	Location* get_location();
-	Area get_area(Area default_value = {});
-	v2u16 get_position(v2u16 default_value = {});
+	std::optional<Area> get_area();
+	std::optional<v2u16> get_position();
 
-	s32 get_enum(const char** enum_names, size_t count, s32 default_value = 0);
-
-	template <typename T>
-	T get_typed_enum(const char* enum_names[(size_t)T::Count], T default_value = T::None) {
-		return (T)get_enum(enum_names, (size_t)T::Count, (s32)default_value);
+	template <StringLiteral... Patterns>
+	std::optional<OneOf<Patterns...>> get_one_of() {
+		static_assert(sizeof...(Patterns) > 0);
+		const auto token = get_word();
+		if (!token) {
+			return {};
+		}
+		constexpr std::array patterns{std::string_view{Patterns}...};
+		for (const auto pattern : patterns) {
+			if (sv_iequals(*token, pattern)) {
+				return OneOf<Patterns...>{pattern};
+			}
+		}
+		return OneOf<Patterns...>{patterns.back()};
 	}
 
 	template <typename T> requires std::is_enum_v<T>
-	T get_magic_enum(T default_value = T::None) {
+	std::optional<T> get_magic_enum() {
 		const auto marker = this->marker();
 		const auto token = get_string(false);
-		if (auto result = magic_enum::enum_cast<T>(token.sv)) {
-			return *result;
+		if (!token) {
+			return {};
 		}
-		return T(get_s32(s32(default_value)));
+		for (const auto [value, name] : magic_enum::enum_entries<T>()) {
+			if (sv_iequals(*token, name) || sv_iequals(*token, enum_name_to_snake_case(name))) {
+				return value;
+			}
+		}
+		unwind(marker);
+		const auto value = get_integer();
+		if (!value) {
+			return {};
+		}
+		return T(*value);
 	}
 
 	template <typename T> requires std::is_enum_v<T>
-	T get_magic_flags() {
-		return parse_bitset<T>([&](auto& parser) {
-			if (auto flag = magic_enum::enum_flags_cast<T>(m_token.sv)) {
+	std::optional<T> get_magic_flags() {
+		return parse_bitset<T>([&](auto& parser, std::string_view token) {
+			if (const auto flag = magic_enum::enum_flags_cast<T>(token)) {
                 parser.set([flag = u32(*flag)](u32 i) { return (1 << i) & flag; });
 			} else {
                 parser.unwind_token();
-				const auto value = get_u32();
-                parser.set([value](u32 i) { return (i & value) != 0; });
+				if (const auto value = get_integer<u32>()) {
+                    parser.set([value = *value](u32 i) { return (i & value) != 0; });
+                }
 			}
 		});
 	}
 
-	u32 get_player(bool allow_neutral = false); // 1 - 8
-	PlayerBitset get_player_bitset();
+	template <bool AllowNeutral = false>
+	PlayerId<AllowNeutral> get_player();
+	std::optional<PlayerBitset> get_player_bitset();
 
-	u32 get_unit_id();
-	UnitIdBitset get_unit_id_bitset();
+	std::optional<UnitId::Enum> get_unit_id();
+	std::optional<UnitIdBitset> get_unit_id_bitset();
 
-	u32 get_weapon_id();
-	WeaponIdBitset get_weapon_id_bitset();
+	std::optional<WeaponId::Enum> get_weapon_id();
+	std::optional<WeaponIdBitset> get_weapon_id_bitset();
 
-	u32 get_flingy_id();
-	FlingyIdBitset get_flingy_id_bitset();
+	std::optional<flingy_id::Enum> get_flingy_id();
+	std::optional<FlingyIdBitset> get_flingy_id_bitset();
 
-	u32 get_flags_bitset();
-	u32 get_flags_bitset(const char** enum_names, size_t count);
+    std::optional<StatOperator> get_stat_operator();
 
-    StatOperator get_stat_operator();
+	std::optional<Designator> get_designator();
 
-	Designator get_designator();
-
-	QuotaType get_quota_type(QuotaType default_type);
-	Quota get_quota(QuotaType default_type = QuotaType_GreaterOrEqual, s32 default_value = 0);
-	Quota get_time_quota(QuotaType default_type = QuotaType_LessOrEqual);
+	std::optional<QuotaType> get_quota_type(QuotaType default_type);
+	std::optional<Quota> get_quota();
+	std::optional<TimeQuota> get_time_quota();
 
 	bool has_recolor();
-	Recolor get_recolor();
-	RecolorSet get_recolor_set();
+	std::optional<Recolor> get_recolor();
+	std::optional<RecolorSet> get_recolor_set();
 
-	bool equals(std::string_view sv) const { return m_token == sv; }
-	bool iequals(std::string_view sv) const { return m_token.iequals(sv); }
-	bool lazy_equals(std::string_view sv) const { return m_token.lazy_equals(sv); }
+	bool iequals(std::string_view sv) const { return sv_iequals(m_token, sv); }
 
-	Token token() const { return m_token; }
 	u32 command_start_pos() const { return m_command_start_pos; }
 
 	std::string_view current_command_line() const {
@@ -314,23 +443,59 @@ public:
 		bw::println(TextColor::Grey, "{}", current_command_line());
 	}
 
+	template <std::integral T = s32>
+	std::optional<T> get_integer(u32 base = 10) {
+		if (const auto var_value = maybe_get_var_value()) {
+			return T(*var_value);
+		}
+
+        if (eat_prefix("0x")) {
+            const auto token = get_word();
+            if (!token) {
+                return {};
+            }
+            return sv_convert_to<T>(*token, 16);
+        }
+
+        const auto token = get_word();
+        if (!token) {
+            return {};
+        }
+        if (sv_iequals(*token, "true")) {
+            return T{1};
+        }
+        if (sv_iequals(*token, "false")) {
+            return T{0};
+        }
+
+        return sv_convert_to<T>(*token, base);
+    }
+
+	template <utils::FloatLike T = fp32>
+    std::optional<T> get_float() {
+        const auto token = get_word();
+        if (!token) {
+            return {};
+        }
+        return sv_convert_to<T>(*token);
+	}
+
 private:
 	template <typename Bitset, typename Func>
-	Bitset parse_bitset(Func&& callback);
+	std::optional<Bitset> parse_bitset(Func&& callback);
 
 	void start_token();
 	void expand_token();
 
-	Token eat_word();
+	std::optional<fp32> get_time_seconds_raw();
+
+	std::optional<std::string_view> eat_word();
 	void clear_token();
 	bool skip_whitespace();
 	bool skip_non_word_chars();
 	bool get_negation();
 	char get_separator();
 	char get_relative_op();
-
-    template <typename T>
-    T get_integer(T default_value, u32 base = 10);
 
 private:
 	template <typename Bitset>
@@ -341,19 +506,7 @@ private:
 	const char* m_start{};
 	const char* m_at{};
 	u32 m_command_start_pos{};
-	Token m_token{};
+	std::string_view m_token{};
 };
 
-template <std::integral T>
-std::optional<T> sv_convert_to(std::string_view sv, int base = 10) {
-	T value{};
-	const auto result = std::from_chars(sv.data(), sv.data() + sv.size(), value, base);
-	return (bool)result.ec ? std::nullopt : std::make_optional(value);
-}
-
-template <std::floating_point T>
-std::optional<T> sv_convert_to(std::string_view sv, std::chars_format fmt = std::chars_format::general) {
-	T value{};
-	const auto result = std::from_chars(sv.data(), sv.data() + sv.size(), value, fmt);
-	return (bool)result.ec ? std::nullopt : std::make_optional(value);
-}
+} // namespace trigger

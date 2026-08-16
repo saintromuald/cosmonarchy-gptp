@@ -265,6 +265,30 @@ enum Enum : u8 {
 };
 }
 
+enum class PlayableRaceId {
+    Zerg,
+    Terran,
+    Protoss,
+    Askosi,
+    Bloodsummon,
+    Kogri,
+
+    None,
+};
+
+inline RaceId::Enum to_race_id(PlayableRaceId id) {
+    switch (id) {
+        case PlayableRaceId::Zerg:        return RaceId::Zerg;
+        case PlayableRaceId::Terran:      return RaceId::Terran;
+        case PlayableRaceId::Protoss:     return RaceId::Protoss;
+        case PlayableRaceId::Askosi:      return RaceId::Askosi;
+        case PlayableRaceId::Bloodsummon: return RaceId::Bloodsummon;
+        case PlayableRaceId::Kogri:       return RaceId::Kogri;
+        case PlayableRaceId::None:        return RaceId::None;
+    }
+    return RaceId::None;
+}
+
 inline std::optional<char> get_race_initial(RaceId::Enum race) {
     switch (race) {
         case RaceId::Zerg:    return 'z';
@@ -443,36 +467,6 @@ enum Enum : u8 {
 };
 }
 
-static const char* animation_type_names[] = {
-    "Init",
-    "Death",
-    "GroundAttackInit",
-    "AirAttackInit",
-    "Unused1",
-    "GroundAttackRepeat",
-    "AirAttackRepeat",
-    "CastSpell",
-    "GroundAttackToIdle",
-    "AirAttackToIdle",
-    "Unused2",
-    "Walking",
-    "WalkingToIdle",
-    "SpecialState1",
-    "SpecialState2",
-    "AlmostBuilt",
-    "Built",
-    "Landing",
-    "LiftOff",
-    "IsWorking",
-    "WorkingToIdle",
-    "WarpIn",
-    "Unused3",
-    "StarEditInit",
-    "Disable",
-    "Burrow",
-    "Unburrow",
-    "Enable"
-};
 
 namespace CheatFlags {
 enum Enum {
@@ -839,6 +833,7 @@ enum Enum {
 
 enum class PlayerColor : u8 {
     Invalid = -1,
+    None = Invalid,
 
     Red,
     Blue,
@@ -1706,29 +1701,6 @@ enum class Faction : u8 {
     Count,
 };
 
-static const char* faction_identifiers[] = { // This array needs to the same size and order as Faction enum
-    "none",
-
-    "orion_imperium",
-    "hecaton_coalition",
-    "futurist_federation",
-    "golden_republic",
-    "nydus_trinity",
-    "upstart_terran",
-
-    "divine_primacy",
-    "order_of_the_sacred_saber",
-    "khalendric_knights",
-    "starbound",
-    "astral_omen",
-
-    "ataltreth",
-    "imicren",
-    "goszirith",
-    "orkoti",
-    "zorthos",
-};
-static_assert(std::size(faction_identifiers) == (size_t)Faction::Count);
 
 enum TriggerFlags : u32 {
     // Others currently unknown. -Pr0nogo
