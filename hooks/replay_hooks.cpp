@@ -48,9 +48,8 @@ class ReplayUploader {
 public:
     ReplayUploader() {
         std::error_code ec;
-        if (fs::create_directories("logs/", ec)) {
-            m_logs.open("logs/replay_kraken.log", std::ios::out | std::ios::app);
-        }
+        fs::create_directories("logs/", ec);
+        m_logs.open("logs/replay_kraken.log", std::ios::out | std::ios::app);
     }
 
     bool should_upload() {
