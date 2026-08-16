@@ -1257,7 +1257,7 @@ namespace hooks {
                 const u32 radius = 2;
                 const u32 gap = 3;
                 u32 w = count * radius * 2 + (count - 1) * gap;
-                Point16 pos = { unit->position.x - w / 2, unit->get_bottom() };
+                v2u16 pos = { unit->position.x - w / 2, unit->get_bottom() };
                 for (u32 i = 0; i < count; ++i) {
                     graphics::draw_filled_circle(pos.x, pos.y, radius, graphics::CYAN, graphics::ON_MAP);
                     pos.x += radius * 2 + gap;
@@ -2885,7 +2885,7 @@ namespace hooks {
                         }
                         helper::transfer_resource_to_worker(nearby, unit);
                         helper::return_resources_from_unit(unit);
-                        node->sprite->create_top_overlay(ImageId::ArtisanResourceProc);
+                        nearby->sprite->create_top_overlay(ImageId::ArtisanResourceProc);
                         harvested = true;
                     }
                     unit->sprite->create_top_overlay(ImageId::ArtisanResourceProc);

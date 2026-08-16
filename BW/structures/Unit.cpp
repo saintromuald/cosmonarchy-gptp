@@ -2280,7 +2280,7 @@ void Unit::ashbind_cast() {
         helper::display_error_message_id_with_sfx(this->player, 967, get_racial_error_sfx(RaceId::Enum(g_player_table[this->player].race)));
         return;
     }
-    Point16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
+    v2u16 target_pos{this->order_target.unit->get_x(), this->order_target.unit->get_y()};
     u32 range = Askosi::RapidRendezvousCastRange;
     if (!helper::is_target_within_min_range(this, range, target)) {
         if (this->order_target.unit) {

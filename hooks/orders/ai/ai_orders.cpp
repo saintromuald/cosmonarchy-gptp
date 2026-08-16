@@ -1677,7 +1677,7 @@ namespace hooks {
                     region_id = new_region_id;
 
                 //	bw::printf("Player %u is grouping units!", unit->player);
-                //	Point16 ping = bw::get_region_center(bw::get_region(new_region_id));
+                //	v2u16 ping = bw::get_region_center(bw::get_region(new_region_id));
                 //	bw::minimap_ping(ping.x, ping.y, unit->player);
                 }
             }
