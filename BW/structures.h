@@ -59,6 +59,7 @@ extern int IMAGE_TYPE_COUNT;   //= 999;
 #include "structures/Order.h"
 #include "structures/Layer.h"
 #include "structures/Player.h" // made into external file to have .cpp
+#include "structures/ui_structures.h"
 
 #pragma pack(1)
 
@@ -88,7 +89,7 @@ struct UnitPath {
     s32			steps[24];				 // 0x20
 };
 
-struct CampaignMission {
+struct BWCampaignMission {
     char*	mission_name;
     s32		mission_index;
 };
@@ -137,17 +138,6 @@ struct StringMap_b {
 struct StringMap_w {
     u16		tbl_string;	// 0x0
     u16		index;		// 0x2
-};
-
-struct DialogEvent {
-    DialogUserType  user;                   // 0x0
-    u16             param;                  // 0x4 // param may be u32 - Jesse
-    u16             field_6;                // 0x6 
-    u16             virtual_key;            // 0x8
-    u16             virtual_key_modifier;   // 0xA
-    DialogEventType number_order;           // 0xC
-    v2u16	current;                        // 0xE
-    u16 field_12;                           // 0x12
 };
 
 // Seems to be identical to ResourceArea
@@ -679,238 +669,7 @@ bool operator < (const UnitFinderData& rhs) const {
     return this->position < rhs.position;
 }
 };
-
 C_ASSERT(sizeof(UnitFinderData) == 8);
-//static_assert(sizeof(UnitFinderData) == 8, "The count of the UnitFinderData structure is invalid");
-
-// BinDlg is defined in https://code.google.com/p/vgce/source/browse/trunk/docs/Blizzard/Starcraft/BIN%20FORMAT.txt as Dialog Structure
-// That structure is variable depending on the content
-
-struct UserUnit {
-Unit* unit;
-u16 unit_id;
-};
-
-struct Bitmap {
-    u16 width;  // 0x0
-    u16 height; // 0x2
-    u8* buffer; // 0x4
-};
-
-struct BinDlg;
-
-class DialogBounds {
-public:
-    DialogBounds();
-
-    static DialogBounds from_ltrb(s16 left, s16 top, s16 right, s16 bottom);
-    static DialogBounds from_xywh(s16 x, s16 y, u16 w, u16 h);
-
-    s16 left() const { return m_left; }
-    s16 top() const { return m_top; }
-    s16 right() const { return m_right; }
-    s16 bottom() const { return m_bottom; }
-
-    s16 x() const { return m_left; }
-    s16 y() const { return m_top; }
-    s16 w() const { return std::max(0, m_right - m_left + 1); };
-    s16 h() const { return std::max(0, m_bottom - m_top + 1); };
-
-    void set_ltrb(s16 left, s16 top, s16 right, s16 bottom);
-    void set_xywh(s16 x, s16 y, u16 width, u16 height);
-
-    bool contains(const v2u16 point) const;
-    bool contains(u16 x, u16 y) const;
-    bool contains_mouse() const;
-
-    bool is_empty() const;
-    bool is_valid() const;
-    v2u16 center() const;
-    v2u16 top_left() const;
-    v2u16 top_right() const;
-    v2u16 bottom_left() const;
-    v2u16 bottom_right() const;
-
-    DialogBounds intersect(const DialogBounds& other) const;
-    DialogBounds unite(const DialogBounds& other) const;
-    DialogBounds inflate(s16 dx, s16 dy) const;
-    DialogBounds offset(s16 dx, s16 dy) const;
-
-    operator Box16() const;
-    operator Box32() const;
-
-private:
-    s16 m_left;
-    s16 m_top;
-    s16 m_right;
-    s16 m_bottom;
-};
-
-using BinDlgProc = u32(__fastcall*)(BinDlg*, DialogEvent*);
-using TimerCallback = void(__fastcall*)(BinDlg*, u16 index);
-
-// Jesse decomp note: this appears to be a __thiscall as it passes BinDlg* in ecx
-// Two stack arguments are passed but appear to be unused in any of the default functions I looked at so not sure what they are
-using DialogUpdateFunc = void(__thiscall*)(BinDlg*, int, int);
-
-struct BinDlg {
-/*0x00*/  BinDlg*   next;
-union {
-    /*0x04*/  Box16 bounds;         // Some dialogs (buttons, statfluf) use x/y/w/h
-    /*0x04*/  Box16 dialog_bounds;  // Safer alternative for fully-hooked functions that we can guarantee are always l/t/r/b
-};
-/*0x0c*/  Bitmap    bitmap;
-union {
-    /*0x14*/  const char* text;
-    /*0x14*/  char (*textbox_buffer)[256]; // Only for DialogControlType::TextBox
-};
-/*0x18*/  s32               flags;			// use BinDlgFlags::Enum
-/*0x1C*/  u32               unk_1c;
-/*0x20*/  u16               index;
-/*0x22*/  DialogControlType control_type;	// use DialogControlType::Enum
-/*0x24*/  u16               graphic;
-
-union {
-/*0x26*/  void*		user;
-/*0x26*/  Unit*		unit_user;
-/*0x26*/  BinDlg*	dialog_user;
-/*0x26*/  Button*	button_user;
-StatusScreenState*	stat_button_user; // from Neiv's list
-/*0x26*/  u32		non_user_value;
-GrpHead*			grp_head_user;
-PortraitData*		portrait_data;
-UserUnit*           user_unit_with_id;
-Options*            options;
-};
-
-union {
-/*0x2A*/  void*         fxn_interact;
-/*0x2A*/  BinDlgProc    interaction_function;
-};
-
-/*0x2E*/  void*			fxn_update;
-/*0x32*/  BinDlg*		parent;
-
-union {
-    struct {
-        /*0x36*/ Bitmap bitmap;
-        /*0x3A*/ // FILLER
-    } DialogBoxDC_0x36;
-    struct {
-        /*0x36*/ s16 width;
-        /*0x38*/ s16 height;
-    } dimensions_0x36;              // Buttons & statfluf regions just have dimensions here
-    struct {
-        /*0x36*/  Box16		response_area;
-        /*0x3E*/  BinDlg*	unk_3e;
-    } initialVersion0x36;
-    struct {
-        /*0x36*/  s16		response_area_width;	// guess
-        /*0x38*/  s16		response_area_height;	// guess
-        /*0x3A*/  u32*		response_area_bit_array;// set with a memory allocation function, bit array is a guess
-        /*0x3E*/  u32*		unk3e;					// unverified filler
-    } onInitDialog0x36;
-    struct {
-        /*0x36*/  void*		unk_func_36;			// should be a function
-        /*0x3A*/  u16		scrollMinValue;			// unconfirmed
-        /*0x3C*/  u16		scrollMaxValue;			// unconfirmed
-        /*0x3E*/  u16		scrollCurrentValue;		// unconfirmed
-        /*0x40*/  u16		unk40;					// unverified filler
-    } scrollDialog0x36;								// probably for scrollbar involving dialogs?
-    struct {
-        /*0x36*/  BinDlg*	unkDlg36;
-        /*0x3A*/  u32		unk3a;					// unverified filler
-        /*0x3E*/  u32		unk3e;					// unverified filler
-    } dialogOn0x36;									// for when 0x36 is clearly BinDlg* but the rest is unknown
-    struct {
-        /*0x36*/  b32		is_selected;			// based on the value only being compared to 0
-        /*0x3A*/  u32		unk3a;					// unverified filler
-        /*0x3E*/  u32		unk3e;					// unverified filler
-    } checkBox0x36;									// not completely sure
-    struct {
-        /*0x36*/  b32		is_selected;			
-        /*0x3A*/  u32		unk3a;					// unverified filler
-        /*0x3E*/  u32		unk3e;					// unverified filler
-    } radioButton0x36;								// not completely sure
-    struct {
-        /*0x36*/  u8		unkFlags36;				// "flag" because of possible unkFlags36 |= 1
-        /*0x37*/  unk_t     unk37[3];				// unverified filler
-        /*0x3A*/  u8**		unk3aArrayCharPtr;		// seen in a different context so may be wrong and belong to another category
-        /*0x3E*/  u8		pszTextLen;				// should be the length of psz_text
-        /*0x3F*/  unk_t     unk3f[3];				// unverified filler
-    } TextBox0x36;								// seems to apply to some text related dialogs
-    struct {
-        /*0x36*/  u32		time_cost;
-        /*0x3A*/  u32*		font_handle;
-        /*0x3E*/  BinDlg*	player_name;
-    } statRes;
-    struct {
-        /*0x36*/  u32*      _unk;
-        /*0x3A*/  char**    strings_array;          // Array of char* to heap-allocated strings
-        /*0x3E*/  u8*       flags_array;            // Array of u8 flags. 0x16 = copy input string to fresh malloc. 
-    } ComboBox;
-    struct {
-        /*0x36*/  void*     value_update_function;  // void __stdcall (BinDlg* dialog)
-        /*0x3A*/  u16       current;
-        /*0x3C*/  u16       min;
-        /*0x3E*/  u16       max;
-        /*0x40*/  u16       cached_pixel_offset;
-    } Slider;
-};
-
-union {
-/*0x42*/  void*         child_smk;
-/*0x42*/  BinDlg*       child_dialog;
-/*0x42*/  u32*          combobox_output_array_u32;
-/*0x42*/  u8*           combobox_output_array_u8;
-};
-
-union {
-    struct {
-        /*0x46*/  v2u16	text_pos;
-        /*0x4A*/  u16		response_area_width;
-        /*0x4C*/  u16		response_area_height;
-        /*0x4E*/  unk_t     unk_4e[8];
-    } initial_version_0x46;
-    struct {
-        /*0x46*/  v2u16   text_pos;				// unverified filler
-        /*0x4A*/  void*     unk_function;
-        /*0x4E*/  unk_t     unk_4e[8];				// unverified filler
-    } onInitDialog0x46;
-    struct {
-        /*0x46*/  u8        item_count;
-        /*0x47*/  u8        unk47;					// unverified filler
-        /*0x48*/  u8        unk48;
-        /*0x49*/  u8        unk49;
-        /*0x4A*/  u8        unk4a;
-        /*0x4B*/  u8        unk4b;
-        /*0x4C*/  b8        unk4c;
-        /*0x4D*/  u8        unk4d;
-        /*0x4E*/  u8        unk4e;
-        /*0x4F*/  unk_t     unk_4f[7];				// unverified filler
-    } alternateVersion0x46;
-    struct {
-        /*0x46*/  u8        item_count;
-        /*0x47*/  u8		malloc_size;					
-        /*0x48*/  s8		selection_index;
-        /*0x49*/  u8		element_height;
-        /*0x4A*/  u8		_unk2;
-        /*0x4B*/  u8		_unk3;
-        /*0x4C*/  u8		flag;
-        /*0x4D*/  u8		selection_index_2;
-        /*0x4E*/  u8		_unk4;
-        /*0x4E*/  u8		_unk5;
-        /*0x4E*/  u8		_unk6;
-        /*0x4E*/  u8		_unk7;
-        /*0x4F*/  void*     unknown_function;
-    } ComboBox0x46;
-};
-
-};
-
-C_ASSERT(sizeof(BinDlg) == 86); //0x56
-//static_assert(sizeof(BinDlg) == 86, "The count of the BinDlg structure is invalid");
-
 
 struct GluChatEntry {
     u32 slot_type; // 2:team/heading, 8:open, 6:computer, 5:self, 4:other player
@@ -930,7 +689,6 @@ struct GluChatEntry {
     u8 padding_4[12];
     BinDlg* dialog;
 };
-
 C_ASSERT(sizeof(GluChatEntry) == 176);
 
 // For load_statfluf_mouse_regions
@@ -941,7 +699,6 @@ struct MousePixelmaskRegion {
     s16 h;
     BinDlg* dialog;
 };
-
 
 struct SMK_Structure {
     /*0x00*/ u32		smk_overlay_offset;

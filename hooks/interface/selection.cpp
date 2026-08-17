@@ -988,7 +988,7 @@ namespace hooks {
             u32 count = g_client_selection_count;
             if (g_config.always_show_condensed_selection || count > GroupWireframesCap) {
                 current_dialog = dialog;
-                if (current_dialog->flags & BinDlgFlags::Visible) {
+                if (current_dialog->flags & DialogFlags::Visible) {
                     u16 unit_id = current_dialog->user_unit_with_id->unit->id;
                     u32 i_1;
                     if (*g_is_holding_ctrl) {
@@ -1032,7 +1032,7 @@ namespace hooks {
                     }
                     count = GroupWireframesCap;
                     do {
-                        if (current_dialog->flags & BinDlgFlags::Visible) {
+                        if ((current_dialog->flags & DialogFlags::Visible)) {
                             unit = current_dialog->user_unit_with_id->unit;
                             if (unit && current_dialog != dialog) {
                                 unit_list[i_0++] = unit;
@@ -1061,7 +1061,7 @@ namespace hooks {
                     }
                     u16 unit_id = unit->id;
                     if (g_config.always_show_condensed_selection || count > GroupWireframesCap) {
-                        if (current_dialog->flags & BinDlgFlags::Visible) {
+                        if ((current_dialog->flags & DialogFlags::Visible)) {
                             u32 i_1 = 0;
                             do {
                                 unit = ccmu_extender.new_client_selection_group[i_1++];
@@ -1073,7 +1073,7 @@ namespace hooks {
                     } else {
                         count = GroupWireframesCap;
                         do {
-                            if (current_dialog->flags & BinDlgFlags::Visible) {
+                            if ((current_dialog->flags & DialogFlags::Visible)) {
                                 unit = current_dialog->user_unit_with_id->unit;
                                 if (unit->id == unit_id) {
                                     unit_list[i_0++] = unit;
@@ -1173,8 +1173,8 @@ namespace hooks {
                     current_dialog->text = (char*)&g_grpwire_buffer[i_0];
                     helper::show_dialog(current_dialog);
 
-                    if (!(current_dialog->flags & BinDlgFlags::Highlighted)) {
-                        current_dialog->flags |= BinDlgFlags::Highlighted;
+                    if (!(current_dialog->flags & DialogFlags::UpdateNeeded)) {
+                        current_dialog->flags |= DialogFlags::UpdateNeeded;
                         helper::update_dialog(current_dialog);
                     }
                     current_dialog = current_dialog->next;
@@ -1192,8 +1192,8 @@ namespace hooks {
                         user->unit_id = unit->id;
                         current_dialog->text = NULL;
                         helper::show_dialog(current_dialog);
-                        if (!(current_dialog->flags & BinDlgFlags::Active)) {
-                            current_dialog->flags |= BinDlgFlags::Highlighted;
+                        if (!(current_dialog->flags & DialogFlags::HeapAllocated)) {
+                            current_dialog->flags |= DialogFlags::UpdateNeeded;
                             helper::update_dialog(current_dialog);
                         }
                         current_dialog = current_dialog->next;

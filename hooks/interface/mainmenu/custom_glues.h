@@ -2,6 +2,8 @@
 #include "BW/ui.h"
 #include "glu_chat.h"
 
+BinDlg* g_current_dialog;
+
 class GluJoinCrownlinkContext {
 public:
     GluJoinCrownlinkContext()
@@ -14,11 +16,12 @@ public:
         GluJoinControls::Replay,
         GluJoinControls::SubType,
         GluJoinControls::MapSize,
-        }),
-        m_binfile("rez\\glujoincrownlink.bin") {
+        }) {
+        m_dialog = load_bin_file("rez\\glujoincrownlink.bin");
     }
 
-    BinDlg* get_dialog() { return m_binfile.bin_dlg(); };
+    //BinDlg* get_dialog() { return m_binfile.bin_dlg(); };
+    BinDlg* get_dialog() { return m_dialog.get(); };
 
     void update_crownlink_status();
     void load_selected_entry(BinDlg* dialog);
@@ -39,7 +42,7 @@ private:
 
 private:
     BinDlgLabels<GluJoinControls> m_labels;
-    BinFile m_binfile;
+    smem::ptr<BinDlg> m_dialog;
     GameData m_gamedata{};
     u8 m_ellipsis_counter{0};
     std::vector<u32> m_adfile_indexes;

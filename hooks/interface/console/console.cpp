@@ -5,6 +5,7 @@
 #include "BW/bwdata.h"
 #include "hooks/interface/uifeatures/ui_features.h"
 #include "storm/storm.h"
+#include "storm/sfile.h"
 
 #include <numeric>
 
@@ -200,11 +201,11 @@ static void load_progressbar(BinDlg* dialog, BinDlgProc update_function, Bitmap&
     auto initial = get_race_initial(race).value_or('t');
     if (!empty.buffer) {
         auto filename = std::format("game\\{}pbrempt.pcx", initial);
-        load_pcx_to_bitmap(filename.c_str(), empty, 0);
+        load_bitmap(filename.c_str(), empty, nullptr);
     }
     if (!full.buffer) {
         auto filename = std::format("game\\{}pbrfull.pcx", initial);
-        load_pcx_to_bitmap(filename.c_str(), full, 0);
+        load_bitmap(filename.c_str(), full, nullptr);
     }
 }
 
@@ -216,8 +217,8 @@ void load_command_buttons() { // 00459b90
 
     auto initial = get_race_initial((RaceId::Enum)g_console_index).value_or('t');
     auto filename = std::format("unit\\cmdbtns\\{}cmdbtns.grp", initial);
-    g_cmdbtns_grp = load_file_smemalloc<GrpHead>(filename.c_str(), __FILE__, __LINE__);
-    g_cmdicons_grp = load_file_smemalloc<GrpHead>("unit\\cmdbtns\\cmdicons.grp", __FILE__, __LINE__);
+    g_cmdbtns_grp = sfile::load_file(filename.c_str()).unsafe_cast<GrpHead>().release();
+    g_cmdicons_grp = sfile::load_file("unit\\cmdbtns\\cmdicons.grp").unsafe_cast<GrpHead>().release();
 
     if (!SBmpLoadImage("unit\\cmdbtns\\ticon.pcx", 0, (u8*)&g_new_cmdbtn_palette, sizeof(g_new_cmdbtn_palette), 0, 0, 0)) {
         helper::fatal_file_not_found(SErrGetLastError(), "unit\\cmdbtns\\ticon.pcx");
@@ -227,22 +228,15 @@ void load_command_buttons() { // 00459b90
     }
 
     filename = std::format("rez\\statbtn{}.bin", initial);
-
-    auto dialog = load_file_smemalloc<BinDlg>(filename.c_str(), __FILE__, __LINE__);
-    dialog->flags |= 0x4;
-    helper::fixup_and_init_dialog_data(dialog, helper::alloc_background_image, __FILE__, __LINE__);
-    g_buttonset_dialog = dialog;
-    initialize_dialog(dialog, helper::statbtn_dlgproc);
+    g_buttonset_dialog = load_bin_file(filename.c_str()).release();
+    initialize_dialog(g_buttonset_dialog, helper::statbtn_dlgproc);
 }
 
 void load_textbox() { //004f37c0
     auto initial = get_race_initial((RaceId::Enum)g_console_index).value_or('t');
     auto filename = std::format("rez\\{}textbox.bin", initial);
-    auto dialog = load_file_smemalloc<BinDlg>(filename.c_str(), __FILE__, __LINE__);
-    dialog->flags |= 0x4;
-    helper::fixup_and_init_dialog_data(dialog, helper::alloc_background_image, __FILE__, __LINE__);
-    g_textbox_dialog = dialog;
-    initialize_dialog(dialog, helper::textbox_dlgproc);
+    g_textbox_dialog = load_bin_file(filename.c_str()).release();
+    initialize_dialog(g_textbox_dialog, helper::textbox_dlgproc);
 }
 
 void load_statlb() { // 004bed70
@@ -263,24 +257,20 @@ void load_statlb() { // 004bed70
     g_statlb_unk = 0;
     g_show_statlb = true;
 
-    g_statlb_dialog = load_file_smemalloc<BinDlg>("rez\\statlb.bin", __FILE__, __LINE__);
-    g_statlb_dialog->flags |= 0x4;
-    helper::fixup_and_init_dialog_data(g_statlb_dialog, helper::alloc_background_image, __FILE__, __LINE__);
+    g_statlb_dialog = load_bin_file("rez\\statlb.bin").release();
     initialize_dialog(g_statlb_dialog, helper::statlb_dlgproc);
 }
 
 void load_wireframe_palette() { // 00456a90
-    g_wirefram_grp = load_file_smemalloc<GrpHead>("unit\\wirefram\\wirefram.grp", __FILE__, __LINE__);
+    g_wirefram_grp = sfile::load_file("unit\\wirefram\\wirefram.grp").unsafe_cast<GrpHead>().release();
     if (!SBmpLoadImage("game\\twire.pcx", 0, &g_wireframe_colors[0], sizeof(g_wireframe_colors), 0, 0, 0)) {
         helper::fatal_file_not_found(SErrGetLastError(), "game\\twire.pcx");
     };
 }
 
 void load_statf10() { // 004f5300
-    auto dialog = load_file_smemalloc<BinDlg>("rez\\stat_f10.bin", __FILE__, __LINE__);
-    helper::fixup_and_init_dialog_data(dialog, helper::alloc_background_image, __FILE__, __LINE__);
-    g_stat_f10_dialog = dialog;
-    initialize_dialog(dialog, helper::stat_f10_dlgproc);
+    g_stat_f10_dialog = load_bin_file("rez\\stat_f10.bin").release();
+    initialize_dialog(g_stat_f10_dialog, helper::stat_f10_dlgproc);
 }
 
 void load_console() { // 004c3bb0
@@ -337,11 +327,7 @@ void load_statfluf_mouse_regions() {
     for (size_t i = 0; i < region_count; ++i) {
         auto& region = mouse_regions[i];
 
-        BinDlg* dialog = load_file_smemalloc<BinDlg>("rez\\statfluf.bin", __FILE__, __LINE__);
-        dialog->flags |= 4;
-
-        helper::fixup_and_init_dialog_data(dialog, helper::alloc_background_image, __FILE__, __LINE__);
-
+        auto dialog = load_bin_file("rez\\statfluf.bin").release();
         region.dialog = dialog;
 
         dialog->bounds.x = region.x;

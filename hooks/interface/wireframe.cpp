@@ -74,7 +74,7 @@ namespace hooks {
 		}
 
 		char* default_grp_remap = &g_palette_remap[0xD0];
-		u32 idx = (u8)(((dialog->flags & BinDlgFlags::NoClickSound) >> 30) + (graphic >> 7));
+		u32 idx = (u8)(((dialog->flags & DialogFlags::DrawActiveState) >> 30) + (graphic >> 7));
 		u32 clr = *(u32*)&grpwire_remappings[idx + idx * 4 + 10];
 		*(u32*)default_grp_remap = clr;
 		((u8*)&clr)[1] = ((u8*)&clr)[0];

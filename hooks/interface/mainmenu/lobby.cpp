@@ -115,12 +115,12 @@ void init_singleplayer_custom(BinDlg* dialog) { // 004AD850
         auto index = 1;
         for (auto cpu_race_combo = player_race_combo->next; cpu_race_combo; cpu_race_combo = cpu_race_combo->next) {
             auto selection_index = cpu_race_combo->ComboBox0x46.selection_index;
-            if ((cpu_race_combo->flags & 8) && cpu_race_combo->ComboBox0x46.item_count && selection_index != -1) {
+            if ((cpu_race_combo->flags & DialogFlags::Visible) && cpu_race_combo->ComboBox0x46.item_count && selection_index != -1) {
                 g_selected_races[index] = (RaceId::Enum)cpu_race_combo->combobox_output_array_u32[selection_index];
             }
             index++;
         }
-    } else if (player_race_combo->flags & 8) {
+    } else if (player_race_combo->flags & DialogFlags::Visible) {
         auto selection_index = player_race_combo->ComboBox0x46.selection_index;
         if (player_race_combo->ComboBox0x46.item_count && selection_index != -1) {
             g_player_table[g_local_nation_id].race = (RaceId::Enum)player_race_combo->combobox_output_array_u32[selection_index];

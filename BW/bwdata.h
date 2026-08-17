@@ -414,7 +414,7 @@ BW_DATA(s32*,		g_vision_update_count,				0x0051CE98);
 BW_DATA(s8*,		g_vision_updated,					0x0051CE9C);
 
 // X405: For displayEstablishing Shot
-BW_DATA(CampaignMission*, campaignMissions,				0x004FFF60);
+BW_DATA(BWCampaignMission*, campaignMissions,				0x004FFF60);
 
 // For stats_weapon_level / stats_armor_level
 BW_DATA(s16*,		g_unk_upgrade_count,			0x006CA940); // Seems to be unused. Only ever written to.
@@ -1373,9 +1373,14 @@ BW_REF(DialogFadeInfo, g_dialog_fade_info, 0x006cef50);
 // For register_functions_and_background and change_menu
 BW_REF(u32, g_menu_z_index, 0x0051c4b8);
 BW_REF(BinDlg*, g_current_menu_dlg, 0x0051c418);
+BW_REF(BinDlg*, g_current_main_dlg, 0x006d5e34);
 BW_REF(Bitmap, g_background, 0x0051c000);
 BW_REF(Palette, g_background_palette, 0x0051c008);
 BW_REF(Palette, g_init_palette, 0x005994e0);
+
+// Final palette pushed to SDrawUpdatePalette after applying all effects
+BW_REF(Palette, g_display_palette, 0x006ce320);
+BW_REF(Palette, g_dialog_transition_palette, 0x006d05b0);
 BW_ARRAY(MenuBackground, 27, g_menu_backgrounds, 0x004ffad4);
 
 // For console_index override
@@ -1466,6 +1471,7 @@ BW_ARRAY(GluChatEntry, 12, g_chat_slot_entries, 0x0068ecb0);
 BW_ARRAY(char, 260, g_version_string, 0x005122c8);
 
 BW_REF(GrpFile*, g_current_cursor, 0x00597394);
+BW_REF(u32, g_modal_stack_counter, 0x006d5eb4);
 
 #undef BW_DATA
 #undef BW_DATA_REF

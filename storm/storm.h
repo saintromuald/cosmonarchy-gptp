@@ -17,6 +17,13 @@ enum class SNetGetGameInfoType : u32 {
     MaxPlayers      = 6,
 };
 
+enum class SFileScope : u32 {
+    MpqOnly     = 0,
+    DiskAndMpq  = 1,
+    DiskOnly    = 2,
+    RawHandle   = 4, // Return raw win32 HANDLE instead of storm handle
+};
+
 extern "C" {
 // ---- SNet ----
 __declspec(dllimport) b32   __stdcall SNetDestroy();
@@ -39,12 +46,20 @@ __declspec(dllimport) b32   __stdcall SFileDdaInitialize(HANDLE directsound);
 __declspec(dllimport) s32   __stdcall SFileGetFileSize(HANDLE file, u32* size);
 __declspec(dllimport) b32   __stdcall SFileOpenArchive(const char* archive_name, u32 priority, u32 flags, HANDLE* archive);
 __declspec(dllimport) b32   __stdcall SFileOpenFile(const char* filename, HANDLE* handle);
-__declspec(dllimport) b32   __stdcall SFileOpenFileEx(HANDLE archive, const char* filename, u32 scope, HANDLE* file);
+__declspec(dllimport) b32   __stdcall SFileOpenFileEx(HANDLE archive, const char* filename, SFileScope flags, HANDLE* file);
 __declspec(dllimport) b32   __stdcall SFileReadFile(HANDLE file, void* buffer, u32 to_read, u32* bytes_read, int unknown);
+
+// ---- SDraw ----
+// Flags is typically 1
+__declspec(dllimport) b32   __stdcall SDrawUpdatePalette(u32 start_index, u32 count, const Palette* palette, u32 flags);
 
 // ---- SBmp ----
 __declspec(dllimport) b32   __stdcall SBmpLoadImage(const char* filename, Palette* palette, u8* buffer, u32 buffer_size, u32* width, u32* height, u32* bitdepth);
 __declspec(dllimport) b32   __stdcall SBmpAllocLoadImage(const char* filename, Palette* palette, u8** buffer, u32* width, u32* height, u32 a6, u32 a7, u8*(__stdcall* malloc_function)(u32 size));
+// type = 0 auto-detects the format from the first two bytes: 0x050A = PCX (2), "BM" = BMP (1)
+// Third type is likely TGA
+// Pass nullptr to destination to just query size
+__declspec(dllimport) b32   __stdcall SBmpDecodeImage(u32 type, const void* source, u32 source_size, Palette* palette, void* destination, u32 destination_size, u32* width, u32* height, u32* bits_per_pixel);
 // ---- SMem ----
 __declspec(dllimport) void* __stdcall SMemAlloc(u32 size,      const char* filename = "", u32 line = 0, int unknown = 0);
 __declspec(dllimport) u32   __stdcall SMemFree (void* pointer, const char* filename = "", u32 line = 0, int unknown = 0);

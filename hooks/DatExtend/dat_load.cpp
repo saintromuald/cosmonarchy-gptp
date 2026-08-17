@@ -19,7 +19,7 @@ namespace hooks {
 			sprintf_s(filename, "%sex", normal_filename);
 		}
 
-		auto loaded_file = sfile::load_mpq_file(filename);
+		auto loaded_file = sfile::load_file(filename);
 		auto data = loaded_file.unsafe_cast<u8>();
 		size = loaded_file.size;
 		pos = 0;

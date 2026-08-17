@@ -2,20 +2,27 @@
 #include "BW/structures.h"
 #include "BW/enumerations.h"
 #include "BW/ui.h"
+#include "storm/sfile.h"
 
 #include <memory>
 
 class ConsoleIcons {
 public:
-    GrpFile& mineral() { return m_mineral.get(); };
-    GrpFile& gas() { return m_gas.get(); };
-    GrpFile& supply() { return m_supply.get(); };
-    GrpFile& general() { return m_general.get(); };
+    ConsoleIcons() {
+        m_mineral = sfile::load_file("game\\mineralicons.grp").unsafe_cast<GrpFile>();
+        m_gas = sfile::load_file("game\\gasicons.grp").unsafe_cast<GrpFile>();
+        m_supply = sfile::load_file("game\\supplyicons.grp").unsafe_cast<GrpFile>();
+        m_general = sfile::load_file("game\\icons.grp").unsafe_cast<GrpFile>();
+    }
+    GrpFile* mineral() { return m_mineral.get(); };
+    GrpFile* gas() { return m_gas.get(); };
+    GrpFile* supply() { return m_supply.get(); };
+    GrpFile* general() { return m_general.get(); };
 private:
-    LoadedFile<GrpFile> m_mineral{"game\\mineralicons.grp"};
-    LoadedFile<GrpFile> m_gas{"game\\gasicons.grp"};
-    LoadedFile<GrpFile> m_supply{"game\\supplyicons.grp"};
-    LoadedFile<GrpFile> m_general{"game\\icons.grp"};
+    smem::ptr<GrpFile> m_mineral;
+    smem::ptr<GrpFile> m_gas;
+    smem::ptr<GrpFile> m_supply;
+    smem::ptr<GrpFile> m_general;
 };
 
 inline u16 race_icon_offset(RaceId::Enum race) {

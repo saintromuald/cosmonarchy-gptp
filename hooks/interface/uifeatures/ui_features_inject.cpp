@@ -286,30 +286,6 @@ namespace {
         }
     }
 
-    void __declspec(naked) draw_standard_button_graphic_wrapper() { // 004EFD90
-        static BinDlg* dialog1;
-        static BinDlg* dialog2;
-        static BinDlg* dest;
-        __asm {
-            PUSH EBP
-            MOV EBP, ESP
-            PUSH EAX
-            MOV EAX, [EBP + 0x08]
-            MOV dest, EAX
-            POP EAX
-            MOV dialog2, EDI
-            MOV dialog1, ECX
-            PUSHAD
-        }
-        hooks::draw_standard_button_graphic(dialog1, dialog2, dest);
-        __asm {
-            POPAD
-            MOV ESP, EBP
-            POP EBP
-            RETN 0x04
-        }
-    }
-
     void __declspec(naked) generic_dialog_update_wrapper() { // 004EF590
         static b32 result;
         static BinDlg* button;
@@ -693,7 +669,6 @@ namespace hooks {
         jump_patch(sprite_destructor_wrapper,               0x00497B40, 1); // Clear SpriteExt on sprite destruction
     	jump_patch(draw_vertical_line_wrapper,			0x0041D7D0, 4);
         jump_patch(centerview_unit_group,					0x004967E0, 1);
-    //	jump_patch(draw_standard_button_graphic_wrapper,	            0x004EFD90, 2); // not needed
         jump_patch(generic_dialog_update_wrapper,			0x004EF590, 1);
         jump_patch(draw_stat_button_image_wrapper,		0x00456C30, 1);
         jump_patch(statbtn_button_update_wrapper,			0x00458900, 1);

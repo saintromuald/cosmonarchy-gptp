@@ -550,8 +550,8 @@ namespace hooks {
 			helper::move_screen({pos_x, pos_y});
 		}
 
-		if (!(minimap->flags & BinDlgFlags::Highlighted)) {
-			minimap->flags |= 1;
+		if (!(minimap->flags & DialogFlags::UpdateNeeded)) {
+			minimap->flags |= DialogFlags::UpdateNeeded;
 			helper::update_dialog(minimap);
 		}
 	}

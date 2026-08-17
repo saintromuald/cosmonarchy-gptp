@@ -65,8 +65,12 @@ EXPORTS
     SFileReadFile@20               @269 NONAME
 
     ; ---- SBmp ----
+    SBmpDecodeImage@36             @321 NONAME
     SBmpLoadImage@28               @323 NONAME
     SBmpAllocLoadImage@32          @325 NONAME
+
+    ; ---- SDraw ----
+    SDrawUpdatePalette@16          @357 NONAME
 
     ; ---- SMem ----
     SMemAlloc@16                   @401 NONAME

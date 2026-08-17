@@ -14,14 +14,14 @@
 #include <ranges>
 
 static const auto resource_tooltip_definitions = std::to_array<tooltip_resource_cost>({
-    {tooltip_resource::Minerals, tooltip_ore_cost, &g_console_icons.mineral(), 0, true},
-    {tooltip_resource::Gas, tooltip_gas_cost, &g_console_icons.gas(), 0, true},
-    {tooltip_resource::Energy, tooltip_energy_cost, &g_console_icons.general(), 9, false},
-    {tooltip_resource::Unused, tooltip_unused_cost, &g_console_icons.general(), 8, false},
-    {tooltip_resource::BuildTime, tooltip_time_cost, &g_console_icons.general(), 7, false},
-    {tooltip_resource::PSupply, tooltip_p_supply_cost, &g_console_icons.supply(), 0, true},
-    {tooltip_resource::TSupply, tooltip_t_supply_cost, &g_console_icons.supply(), 0, true},
-    {tooltip_resource::ZSupply, tooltip_z_supply_cost, &g_console_icons.supply(), 0, true},
+    {tooltip_resource::Minerals, tooltip_ore_cost, g_console_icons.mineral(), 0, true},
+    {tooltip_resource::Gas, tooltip_gas_cost, g_console_icons.gas(), 0, true},
+    {tooltip_resource::Energy, tooltip_energy_cost, g_console_icons.general(), 9, false},
+    {tooltip_resource::Unused, tooltip_unused_cost, g_console_icons.general(), 8, false},
+    {tooltip_resource::BuildTime, tooltip_time_cost, g_console_icons.general(), 7, false},
+    {tooltip_resource::PSupply, tooltip_p_supply_cost, g_console_icons.supply(), 0, true},
+    {tooltip_resource::TSupply, tooltip_t_supply_cost, g_console_icons.supply(), 0, true},
+    {tooltip_resource::ZSupply, tooltip_z_supply_cost, g_console_icons.supply(), 0, true},
 });
 
 u16 __fastcall get_stat_icon_graphic(u8 value) {
@@ -439,9 +439,9 @@ namespace hooks {
         state->type = 1;
         state->id = units_dat::armor_upgrade[final_unit_id];
         child->text = g_status_screen_info_button_unk[status_screen_index];
-        u32 flags = child->flags;
-        if (!(child->flags & BinDlgFlags::Highlighted)) {
-            child->flags = flags | BinDlgFlags::Highlighted;
+        auto flags = child->flags;
+        if (!(child->flags & DialogFlags::UpdateNeeded)) {
+            child->flags = flags | DialogFlags::UpdateNeeded;
             helper::update_dialog(child);
         }
     //	*g_unk_upgrade_count += armor_value;
@@ -485,10 +485,10 @@ namespace hooks {
         state->type = 0;
         state->id = weapon_id;
 
-        u32 flags = child->flags;
+        auto flags = child->flags;
         child->text = g_status_screen_info_button_unk[status_screen_index];
-        if (!(flags & 1)) {
-            child->flags = flags | 1;
+        if (!(flags & DialogFlags::UpdateNeeded)) {
+            child->flags = flags | DialogFlags::UpdateNeeded;
             helper::update_dialog(child);
         }
     //	*g_unk_upgrade_count += weapons_dat::damage_amount[weapon_id];
@@ -533,10 +533,10 @@ namespace hooks {
         state->type = 2;
         state->id = 15;
 
-        u32 flags = child->flags;
+        auto flags = child->flags;
         child->text = g_status_screen_info_button_unk[status_screen_index];
-        if (!(flags & 1)) {
-            child->flags = flags | 1;
+        if (!(flags & DialogFlags::UpdateNeeded)) {
+            child->flags = flags | DialogFlags::UpdateNeeded;
             helper::update_dialog(child);
         }
     //	*g_unk_upgrade_count += armor_value;
@@ -575,10 +575,10 @@ namespace hooks {
         user->type = 3;
         user->id = 13;
 
-        u32 flags = child->flags;
+        auto flags = child->flags;
         child->text = g_status_screen_info_button_unk[index];
-        if (!(flags & BinDlgFlags::Highlighted)) {
-            child->flags = flags | BinDlgFlags::Highlighted;
+        if (!(flags & DialogFlags::UpdateNeeded)) {
+            child->flags = flags | DialogFlags::UpdateNeeded;
             helper::update_dialog(child);
         }
         return 1;
@@ -708,12 +708,12 @@ namespace hooks {
                     return 1;
                 } break;
                 case DialogUserType_MouseOver: {
-                    if (!(dialog->flags & BinDlgFlags::Visible)) {
+                    if (!(dialog->flags & DialogFlags::Visible)) {
                         break;
                     }
                     return 1;
                 } break;
-                case DialogUserType_SelectNext: {
+                case DialogUserType_AcceptFocus: {
                     if (dialog == g_control_under_mouse) {
                         helper::refresh_selection_screen();
                         g_control_under_mouse = 0;
@@ -791,9 +791,9 @@ namespace hooks {
             *(u16*)(user + 6) = 3;
             *(u16*)(user + 8) = unit->build_queue[unit->build_queue_slot];
 
-            u32 flags = child->flags;
-            if (!(flags & 1)) {
-                child->flags = flags | BinDlgFlags::Highlighted;
+            auto flags = child->flags;
+            if (!(flags & DialogFlags::UpdateNeeded)) {
+                child->flags = flags | DialogFlags::UpdateNeeded;
                 helper::update_dialog(child);
             }
 
@@ -841,8 +841,8 @@ namespace hooks {
             current_dialog->stat_button_user->type = 3;
             current_dialog->stat_button_user->id = slot_unit_id;
 
-            if (!(current_dialog->flags & BinDlgFlags::Highlighted)) {
-                current_dialog->flags |= BinDlgFlags::Highlighted;
+            if (!(current_dialog->flags & DialogFlags::UpdateNeeded)) {
+                current_dialog->flags |= DialogFlags::UpdateNeeded;
                 helper::update_dialog(current_dialog);
             }
             const char* string = "Building";
@@ -889,7 +889,7 @@ namespace hooks {
         while (current_dialog && current_dialog->index != (u16)index) {
             current_dialog = current_dialog->next; 
         }
-        if (!(current_dialog->flags & BinDlgFlags::Visible)) {
+        if (!(current_dialog->flags & DialogFlags::Visible)) {
             struct {
                 u32 unknown_value;		// [EBP-0x14]	[00]
                 u32 always_zero_here;	// [EBP-0x10]	[04]
@@ -910,8 +910,8 @@ namespace hooks {
             stack_placeholder.always_zero_here = 0;
             stack_placeholder.mouse_x = g_mouse->x;
 
-            if (helper::fxn_interact(current_dialog, (u32)&stack_placeholder) != 0 && !(current_dialog->flags & BinDlgFlags::Highlighted)) {
-                current_dialog->flags |= BinDlgFlags::Highlighted;
+            if (helper::fxn_interact(current_dialog, (u32)&stack_placeholder) != 0 && !(current_dialog->flags & DialogFlags::UpdateNeeded)) {
+                current_dialog->flags |= DialogFlags::UpdateNeeded;
                 helper::update_dialog(current_dialog);
             }
         }
@@ -1001,8 +1001,8 @@ namespace hooks {
             current_dialog->text = g_queues_buffers[0];
             helper::show_dialog(current_dialog);
 
-            if (!(current_dialog->flags & BinDlgFlags::Highlighted)) {
-                current_dialog->flags |= BinDlgFlags::Highlighted;
+            if (!(current_dialog->flags & DialogFlags::UpdateNeeded)) {
+                current_dialog->flags |= DialogFlags::UpdateNeeded;
                 helper::update_dialog(current_dialog);
             }
             helper::add_text_to_dialog(dialog, -15, (char*)g_stat_txt_tbl->get_string32(771 + unit->get_race())); // Zerg: "Morphing", Terran: "Building", Protoss: "Opening Warp Gate"
@@ -1272,8 +1272,8 @@ namespace hooks {
         user->type = 5;
         user->id = unit->building.upgrade_id;
         helper::enable_dialog(child_dialog);
-        if (!(child_dialog->flags & BinDlgFlags::Highlighted)) {
-            child_dialog->flags |= BinDlgFlags::Highlighted;
+        if (!(child_dialog->flags & DialogFlags::UpdateNeeded)) {
+            child_dialog->flags |= DialogFlags::UpdateNeeded;
             helper::update_dialog(child_dialog);
         }
 
@@ -1322,8 +1322,8 @@ namespace hooks {
         state->type = 3;
         state->id = hangar_unit_id;
         final_dialog->text = g_status_screen_info_button_unk[iterations];
-        if (!(final_dialog->flags & BinDlgFlags::Highlighted)) {
-            final_dialog->flags |= BinDlgFlags::Highlighted;
+        if (!(final_dialog->flags & DialogFlags::UpdateNeeded)) {
+            final_dialog->flags |= DialogFlags::UpdateNeeded;
             helper::update_dialog(final_dialog);
         }
     }

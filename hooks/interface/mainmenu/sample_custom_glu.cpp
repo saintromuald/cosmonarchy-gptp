@@ -35,9 +35,8 @@ static u32 __fastcall dlgproc_dyn_sample(BinDlg* dialog, DialogEvent* event) {
 }
 
 void glu_dynamic_test() {
-    BinFile dialog{"rez\\dynamic_sample.bin"};
-
-    auto result = helper::glu_load_bin_dialog(dialog.bin_dlg(), dlgproc_dyn_sample);
+    auto dialog = load_bin_file("rez\\dynamic_sample.bin").release(); // Release the smart pointer because SC frees when we change menus
+    auto result = helper::glu_load_bin_dialog(dialog, dlgproc_dyn_sample);
     
     // Result contains the index of the last button pressed, use it to control next menu
     if (static_cast<GluJoinControls>(result) == GluJoinControls::OK) {

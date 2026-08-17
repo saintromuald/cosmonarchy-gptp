@@ -190,7 +190,7 @@ namespace hooks {
         if (dialog->index < 0 || dialog->index > 9) {
             return 0;
         }
-        if (!(dialog->flags & BinDlgFlags::Visible) || dialog->flags & BinDlgFlags::Disabled) {
+        if (!(dialog->flags & DialogFlags::Visible) || (dialog->flags & DialogFlags::Disabled)) {
             return 0;
         }
 
@@ -615,68 +615,18 @@ namespace hooks {
     }
 
     // Hooked to explore colorizing passive icons. -Pr0nogo
-    void draw_standard_button_graphic(BinDlg* button, BinDlg* button_, BinDlg* dest) { // 004EFD90
-        BinDlg* parent = button->parent;
-        BinDlg* button_unk = parent->initialVersion0x36.unk_3e;
-        u32 final_flags = button->flags;
-        if (button->flags & BinDlgFlags::Disabled
-        || !(button->flags & BinDlgFlags::Visible)
-        ||  button != button_unk && (button->control_type != DialogControlType::DefaultButton
-        ||  button_unk
-        ||  parent->flags & BinDlgFlags::UseAlternateStyle)) {
-            final_flags &= ~BinDlgFlags::Unknown12;
-        } else {
-            final_flags |= BinDlgFlags::Unknown12;
-        }
-        button->flags = final_flags;
-        if (!(final_flags & BinDlgFlags::RemoveStyles)) {
-            u8 graphic = 0;
-            if (final_flags & BinDlgFlags::Disabled) {
-                graphic = button->graphic;
-            } else {
-                if (final_flags & BinDlgFlags::NoClickSound) {
-                    u32 VEEQTISM = (((u8)button->graphic + 2) & 0xFF) | (u32)button & 0xFF00;
-                    final_flags = helper::draw_clamped_dialog_image(dest, VEEQTISM, button->bounds.x, button->bounds.y, final_flags);
-                    goto exit;
-                }
-                graphic = button->graphic + 1;
-            }
-            final_flags = helper::draw_clamped_dialog_image(dest, graphic, button->bounds.x, button->bounds.y, final_flags);
-        }
-    exit:
-        u32 x_min = button->bounds.x;
-        u32 x_max = button->bounds.w;
-        u32 y_min = button->bounds.y;
-        u32 y_max = button->bounds.h;
-
-        if (button->control_type == DialogControlType::DefaultButton) {
-            *g_draw_color_index = g_palette_index_reference[5];
-            helper::bw_draw(y_min, x_min, x_max - x_min + 1, y_max - y_min + 1);
-        }
-        if (button->flags & BinDlgFlags::Unknown12) {
-            *g_draw_color_index = g_palette_index_reference[16];
-            helper::bw_draw(y_min, x_min, x_max - x_min + 1, y_max - y_min + 1);
-        }
-        if (button->text) {
-            bool highlight = button->flags & BinDlgFlags::UpdateNeeded;
-            g_print_xy_alignment = 34;
-            helper::dialog_draw_text(0, button, highlight, highlight);
-        }
-    }
-
-    // Hooked to explore colorizing passive icons. -Pr0nogo
     b32 generic_dialog_update(BinDlg* button, u32 width, u32 height, Box16* dims) { // 004EF590
         if (button->bitmap.buffer) {
             return helper::draw_dialog_image(dims, &button->bitmap, width, height, 0);
         }
-        *g_draw_color_index = (button->flags & BinDlgFlags::TransparentHideColor) == 0 ? g_palette_index_reference[12] : 0;
+        *g_draw_color_index = !(button->flags & DialogFlags::TransparentHideColor) ? g_palette_index_reference[12] : 0;
         return helper::draw_box(dims->x, dims->y, dims->w - dims->x + 1, dims->h - dims->y + 1);
     }
 
     // Hooked to explore colorizing passive icons. -Pr0nogo
     void draw_stat_button_image(BinDlg* dialog) { // 00456C30
         u8 palette_type = 3;
-        if (dialog->flags & BinDlgFlags::Disabled || dialog->control_type != DialogControlType::Button) {
+        if ((dialog->flags & DialogFlags::Disabled) || dialog->control_type != DialogControlType::Button) {
             palette_type = 4;
         }
 
@@ -704,12 +654,16 @@ namespace hooks {
 
     // Hooked to explore colorizing passive icons. -Pr0nogo
     void statbtn_button_update(BinDlg* button) { // 00458900
-        u32 is_clicked = (button->flags & BinDlgFlags::NoClickSound) != 0;
-        if (is_clicked >= g_cmdbtns_grp->frame_count) { // Original ASM masks frame_count with 0x7FFF, but VS throws warnings with it.
-            is_clicked = 0; // Was LOWORD, presumably a flag negation
+        //u32 is_clicked = (button->flags & DialogFlags::DrawActiveState) != 0;
+        //if (is_clicked >= g_cmdbtns_grp->frame_count) { // Original ASM masks frame_count with 0x7FFF, but VS throws warnings with it.
+        //    is_clicked = 0; // Was LOWORD, presumably a flag negation
+        //}
+        auto draw_frame = 0;
+        if ((button->flags & DialogFlags::DrawActiveState) && g_cmdbtns_grp->frame_count) {
+            draw_frame = 1;
         }
 
-        GrpFrame* frame = &g_cmdbtns_grp->frames[is_clicked];
+        GrpFrame* frame = &g_cmdbtns_grp->frames[draw_frame];
         void* image_data = (char*)g_cmdbtns_grp + frame->data_offset;
         u32 bound_horizontal = button->bounds.right - button->bounds.left + 1;
         if (frame->w < bound_horizontal) {
@@ -726,11 +680,10 @@ namespace hooks {
             helper::image_render_fxn_0_0(button->bounds.left, button->bounds.top, &image_data - 1, &rect, 0);
         }
 
-        u32 flags = button->flags;
         s32 palette_type = 0;
-        if (flags & BinDlgFlags::Disabled) {
+        if (button->flags & DialogFlags::Disabled) {
             palette_type = 1;
-        } else if (flags & BinDlgFlags::NoClickSound) {
+        } else if (button->flags & DialogFlags::DrawActiveState) {
             palette_type = 2;
         } else if (button->button_user->requirement_var == TechId::Healing
                 && button->button_user->icon_id != IconId::Heal 
@@ -770,8 +723,8 @@ namespace hooks {
         }
 
         helper::image_render_fxn_0_0(
-            is_clicked + offset_x + button->bounds.left + (button->bounds.right - button->bounds.left - frame->w + 1) / 2,
-            is_clicked + offset_y + button->bounds.top + (button->bounds.bottom - button->bounds.top - frame->h + 1) / 2,
+            draw_frame + offset_x + button->bounds.left + (button->bounds.right - button->bounds.left - frame->w + 1) / 2,
+            draw_frame + offset_y + button->bounds.top + (button->bounds.bottom - button->bounds.top - frame->h + 1) / 2,
             &image_data - 1, &rect, 0);
         for (u32 i = 0; i < 16; ++i) {
             g_palette_remap[i] = i;
@@ -1185,7 +1138,7 @@ namespace hooks {
             } break;
             }
         }
-        return helper::latency_radio_interact(dialog, event);
+        return helper::button_shared_interact(dialog, event);
     }
 
     void set_latency(u8 latency) {
@@ -1217,11 +1170,11 @@ namespace hooks {
             auto player_id = slot_id_to_index(slot_id.value());
             auto& race_randomizer = RaceRandomizer::instance();
             auto& race_string = race_randomizer.race_string(player_id);
-            index = helper::combobox_add_item(dialog, 0, race_string.c_str());
+            index = helper::combobox_add_item(dialog, BinDlgComboboxFlags::ProvideStrings, race_string.c_str());
         } else {
-            index = helper::combobox_add_item(dialog, 0, race_to_table_string(race));
+            index = helper::combobox_add_item(dialog, BinDlgComboboxFlags::ProvideStrings, race_to_table_string(race));
         }
-        //auto index = helper::combobox_add_item(dialog, 0, race_to_table_string(race));
+        //auto index = helper::combobox_add_item(dialog, BinDlgComboboxFlags::ProvideStrings, race_to_table_string(race));
         dialog->combobox_output_array_u32[index] = race;
         if (race == selected_race) selection_index = index;
     }
@@ -1237,10 +1190,10 @@ namespace hooks {
     }
 
     void load_races_dropdown_singleplayer(BinDlg* dialog) {
-        dialog->flags |= 0x80000000;
+        dialog->flags |= DialogFlags::PropagateUpdate;
         auto selected_index = load_races_dropdown(dialog, RaceId::Random);
-        if (dialog->flags < 0) {
-            dialog->flags &= 0x7fffffff;
+        if (dialog->flags) {
+            dialog->flags ^= DialogFlags::PropagateUpdate;
             helper::generic_combobox_update(dialog);
         }
 

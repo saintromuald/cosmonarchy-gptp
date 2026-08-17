@@ -5,6 +5,8 @@
 #include "color_palette.h"
 #include "bwhelper.h"
 #include "storm/storm.h"
+#include "storm/sfile.h"
+#include "storm/smem.hpp"
 
 #include <functional>
 #include <map>
@@ -15,6 +17,11 @@
 #include <vector>
 
 constexpr u32 TFontCopyCount = 48;  // 6 font styles * 8 shades
+
+// Loads an 8-bit PCX or BMP (auto-detected) into `bitmap`
+// Allocs using SMemAlloc so either capture buffer in smem::ptr or ensure it's otherwise freed
+bool load_bitmap(const char* filename, Bitmap& bitmap, Palette* palette = nullptr,
+    SFileScope scope = SFileScope::DiskAndMpq, bool fatal_on_fail = true);
 
 enum class GluTheme {
     PalMm, // Main Menu
@@ -97,9 +104,6 @@ void bindlg_load_interaction_functions(BinDlg* dialog, const std::map<T, BinDlgP
 
 s32 background_id(MenuId::Enum menu_id);
 
-// Performs an Alloc
-// Alternative to helper::alloc_background_image
-void load_pcx_to_bitmap(const char* filename, Bitmap& bitmap, Palette* palette);
 void bindlg_load_background_palette(BinDlg* dialog); // See dialog_swish_in 0x004de150
 void bindlg_load_image(const char* filename, Palette* palette, BinDlg* dialog, u8* (__stdcall* malloc_func)(u32));
 void bindlg_load_background(BinDlg* dialog);
@@ -148,19 +152,7 @@ private:
     std::map<T, std::string> labels;
 };
 
-class BinFile {
-public:
-	BinFile(const char* filename);
-	BinDlg* bin_dlg() { return reinterpret_cast<BinDlg*>(m_buffer.data()); };
-
-	BinFile(const BinFile&) = delete;
-	BinFile& operator=(const BinFile&) = delete;
-	BinFile(BinFile&&) noexcept = default;
-	BinFile& operator=(BinFile&&) noexcept = default;
-
-private:
-	std::vector<u8> m_buffer;
-};
+smem::ptr<BinDlg> load_bin_file(const char* filename);
 
 std::vector<BinDlg*> splice_children_into(BinDlg* dest, BinDlg* source,
     s16 offset_x = 0, s16 offset_y = 0, s16 index_base = 0, bool bounds_are_ltrb = true);
@@ -185,7 +177,8 @@ public:
 
     u32 add_tab(const char* tab_filename, s16 offset_x = 0, s16 offset_y = 0, s16 index_base = 0);
 
-    BinDlg* bin_dlg() { return m_main.bin_dlg(); }
+    BinDlg* bin_dlg() { return m_main.get(); }
+    BinDlg* release() { return m_main.release(); }
 
     size_t tab_count() const { return m_tabs.size(); }
     const Tab& tab(u32 i) const { return m_tabs[i]; }
@@ -195,155 +188,9 @@ public:
     void show_only(u32 i);
 
 private:
-    BinFile m_main;
-    std::vector<std::unique_ptr<BinFile>> m_tab_bins;
+    smem::ptr<BinDlg> m_main;
+    std::vector<smem::ptr<BinDlg>> m_tab_bins;
     std::vector<Tab> m_tabs;
-};
-
-// Only use this for bins whose dialogproc frees the allocated heap
-template<typename T = void>
-T* load_file_smemalloc(const char* filename, const char* log_filename = __FILE__, u32 log_line = __LINE__) {
-    void* file_handle;
-    if (!SFileOpenFileEx(0, filename, 0, &file_handle)) {
-        helper::fatal_file_not_found(SErrGetLastError(), filename);
-    }
-
-    auto file_size = SFileGetFileSize(file_handle, 0);
-    if (file_size == -1) {
-        auto error = GetLastError();
-        SFileCloseFile(file_handle);
-        helper::file_fatal(&file_handle, error);
-        return nullptr;
-    }
-
-    if (!file_size) {
-        SFileCloseFile(file_handle);
-        helper::fatal_file_not_found(ERROR_BAD_LENGTH, filename);
-        return nullptr;
-    }
-
-    T* buffer = static_cast<T*>(SMemAlloc(file_size));
-
-    if (!buffer) {
-        SFileCloseFile(file_handle);
-        return nullptr;
-    }
-
-    u32 bytes_read = 0;
-    if (!SFileReadFile(file_handle, buffer, file_size, &bytes_read, 0)) {
-        auto error = GetLastError();
-        SFileCloseFile(file_handle);
-        SMemFree(buffer);
-        if (error == ERROR_HANDLE_EOF) {
-            helper::file_fatal(&file_handle, ERROR_BAD_LENGTH);
-            return nullptr;
-        }
-        helper::file_fatal(&file_handle, error);
-        return nullptr;
-    }
-
-    return buffer;
-}
-
-template<typename T = void>
-class LoadedFile {
-public:
-    explicit LoadedFile(const char* filename) {
-        load_file(filename);
-    }
-
-    LoadedFile(const LoadedFile&) = delete;
-    LoadedFile& operator=(const LoadedFile&) = delete;
-
-    LoadedFile(LoadedFile&& other) noexcept: m_buffer(std::move(other.m_buffer)) {}
-
-    LoadedFile& operator=(LoadedFile&& other) noexcept {
-        if (this != &other) {
-            m_buffer = std::move(other.m_buffer);
-        }
-        return *this;
-    }
-
-    T* data() { return reinterpret_cast<T*>(m_buffer.data()); }
-    const T* data() const { return reinterpret_cast<const T*>(m_buffer.data()); }
-
-    template<typename U = T>
-    U& get() requires (!std::is_void_v<U>) {
-        return *reinterpret_cast<U*>(m_buffer.data());
-    }
-
-    template<typename U = T>
-    const U& get() const requires (!std::is_void_v<U>) {
-        return *reinterpret_cast<const U*>(m_buffer.data());
-    }
-
-    size_t size() const { return m_buffer.size(); }
-
-    template<typename U = T>
-    size_t count() const requires std::is_array_v<U> {
-        return m_buffer.size() / sizeof(std::remove_extent_t<U>);
-    }
-
-    bool empty() const { return m_buffer.empty(); }
-    explicit operator bool() const { return !m_buffer.empty(); }
-
-    T* operator->() { return data(); }
-    const T* operator->() const { return data(); }
-
-    template<typename U = T>
-    U& operator*() requires (!std::is_void_v<U>) {
-        return get<U>();
-    }
-
-    template<typename U = T>
-    const U& operator*() const requires (!std::is_void_v<U>) {
-        return get<U>();
-    }
-
-private:
-    void load_file(const char* filename) {
-        void* file_handle;
-        if (!SFileOpenFileEx(0, filename, 0, &file_handle)) {
-            helper::fatal_file_not_found(SErrGetLastError(), filename);
-        }
-
-        auto file_size = SFileGetFileSize(file_handle, 0);
-        if (file_size == -1) {
-            auto error = GetLastError();
-            SFileCloseFile(file_handle);
-            helper::file_fatal(&file_handle, error);
-            return;
-        }
-
-        if (!file_size) {
-            SFileCloseFile(file_handle);
-            helper::fatal_file_not_found(ERROR_BAD_LENGTH, filename);
-            return;
-        }
-
-        m_buffer.resize(file_size);
-
-        u32 bytes_read = 0;
-        if (!SFileReadFile(file_handle, m_buffer.data(), file_size, &bytes_read, 0)) {
-            auto error = GetLastError();
-            SFileCloseFile(file_handle);
-            if (error == ERROR_HANDLE_EOF) {
-                helper::file_fatal(&file_handle, ERROR_BAD_LENGTH);
-                return;
-            }
-            helper::file_fatal(&file_handle, error);
-            return;
-        }
-
-        SFileCloseFile(file_handle);
-
-        if (bytes_read != file_size) {
-            helper::file_fatal(&file_handle, ERROR_BAD_LENGTH);
-        }
-    }
-
-private:
-    std::vector<u8> m_buffer;
 };
 
 class DynamicTheme {
@@ -364,9 +211,8 @@ public:
 private:
     DynamicTheme();
     DialogTheme* m_dialog_theme{};
-    LoadedFile<GrpFile> m_cursor_grp{"glue\\dynamic\\arrow.grp"};
+    smem::ptr<GrpFile> m_cursor_grp;
     // Currently unsure what tile.grp is used for, if anything
     // Seems related to save games
-    // LoadedFile<GrpFile> m_tile_grp{"glue\\dynamic\\tile.grp"};
     std::array<u8, TFontCopyCount> m_tfont_indices;
 };
