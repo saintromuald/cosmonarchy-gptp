@@ -14095,7 +14095,7 @@ namespace helper {
         __asm {
             PUSHAD
             MOV ECX, dialog
-            MOV EAX, dlg_event
+            MOV EDX, dlg_event
             CALL func_address
             MOV result, EAX
             POPAD
@@ -15508,7 +15508,7 @@ namespace helper {
         }
     }
 
-    bool latency_radio_interact(BinDlg* dialog, DialogEvent* event) {
+    bool button_shared_interact(BinDlg* dialog, DialogEvent* event) {
         const u32 func_address = 0x004e1a70;
         static b32 result;
         __asm {
@@ -15673,7 +15673,7 @@ namespace helper {
         return result;
     }
 
-    u8 combobox_add_item(BinDlg* dialog, u8 flags, const char* string) {
+    u8 combobox_add_item(BinDlg* dialog, BinDlgComboboxFlags flags, const char* string) {
         const u32 func_address = 0x0041b760;
         static u8 result;
         __asm {
@@ -15708,7 +15708,7 @@ namespace helper {
         }
     }
 
-    void generic_combobox_selection_update(BinDlg* dialog, u8 index) {
+    void scroll_selection_into_view(BinDlg* dialog, u8 index) {
         const u32 func_address = 0x0041a600;
         __asm {
             PUSHAD
@@ -15741,11 +15741,34 @@ namespace helper {
         }
     }
 
+    void gamma_adjust_palette(u32 palette_count, Palette* output_palette, Palette* input_palette) {
+        const u32 func_address = 0x0041dc20;
+        __asm {
+            PUSHAD
+            MOV ECX, palette_count
+            MOV EDX, output_palette
+            MOV EAX, input_palette
+            CALL func_address
+            POPAD
+        }
+    }
+
     void glu_change_menu_palette(u32 fade_time) {
         const u32 func_address = 0x0041e9e0;
         __asm {
             PUSHAD
             PUSH fade_time
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void setup_dialog_palette_effects(BinDlg* dialog, Palette* palette) {
+        const u32 func_address = 0x004178b0;
+        __asm {
+            PUSHAD
+            MOV EAX, palette
+            PUSH dialog
             CALL func_address
             POPAD
         }

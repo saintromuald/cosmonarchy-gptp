@@ -22,7 +22,7 @@ namespace hooks
 		} else if (g_campaign_index == 0 && g_current_map_filename) { // This addition enables establishing shots in custom scenarios
 			SFileOpenArchive(g_current_map_filename, 0, 0, map_archive_handle);
 			HANDLE handle = nullptr;
-			bool shot_exists = SFileOpenFileEx(*map_archive_handle, "rez\\est.txt", 0, &handle);
+			bool shot_exists = SFileOpenFileEx(*map_archive_handle, "rez\\est.txt", SFileScope::MpqOnly, &handle);
 			if (handle) {
 				SFileCloseFile(handle);
 			}
@@ -53,7 +53,7 @@ namespace hooks
 	// Currently identical to IDA. -Pr0nogo
 	void hide_dialog(BinDlg* dialog) // 00418700
 	{
-		if (dialog->flags & BinDlgFlags::Visible) {
+		if (dialog->flags & DialogFlags::Visible) {
 			DialogEvent dlg_event = {};
 			dlg_event.current.y = g_mouse->y;
 			dlg_event.number_order = DialogEventType_Dialog;
@@ -63,13 +63,12 @@ namespace hooks
 			if (((u32(__fastcall*)(BinDlg*, DialogEvent*, s32, s32))dialog->fxn_interact)(dialog, &dlg_event, 14, 0)) {
 				dlg_event.current.x = g_mouse->x;
 				dlg_event.number_order = DialogEventType_Dialog;
-				dlg_event.user = DialogUserType_SelectNext;
+				dlg_event.user = DialogUserType_AcceptFocus;
 				dlg_event.param = 0;
 				dlg_event.current.y = g_mouse->y;
 				((void(__fastcall*)(BinDlg*, DialogEvent*, s32, s32))dialog->fxn_interact)(dialog, &dlg_event, 6, 0);
-				u32 dialog_flags = dialog->flags;
-				if (!(dialog_flags & BinDlgFlags::Highlighted)) {
-					dialog->flags = dialog_flags | BinDlgFlags::Highlighted;
+				if (!(dialog->flags & DialogFlags::UpdateNeeded)) {
+					dialog->flags |= DialogFlags::UpdateNeeded;
 					helper::update_dialog(dialog);
 				}
 			}

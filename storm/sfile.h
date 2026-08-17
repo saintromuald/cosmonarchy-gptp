@@ -3,6 +3,7 @@
 #include "storm/storm.h"
 #include "storm/smem.hpp"
 
+#include <algorithm>
 #include <concepts>
 #include <string>
 #include <type_traits>
@@ -22,7 +23,6 @@ inline constexpr u32 ErrorBadLength = 24;   // ERROR_BAD_LENGTH
 inline constexpr u32 ErrorHandleEOF = 38;   // ERROR_HANDLE_EOF
 inline constexpr u32 ErrorUnrecognizedVolume = 1006; // ERROR_UNRECOGNIZED_VOLUME
 
-template <bool fatal_on_fail>
 struct LoadedFile {
     smem::ptr<char[]> data;
     size_t            size{};
@@ -30,9 +30,21 @@ struct LoadedFile {
 
     explicit operator bool() const noexcept { return static_cast<bool>(data); }
 
-    // Cast when size matches exactly
     template <typename T>
-    smem::ptr<T> cast() {
+    smem::ptr<T> cast() { return cast_impl<T, true>();}
+
+    template <typename T>
+    smem::ptr<T> try_cast() { return cast_impl<T, false>(); }
+
+    template <typename T>
+    smem::ptr<T> unsafe_cast() { return unsafe_cast_impl<T, true>();}
+
+    template <typename T>
+    smem::ptr<T> try_unsafe_cast() { return unsafe_cast_impl<T, false>();}
+
+private:
+    template <typename T, bool fatal_on_fail>
+    smem::ptr<T> cast_impl() {
         if (size != sizeof(T)) {
             if constexpr (fatal_on_fail) {
                 helper::fatal_file_not_found(ErrorBadLength, filename.c_str());
@@ -42,10 +54,8 @@ struct LoadedFile {
         return smem::ptr<T>{reinterpret_cast<T*>(data.release())};
     }
 
-    // Use for dynamically sized types e.g. .bin and .grp sides
-    // Ideally provide a bool validate_cast(type) function for further validation
-    template <typename T>
-    smem::ptr<T> unsafe_cast() {
+    template <typename T, bool fatal_on_fail>
+    smem::ptr<T> unsafe_cast_impl() {
         if (size < sizeof(T)) {
             if constexpr (fatal_on_fail) {
                 helper::fatal_file_not_found(ErrorBadLength, filename.c_str());
@@ -68,9 +78,13 @@ struct LoadedFile {
 namespace detail {
 
 template <bool fatal_on_fail>
-[[nodiscard]] inline LoadedFile<fatal_on_fail> load_file_impl(const char* filename) {
-    LoadedFile<fatal_on_fail> out{};
+[[nodiscard]] inline LoadedFile load_file_impl(const char* filename, SFileScope scope = SFileScope::MpqOnly) {
+    LoadedFile out{};
     out.filename = filename;
+
+    // Storm's absolute-path detection in SFileOpenFileEx only recognises backslashes (':\', '\\', leading '\').
+    std::string path{filename};
+    std::replace(path.begin(), path.end(), '/', '\\');
 
     void* file_handle = nullptr;
     char* buffer = nullptr;
@@ -79,7 +93,7 @@ template <bool fatal_on_fail>
     u32 fatal_error = 0;
     s32 raw_size = 0;
 
-    if (!SFileOpenFileEx(0, filename, 0, &file_handle)) {
+    if (!SFileOpenFileEx(0, path.c_str(), scope, &file_handle)) {
         auto err = SErrGetLastError();
         if constexpr (!fatal_on_fail) {
             if (err == ErrorFileNotFound || err == ErrorUnrecognizedVolume) {
@@ -134,13 +148,13 @@ cleanup:
 } // namespace detail
 
 // Load a file, treating any failure as fatal.
-[[nodiscard]] inline LoadedFile<true> load_mpq_file(const char* filename) {
-    return detail::load_file_impl<true>(filename);
+[[nodiscard]] inline LoadedFile load_file(const char* filename, SFileScope scope = SFileScope::MpqOnly) {
+    return detail::load_file_impl<true>(filename, scope);
 }
 
 // Load a file, returning an empty `LoadedFile` if it can't be found.
-[[nodiscard]] inline LoadedFile<false> try_load_mpq_file(const char* filename) {
-    return detail::load_file_impl<false>(filename);
+[[nodiscard]] inline LoadedFile try_load_file(const char* filename, SFileScope scope = SFileScope::MpqOnly) {
+    return detail::load_file_impl<false>(filename, scope);
 }
 
 } // namespace sfile

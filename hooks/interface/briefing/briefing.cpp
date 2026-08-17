@@ -51,9 +51,8 @@ namespace hooks
 		} else {
 			objective_dialog->text = (char*)objective_text;
 			helper::show_dialog(objective_dialog);
-			s32 objective_flags = objective_dialog->flags;
-			if (!(objective_flags & BinDlgFlags::Highlighted)) {
-				objective_dialog->flags = objective_flags | BinDlgFlags::Highlighted;
+			if (!(objective_dialog->flags & DialogFlags::UpdateNeeded)) {
+				objective_dialog->flags |= DialogFlags::UpdateNeeded;
 				helper::update_dialog(objective_dialog);
 			}
 		}

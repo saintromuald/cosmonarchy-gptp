@@ -76,12 +76,10 @@ static u32 __fastcall dlgproc_glu_main(BinDlg* dialog, DialogEvent* event) { // 
 void glu_main() {
     g_multiplayer_mode = false;
 
-    safe_copy(g_version_string, std::format("Cosmonarchy build {}", bw::get_commit_hash()));
+    g_current_dialog = load_bin_file("rez\\gluMain.bin").release();
+    auto last_control = helper::glu_load_bin_dialog(g_current_dialog, dlgproc_glu_main);
 
-    BinFile dialog{"rez\\gluMain.bin"};
-    auto result = helper::glu_load_bin_dialog(dialog.bin_dlg(), dlgproc_glu_main);
-
-    switch (static_cast<GluMainControls>(result)) {
+    switch (static_cast<GluMainControls>(last_control)) {
         case GluMainControls::ExitButton: {
             g_sc_main_state = MainState::Exit;
         } break;

@@ -37,8 +37,8 @@ public:
 
     using SinglePlayerSlots = std::array<PlayerSlot, 8>;
 
-    Result create_singleplayer_game(const char* map_path, u16 game_type, u16 game_subtype);
-    Result create_multiplayer_game(const char* map_path, u16 game_type, u16 game_subtype, const char* game_name);
+    Result create_singleplayer_game(const fs::path& map_path, u16 game_type, u16 game_subtype);
+    Result create_multiplayer_game(const fs::path& map_path, u16 game_type, u16 game_subtype, const char* game_name);
     Result join_lobby(u32 index);
     bool load_adfile(u32 index);
     
@@ -50,7 +50,7 @@ public:
 private:
     GameRunner() = default;
 
-    Result load_map(const char* path);
+    Result load_map(const fs::path& path);
     bool setup_game(const char* game_name, u16 game_type, u16 game_subtype);
     u32 race_ready_room(u32 race);
 

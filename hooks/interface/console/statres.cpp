@@ -23,14 +23,14 @@ struct StatresState {
 };
 StatresState statres_state;
 
-static void statres_text_with_icon_update(BinDlg* dialog, GrpFile& icons) {
+static void statres_text_with_icon_update(BinDlg* dialog, GrpFile* icons) {
     s16 dialog_top = dialog->bounds.top;
     s16 dialog_height = dialog->bounds.bottom - dialog_top + 1;
     s16 dialog_left = dialog->bounds.left;
 
-    if (dialog->graphic >= icons.frame_count()) dialog->graphic = 0;
+    if (dialog->graphic >= icons->frame_count()) dialog->graphic = 0;
 
-    auto& current_frame = icons.frame_headers()[dialog->graphic];
+    auto& current_frame = icons->frame_headers()[dialog->graphic];
     s16 width = current_frame.w;
     s16 height = current_frame.h;
     if (current_frame.data_offset < 0) {
@@ -39,7 +39,7 @@ static void statres_text_with_icon_update(BinDlg* dialog, GrpFile& icons) {
     }
 
     Bounds bounds{0, 0, width, height, width, height};
-    FxnDrawIconData data{width, height, icons.get_frame_pixel_data(dialog->graphic)};
+    FxnDrawIconData data{width, height, icons->get_frame_pixel_data(dialog->graphic)};
     helper::bw_print_icon(&bounds, &data, dialog_left, dialog_top + (dialog_height - height) / 2);
 
     if (dialog->text) {
@@ -145,7 +145,7 @@ static void statres_prep_child_dialogs(BinDlg* dialog) {
 }
 
 static void show_supply_info(BinDlg* dialog, u16 graphic, u16 workers, u16 men) {
-    if (!(dialog->flags & BinDlgFlags::Visible)) {
+    if (!(dialog->flags & DialogFlags::Visible)) {
         helper::show_dialog(dialog);
     }
 
@@ -163,15 +163,15 @@ static void show_supply_info(BinDlg* dialog, u16 graphic, u16 workers, u16 men) 
         while (buffer[++len]);
         dialog->statRes.font_handle = (u32*)font_base[len < 8 ? 1 : 0];
 
-        if (!(dialog->flags & BinDlgFlags::Highlighted)) {
-            dialog->flags |= BinDlgFlags::Highlighted;
+        if (!(dialog->flags & DialogFlags::UpdateNeeded)) {
+            dialog->flags |= DialogFlags::UpdateNeeded;
             helper::update_dialog(dialog);
         }
     }
 }
 
 static void print_stat_res_info(BinDlg* dialog, u16 graphic, s32& display_amount, s32 resource_amount) {
-    if (!(dialog->flags & BinDlgFlags::Visible)) {
+    if (!(dialog->flags & DialogFlags::Visible)) {
         helper::show_dialog(dialog);
     }
 
@@ -190,15 +190,15 @@ static void print_stat_res_info(BinDlg* dialog, u16 graphic, s32& display_amount
         while (buffer[++len]);
         dialog->statRes.font_handle = (u32*)font_base[len < 8 ? 1 : 0];
 
-        if (!(dialog->flags & BinDlgFlags::Highlighted)) {
-            dialog->flags |= BinDlgFlags::Highlighted;
+        if (!(dialog->flags & DialogFlags::UpdateNeeded)) {
+            dialog->flags |= DialogFlags::UpdateNeeded;
             helper::update_dialog(dialog);
         }
     }
 }
 
 static void print_player_apm(BinDlg* dialog, u32 user_value) {
-    if (!(dialog->flags & BinDlgFlags::Visible)) {
+    if (!(dialog->flags & DialogFlags::Visible)) {
         helper::show_dialog(dialog);
     }
 
@@ -217,15 +217,15 @@ static void print_player_apm(BinDlg* dialog, u32 user_value) {
         while (buffer[++len]);
         dialog->statRes.font_handle = (u32*)font_base[len < 5 ? 1 : 0];
 
-        if (!(dialog->flags & BinDlgFlags::Highlighted)) {
-            dialog->flags |= BinDlgFlags::Highlighted;
+        if (!(dialog->flags & DialogFlags::UpdateNeeded)) {
+            dialog->flags |= DialogFlags::UpdateNeeded;
             helper::update_dialog(dialog);
         }
     }
 }
 
 static void print_player_name(BinDlg* dialog, u32 user_value) {
-    if (!(dialog->flags & BinDlgFlags::Visible)) {
+    if (!(dialog->flags & DialogFlags::Visible)) {
         helper::show_dialog(dialog);
     }
 
@@ -235,8 +235,8 @@ static void print_player_name(BinDlg* dialog, u32 user_value) {
         u32 player = user_value >> 24;
         dialog->text = g_player_data.full_player_names[player];
 
-        if (!(dialog->flags & BinDlgFlags::Highlighted)) {
-            dialog->flags |= BinDlgFlags::Highlighted;
+        if (!(dialog->flags & DialogFlags::UpdateNeeded)) {
+            dialog->flags |= DialogFlags::UpdateNeeded;
             helper::update_dialog(dialog);
         }
     }
@@ -258,7 +258,7 @@ static u32 show_production_info(BinDlg* dialog, u8 player, u16 x_offset) {
             break;
         }
 
-        if (!(dialog->flags & BinDlgFlags::Visible)) {
+        if (!(dialog->flags & DialogFlags::Visible)) {
             helper::show_dialog(dialog);
         }
 
@@ -277,8 +277,8 @@ static u32 show_production_info(BinDlg* dialog, u8 player, u16 x_offset) {
             dialog->bounds.left = x_offset;
             dialog->bounds.right = x_offset + 14;
 
-            if (!(dialog->flags & BinDlgFlags::Highlighted)) {
-                dialog->flags |= BinDlgFlags::Highlighted;
+            if (!(dialog->flags & DialogFlags::UpdateNeeded)) {
+                dialog->flags |= DialogFlags::UpdateNeeded;
                 helper::update_dialog(dialog);
             }
         }
@@ -302,7 +302,7 @@ static u32 show_production_info(BinDlg* dialog, u8 player, u16 x_offset) {
     }
 
     do {
-        if (dialog->flags & BinDlgFlags::Visible) {
+        if (dialog->flags & DialogFlags::Visible) {
             helper::hide_dialog(dialog);
         }
 
@@ -356,7 +356,7 @@ static void draw_player_stats(BinDlg** dialog_ptr, v2u16* pos, u32 player,
         u16 display_value = g_player_table[player].type == PlayerType::Human ? g_player_apm_counter[player].action_count / (ActionSampleTime / 60.0) : 0x8000;
         print_player_apm(dialog, user_value | display_value);
         local_pos.x -= 33;
-    } else if (dialog->flags & BinDlgFlags::Visible) {
+    } else if (dialog->flags & DialogFlags::Visible) {
         helper::hide_dialog(dialog);
     }
 
@@ -371,7 +371,7 @@ static void draw_player_stats(BinDlg** dialog_ptr, v2u16* pos, u32 player,
 
     if (show_name) {
         print_player_name(dialog_name, user_value | local_pos.x);
-    } else if (dialog_name->flags & BinDlgFlags::Visible) {
+    } else if (dialog_name->flags & DialogFlags::Visible) {
         helper::hide_dialog(dialog_name);
     }
 
@@ -438,16 +438,16 @@ static void __fastcall stat_res_timer_proc(BinDlg* dialog, u16 index_unused) { /
     }
 
     while (dialog->index <= ResSize) {
-        if (dialog->flags & BinDlgFlags::Visible) {
+        if (dialog->flags & DialogFlags::Visible) {
             helper::hide_dialog(dialog);
             BinDlg* child = dialog->statRes.player_name; // dialog_name
             if (child) {
-                if (child->flags & BinDlgFlags::Visible) {
+                if (child->flags & DialogFlags::Visible) {
                     helper::hide_dialog(child);
                 }
                 child = dialog->child_dialog; // dialog_production
                 for (u32 i_0 = RowSize; i_0; --i_0) {
-                    if (child->flags & BinDlgFlags::Visible) {
+                    if (child->flags & DialogFlags::Visible) {
                         helper::hide_dialog(child);
                     }
 
@@ -460,7 +460,7 @@ static void __fastcall stat_res_timer_proc(BinDlg* dialog, u16 index_unused) { /
 }
 
 static void statres_dialogproc_create(BinDlg* dialog) { // 004e58d0
-    dialog->flags |= BinDlgFlags::UseAlternateStyle | BinDlgFlags::ReverseDialogDirection | BinDlgFlags::TransparentHideColor;
+    dialog->flags |= DialogFlags::UseAlternateStyle | DialogFlags::ReverseDialogDirection | DialogFlags::TransparentHideColor;
     statres_prep_child_dialogs(dialog);
     helper::set_callback_timer(dialog, statres_state.timer_index, statres_state.timer_duration, &stat_res_timer_proc);
 }
@@ -493,7 +493,6 @@ static u32 __fastcall statres_dialogproc(BinDlg* dialog, DialogEvent* event) { /
 } // namespace
 
 void load_statres() { // 004e5990
-    g_statres_dialog = load_file_smemalloc<BinDlg>("rez\\statres.bin", __FILE__, __LINE__);
-    helper::fixup_and_init_dialog_data(g_statres_dialog, helper::alloc_background_image, __FILE__, __LINE__);
+    g_statres_dialog = load_bin_file("rez\\statres.bin").release();
     initialize_dialog(g_statres_dialog, statres_dialogproc);
 }

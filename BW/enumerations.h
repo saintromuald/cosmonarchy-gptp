@@ -645,42 +645,49 @@ enum MovableState {
     MovableState_UnmovableAtDestination = 2,
 };
 
-namespace BinDlgFlags {
-enum Enum {
-    Highlighted               = 0x00000001,
-    Disabled                  = 0x00000002,
-    Active                    = 0x00000004,
-    Visible                   = 0x00000008,
-    RespondsToEvents          = 0x00000010,
-    Unknown5                  = 0x00000020,
-    CancelButton              = 0x00000040,
-    NoHoverSound              = 0x00000080,
-    SpecialHotkeyVirtualKey   = 0x00000100,
-    HasHotkey                 = 0x00000200,
-    SmallestFontSize10        = 0x00000400,
-    LargerFontSize16          = 0x00000800,
-    Unknown12                 = 0x00001000,
-    TransparentHideColor      = 0x00002000,
-    LargestFontSize16x        = 0x00004000,
-    AlternateStyleWC2         = 0x00008000,
-    SmallerFontSize14         = 0x00010000,
-    RemoveStyles              = 0x00020000,
-    ApplyTranslucency         = 0x00040000,
-    DefaultButton             = 0x00080000,
-    BringToFront              = 0x00100000,
-    HorizontalAlignmentLeft   = 0x00200000,
-    HorizontalAlignmentRight  = 0x00400000,
+namespace DialogFlags {
+enum Enum : u32 {
+    None = 0x00000000,
+    UpdateNeeded = 0x00000001, // Used to be "Highlighted"
+    Disabled = 0x00000002,
+    HeapAllocated = 0x00000004, // Used to be "Active", always set after alloc, cleared with free
+    Visible = 0x00000008,
+    RespondsToEvents = 0x00000010,
+    BitmapSharedBuffer = 0x00000020,
+    CancelButton = 0x00000040,
+    MouseHovering = 0x00000080,
+    SpecialHotkeyVirtualKey = 0x00000100,
+    HasHotkey = 0x00000200,
+    SmallestFontSize10 = 0x00000400,
+    LargerFontSize16 = 0x00000800,
+    RenderWithFocusHighlight = 0x00001000,
+    TransparentHideColor = 0x00002000,
+    LargestFontSize16x = 0x00004000,
+    AlternateStyleWC2 = 0x00008000,
+    SmallerFontSize14 = 0x00010000,
+    RemoveStyles = 0x00020000,
+    ApplyTranslucency = 0x00040000,
+    DefaultButton = 0x00080000,
+    BringToFront = 0x00100000,
+    HorizontalAlignmentLeft = 0x00200000,
+    HorizontalAlignmentRight = 0x00400000,
     HorizontalAlignmentCenter = 0x00800000,
-    VerticalAlignmentTop      = 0x01000000,
-    VerticalAlignmentMiddle   = 0x02000000,
-    VerticalAlignmentBottom   = 0x04000000,
-    Unknown27                 = 0x08000000,
-    ReverseDialogDirection    = 0x10000000,
-    UseAlternateStyle         = 0x20000000,
-    NoClickSound              = 0x40000000,
-    UpdateNeeded              = 0x80000000,
+    VerticalAlignmentTop = 0x01000000,
+    VerticalAlignmentMiddle = 0x02000000,
+    VerticalAlignmentBottom = 0x04000000,
+    Unknown27 = 0x08000000,
+    ReverseDialogDirection = 0x10000000, // DiagOnlyRedraw? if set skip bw_refresh and only invalidate dialog layer?
+    UseAlternateStyle = 0x20000000, // Possibly: CustomInputRouting
+    DrawActiveState = 0x40000000, // Used to be called "NoClickSound". Used for lightup hover, button pressed state, textbox cursor blink etc
+    PropagateUpdate = 0x80000000, // Propagate update through other dialogs
 };
 }
+
+// for combobox_add_item and combobox_clear
+enum class BinDlgComboboxFlags : u8 {
+    ProvideStrings = 0x0,
+    AllocStrings   = 0x10,
+};
 
 namespace SmkFlags {
 enum Enum {
@@ -712,7 +719,7 @@ enum class DialogControlType : u16 {
     Image               = 5,
     HorizontalScrollBar = 6,
     VerticalScrollBar   = 7,
-    TextBox             = 8,
+    TextInput             = 8,
     LabelLeftAlign      = 9,
     LabelCenterAlign    = 10,
     LabelRightAlign     = 11,
@@ -1537,8 +1544,8 @@ enum DialogUserType {
     DialogUserType_Activate          = 2,
     DialogUserType_Hotkey            = 3,
     DialogUserType_MouseOver         = 4,
-    DialogUserType_SelectPrev        = 5,
-    DialogUserType_SelectNext        = 6,
+    DialogUserType_RequestFocus      = 5, // Used to be SelectPrevious
+    DialogUserType_AcceptFocus       = 6, // Used to be SelectNext
     DialogUserType_Generic           = 7,
     DialogUserType_InitSelf          = 8,
     DialogUserType_MouseEnter        = 9,
@@ -1625,6 +1632,8 @@ enum Enum : u32{
     GlueJoinCrownlink = 26,
     GlueProviderSelectCrownlink = 27,
     GlueOptions = 28,
+    GluCampaignList = 29,
+    GluCampaignDetails = 30,
 };
 }
 

@@ -17,8 +17,8 @@ static u32 __fastcall dlgproc_glu_join_crownlink_listbox(BinDlg* dialog, DialogE
         case DialogUserType_Create: {
             g_context->update_listbox(dialog);
             g_context->load_selected_entry(dialog);
-            if (dialog->flags & BinDlgFlags::UpdateNeeded) {
-                dialog->flags &= ~BinDlgFlags::UpdateNeeded;
+            if (dialog->flags & DialogFlags::PropagateUpdate) {
+                dialog->flags &= ~DialogFlags::PropagateUpdate;
                 helper::generic_combobox_update(dialog);
             }
             helper::set_callback_timer(dialog, timer_index, timer_duration, 0);
@@ -36,7 +36,7 @@ static u32 __fastcall dlgproc_glu_join_crownlink_listbox(BinDlg* dialog, DialogE
             }
         } break;
         case DialogUserType_InitChildren: {
-            dialog->flags |= BinDlgFlags::RemoveStyles;
+            dialog->flags |= DialogFlags::RemoveStyles;
         } break;
         case DialogUserType_SetSelectionIndex: {
             helper::generic_listbox_interact(dialog, event);
@@ -179,7 +179,7 @@ void GluJoinCrownlinkContext::update_listbox(BinDlg* dialog) {
     auto& game_runner = GameRunner::instance();
     auto selected_adfile = selected_adfile_index(dialog);
 
-    dialog->flags |= BinDlgFlags::UpdateNeeded;
+    dialog->flags |= DialogFlags::PropagateUpdate;
     helper::combobox_clear_items(dialog);
 
     game_runner.update_adfiles();
@@ -189,11 +189,11 @@ void GluJoinCrownlinkContext::update_listbox(BinDlg* dialog) {
         if (adfile.game_state == 12) continue; // Game in progress. TODO: Create an enum
         m_adfile_indexes.push_back(adfile.game_index);
         m_listbox_entries.push_back(format_listbox_line(adfile));
-        auto new_index = helper::combobox_add_item(dialog, 0, m_listbox_entries.back().c_str());
+        auto new_index = helper::combobox_add_item(dialog, BinDlgComboboxFlags::ProvideStrings, m_listbox_entries.back().c_str());
     }
     
-    if (dialog->flags & BinDlgFlags::UpdateNeeded) {
-        dialog->flags &= ~BinDlgFlags::UpdateNeeded;
+    if ((dialog->flags & DialogFlags::PropagateUpdate)) {
+        dialog->flags &= ~DialogFlags::PropagateUpdate;
         helper::generic_combobox_update(dialog);
     }
 
@@ -215,7 +215,7 @@ void GluJoinCrownlinkContext::update_listbox(BinDlg* dialog) {
     event.user = DialogUserType_SetSelectionIndex;
     event.number_order = DialogEventType_Dialog;
     dialog->interaction_function(dialog, &event);
-    helper::generic_combobox_selection_update(dialog, event.param);
+    helper::scroll_selection_into_view(dialog, event.param);
 }
 
 void GluJoinCrownlinkContext::on_create(BinDlg* dialog, DialogEvent* event) {

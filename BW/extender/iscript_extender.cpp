@@ -60,7 +60,7 @@ namespace hooks {
 
 	static void init_iscript_bin() {
 		for (u32 index = 0; index < IscriptFileCount; ++index) {
-			iscript_handles[index] = sfile::load_mpq_file(g_iscript_filenames[index]).unsafe_cast<char>().release();
+			iscript_handles[index] = sfile::load_file(g_iscript_filenames[index]).unsafe_cast<char>().release();
 		}
 
 		g_iscript_data = iscript_handles[0];

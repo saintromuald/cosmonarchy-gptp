@@ -225,7 +225,7 @@ namespace hooks {
             bool stop_looping = false;
             do {
                 // look for the button corresponding to the one used for the current main_order
-                if (current_button_dialog->flags & BinDlgFlags::Visible) {
+                if (current_button_dialog->flags & DialogFlags::Visible) {
                     if (current_button_dialog->graphic != used_button_icon) {
                         current_button_dialog = current_button_dialog->next;
                     } else {
@@ -239,8 +239,8 @@ namespace hooks {
         if (!current_button_dialog) {
             g_highlighted_icon = 0xFFFF;
         } else {
-            if (!(current_button_dialog->flags & BinDlgFlags::Highlighted)) {
-                current_button_dialog->flags |= BinDlgFlags::Highlighted;
+            if (!(current_button_dialog->flags & DialogFlags::UpdateNeeded)) {
+                current_button_dialog->flags |= DialogFlags::UpdateNeeded;
                 bw::update_dialog(current_button_dialog);
             }
             g_highlighted_icon = used_button_icon;
@@ -4602,8 +4602,8 @@ namespace hooks {
                                 ButtonSet* buttonset;	//[EBP-04]	[18]
                             } stack_placeholder;
                             current_dialog->graphic = current_button->icon_id;
-                            if (!(current_dialog->flags & BinDlgFlags::Highlighted)) {
-                                current_dialog->flags |= BinDlgFlags::Highlighted;
+                            if (!(current_dialog->flags & DialogFlags::UpdateNeeded)) {
+                                current_dialog->flags |= DialogFlags::UpdateNeeded;
                                 bw::update_dialog(current_dialog);
                             }
                             stack_placeholder.not_allocated = 0;

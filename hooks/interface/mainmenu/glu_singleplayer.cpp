@@ -29,7 +29,7 @@ static u32 start_tutorial(BinDlg* dialog, RaceId::Enum race) {
     auto& game_runner = GameRunner::instance();
     auto scenario_path = tutorial_path(race);
     if (!scenario_path) return 1;
-    if (game_runner.create_singleplayer_game(scenario_path->string().c_str(),
+    if (game_runner.create_singleplayer_game(*scenario_path,
         GameType::Scenario, 1) == GameRunner::Result::Success) {
         return helper::dialog_swish_out(dialog);
     }
@@ -91,11 +91,10 @@ void glu_singleplayer() {
     g_multiplayer_mode = false;
     helper::load_campaign_progress();
 
-    BinFile dialog{"rez\\glututorials.bin"};
+    auto dialog = load_bin_file("rez\\glututorials.bin").release();
+    auto last_control = helper::glu_load_bin_dialog(dialog, dlgproc_glu_tutorials);
 
-    auto result = helper::glu_load_bin_dialog(dialog.bin_dlg(), dlgproc_glu_tutorials);
-
-    switch (static_cast<GluExCampgnControls>(result)) {
+    switch (static_cast<GluExCampgnControls>(last_control)) {
     case GluExCampgnControls::LoadSavedButton: {
         g_gl_glues_mode = MenuId::GlueLoad;
     } break;

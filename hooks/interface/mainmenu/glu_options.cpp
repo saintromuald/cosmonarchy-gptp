@@ -27,7 +27,7 @@ static void load_uibool(BinDlg* dialog, GluOptionsControls control, UiBool &uibo
     BinDlg* control_dialog = get_first_child_by_index(dialog, control);
     if (!control_dialog) return;
     quick_send_event(control_dialog, DialogUserType_SetSelectionIndex, std::to_underlying(uibool.value));
-    helper::generic_combobox_selection_update(control_dialog, std::to_underlying(uibool.value));
+    helper::scroll_selection_into_view(control_dialog, std::to_underlying(uibool.value));
 }
 
 static void apply_uibool(BinDlg* dialog, GluOptionsControls control, UiBool &uibool) {
@@ -181,18 +181,18 @@ static u32 __fastcall uibool_combobox_interact(BinDlg* dialog, DialogEvent* even
     if (event->number_order == DialogEventType_Dialog) {
         switch (event->user) {
             case DialogUserType_Create: {
-                dialog->flags |= BinDlgFlags::UpdateNeeded;
+                dialog->flags |= DialogFlags::PropagateUpdate;
                 for (auto name : ui_bool_names) {
-                    auto index = helper::combobox_add_item(dialog, 0, name);
+                    auto index = helper::combobox_add_item(dialog, BinDlgComboboxFlags::ProvideStrings, name);
                     dialog->combobox_output_array_u32[index] = index;
                 }
-                if (dialog->flags & BinDlgFlags::UpdateNeeded) {
-                    dialog->flags &= ~BinDlgFlags::UpdateNeeded;
+                if (dialog->flags & DialogFlags::PropagateUpdate) {
+                    dialog->flags &= ~DialogFlags::PropagateUpdate;
                     helper::generic_combobox_update(dialog);
                 }
             } break;
             case DialogUserType_InitChildren: {
-                dialog->flags |= BinDlgFlags::RemoveStyles;
+                dialog->flags |= DialogFlags::RemoveStyles;
                 helper::generic_combobox_interact(dialog, event);
             } break;
         }
@@ -200,19 +200,19 @@ static u32 __fastcall uibool_combobox_interact(BinDlg* dialog, DialogEvent* even
     return helper::generic_combobox_interact(dialog, event);
 }
 
-static void enable_tabs() {
-    enable_dialogs_with_index(g_options_bin->bin_dlg(), GluOptionsControls::MiscTabButton);
-    enable_dialogs_with_index(g_options_bin->bin_dlg(), GluOptionsControls::UiTabButton);
+static void enable_tabs(BinDlg* dialog) {
+    enable_dialogs_with_index(dialog, GluOptionsControls::MiscTabButton);
+    enable_dialogs_with_index(dialog, GluOptionsControls::UiTabButton);
     //enable_dialogs_with_index(g_options_bin->bin_dlg(), GluOptionsControls::HotkeysTabButton);
     //enable_dialogs_with_index(g_options_bin->bin_dlg(), GluOptionsControls::ColorsTabButton);
 }
 
-static void highlight_tab(GluOptionsControls control) {
-    hide_dialogs_with_index(g_options_bin->bin_dlg(), GluOptionsControls::MiscTabHighlight);
-    hide_dialogs_with_index(g_options_bin->bin_dlg(), GluOptionsControls::UiTabHighlight);
-    hide_dialogs_with_index(g_options_bin->bin_dlg(), GluOptionsControls::HotkeysTabHighlight);
-    hide_dialogs_with_index(g_options_bin->bin_dlg(), GluOptionsControls::ColorsTabHighlight);
-    show_dialogs_with_index(g_options_bin->bin_dlg(), control);
+static void highlight_tab(BinDlg* dialog, GluOptionsControls control) {
+    hide_dialogs_with_index(dialog, GluOptionsControls::MiscTabHighlight);
+    hide_dialogs_with_index(dialog, GluOptionsControls::UiTabHighlight);
+    hide_dialogs_with_index(dialog, GluOptionsControls::HotkeysTabHighlight);
+    hide_dialogs_with_index(dialog, GluOptionsControls::ColorsTabHighlight);
+    show_dialogs_with_index(dialog, control);
 }
 
 static void options_on_init_children(BinDlg* dialog, DialogEvent* event) {
@@ -228,14 +228,17 @@ static u32 options_on_activate(BinDlg* dialog, DialogEvent* event) {
     switch (static_cast<GluOptionsControls>(last_control_index)) {
         case GluOptionsControls::MiscTabButton: {
             g_options_bin->show_only(misc_tab);
-            highlight_tab(GluOptionsControls::MiscTabHighlight);
+            highlight_tab(dialog, GluOptionsControls::MiscTabHighlight);
             return 1;
         } break;
         case GluOptionsControls::UiTabButton: {
             g_options_bin->show_only(ui_tab);
-            highlight_tab(GluOptionsControls::UiTabHighlight);
+            highlight_tab(dialog, GluOptionsControls::UiTabHighlight);
             return 1;
         } break;
+        case GluOptionsControls::OK: {
+            apply_options(dialog);
+        };
     }
     return helper::generic_dialog_interact(dialog, event);
 }
@@ -246,7 +249,7 @@ static u32 __fastcall dlgproc_glu_options(BinDlg* dialog, DialogEvent* event) {
         case DialogUserType_Create: {
             bindlg_load_background_palette(dialog);
             g_options_bin->show_only(misc_tab);
-            highlight_tab(GluOptionsControls::MiscTabHighlight);
+            highlight_tab(dialog, GluOptionsControls::MiscTabHighlight);
             load_options(dialog);
             return helper::generic_dialog_interact(dialog, event);
         } break;
@@ -269,12 +272,7 @@ void glu_options() {
     misc_tab = g_options_bin->add_tab("rez\\options\\tab-misc.bin", 55, 95, 0);
     ui_tab = g_options_bin->add_tab("rez\\options\\tab-ui.bin", 55, 95, 0);
 
-    auto result = helper::glu_load_bin_dialog(g_options_bin->bin_dlg(), dlgproc_glu_options);
-    switch (static_cast<GluOptionsControls>(result)) {
-        case GluOptionsControls::OK: {
-            apply_options(g_options_bin->bin_dlg());
-        } break;
-    }
+    helper::glu_load_bin_dialog(g_options_bin->release(), dlgproc_glu_options);
 
     g_gl_glues_mode = MenuId::GlueMainMenu;
     change_menu();

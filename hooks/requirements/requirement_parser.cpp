@@ -11,7 +11,7 @@ namespace
 	bool parseRequirementsFile(const char* path, u16 requirementOverridesIndex[TMP_CONST_COUNT_ARG], u16 requirementOpcodes[TMP_CONST_COUNT_ARG * ENTRY_OPCODE_LIMIT_ARG])
 	{
 		HANDLE fileHandle;
-		if (!SFileOpenFileEx(0, path, 0, &fileHandle))
+		if (!SFileOpenFileEx(0, path, SFileScope::MpqOnly, &fileHandle))
 		{
 			bw::printf_console("File not found: %s", path);
 			return false;

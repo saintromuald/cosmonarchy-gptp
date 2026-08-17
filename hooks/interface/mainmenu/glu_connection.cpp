@@ -7,9 +7,8 @@
 
 void glu_provider_select(bool from_crownlink) {
     g_gl_glues_mode = MenuId::GlueSelConn;
-    g_connect_bin = load_file_smemalloc<BinDlg>("rez\\gluConn.bin");
-    g_connect_bin->flags |= BinDlgFlags::Active;
-    helper::fixup_and_init_dialog_data(g_connect_bin, helper::alloc_background_image, __FILE__, __LINE__);
+
+    g_connect_bin = load_bin_file("rez\\gluConn.bin").release();
 
     auto result = helper::glu_load_bin_dialog(g_connect_bin, (BinDlgProc)0x004bae20);
     bool force_refresh = false;
@@ -50,5 +49,6 @@ void glu_provider_select(bool from_crownlink) {
         }
     } break;
     }
+
     change_menu(force_refresh);
 }

@@ -36,6 +36,7 @@ namespace helper {
     BW_FUNC(0x004DDD30, char* __stdcall, get_string_by_id, s16 id);
     BW_FUNC(0x004c9780, void __stdcall, save_options_menu_result, BinDlg* dialog);
     BW_FUNC(0x004f57a0, void __fastcall, load_bin_dlg, const char* bin_name, BinDlgProc dlgproc);
+    BW_FUNC(0x004de140, void __fastcall, show_queued_network_error, u16 index);
 
     // Menu functions
     BW_FUNC(0x004db930, void __stdcall, glu_main);
@@ -57,6 +58,19 @@ namespace helper {
     // Default DlgProcs and UpdateFuncs indexed by DialogControlType
     BW_ARRAY(BinDlgProc,       15, g_default_dialogprocs,    0x005014ac);
     BW_ARRAY(DialogUpdateFunc, 15, g_default_dialog_updates, 0x00501504);
+
+    // Per control type
+    BW_FUNC(0x00418eb0, u32 __fastcall, default_interaction_dialog,   BinDlg* dialog, DialogEvent* event);
+    BW_FUNC(0x004e1c20, u32 __fastcall, default_interaction_button,   BinDlg* dialog, DialogEvent* event);
+    BW_FUNC(0x004e1bc0, u32 __fastcall, default_interaction_option,   BinDlg* dialog, DialogEvent* event);
+    BW_FUNC(0x004e1b50, u32 __fastcall, default_interaction_checkbox, BinDlg* dialog, DialogEvent* event);
+    BW_FUNC(0x004191e0, u32 __fastcall, default_interaction_image,    BinDlg* dialog, DialogEvent* event);
+    BW_FUNC(0x00415af0, u32 __fastcall, default_interaction_slider,   BinDlg* dialog, DialogEvent* event);
+    BW_FUNC(0x00416980, u32 __fastcall, default_interaction_textbox,  BinDlg* dialog, DialogEvent* event);
+    BW_FUNC(0x00419190, u32 __fastcall, default_interaction_label,    BinDlg* dialog, DialogEvent* event);
+    BW_FUNC(0x0041baa0, u32 __fastcall, default_interaction_listbox,  BinDlg* dialog, DialogEvent* event);
+    BW_FUNC(0x0041bc40, u32 __fastcall, default_interaction_combobox, BinDlg* dialog, DialogEvent* event);
+    BW_FUNC(0x004e17e0, u32 __fastcall, default_interaction_lightup,  BinDlg* dialog, DialogEvent* event);
 
     BW_FUNC(0x004ab840, u32* __stdcall, glu_main_load_ums_templates);
     BW_FUNC(0x004c4680, void __stdcall, glu_login_leave_game);
@@ -1639,7 +1653,7 @@ namespace helper {
     void draw_func_normal(u32 screen_x, u32 screen_y, void* image_data, Box32* rect, u32 color_data);	    // 0040ABBE
 
     void file_fatal(HANDLE* file, u32 something);																								// 004D2880
-    void fixup_and_init_dialog_data(BinDlg* dialog, void(__fastcall* function)(const char*, Bitmap*, Palette*, const char*, u32), const char* log_filename, u32 log_line);	// 004194E0
+    void fixup_and_init_dialog_data(BinDlg* dialog, void(__fastcall* function)(const char*, Bitmap*, Palette*, const char*, u32), const char* log_filename = nullptr, u32 log_line = 0);	// 004194E0
     void initialize_dialog(u32(__fastcall* function)(BinDlg*, DialogEvent*), BinDlg* dialog);													// 00419D20
     s32 display_dialog(BinDlgProc dialog_proc, BinDlg* dialog);
 
@@ -1883,14 +1897,20 @@ namespace helper {
     void latency_dialog_create(BinDlg* dialog);                                     // 004e89c0
     void latency_print_result(u32, const char* string);                             // 0048d0c0
     void latency_activate_radio(BinDlg* dialog);                                    // 004e1900
-    bool latency_radio_interact(BinDlg* dialog, DialogEvent* event);                // 004e1bc0
+
+    // Shared behaviors between button, defaultbutton, checkbox, and optionbutton
+    bool button_shared_interact(BinDlg* dialog, DialogEvent* event);                // 004e1bc0
     
-    u8 combobox_add_item(BinDlg* dialog, u8 flags, const char* string);             // 0041b760
-    void combobox_clear_items(BinDlg* dialog);                                      // 0041b890
-    void generic_combobox_update(BinDlg* dialog);                                   // 0041b410
-    void generic_combobox_selection_update(BinDlg* dialog, u8 index);               // 0041a600
+    u8 combobox_add_item(BinDlg* dialog, BinDlgComboboxFlags flags, const char* string);    // 0041b760
+    void combobox_clear_items(BinDlg* dialog);                                              // 0041b890
+    void generic_combobox_update(BinDlg* dialog);                                           // 0041b410
+    void scroll_selection_into_view(BinDlg* dialog, u8 index);                       // 0041a600
+
     void update_dialog_text(BinDlg* dialog, u16 index, const char* string);         // 004dcf30
     void glu_update_palette(u32 fade_time);                                         // 0041ea30
+    void gamma_adjust_palette(u32 palette_count, Palette* output_palette, Palette* input_palette);   // 0041dc20
+    // Recomputes lookup table for translucency effect
+    void setup_dialog_palette_effects(BinDlg* dialog, Palette* palette);            // 004178b0
     void glu_change_menu_palette(u32 fade_time);                                    // 0041e9e0
 
     void enable_sound_list(u16* sounds_array);                                      // 004bccf0

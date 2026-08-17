@@ -7,15 +7,15 @@
 #include "storm/sfile.h"
 
 void glu_login() {
-    g_login_bin = sfile::load_mpq_file("rez\\gluLogin.bin").unsafe_cast<BinDlg>().release();
+    g_login_bin = sfile::load_file("rez\\gluLogin.bin").unsafe_cast<BinDlg>().release();
 
-    g_login_bin->flags |= BinDlgFlags::Active;
+    g_login_bin->flags |= DialogFlags::HeapAllocated;
     helper::fixup_and_init_dialog_data(g_login_bin, helper::alloc_background_image, __FILE__, __LINE__);
     
-    auto result = helper::glu_load_bin_dialog(g_login_bin, (BinDlgProc)0x004edaa0);
+    auto last_control = helper::glu_load_bin_dialog(g_login_bin, (BinDlgProc)0x004edaa0);
     auto& provider_manager = snp::ProviderManager::instance();
     bool force_refresh = false;
-    switch (static_cast<GluLoginControls>(result)) {
+    switch (static_cast<GluLoginControls>(last_control)) {
     case GluLoginControls::OkButton: {
         if (g_multiplayer_mode) {
             if (provider_manager.initialize_provider('CNLK')) {

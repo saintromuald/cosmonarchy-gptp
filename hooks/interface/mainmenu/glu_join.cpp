@@ -3,9 +3,8 @@
 
 void glu_join() {
     if (!g_music_playing) helper::dialog_music_fade(MusicId::MusicId_Title);
-    g_join_bin = load_file_smemalloc<BinDlg>("rez\\gluJoin.bin");
-    g_join_bin->flags |= BinDlgFlags::Active;
-    helper::fixup_and_init_dialog_data(g_join_bin, helper::alloc_background_image, __FILE__, __LINE__);
+
+    g_join_bin = load_bin_file("rez\\glujoin.bin").release();
 
     auto result = helper::glu_load_bin_dialog(g_join_bin, helper::glujoin_dlgproc);
     switch (static_cast<GluJoinControls>(result)) {

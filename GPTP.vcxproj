@@ -226,6 +226,7 @@
   </Target>
   <ItemGroup>
     <None Include="storm\storm.def" />
+    <Natvis Include="bw_dialog.natvis" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AIScripter\AICore.cpp" />
@@ -648,7 +649,9 @@
     <ClInclude Include="BW\extender\iscript_extender.h" />
     <ClInclude Include="BW\game_runner.h" />
     <ClInclude Include="BW\rand.h" />
+    <ClInclude Include="BW\structures\ui_structures.h" />
     <ClInclude Include="CampaignManager.h" />
+    <ClInclude Include="safeunion.h" />
     <ClInclude Include="storm\sfile.h" />
     <ClInclude Include="storm\storm.h" />
     <ClInclude Include="storm\smem.hpp" />

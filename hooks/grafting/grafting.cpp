@@ -248,7 +248,7 @@ namespace {
 
 	// Have to use raw pointers for target for now since they're used in inline assembly and BW_DATA_DEF -Jesse
 	void reload_req_graft(const char* filename, GraftType::Enum type, REQ_SCRIPT*& target) {
-		auto data = sfile::try_load_mpq_file(filename).unsafe_cast<REQ_SCRIPT>();
+		auto data = sfile::try_load_file(filename).unsafe_cast<REQ_SCRIPT>();
 		if (!data) return;
 
 		hooks::inject_grafting_data(data.get(), type);
@@ -269,7 +269,7 @@ namespace hooks {
 	}
 
 	void load_button_grafts() {
-		auto file = sfile::try_load_mpq_file("datreq\\buttons.graft");
+		auto file = sfile::try_load_file("datreq\\buttons.graft");
 		if (!file) return;
 
 		// Header: u32 button_count, unit_count, unit_stat_count

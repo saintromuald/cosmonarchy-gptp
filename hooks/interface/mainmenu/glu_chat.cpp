@@ -21,20 +21,20 @@ void glu_chat_race_combobox_prep(BinDlg* dialog, RaceId::Enum selected_Race, u32
     }
     helper::enable_dialog(dialog);
 
-    if (!(dialog->flags & BinDlgFlags::Highlighted)) {
-        dialog->flags |= BinDlgFlags::Highlighted;
+    if (!(dialog->flags & DialogFlags::UpdateNeeded)) {
+        dialog->flags |= DialogFlags::UpdateNeeded;
         helper::update_dialog(dialog);
     }
 
-    quick_send_event(dialog, DialogUserType_SelectNext);
-    dialog->flags |= BinDlgFlags::UpdateNeeded;
+    quick_send_event(dialog, DialogUserType_AcceptFocus);
+    dialog->flags |= DialogFlags::PropagateUpdate;
     dialog->interaction_function = helper::generic_combobox_interact;
     helper::combobox_clear_items(dialog);
 
     auto selected_index = hooks::load_races_dropdown(dialog, selected_Race, slot_id);
 
-    if (dialog->flags & BinDlgFlags::UpdateNeeded) {
-        dialog->flags &= ~BinDlgFlags::UpdateNeeded;
+    if (dialog->flags & DialogFlags::PropagateUpdate) {
+        dialog->flags &= ~DialogFlags::PropagateUpdate;
         helper::generic_combobox_update(dialog);
     }
 
@@ -154,9 +154,7 @@ static void map_preview_init(BinDlg* dialog) {
     g_chat_minimap_shown = 1;
     g_minimap_draw_neutrals = true;
     
-    g_minimap_bin = load_file_smemalloc<BinDlg>("rez\\minimappreview.bin");
-    g_minimap_bin->flags |= BinDlgFlags::Active;
-    helper::fixup_and_init_dialog_data(g_minimap_bin, helper::alloc_background_image, __FILE__, __LINE__);
+    g_minimap_bin = load_bin_file("rez\\minimappreview.bin").release();
     initialize_dialog(g_minimap_bin, (BinDlgProc)0x004a5900);
 
     g_minimap_draw_neutrals = false;
@@ -242,9 +240,7 @@ void glu_chat() {
     g_chat_comboboxes_enabled = true;
     g_chat_game_is_public = false;
 
-    g_chat_bin = load_file_smemalloc<BinDlg>("rez\\gluChat.bin");
-    g_chat_bin->flags |= BinDlgFlags::Active;
-    helper::fixup_and_init_dialog_data(g_chat_bin, helper::alloc_background_image, __FILE__, __LINE__);
+    g_chat_bin = load_bin_file("rez\\gluChat.bin").release();
 
     helper::chat_update_race_slots(g_chat_bin);
 

@@ -1,13 +1,12 @@
 #include "game_runner.h"
 #include "hooks/race_randomization.h"
 
-GameRunner::Result GameRunner::create_singleplayer_game(const char* map_path, u16 game_type = GameType::Unranked, u16 game_subtype = 1) {
+GameRunner::Result GameRunner::create_singleplayer_game(const fs::path& map_path, u16 game_type = GameType::Unranked, u16 game_subtype = 1) {
     if (!g_player_name) return Result::PlayerNameNotSet;
     g_multiplayer_mode = false;
 
     load_map(map_path);
-    std::string_view path_sv{map_path};
-    if (path_sv.substr(path_sv.length() - 3) != "rep") {
+    if (map_path.extension() != ".rep") {
         setup_game(&g_player_name, game_type, game_subtype);
         g_is_in_replay = false;
     } else {
@@ -49,7 +48,7 @@ GameRunner::Result GameRunner::create_singleplayer_game(const char* map_path, u1
     return Result::Success;
 }
 
-GameRunner::Result GameRunner::create_multiplayer_game(const char* map_path, u16 game_type = GameType::Unranked, u16 game_subtype = 1, const char* game_name = &g_player_name) {
+GameRunner::Result GameRunner::create_multiplayer_game(const fs::path& map_path, u16 game_type = GameType::Unranked, u16 game_subtype = 1, const char* game_name = &g_player_name) {
     if (!g_player_name) return Result::PlayerNameNotSet;
     if (!g_spi_provider) return Result::ProviderNotInitialized;
     g_multiplayer_mode = true;
@@ -57,8 +56,7 @@ GameRunner::Result GameRunner::create_multiplayer_game(const char* map_path, u16
     auto result = load_map(map_path);
     if (result != Result::Success) return result;
 
-    std::string_view path_sv{map_path};
-    if (path_sv.substr(path_sv.length() - 3) != "rep") {
+    if (map_path.extension() != ".rep") {
         setup_game(game_name, game_type, game_subtype);
         g_is_in_replay = false;
     } else {
@@ -118,19 +116,20 @@ GameRunner::Result GameRunner::update_adfiles() {
     }
 }
 
-GameRunner::Result GameRunner::load_map(const char* path) {
-    safe_copy(m_mapfile.full_path, path);
-    std::string_view path_sv{path};
-    auto last_pathsep = path_sv.find_last_of("\\");
-    if (last_pathsep == std::string_view::npos) return Result::BadMapPath;
-    safe_copy(m_mapfile.full_filename, path_sv.substr(last_pathsep + 1).data());
-    safe_copy(m_mapfile.display_filename, path_sv.substr(last_pathsep + 1).data());
+GameRunner::Result GameRunner::load_map(const fs::path& path) {
+    const auto path_str = path.string();
+    safe_copy(m_mapfile.full_path, path_str.c_str());
 
-    auto extension = path_sv.substr(path_sv.length() - 3);
-    if (extension == "rep") {
+    const auto filename = path.filename().string();
+    if (filename.empty()) return Result::BadMapPath;
+    safe_copy(m_mapfile.full_filename, filename.c_str());
+    safe_copy(m_mapfile.display_filename, filename.c_str());
+
+    const auto extension = path.extension();
+    if (extension == ".rep") {
         helper::load_replay_info(&m_mapfile);
         return Result::Success;
-    } else if (extension == "scx" || extension == "scm") {
+    } else if (extension == ".scx" || extension == ".scm") {
         helper::load_map_info(&m_mapfile);
     } else {
         return Result::BadMapPath;
