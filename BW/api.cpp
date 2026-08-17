@@ -4718,4 +4718,9 @@ void set_merge_move_target(Unit* unit, Unit* target) {
     helper::delayed_set_move_target_xy(unit, x, y);
 }
 
+fs::path get_replay_path() {
+    return bw::get_starcraft_path() / "maps" / "replays";
+}
+
+
 } // namespace bw

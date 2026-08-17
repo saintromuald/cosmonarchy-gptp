@@ -18,17 +18,13 @@ constexpr std::string_view replay_ext = ".ext";
 constexpr auto replay_full_size = 31; // Some weird magic BW const we would want to extend 
 constexpr auto replay_name_size = replay_full_size - replay_ext.size();
 
-fs::path get_replay_path() {
-    return bw::get_starcraft_path() / "maps" / "replays";
-}
-
 void copy_last_replay(const std::string& dir, const std::string& name) {
-    std::ifstream from{get_replay_path() / "LastReplay.rep", std::ios::binary};
+    std::ifstream from{bw::get_replay_path() / "LastReplay.rep", std::ios::binary};
     if (!from) {
         return;
     }
 
-    fs::path to_path = get_replay_path() / "Autosave" / dir / name;
+    fs::path to_path = bw::get_replay_path() / "Autosave" / dir / name;
     if (fs::exists(to_path)) {
         return; // Do not overwrite existing files
     }
@@ -43,84 +39,6 @@ void copy_last_replay(const std::string& dir, const std::string& name) {
 
     to << from.rdbuf();
 }
-
-class ReplayUploader {
-public:
-    ReplayUploader() {
-        std::error_code ec;
-        fs::create_directories("logs/", ec);
-        m_logs.open("logs/replay_kraken.log", std::ios::out | std::ios::app);
-    }
-
-    bool should_upload() {
-        if (g_globals->forbid_replay_auto_upload) {
-            m_logs << "Replay auto-upload is forbidden by the config." << std::endl;
-            return false;
-        }
-        if (bw::human_or_defeated_human_count() < 2) {
-            m_logs << "Replay auto-upload is disabled for single-player games." << std::endl;
-            return false;
-        }
-        if (bw::get_game_kind() == GameKind::Ranked) {
-            m_logs << "Replay auto-upload is enabled for ranked games." << std::endl;
-            return true;
-        }
-        if (g_globals->had_desync) {
-            m_logs << "Replay auto-upload is enabled for desynced games." << std::endl;
-            return true;
-        }
-        m_logs << "Replay auto-upload is disabled for unranked non-desynced games." << std::endl;
-        return false;
-    }
-
-    void upload() {
-        m_logs << "Attempting to upload replay at "
-            << std::format("{:%Y-%m-%d %H:%M:%S}", std::chrono::floor<std::chrono::seconds>(std::chrono::system_clock::now()))
-            << std::endl;
-        if (!should_upload()) {
-            return;
-        }
-
-        std::ifstream replay_stream{get_replay_path() / "LastReplay.rep", std::ios::binary};
-        if (!replay_stream) {
-            m_logs << "Failed to open LastReplay.rep for reading." << std::endl;
-            return;
-        }
-        std::vector<char> replay{std::istreambuf_iterator<char>(replay_stream), std::istreambuf_iterator<char>()};
-
-        std::vector<char> desync;
-        std::vector<char> randoms;
-        if (g_globals->had_desync) {
-            m_logs << "Game had desync. Preparing desync and randoms data for upload." << std::endl;
-            std::stringstream desync_file;
-            for (const auto* logger : gptp::g_loggers) {
-                desync_file << "============ " << logger->name() << " ============\n\n";
-                desync_file << logger->buffered_string();
-                desync_file << "\n\n";
-            }
-            std::string desync_str = desync_file.str();
-            desync.assign(desync_str.begin(), desync_str.end());
-
-            std::string randoms_str = bw::g_random_logger.buffered_string();
-            randoms.assign(randoms_str.begin(), randoms_str.end());
-        }
-
-        m_logs << "Replay upload initiated." << std::endl;
-        std::async(std::launch::async, [replay = std::move(replay), desync = std::move(desync), randoms = std::move(randoms), logs = std::move(m_logs)] mutable {
-            g_replay_kraken.upload_replay(
-                g_globals->uuid_rand,
-                bw::get_commit_hash(),
-                replay,
-                desync,
-                randoms,
-                logs
-            );
-        });
-    }
-
-private:
-    std::ofstream m_logs;
-};
 
 void auto_save_replay() {
     constexpr std::string_view ext = ".rep";
@@ -161,8 +79,7 @@ void replay_save() {
     if (g_config.auto_save_replays) {
         auto_save_replay();
     }
-    ReplayUploader uploader;
-    uploader.upload();
+    g_replay_kraken.upload_last_replay();
 }
 
 // Hooked to investigate the replay score screen freeze. -Pr0nogo

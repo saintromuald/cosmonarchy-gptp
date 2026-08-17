@@ -1015,4 +1015,5 @@ fp32 unit_id_total_cost(u32 unit_id, Faction faction, bool regression_unstable);
 bool is_melee_game(u8 game_type, u8 game_subtype);
 bool minerals_exist_for_player(u32 player);
 void set_merge_move_target(Unit* unit, Unit* target);
+fs::path get_replay_path();
 } // namespace bw

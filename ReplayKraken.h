@@ -26,19 +26,22 @@ public:
 
     bool authenticate();
 
+    bool should_upload_last_replay();
+    void upload_last_replay();
+
     bool upload_replay(
         const std::vector<char>& uuid_data,
         const std::string& game_version,
         const std::vector<char>& replay_file,
         const std::vector<char>& desync_file,
-        const std::vector<char>& randoms_file,
-        std::ofstream& logs
+        const std::vector<char>& randoms_file
     );
 
     std::string token() const { return m_token; }
     std::string username() const { return m_username; }
 
 private:
+    std::ofstream m_logs;
     httplib::Client m_api_client{"http://cosmonarchy.com"};
     uuids::uuid_name_generator m_uuid_generator{uuids::uuid_namespace_dns};
     std::string m_token;
