@@ -6,9 +6,11 @@
 #include "BW/api.h"
 #include "config.h"
 
-#include "magic_enum/magic_enum.hpp"
+#include <magic_enum/magic_enum_all.hpp>
+using namespace magic_enum::bitwise_operators;
 
 #include <algorithm>
+#include <bit>
 #include <utility>
 #include <ranges>
 #include <span>
@@ -30,7 +32,7 @@ static const std::array computer_races{
 };
 
 using SelectedRacesArray = std::pair<std::array<RaceId::Enum, RaceId::FullCount>, u32>;
-static SelectedRacesArray to_race_array(RaceFlags race_flags) {
+static SelectedRacesArray to_race_array(RaceFlags::Enum race_flags) {
     std::array<RaceId::Enum, RaceId::FullCount> races{};
     u32 count = 0;
 
@@ -79,7 +81,7 @@ void RaceRandomizer::process_randomization() {
     cleanup_and_reset();
 }
 
-void RaceRandomizer::set_player_race_flags(u32 index, RaceFlags race_flags) {
+void RaceRandomizer::set_player_race_flags(u32 index, RaceFlags::Enum race_flags) {
     m_player_race_flags[index] = race_flags;
     update_race_string(index);
 }
@@ -91,10 +93,10 @@ void RaceRandomizer::cleanup_and_reset() {
 
 RaceRandomizer::RaceRandomizer() {
     auto& races = g_config.random_races;
-    if (races.size() < 2) m_race_flags = RaceFlags::All;
     for (auto& race : races) {
-        m_race_flags |= magic_enum::enum_cast<RaceFlags>(race).value_or(RaceFlags::None);
+        m_race_flags |= magic_enum::enum_cast<RaceFlags::Enum>(race).value_or(RaceFlags::None);
     }
+    if (std::popcount(std::to_underlying(m_race_flags)) < 2) m_race_flags = RaceFlags::All;
     cleanup_and_reset();
 }
 
