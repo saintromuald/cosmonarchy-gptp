@@ -110,7 +110,7 @@ static void load_options(BinDlg* dialog) {
 
 static void apply_options(BinDlg* dialog) {
     auto& race_randomizer = RaceRandomizer::instance();
-    RaceFlags raceflags = RaceFlags::None;
+    RaceFlags::Enum raceflags = RaceFlags::None;
 
     auto control = get_first_child_by_index(dialog, GluOptionsControls::RandomZCheck);
     if (control && control->checkBox0x36.is_selected) raceflags |= RaceFlags::Zerg;
