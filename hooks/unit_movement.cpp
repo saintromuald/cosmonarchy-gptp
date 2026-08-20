@@ -19,7 +19,7 @@ namespace hooks {
 
     void move_unit(Unit* unit, s16 x, s16 y, bool ignore_collision) { // 004EB9F0
         v2u16 old_pos = {unit->sprite->position};
-        v2u16 new_pos = {x, y};
+        v2u16 new_pos = {(u16)x, (u16)y};
         helper::fix_target_location(&new_pos, unit->id);
         unit->position = new_pos;
         unit->halt.x = new_pos.x << 8;
@@ -242,39 +242,6 @@ namespace hooks {
             subunit->movement_state = UnitMovement_Init;
             subunit->pathing_flags ^= (subunit->pathing_flags ^ (subunit->sprite->elevation < 12)) & 1;
         }
-    }
-
-    // Hooked to improve behavior for Terran builders. -Pr0nogo
-    b32 decollide_unit(Unit* unit) { // 004F2DE0
-        if (!(unit->status & UnitStatus::IsNormal)) {
-            return false;
-        }
-        Point16 position = {unit->sprite->position.x, unit->sprite->position.y};
-        if (!helper::is_blocked_position(unit, position)) {
-            return false;
-        }
-        if (unit->status & (UnitStatus::NoBrkCodeStart | UnitStatus::CanNotReceiveOrders) || unit->movement_flags & MovementFlags_StartingAttack) {
-            unit->status = unit->status | UnitStatus::IgnoreTileCollision;
-            return false;
-        }
-        helper::decollide_or_unstack(unit, &position);
-        helper::fix_target_location(&position, unit->id);
-        if (position.x != unit->sprite->position.x || position.y != unit->sprite->position.y) {
-            helper::reassign_path(unit);
-            if (helper::is_unit_movable(unit) || unit->movement_flags & MovementFlags_Braking) {
-                helper::set_move_target_xy(unit, position.x, position.y);
-            } else {
-                helper::set_next_waypoint(unit, position.x, position.y);
-            }
-            helper::get_allocated_path_single_step(unit, position.x, position.x);
-            unit->contour_bounds.y = 0;
-            unit->contour_bounds.h = 0;
-            unit->contour_bounds.x = 0;
-            unit->contour_bounds.w = 0;
-            return true;
-        }
-        unit->status |= UnitStatus::IgnoreTileCollision;
-        return false;
     }
 
     b32 unit_movement_check_illegal(Unit* unit) { // 0046BDF0
