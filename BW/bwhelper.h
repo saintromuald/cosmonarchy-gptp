@@ -117,6 +117,8 @@ namespace helper {
 
     BW_FUNC(0x004be120, void __stdcall, refresh_cursor);
 
+    BW_FUNC(0x004F2DE0, b32 __fastcall, is_stacked, Unit* unit);
+
     void glu_create(bool multiplayer); // 004af6d0
 
     bool has_money_can_make(Unit* builder, u32 unit_to_build);
