@@ -495,7 +495,9 @@ namespace hooks {
         if (game_kind_has_neutral_hostile() && data.target->player == NeutralHostilePlayer && unit_id_is_burrowed_attacker(data.target->id)) {
             helper::ai_order_lurker_burrow(data.target);
         }
-        bw::play_manual_weaponhit_sound(data.target, data.weapon_id);
+        if (data.attacker) {
+            bw::play_manual_weaponhit_sound(data.attacker, data.weapon_id);
+        }
     }
 
     static void weapon_damage_damage_modifiers(WeaponDamageData& data) {
