@@ -1348,6 +1348,9 @@ namespace ImageId {
 
         InzorthrokorMutate                          = 2412,
 
+        HydrokorMutate                              = 2446,
+        HydraliskMutate                             = 2447,
+
         // Used for damage overlay crash fix
         FirstMinorDamageOverlay						= 450,
         LastMinorDamageOverlay						= 471,

@@ -383,6 +383,8 @@ namespace UnitId {
         ZergScrylyleth                                      = 560,
         ZergZoltorokor                                      = 604,
         ZergRozirokor                                       = 616,
+        ZergAlzurokor                                       = 626,
+        ZergHydrokor                                        = 627,
 
     // Zerg-Building
         ZergAxtothAxis										= 130,		// Infested Command Center

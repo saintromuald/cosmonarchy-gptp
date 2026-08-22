@@ -566,6 +566,7 @@ bool is_conventional_unit_morph_result(u16 id) {
         case UnitId::ZergTethzorokor:
         case UnitId::ZergVithrilisk:
         case UnitId::ZergUltrokor:
+        case UnitId::ZergAlzurokor:
         case UnitId::ZergZobriolisk:
         case UnitId::ZergZarcavrokor:
         case UnitId::ZergIsthrathaleth:
@@ -603,6 +604,7 @@ bool is_conventional_unit_morph_source(u16 id, bool allow_larvae) {
         case UnitId::ZergAxitrilisk:
         case UnitId::ZergMortothrokor:
         case UnitId::ZergHydralisk:
+        case UnitId::ZergHydrokor:
         case UnitId::ZergHydraliskOrkoti:
         case UnitId::ZergIzirokor:
         case UnitId::ZergRozirokor:
@@ -1342,6 +1344,7 @@ bool unit_is_ranged_attacker(Unit* unit) {
         case UnitId::ProtossAmaranth:
         case UnitId::ZergAkistrokor:
         case UnitId::ZergUltrokor:
+        case UnitId::ZergAlzurokor:
         case UnitId::ZergZoltorokor: {
             return false;
         } break;
@@ -2115,6 +2118,8 @@ u32 get_zerg_regression(UnitId::Enum unit_id, Faction faction, bool completed, b
         case UnitId::ZergAlgoztalisk:			return UnitId::ZergAlmaksalisk;
         case UnitId::ZergKethrostalor:			return UnitId::ZergKeskathalor;
         case UnitId::ZergAlkajelisk:			return UnitId::ZergGeszithalor;
+        case UnitId::ZergUltrokor:			    return UnitId::ZergZoryusthaleth;
+        case UnitId::ZergAlzurokor:			    return UnitId::ZergInzorthrokor;
         case UnitId::ZergZobriolisk:			return UnitId::ZergLakizilisk;
         case UnitId::ZergTetcaerokor:			return UnitId::ZergKonvilisk;
         case UnitId::ZergIsthrathaleth:			return UnitId::ZergVilgorokor;
@@ -2126,8 +2131,7 @@ u32 get_zerg_regression(UnitId::Enum unit_id, Faction faction, bool completed, b
         case UnitId::ZergKalkalisk:
         case UnitId::ZergBactalisk:
         case UnitId::ZergTethzorokor:
-        case UnitId::ZergZarcavrokor:
-        case UnitId::ZergUltrokor: {
+        case UnitId::ZergZarcavrokor: {
             return get_factional_regression(UnitId::Enum(unit_id), faction);
         }
         default: {
@@ -3387,7 +3391,8 @@ u32 get_ensnare_factor(Unit* unit) {
     u32 factor = 0;
     switch (unit->id) {
         case UnitId::ZergVorvrokor:
-        case UnitId::ZergAkistrokor: {
+        case UnitId::ZergAkistrokor:
+        case UnitId::ZergAlzurokor: {
             factor++;
         }
     }

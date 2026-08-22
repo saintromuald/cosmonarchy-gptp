@@ -213,6 +213,7 @@ namespace hooks {
 						case UnitId::ZergAxitrilisk:
 						case UnitId::ZergMortothrokor:
 						case UnitId::ZergHydralisk:
+						case UnitId::ZergHydrokor:
 						case UnitId::ZergHydraliskOrkoti:
 						case UnitId::ZergIzirokor:
 						case UnitId::ZergRozirokor:
@@ -306,6 +307,8 @@ namespace hooks {
 						case UnitId::ZergNathrokor:
 						case UnitId::ZergCikralisk:
 						case UnitId::ZergProtathalor:
+						case UnitId::ZergHydralisk:
+						case UnitId::ZergHydrokor:
 						case UnitId::ZergIzirokor:
 						case UnitId::ZergRozirokor:
 						case UnitId::ZergIziralisk:
@@ -314,6 +317,7 @@ namespace hooks {
 						case UnitId::ZergEvigrilisk:
 						case UnitId::ZergAlmaksalisk:
 						case UnitId::ZergZoryusthaleth:
+						case UnitId::ZergInzorthrokor:
 						case UnitId::ZergLakizilisk:
 						case UnitId::ZergGorgrokor:
 						case UnitId::ZergAzanthrokor:
@@ -321,10 +325,8 @@ namespace hooks {
 						case UnitId::ZergGeszithalor: {
 							animation = IscriptAnimation::SpecialState1;
 						} break;
-						case UnitId::ZergInzorthrokor: {
-							animation = IscriptAnimation::Built;
-						} break;
 						case UnitId::ZergUltrokor:
+						case UnitId::ZergAlzurokor:
 						case UnitId::ZergOvileth: {
 							animation = IscriptAnimation::AlmostBuilt;
 						} break;
@@ -468,6 +470,7 @@ namespace hooks {
 				return false;
 			} break;
 			case UnitId::ZergHydralisk: 
+			case UnitId::ZergHydrokor: 
 			case UnitId::ZergHydraliskOrkoti: {
 				if (morph_unit_id == UnitId::ZergBactalisk) {
 					return true;

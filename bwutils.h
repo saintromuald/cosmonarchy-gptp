@@ -111,7 +111,9 @@ namespace SpriteId {
             case SpriteId::Corpse_BloodsummonBuildingLarge:
             case SpriteId::Corpse_BloodsummonUnitTiny:
             case SpriteId::Corpse_BloodsummonUnitSmall:
-            case SpriteId::Corpse_BloodsummonUnitMedium: {
+            case SpriteId::Corpse_BloodsummonUnitMedium:
+            case SpriteId::Corpse_Alzurokor:
+            case SpriteId::Corpse_Hydrokor: {
                 return true;
             } break;
         }

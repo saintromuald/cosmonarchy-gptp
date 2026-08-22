@@ -2131,7 +2131,18 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::ZergHydralisk: {
-                                        if (faction != Faction::ZergOrkotiTendril) {
+                                        if (faction != Faction::ZergGoszirithTendril && faction != Faction::ZergOrkotiTendril) {
+                                            if (player_has_base_unit_id(unit->player, UnitId::ZergHydrithDen)
+                                            ||  player_has_gestated_unit_id(unit->player, UnitId::ZergSkibactScab)
+                                            ||  player_has_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
+                                                current_button_state = Button_State::Enabled;
+                                            } else {
+                                                current_button_state = Button_State::Disabled;
+                                            }
+                                        }
+                                    } break;
+                                    case UnitId::ZergHydrokor: {
+                                        if (faction == Faction::ZergGoszirithTendril) {
                                             if (player_has_base_unit_id(unit->player, UnitId::ZergHydrithDen)
                                             ||  player_has_gestated_unit_id(unit->player, UnitId::ZergSkibactScab)
                                             ||  player_has_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
@@ -2389,7 +2400,19 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::ZergUltrokor: {
-                                        if (player_has_base_unit_id(unit->player, UnitId::ZergUlgorgCavern)
+                                        if (faction == Faction::ZergImicrenTendril) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else if (player_has_base_unit_id(unit->player, UnitId::ZergUlgorgCavern)
+                                            || player_has_unit_id(unit->player, UnitId::ZergZozarcGorge)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    case UnitId::ZergAlzurokor: {
+                                        if (faction != Faction::ZergImicrenTendril) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else if (player_has_base_unit_id(unit->player, UnitId::ZergUlgorgCavern)
                                             || player_has_unit_id(unit->player, UnitId::ZergZozarcGorge)) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
@@ -2515,6 +2538,17 @@ namespace hooks {
                             case UnitId::ZergCikralisk: {
                                 if (!is_burrowed && current_button->requirement_var == UnitId::ZergGhitorokor) {
                                     if (player_has_completed_unit_id(unit->player, UnitId::ZergTosvrolHaunt)) {
+                                        current_button_state = Button_State::Enabled;
+                                    } else {
+                                        current_button_state = Button_State::Disabled;
+                                    }
+                                } else {
+                                    current_button_state = Button_State::Invisible;
+                                }
+                            } break;
+                            case UnitId::ZergHydrokor: {
+                                if (!is_burrowed && current_button->requirement_var == UnitId::ZergBactalisk) {
+                                    if (player_has_completed_unit_id(unit->player, UnitId::ZergSkibactScab) || player_has_unit_id(unit->player, UnitId::ZergTethvithSwamp)) {
                                         current_button_state = Button_State::Enabled;
                                     } else {
                                         current_button_state = Button_State::Disabled;
@@ -3944,6 +3978,11 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::ZergHydrokor: {
+                                    if (current_button->icon_id == IconId::Rilirokor) { // Mitosis
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::ZergRozirokor: {
                                     if (current_button->icon_id == IconId::SaberSiphon) {
                                         current_button_state = Button_State::Enabled;
@@ -4105,6 +4144,7 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::ZergAlzurokor:
                                 case UnitId::ZergAkistrokor: {
                                     if (current_button->icon_id == IconId::CaptivatingClaws
                                     ||	current_button->icon_id == IconId::SuicideScourge) {	// Devouring Instinct

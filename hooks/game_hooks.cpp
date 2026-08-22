@@ -1450,6 +1450,7 @@ namespace hooks {
             case UnitId::ZergYblyleth:
             case UnitId::ZergSovrokor:
             case UnitId::ZergSovroleth:
+            case UnitId::ZergHydrokor:
             case UnitId::ZergZoryusthaleth:
             case UnitId::ZergKonvilisk:
             case UnitId::ZergVilgoleth:
