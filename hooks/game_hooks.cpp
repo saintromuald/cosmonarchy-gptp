@@ -3044,6 +3044,7 @@ namespace hooks {
             case UnitId::AskosiCardinal:
             case UnitId::AskosiElgird: {
                 unit->cast_ashbind();
+            } break;
             case UnitId::BloodsummonThrombocyte: {
                 unit->cast_bloody_burst();
             } break;

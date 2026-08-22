@@ -653,7 +653,6 @@ namespace hooks {
             }
         }
 
-        UnitExt* unit_ext = unit ? get_unit_ext(unit) : 0;
         while (!stop_there) {
             // 00459230
             if (current_dialog->index < 1) {
@@ -783,7 +782,7 @@ namespace hooks {
                                     current_button_state = Button_State::Disabled;
                                 }
                             } break;
-                            case TechId::AskosiAshbind: {
+                            case TechId::AskosiAshbind:
                             case TechId::BloodsummonBloodyBurst: {
                                 current_button_state = Button_State::Enabled;
                             } break;
@@ -1666,7 +1665,7 @@ namespace hooks {
                             case UnitId::TerranAnvil: {
                                 switch (current_button->requirement_var) {
                                     case UnitId::TerranMorningstar: {
-                                        if (!unit_ext.values[ValueAddonInactive] && !unit->building.silo.nuke && !is_training) {
+                                        if (!unit->ext().values[ValueAddonInactive] && !unit->building.silo.nuke && !is_training) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Invisible;
@@ -3060,6 +3059,7 @@ namespace hooks {
 
                         // Passive icons (yes, it's quite ugly)
                         if (current_button->requirement_var == TechId::Healing && current_button->icon_id != IconId::Heal) {
+                            auto& unit_ext = unit->ext();
                             current_button_state = Button_State::Disabled;
                             if (bw::client_selection_unit_id_count(unit->id) != g_client_selection_count) {
                                 current_button_state = Button_State::Invisible;
@@ -4473,6 +4473,7 @@ namespace hooks {
 
                     // Form switch, mode change, toggles, and related overrides
                     if (current_button->action_func == (ActFunc*)ButtonActions::Use_Technology) {
+                        auto& unit_ext = unit->ext();
                         if (unit->id != UnitId::ProtossMindTyrant) {
                             for (s32 i = 0; i < generictoggles; i++) {
                                 if (current_button->action_var == toggle_abilities[i]) {

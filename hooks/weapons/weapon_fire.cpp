@@ -817,7 +817,7 @@ namespace hooks {
                         }
                     } break;
                     default: {
-                        Bullet* bullet = fire_bullet(unit, weapon_id, weapon_target);
+                        fire_bullet(unit, weapon_id, weapon_target);
                     } break;
                 }
 
