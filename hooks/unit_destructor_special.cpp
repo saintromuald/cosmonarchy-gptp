@@ -397,6 +397,10 @@ void unit_on_death_behaviors(Unit* unit) {
     }
 
     // Binding Plasma - proc on death
+    if (unit_ext.timers[TimerAtreusBindingPlasma]) {
+        g_iquare_globals->create_effect(EffectId::AtreusBindingPlasma, unit_ext.timers[TimerAtreusBindingPlasma], unit->position, Protoss::BindingPlasmaRadius,
+            SpriteId::GladiusBindingPlasmaOverlay, unit->sprite->elevation, unit_ext.values[ValueAtreusBindingPlasmaPlayer], 0, {.intervals = unit_ext.values[ValueAtreusBindingPlasmaStacks]});
+    }
     if (unit_ext.timers[TimerOscilliantBindingPlasma]) {
         g_iquare_globals->create_effect(EffectId::OscilliantBindingPlasma, unit_ext.timers[TimerOscilliantBindingPlasma], unit->position, Protoss::BindingPlasmaRadius,
             SpriteId::GladiusBindingPlasmaOverlay, unit->sprite->elevation, unit_ext.values[ValueOscilliantBindingPlasmaPlayer], 0, {.intervals = unit_ext.values[ValueOscilliantBindingPlasmaStacks]});

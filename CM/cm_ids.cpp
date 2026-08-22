@@ -616,7 +616,6 @@ u32 weapon_id_intercepts(u32 weapon_id) {
         case WeaponId::SirenCharybdalRifle:
         case WeaponId::CataphractLonginiusCannons:
         case WeaponId::EngramKhaydarinPlasmaLaser:
-        case WeaponId::AtreusDauntlessDisruptorCannon:
         case WeaponId::CharlatanFerventBlaster:
         case WeaponId::IdolPrismaticBlaster:
         case WeaponId::StarSovereignInterventionMissiles: {
@@ -2245,7 +2244,8 @@ bool weapon_splits(WeaponId::Enum weapon_id) {
 }
 
 bool bounces_binding_plasma(WeaponId::Enum weapon_id) {
-    return weapon_id == WeaponId::OscilliantRotatingRay
+    return weapon_id == WeaponId::AtreusDauntlessDisruptorCannon
+        || weapon_id == WeaponId::OscilliantRotatingRay
         || weapon_id == WeaponId::GladiusPlasmaFlurry;
 }
 

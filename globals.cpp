@@ -384,6 +384,36 @@ static void tick_effect(EffectField& effect) {
                     bw::artificial_bullet_from(WeaponId::SevenstepGeometricRiflePiercing, effect.player, effect.source, 0, effect.source->position, effect.position);
                 }
             } break;
+            case EffectId::AtreusBindingPlasma: {
+                if (effect.current_time) {
+                    break;
+                }
+
+                auto sources = g_unit_search
+                    .radial(effect.position, Protoss::BindingPlasmaSearchRadius)
+                    .filter(nullptr, 0, {UnitId::ProtossAtreus})
+                    .filter_by([&effect](Unit* unit) {
+                        return bw::is_allied_to(unit->player, effect.player);
+                    })
+                    .sort_by_distance(effect.position);
+                if (!sources.count()) {
+                    effect.destroy();
+                    break;
+                }
+
+                Unit* source = sources.first();
+                const auto targets = bw::binding_plasma_find_targets(effect.position, nullptr, effect.player, effect.intervals);
+                if (targets.empty()) {
+                    effect.destroy();
+                    break;
+                }
+                assert(targets.size() <= effect.intervals);
+                for (Unit* target : targets) {
+                    bw::artificial_bullet_from(WeaponId::AtreusDauntlessDisruptorCannon, effect.player, source, target, target->position, effect.position);
+                    bw::play_sound({SoundId::AtreusWeaponfire01, SoundId::AtreusWeaponfire03}, effect.position);
+                    effect.intervals--;
+                }
+            } break;
             case EffectId::OscilliantBindingPlasma: {
                 if (effect.current_time) {
                     break;

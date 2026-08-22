@@ -43,6 +43,7 @@ enum class EffectId {
     MiasmaPlagueField,
     DivineDisciplineField,
     ScrapworldImplosion,
+    AtreusBindingPlasma,
 
     Count,
 };

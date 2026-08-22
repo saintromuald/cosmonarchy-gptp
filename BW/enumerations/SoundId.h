@@ -1265,6 +1265,10 @@ namespace SoundId {
         EmpressZombify02					= 1779,
         EmpressZombify03					= 1780,
 
+        AtreusWeaponfire01                  = 1788,
+        AtreusWeaponfire02                  = 1789,
+        AtreusWeaponfire03                  = 1790,
+
         CyclopsPassive01					= 1791,
         CyclopsPassive02					= 1792,
         CyclopsPassive03					= 1793,

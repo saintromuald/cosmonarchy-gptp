@@ -759,6 +759,18 @@ namespace hooks {
             case WeaponId::LegionnairePhaseSpear: {
                 target_ext.timers[TimerBladeVortex] = 2secs + 1;
             } break;
+            case WeaponId::AtreusDauntlessDisruptorCannon: {
+                if (target_ext.timers[TimerAtreusBindingPlasma]) {
+                    const auto source_player = target_ext.values[ValueAtreusBindingPlasmaPlayer];
+                    if (bw::is_allied_to(data.attacking_player_id, source_player)) {
+                        target_ext.values[ValueAtreusBindingPlasmaStacks]++;
+                    }
+                } else {
+                    target_ext.timers[TimerAtreusBindingPlasma] = Protoss::BindingPlasmaTimer;
+                    target_ext.values[ValueAtreusBindingPlasmaPlayer] = data.attacking_player_id;
+                    target_ext.values[ValueAtreusBindingPlasmaStacks] = 1;
+                }
+            } break;
             case WeaponId::OscilliantRotatingRay: {
                 if (target_ext.timers[TimerOscilliantBindingPlasma]) {
                     u32 source_player = target_ext.values[ValueOscilliantBindingPlasmaPlayer];

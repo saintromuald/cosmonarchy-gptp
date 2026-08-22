@@ -3597,6 +3597,12 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::ProtossAtreus:
+                                case UnitId::ProtossOscilliant: {
+                                    if (current_button->icon_id == IconId::DracadinPhaseDisruptor) { // Binding Plasma
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::ProtossHerald: {
                                     if (current_button->icon_id == IconId::RechargeShields	// Triumphant Rise
                                     ||	current_button->icon_id == IconId::KhaydarinCore) {	// Transcendent Fall
@@ -3688,7 +3694,6 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::ProtossAtreus:
                                 case UnitId::ProtossIdol:
                                 case UnitId::ProtossAccantor:
                                 case UnitId::ProtossEngram: {
@@ -3708,11 +3713,6 @@ namespace hooks {
                                 } break;
                                 case UnitId::ProtossArchitect: {
                                     if (current_button->icon_id == IconId::AntimatterMissiles) { // Reactive Payload
-                                        current_button_state = Button_State::Enabled;
-                                    }
-                                } break;
-                                case UnitId::ProtossOscilliant: {
-                                    if (current_button->icon_id == IconId::DracadinPhaseDisruptor) { // Binding Plasma
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
