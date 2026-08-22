@@ -158,6 +158,7 @@ bool has_impact_dissipation(UnitId::Enum unit_id);
 bool has_disruption_field(UnitId::Enum unit_id);
 bool incubates_on_damage_taken(UnitId::Enum unit_id);
 bool has_damage_cloak(UnitId::Enum unit_id);
+bool has_forlorn_haste(UnitId::Enum unit_id);
 } // namespace UnitId
 
 namespace WeaponId {

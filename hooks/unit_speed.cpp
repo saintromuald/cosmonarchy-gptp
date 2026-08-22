@@ -196,6 +196,10 @@ namespace hooks {
             speed *= 1.33fp;
         }
 
+        if (unit_ext.timers[TimerForlornHaste]) {
+            speed *= 2;
+        }
+
         switch (unit->id) {
             case UnitId::TerranBlackjack: {
                 // Wear and Tear: reduce movement speed based on missing health
@@ -255,6 +259,8 @@ namespace hooks {
             case UnitId::TerranMason:
             case UnitId::ProtossScribe:
             case UnitId::ZergDroleth:
+            case UnitId::AskosiPilgrim:
+            case UnitId::BloodsummonAcqui:
             case UnitId::TerranMaverick:
             case UnitId::TerranMaverickUpstart:
             case UnitId::TerranHotshot:
@@ -267,7 +273,6 @@ namespace hooks {
             case UnitId::ProtossDracadin:
             case UnitId::ZergQuazrokor:
             case UnitId::ZergZoryusthaleth:
-            case UnitId::AskosiPilgrim:
             case UnitId::AskosiVicar:
             case UnitId::AskosiObject:
             case UnitId::AskosiThaumalogue: {

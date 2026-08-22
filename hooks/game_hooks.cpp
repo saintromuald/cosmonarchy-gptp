@@ -3112,6 +3112,24 @@ namespace hooks {
             }
         }
 
+        if (UnitId::has_forlorn_haste((UnitId::Enum)unit->id)) {
+            bool isolated = true;
+            if (g_unit_search.radial_ex(unit, Bloodsummon::ForlornHasteRange).count()) {
+                isolated = false;
+                if (unit_ext.timers[TimerForlornHaste]) {
+                    unit_ext.timers[TimerForlornHaste] = 1;
+                }
+            }
+            if (isolated) {
+                unit_ext.timers[TimerForlornHaste] = 1secs + 1;
+                should_update_speed = true;
+            }
+        }
+        if (unit_ext.timers[TimerForlornHaste] == 1) {
+            unit_ext.timers[TimerForlornHaste] = 0;
+            should_update_speed = true;
+        }
+
         // Terran-style windups
         if (UnitId::has_interruptable_windup(static_cast<UnitId::Enum>(unit->id)) && unit->order_signal & 32) {
             if (unit_ext.timers[TimerTerranWindup]) {
