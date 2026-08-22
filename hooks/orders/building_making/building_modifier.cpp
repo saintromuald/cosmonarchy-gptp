@@ -10,15 +10,20 @@ BuildingModifier advance_building_modifier(Unit* unit, const ProgressBuildOption
     auto& unit_ext = unit->ext();
 	if (!options.use_stock_speed) {
 		Unit* builder = options.builder;
-        if (options.is_constructing && options.is_askosi) {
-            auto askosi_builder_count = unit_ext.unit_vectors[UnitVectorAskosiBuilders].size();
-            if (askosi_builder_count > 1) {
-                fp32 increase = (askosi_builder_count - 1) * 0.20fp;
-                modifier.factor *= 1fp + increase;
-            }
-            if (builder && builder->id == UnitId::AskosiDyad) {
-                modifier.factor *= 1.3fp;
-            }
+        if (options.is_constructing) {
+			if (options.is_askosi) {
+				auto askosi_builder_count = unit_ext.unit_vectors[UnitVectorAskosiBuilders].size();
+				if (askosi_builder_count > 1) {
+					fp32 increase = (askosi_builder_count - 1) * 0.20fp;
+					modifier.factor *= 1fp + increase;
+				}
+				if (builder && builder->id == UnitId::AskosiDyad) {
+					modifier.factor *= 1.3fp;
+				}
+			}
+			if (unit_ext.units[UnitHiveOrgan]) {
+				modifier.factor *= 1.5fp;
+			}
         }
 
 		bool crucible_active = !unit_ext.unit_vectors[UnitVectorCrucibles].empty();

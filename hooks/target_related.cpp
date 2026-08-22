@@ -480,10 +480,11 @@ namespace hooks {
         }
 
         u8 can_attack_final = 0;
-        u8 not_enough_energy = 0;
+        u8 has_enough_energy = 0;
         u8 can_target_spell = 0;
         Unit** selected_units = g_client_selection_group->unit;
         Unit** selected_units_2 = g_client_selection_group->unit;
+
         while (1) {
             Unit* unit = selected_units[0];
             if (unit) {
@@ -497,10 +498,10 @@ namespace hooks {
                             }
                         } else {
                             if (helper::can_target_spell(tech_id, target, fow_unit_id, unit, pos_x, pos_y, &error)) {
-                                if (!unit->has_energy(energy_cost)) {
-                                    not_enough_energy = 1;
+                                if (unit->has_energy(energy_cost)) {
+                                    has_enough_energy = 1;
+                                    can_target_spell = 1;
                                 }
-                                can_target_spell = 1;	
                             }
                         }
                         goto iterate_selection;
@@ -526,10 +527,10 @@ namespace hooks {
                         goto iterate_selection;
                     }
                     if (helper::can_weapon_target_unit(weapon_id, target, unit) || fow_unit_id < UnitId::None && ~(units_dat::base_property[fow_unit_id] >> 29) & 1) {
-                        if (!unit->has_energy(energy_cost)) {
-                            not_enough_energy = 1;
+                        if (unit->has_energy(energy_cost)) {
+                            has_enough_energy = 1;
+                            can_attack_final = 1;
                         }
-                        can_attack_final = 1;
                     }
                 }
             }
@@ -558,7 +559,7 @@ namespace hooks {
                 return;
             }
         check_energy:
-            if (energy_cost && not_enough_energy) {
+            if (energy_cost && !has_enough_energy) {
                 helper::display_error_message_id_with_sfx(active_unit->player, 864, bw::get_advisor_sound_from_event_type(active_unit->player, AdvisorEvent_NoEnergy));
                 return;
             }

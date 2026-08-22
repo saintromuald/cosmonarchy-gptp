@@ -3293,16 +3293,14 @@ bool unit_can_flee(Unit* unit) {
         case UnitId::ProtossAnthelion: {
             return false;
         } break;
-        case UnitId::ProtossLanifect: {
-            if (unit_ext.values[ValueDisruptionFieldOn]) {
-                return false;
-            }
-        } break;
         case UnitId::ZergMatraleth: {
             if (unit->main_order_id == OrderId::BlissfulEmbrace) {
                 return false;
             }
         } break;
+    }
+    if (UnitId::has_disruption_field((UnitId::Enum)unit->id)) {
+        return unit_ext.values[ValueDisruptionFieldOn] == 0;
     }
     return true;
 }
@@ -4324,9 +4322,7 @@ bool unit_regenerates_hp(Unit* unit) {
     auto& unit_ext = unit->ext();
     return units_dat::base_property[unit->id] & UnitProperty::RegeneratesHP
         || unit_ext.values[ValueInfested]
-        || unit_ext.timers[TimerNathreliskMitosalFog]
-        || unit_ext.timers[TimerImpactDissipation]
-        || unit_ext.timers[TimerImpactPrevarication];
+        || unit_ext.timers[TimerNathreliskMitosalFog];
 }
 
 fp32 get_regeneration_factor(Unit* unit) {

@@ -618,7 +618,6 @@ u32 weapon_id_intercepts(u32 weapon_id) {
         case WeaponId::EngramKhaydarinPlasmaLaser:
         case WeaponId::AtreusDauntlessDisruptorCannon:
         case WeaponId::CharlatanFerventBlaster:
-        case WeaponId::CantavisHallucinationCast:
         case WeaponId::IdolPrismaticBlaster:
         case WeaponId::StarSovereignInterventionMissiles: {
             return InterceptType_Any;
@@ -2202,7 +2201,7 @@ bool has_power_breach(UnitId::Enum unit_id) {
     return unit_id == UnitId::AskosiIntendent || unit_id == UnitId::AskosiEndbore;
 }
 
-bool has_far_transport_range(UnitId::Enum unit_id) {
+bool has_far_transport_pickup_range(UnitId::Enum unit_id) {
     return unit_id == UnitId::AskosiEmissary;
 }
 
@@ -2212,14 +2211,14 @@ bool is_carrier(UnitId::Enum unit_id) {
 
 bool has_impact_dissipation(UnitId::Enum unit_id) {
     return unit_id == UnitId::AskosiMissionary
-    ||     unit_id == UnitId::AskosiAphorist
-    ||     unit_id == UnitId::AskosiThaumalogue
-    ||     unit_id == UnitId::AskosiDoronin
-    ||     unit_id == UnitId::AskosiInsurant
-    ||     unit_id == UnitId::AskosiRove
-    ||     unit_id == UnitId::AskosiAgonist
-    ||     unit_id == UnitId::AskosiEmissary
-    ||     unit_id == UnitId::AskosiAkreno;
+        || unit_id == UnitId::AskosiAphorist
+        || unit_id == UnitId::AskosiThaumalogue
+        || unit_id == UnitId::AskosiDoronin
+        || unit_id == UnitId::AskosiInsurant
+        || unit_id == UnitId::AskosiRove
+        || unit_id == UnitId::AskosiAgonist
+        || unit_id == UnitId::AskosiEmissary
+        || unit_id == UnitId::AskosiAkreno;
 }
 
 bool has_disruption_field(UnitId::Enum unit_id) {

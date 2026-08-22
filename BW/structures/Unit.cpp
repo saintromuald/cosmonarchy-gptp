@@ -437,6 +437,9 @@ u32 Unit::heal_hp(s32 value, Unit* source, bool restore) {
     if (this->hitpoints == this->get_max_hp_raw()) { // If unit is fully healed already, skip healing
         return value;
     }
+    if (this->plague_timer) {
+        value *= 0.5fp;
+    }
 
     set_hitpoints(cap_value(this->hitpoints + value, this->get_max_hp_raw(), &value));
 
@@ -454,6 +457,9 @@ u32 Unit::heal_shields(s32 value, Unit* source, bool restore, bool proc_flash_sh
     if (this->shields == this->get_max_shields_raw()) { // Skip healing if max shields already
         return value;
     }
+    if (this->plague_timer) {
+        value *= 0.5fp;
+    }
 
     this->shields = cap_value(this->shields + value, this->get_max_shields_raw(), &value);
     this->set_hitpoints(this->hitpoints); // Also updates unit strength
@@ -465,8 +471,7 @@ u32 Unit::heal_shields(s32 value, Unit* source, bool restore, bool proc_flash_sh
 
     // Activate flash shielding
     if (proc_flash_shielding) {
-        UnitExt* this_ext = get_unit_ext(this);
-        this_ext->shield_regen_timer = UINT_MAX;
+        this->ext().shield_regen_timer = UINT_MAX;
     }
 
     return value;
@@ -1801,7 +1806,11 @@ Unit* Unit::corpse_cocoon_search() {
             if (!egg) {
                 continue;
             }
-            set_custom_egg(egg, this->id, units_dat::time_cost[this->id] / 2);
+            auto unit_id = this->id;
+            if (bw::is_allied_to(this->player, corpse->sprite->player)) {
+                unit_id = units_dat::base_property[corpse->unit_id] & UnitProperty::Flyer ? UnitId::ZergRililisk : UnitId::ZergRilirokor;
+            }
+            set_custom_egg(egg, unit_id, units_dat::time_cost[unit_id] / 2);
             auto& egg_ext = egg->ext();
             egg_ext.values[ValueNoCorpse] = true;
             egg_ext.values[ValueRegressionUnstable] = true;
@@ -1860,7 +1869,7 @@ void Unit::tick_burrowed_cagra_spread() {
     }
 }
 
-void Unit::booming_blast_proc(bool damage_self) {
+void Unit::proc_booming_blast(bool damage_self) {
     auto& unit_ext = this->ext();
     u32 attacking_player = unit_ext.values[ValueBoomingBlastPlayer];
     unit_ext.values[ValueBoomingBlastPlayer] = 0;
@@ -1893,7 +1902,7 @@ bool Unit::is_valid_garrison() {
     return true;
 }
 
-void Unit::rematerialize_cast() {
+void Unit::cast_rematerialize() {
     auto& unit_ext = this->ext();
     auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
     if (try_cast && (this->main_order_id != OrderId::AskosiRematerialize || this->is_frozen())) {
@@ -1933,13 +1942,14 @@ void Unit::rematerialize_cast() {
             }
             bw::teleport_to_unit(ally, this, 24, {.check_distance = false}, SpriteId::LegionnaireTeleportEffect);
             ally->ext().timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
+            ally->ext().values[ValueImpactDissipationBlock] = 1;
             ally->update_speed();
         }
         try_cast = false;
     }
 }
 
-bool Unit::rapid_rendezvous_cast() {
+bool Unit::cast_rapid_rendezvous() {
     auto& unit_ext = this->ext();
     auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
     if (try_cast && (this->main_order_id != OrderId::AskosiRapidRendezvous || this->is_frozen())) {
@@ -1975,11 +1985,13 @@ bool Unit::rapid_rendezvous_cast() {
         this->spend_energy(energy_cost);
         bw::teleport_to_unit(this, target, 24, {.check_distance = false}, SpriteId::LegionnaireTeleportEffect);
         unit_ext.timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
+        unit_ext.values[ValueImpactDissipationBlock] = 1;
         for (Unit* ally : g_unit_search.radial_ex(target, Askosi::RapidRendezvousBuffRange, FilterAlly | FilterIncludingSelf)) {
             if (ally == this) {
                 continue;
             }
             ally->ext().timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
+            ally->ext().values[ValueImpactDissipationBlock] = 1;
             ally->update_speed();
         }
         try_cast = false;
@@ -1987,7 +1999,7 @@ bool Unit::rapid_rendezvous_cast() {
     }
 }
 
-void Unit::hijack_cast() {
+void Unit::cast_hijack() {
     auto& unit_ext = this->ext();
     auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
     if (try_cast && (this->main_order_id != OrderId::AskosiHijack || this->is_frozen()) || unit_ext.units[UnitHijackTarget]) {
@@ -2037,7 +2049,7 @@ void Unit::hijack_cast() {
     }
 }
 
-void Unit::remote_hijack_cast() {
+void Unit::cast_remote_hijack() {
     auto& unit_ext = this->ext();
     auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
     if (try_cast && (this->main_order_id != OrderId::AskosiRemoteHijack || this->is_frozen())) {
@@ -2084,7 +2096,7 @@ void Unit::remote_hijack_cast() {
     }
 }
 
-void Unit::preylock_cast() {
+void Unit::cast_preylock() {
     auto& unit_ext = this->ext();
     auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
     if (try_cast && (this->main_order_id != OrderId::AskosiPreylock || this->is_frozen())) {
@@ -2128,7 +2140,7 @@ void Unit::preylock_cast() {
     }
 }
 
-void Unit::lobotomy_warhead_cast() {
+void Unit::cast_lobotomy_warhead() {
     auto& unit_ext = this->ext();
     auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
     if (try_cast && (this->main_order_id != OrderId::LobotomyWarhead || this->is_frozen())) {
@@ -2185,7 +2197,7 @@ void Unit::proc_askosi_embed() {
     }
 }
 
-void Unit::psi_storm_cancel() {
+void Unit::cancel_psi_storm() {
     if (bw::get_generic_rust_value(this, RustId::CancelPsiStorm)) {
         bw::set_generic_rust_value(this, RustId::CancelPsiStorm, 0);
         auto& unit_ext = this->ext();
@@ -2213,7 +2225,7 @@ void Unit::proc_ensnaring_brood() {
     }
 }
 
-bool Unit::sermon_salve_cloak(Unit* cloaker) {
+bool Unit::proc_sermon_salve_cloak(Unit* cloaker) {
     auto& unit_ext = this->ext();
     if (bw::unit_in_combat_within_seconds(this, 2)) {
         return false;
@@ -2230,7 +2242,7 @@ bool Unit::sermon_salve_cloak(Unit* cloaker) {
     return true;
 }
 
-void Unit::puppeteer_cast(Unit* victim) {
+void Unit::cast_puppeteer(Unit* victim) {
     if (!bw::get_generic_rust_value(this, RustId::CastPuppeteer)) {
         return;
     }
@@ -2261,13 +2273,13 @@ void Unit::puppeteer_cast(Unit* victim) {
     }
 }
 
-void Unit::ashbind_cast() {
+void Unit::cast_ashbind() {
     auto& unit_ext = this->ext();
-    auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
-    if (try_cast && (this->main_order_id != OrderId::AskosiAshbind || this->is_frozen())) {
-        try_cast = false;
+    auto& try_cast_ref = unit_ext.values[ValueTryCastCustomSpell];
+    if (try_cast_ref && (this->main_order_id != OrderId::AskosiAshbind || this->is_frozen())) {
+        try_cast_ref = false;
     }
-    if (!try_cast || unit_ext.timers[TimerTryCastCustomSpell]) {
+    if (!try_cast_ref || unit_ext.timers[TimerTryCastCustomSpell]) {
         return;
     }
     Unit* target = this->order_target.unit;
@@ -2305,12 +2317,12 @@ void Unit::ashbind_cast() {
             enemy_ext.timers[TimerAshHeapArmorRend] += Askosi::ScrapworldAshHeapDuration;
             enemy_ext.values[ValueAshHeapPlayer] = this->player;
         }
-        try_cast = false;
+        try_cast_ref = false;
         return;
     }
 }
 
-void Unit::mimicry_tick() {
+void Unit::tick_mimicry() {
     if (!this->can_use_passive_ability()) {
         return;
     }
@@ -2318,6 +2330,32 @@ void Unit::mimicry_tick() {
         ally->ext().timers[TimerMimicryCheck] = 3;
         if (ally->subunit && ally->subunit->is_subunit()) {
             ally->subunit->ext().timers[TimerMimicryCheck] = 3;
+        }
+    }
+}
+
+void Unit::tick_vital_remains() {
+    auto& unit_ext = this->ext();
+    if (unit_ext.timers[TimerCorpseConsumptionDelay]) {
+        return;
+    }
+    bool consumed = false;
+    for (Thingy* corpse : g_corpse_search.radial(this->position, 32)) {
+        bw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
+        corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
+        corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
+        bw::play_sound({ SoundId::AskosiScrap01, SoundId::AskosiScrap03 }, corpse->sprite->position);
+        consumed = true;
+        unit_ext.timers[TimerCorpseConsumptionDelay] = 1secs;
+        return;
+    }
+    if (consumed) {
+        for (Unit* ally : g_unit_search.radial(this->position, Askosi::VitalRemainsRange).filter(this, FilterAlly | FilterCompleted | FilterNoBuilding)) {
+            if (ally->hitpoints < ally->get_max_hp_raw()) {
+                ally->heal_hp(Askosi::VitalRemainsHeal, this);
+                helper::add_overlay_below_main(ally->sprite, ImageId::HealingPulseUnderlay, 0, 0, 0);
+            }
+            ally->ext().timers[TimerVitalRemainsArmorPen] = Askosi::VitalRemainsArmorPenDuration;
         }
     }
 }

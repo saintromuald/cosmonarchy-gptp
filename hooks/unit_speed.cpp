@@ -108,7 +108,7 @@ namespace hooks {
         }
 
         if (unit_ext.timers[TimerImpactDissipation] > 1 || unit_ext.timers[TimerImpactPrevarication] > 1) {
-            speed *= 1.33fp;
+            speed *= 1.5fp;
         }
 
         if (unit_ext.timers[TimerImpactDissipation] > 1) {
@@ -162,7 +162,7 @@ namespace hooks {
 
         // Mind Tyrant - Maelstrom - slow
         if (unit_ext.timers[TimerMindTyrantMaelstromSlow] > 1) {
-            speed *= 0.5fp;
+            speed *= 0.33fp;
         }
 
         if (unit_ext.values[ValueReclaimed]) {
@@ -303,7 +303,8 @@ namespace hooks {
             case UnitId::ProtossSycophant:
             case UnitId::ZergMalkothrokor:
             case UnitId::ZergZethrokor:
-            case UnitId::ZergAxitrilisk: {
+            case UnitId::ZergAxitrilisk:
+            case UnitId::AskosiDyad: {
                 speed *= 1.25fp;
             } break;
             case UnitId::TerranCyprian:
@@ -333,6 +334,10 @@ namespace hooks {
             case UnitId::ZergHydraliskOrkoti: {
                 speed *= 1.4fp;
             } break;
+            case UnitId::TerranTalos:
+            case UnitId::ZergGosvileth: {
+                speed *= 1.45fp;
+            } break;
             case UnitId::ProtossLegionnaire:
             case UnitId::ProtossVagrantShade:
             case UnitId::ZergAxitriliskWeaponless: {
@@ -340,6 +345,9 @@ namespace hooks {
             } break;
             case UnitId::ZergMortothrokor: {
                 speed *= 1.6fp;
+            } break;
+            case UnitId::AskosiConstituent: {
+                speed *= 1.65fp;
             } break;
             case UnitId::ZergHydralisk: {
                 speed *= 1.7fp;

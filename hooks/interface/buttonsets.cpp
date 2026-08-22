@@ -588,7 +588,7 @@ namespace hooks {
                 if (unit_id_is_larva(buttonset_id) || buttonset_id == UnitId::ZergEgg || buttonset_id == UnitId::ZergCocoon
                     || units_dat::group_flags[unit->id].is_zerg && units_dat::group_flags[unit->id].is_factory) {
                     button->position = 6;
-                } else if (buttonset_id == UnitId::ProtossLanifect || UnitId::can_cast_recall(static_cast<UnitId::Enum>(buttonset_id))) {
+                } else if (UnitId::has_disruption_field((UnitId::Enum)buttonset_id) || UnitId::can_cast_recall((UnitId::Enum)buttonset_id)) {
                     button->position = 7;
                 } else if (buttonset_id == UnitId::TerranApostle) {
                     button->position = 8;
@@ -4236,7 +4236,7 @@ namespace hooks {
                                 } break;
                                 case UnitId::AskosiMimic: {
                                     if (current_button->icon_id == IconId::Mimicry
-                                     || current_button->icon_id == IconId::VitalRemains) {
+                                     || current_button->icon_id == IconId::FusionCutterHarvest) { // Scrapworld: Gold Rush
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

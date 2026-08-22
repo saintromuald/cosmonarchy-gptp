@@ -484,8 +484,8 @@ inline constexpr s32 MimicryRange = 5tiles;
 inline constexpr s32 HijackCastRange = 2tiles;
 inline constexpr s32 HijackTimer = 5secs + 1;
 
-inline constexpr s32 ImpactDissipationDuration = 3secs + 1;
-inline constexpr s32 ImpactPrevaricationDuration = 3secs + 1;
+inline constexpr s32 ImpactDissipationDuration = 2secs + 1;
+inline constexpr s32 ImpactPrevaricationDuration = 2secs + 1;
 
 inline constexpr s32 RematerializeCastRange = 6tiles;
 inline constexpr s32 RematerializeTeleportRange = 3tiles;
