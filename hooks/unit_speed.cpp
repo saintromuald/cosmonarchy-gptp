@@ -281,7 +281,6 @@ namespace hooks {
             case UnitId::TerranMadcap:
             case UnitId::TerranOlympian:
             case UnitId::TerranSevenstep:
-            case UnitId::ProtossAtreus:
             case UnitId::ProtossCabalist:
             case UnitId::ProtossVestige:
             case UnitId::ProtossSimulacrum:

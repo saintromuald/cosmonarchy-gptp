@@ -3142,17 +3142,17 @@ namespace hooks {
             unit->sprite->create_top_overlay(ImageId::MaverickStimpackExpire);
         }
 
-        // Gladius - Binding Plasma
-        if (unit_ext.timers[TimerGladiusBindingPlasma]) {
-            bw::binding_plasma_tick(unit_ext.values[ValueGladiusBindingPlasmaPlayer], unit, UnitId::ProtossGladius, {
-                .timer_id = ExtTimerId::TimerGladiusBindingPlasma,
-                .stack_value_id = ExtValueId::ValueGladiusBindingPlasmaStacks,
-                .player_value_id = ExtValueId::ValueGladiusBindingPlasmaPlayer,
-                .weapon_id = WeaponId::GladiusPlasmaFlurry,
-                .sound = {SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03}
+        // Atreus - Binding Plasma
+        if (unit_ext.timers[TimerAtreusBindingPlasma]) {
+            bw::binding_plasma_tick(unit_ext.values[ValueAtreusBindingPlasmaPlayer], unit, UnitId::ProtossAtreus, {
+                .timer_id = ExtTimerId::TimerAtreusBindingPlasma,
+                .stack_value_id = ExtValueId::ValueAtreusBindingPlasmaStacks,
+                .player_value_id = ExtValueId::ValueAtreusBindingPlasmaPlayer,
+                .weapon_id = WeaponId::AtreusDauntlessDisruptorCannon,
+                .sound = {SoundId::AtreusWeaponfire01, SoundId::AtreusWeaponfire03}
             });
         } else {
-            unit_ext.values[ValueGladiusBindingPlasmaStacks] = 0;
+            unit_ext.values[ValueAtreusBindingPlasmaStacks] = 0;
         }
 
         // Oscilliant - Binding Plasma
@@ -3166,6 +3166,19 @@ namespace hooks {
             });
         } else {
             unit_ext.values[ValueOscilliantBindingPlasmaStacks] = 0;
+        }
+
+        // Gladius - Binding Plasma
+        if (unit_ext.timers[TimerGladiusBindingPlasma]) {
+            bw::binding_plasma_tick(unit_ext.values[ValueGladiusBindingPlasmaPlayer], unit, UnitId::ProtossGladius, {
+                .timer_id = ExtTimerId::TimerGladiusBindingPlasma,
+                .stack_value_id = ExtValueId::ValueGladiusBindingPlasmaStacks,
+                .player_value_id = ExtValueId::ValueGladiusBindingPlasmaPlayer,
+                .weapon_id = WeaponId::GladiusPlasmaFlurry,
+                .sound = {SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03}
+            });
+        } else {
+            unit_ext.values[ValueGladiusBindingPlasmaStacks] = 0;
         }
 
         bw::set_unit_overlay(unit, {ImageId::Avenge_Small, ImageId::Avenge_XLarge}, unit_ext.timers[TimerAvenge] >= 1 || unit_ext.timers[TimerVengefulMarch] >= 1, {.play_death = true});

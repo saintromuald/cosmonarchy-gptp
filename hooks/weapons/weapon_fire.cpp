@@ -1216,6 +1216,12 @@ namespace hooks {
                 case WeaponId::StasisField: {
                     hooks::stasis_field_hit_internal(bullet->source_unit, bullet->position, bullet);
                 } break;
+                case WeaponId::AtreusDauntlessDisruptorCannon: {
+                    if (!bullet->attack_target.unit) {
+                        g_iquare_globals->create_effect(EffectId::AtreusBindingPlasma, Protoss::BindingPlasmaTimer, bullet->position, Protoss::BindingPlasmaRadius,
+                            SpriteId::GladiusBindingPlasmaOverlay, bullet->sprite ? bullet->sprite->elevation : 0, bullet->player, 0);
+                    }
+                } break;
                 case WeaponId::OscilliantRotatingRay: {
                     if (!bullet->attack_target.unit) {
                         g_iquare_globals->create_effect(EffectId::OscilliantBindingPlasma, Protoss::BindingPlasmaTimer, bullet->position, Protoss::BindingPlasmaRadius,

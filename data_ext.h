@@ -270,6 +270,8 @@ enum ExtValueId {
     ValuePortraitOverrideId,
     ValueOverrideInfrastructureBurrow,
     ValueImpactDissipationBlock,
+    ValueAtreusBindingPlasmaStacks,
+    ValueAtreusBindingPlasmaPlayer,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,
@@ -470,11 +472,11 @@ enum ExtTimerId {
     TimerPuppeteerDebuff,
     TimerImpactPrevarication,
     TimerHatedReflectionCooldown,
+    TimerAtreusBindingPlasma,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,
     TimerAI_Siphon,
-    TimerAI_Clarion,
     TimerAI_Skyfall,
     TimerAI_GriefOfAllGods,
     TimerAI_DisruptionField,
