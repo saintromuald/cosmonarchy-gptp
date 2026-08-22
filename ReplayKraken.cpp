@@ -78,7 +78,7 @@ bool ReplayKraken::should_upload_last_replay() {
 }
 
 void ReplayKraken::upload_last_replay() {
-    m_logs << "Attempting to upload replay at "
+    m_logs << std::format("Attempting to upload replay {} at ", g_globals->uuid_rand)
         << std::format("{:%Y-%m-%d %H:%M:%S}", std::chrono::floor<std::chrono::seconds>(std::chrono::system_clock::now()))
         << std::endl;
     if (!should_upload_last_replay()) {
