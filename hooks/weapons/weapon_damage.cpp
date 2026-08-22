@@ -192,6 +192,12 @@ namespace hooks {
         if (data.damage_type == DamageType::Independent) return false;
         // Also proc on deaths for hallucinations, since we know they always die in one hit
         if (data.target->status & UnitStatus::IsHallucination) return true;
+        if (weapon_damage_current_bullet) {
+            BulletExt* bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
+            if (bullet_ext->heals_allies && bw::is_allied_to(data.attacking_player_id, data.target->player)) {
+                return false;
+            }
+        }
         return data.damage >= data.target->hitpoints;
     }
 
@@ -438,6 +444,14 @@ namespace hooks {
             }
         }
 
+        if (weapon_damage_current_bullet) {
+            BulletExt* bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
+            if (bullet_ext->heals_allies && bw::is_allied_to(data.attacking_player_id, data.target->player)) {
+                data.target->heal_hp_then_shields(data.damage);
+                data.damage_type = DamageType::Independent;
+            }
+        }
+
         // Deal damage, except for Independent damage, which always deals 0
         if (data.damage_type != DamageType::Independent && data.target->hitpoints != 0 && data.target->defensive_matrix_hp == 0) {
             if (data.target->is_hallucination()) {
@@ -631,6 +645,11 @@ namespace hooks {
                 case WeaponId::HelionUskoScrapray: {
                     if (data.attacker->id == UnitId::AskosiLimire) {
                         data.damage -= 8 * 256;
+                    }
+                } break;
+                case WeaponId::IzirokorEnergizedBioplasma: {
+                    if (data.attacker->id == UnitId::BloodsummonThrombocyte) {
+                        data.damage *= 2;
                     }
                 } break;
 

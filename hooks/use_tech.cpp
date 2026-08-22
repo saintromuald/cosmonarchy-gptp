@@ -230,6 +230,9 @@ namespace hooks {
             case TechId::AskosiPuppeteer: {
                 queue_toggle_ability(RustId::CastPuppeteer, casting_unit);
             } break;
+            case TechId::BloodsummonBloodyBurst: {
+                queue_toggle_ability(RustId::CastBloodyBurst, first_unit);
+            } break;
             case TechId::CancelNewAbility: {
                 Unit* selected = *g_active_portrait_unit;
                 if (selected) {

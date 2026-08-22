@@ -140,6 +140,7 @@ namespace RustId {
 
         MalkothrokorHiveTissue,
         CastPuppeteer,
+        CastBloodyBurst,
     };
 }
 

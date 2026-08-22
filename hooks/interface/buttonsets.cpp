@@ -784,6 +784,7 @@ namespace hooks {
                                 }
                             } break;
                             case TechId::AskosiAshbind: {
+                            case TechId::BloodsummonBloodyBurst: {
                                 current_button_state = Button_State::Enabled;
                             } break;
                         }
@@ -4433,12 +4434,18 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::BloodsummonThrombocyte: {
+                                    if (current_button->icon_id == IconId::TosgriliskExplosiveSpores) { // Coagulation
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
 
                                 case UnitId::BloodsummonGrimoire: {
                                     if (current_button->icon_id == IconId::BloodyRain) { // Necromastery
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                
                             }
 
                             // Passive icons: END \\

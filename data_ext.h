@@ -645,6 +645,7 @@ struct BulletExt {
 
     Unit* cargo;
     u32 source_id;
+    bool heals_allies = false;
 };
 
 struct SpriteExt {
