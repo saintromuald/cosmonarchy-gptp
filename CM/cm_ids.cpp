@@ -2232,6 +2232,10 @@ bool incubates_on_damage_taken(UnitId::Enum unit_id) {
 bool has_damage_cloak(UnitId::Enum unit_id) {
     return unit_id == UnitId::ProtossVestige;
 }
+
+bool has_forlorn_haste(UnitId::Enum unit_id) {
+    return unit_id == UnitId::BloodsummonAcqui;
+}
 } // namespace UnitId
 
 namespace WeaponId {

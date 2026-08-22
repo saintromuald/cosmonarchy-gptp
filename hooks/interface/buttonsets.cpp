@@ -4439,6 +4439,13 @@ namespace hooks {
                                     }
                                 } break;
 
+                                case UnitId::BloodsummonAcqui: {
+                                    if (current_button->icon_id == IconId::TosgriliskExplosiveSpores  // Coagulation
+                                    ||  current_button->icon_id == IconId::MuscularAugments) {        // Forlorn Haste
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                
                                 case UnitId::BloodsummonGrimoire: {
                                     if (current_button->icon_id == IconId::BloodyRain) { // Necromastery
                                         current_button_state = Button_State::Enabled;

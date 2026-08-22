@@ -521,5 +521,6 @@ inline constexpr s32 PuppeteerPullRange = 5tiles;
 // BLOODSUMMON \\
 
 namespace Bloodsummon {
+inline constexpr s32 ForlornHasteRange = 3tiles;
 inline constexpr s32 BloodyBurstRange = 3tiles;
 }

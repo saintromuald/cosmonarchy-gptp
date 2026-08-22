@@ -488,6 +488,7 @@ namespace UnitId {
 
     // Bloodsummon-Unit
         BloodsummonThrombocyte                              = 617,
+        BloodsummonAcqui                                    = 625,
 
     // Bloodsummon-Building
         BloodsummonGrimoire                                 = 618,
