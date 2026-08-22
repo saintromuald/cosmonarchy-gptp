@@ -625,7 +625,7 @@ namespace hooks {
                         data.damage += 10 * 256;
                     }
                     if (data.attacker->id == UnitId::AskosiEndbore) {
-                        data.damage += 6 * 256;
+                        data.damage += 4hp;
                     }
                 } break;
                 case WeaponId::HelionUskoScrapray: {
@@ -637,12 +637,12 @@ namespace hooks {
                 // Heroes
                 case WeaponId::VultureFragmentationGrenade: {
                     if (data.attacker->id == UnitId::RaynorVulture) {
-                        data.damage += 10 * 256;
+                        data.damage += 10hp;
                     }
                 } break;
                 case WeaponId::MinotaurAsterionLaserBattery: {
                     if (data.attacker->id == UnitId::DukeMinotaur) {
-                        data.damage += 10 * 256;
+                        data.damage += 10hp;
                     }
                 } break;
 
@@ -716,6 +716,14 @@ namespace hooks {
                 data.damage = static_cast<s32>(data.damage * 1.5fp); // Currently doesn't proc onhits with this solution! -Pr0nogo
                 data.attacker->sprite->create_overlay(ImageId::PhantomStrikeProc);
             }
+        }
+
+        if (target_ext.values[ValueImpactDissipationBlock]) {
+            target_ext.values[ValueImpactDissipationBlock] = 0;
+            data.damage = 0;
+            data.damage_type = DamageType::Independent;
+            bw::create_shield_overlay(data.target, data.direction);
+            bw::play_sound({SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03}, data.target); // TODO: Own audio
         }
     }
 
@@ -846,8 +854,9 @@ namespace hooks {
             case UnitId::AskosiAgonist:
             case UnitId::AskosiEmissary:
             case UnitId::AskosiAkreno: {
-                if (!bw::is_allied_to(data.target->player, data.attacking_player_id)) {
+                if (!target_ext.timers[TimerImpactDissipation] && !bw::is_allied_to(data.target->player, data.attacking_player_id)) {
                     target_ext.timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
+                    target_ext.values[ValueImpactDissipationBlock] = 1;
                     data.target->update_speed();
                 }
             } break;
@@ -855,8 +864,9 @@ namespace hooks {
                 if (!bw::is_allied_to(data.target->player, data.attacking_player_id)) {
                     if (target_ext.values[ValueReassemblyActive]) {
                         target_ext.timers[TimerRetaliationAssembly] = AskosiThaumalogue::RetaliationAssemblyDuration;
-                    } else {
+                    } else if (!target_ext.timers[TimerImpactDissipation]) {
                         target_ext.timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
+                        target_ext.values[ValueImpactDissipationBlock] = 1;
                         data.target->update_speed();
                     }
                 }
@@ -911,8 +921,6 @@ namespace hooks {
                 if (tyrant->energy >= Protoss::TyrannyEnergyCost && !bw::are_mutual_allies(data.target->player, data.attacking_player_id) && !data.target->is_building() && malefactor_ext.values[ValueIsMalefactor] == 2) {
                     target_ext.timers[TimerMalefactorTyrannize] = ProtossMindTyrant::MalefactorTyrannizeDuration;
                     target_ext.last_malefactor_player = data.attacking_player_id;
-                    // Drain energy for every tyrannized unit
-                    tyrant->spend_energy(Protoss::TyrannyEnergyCost);
                 }
             }
 
@@ -930,10 +938,12 @@ namespace hooks {
                 case UnitId::ProtossManifoldStarbound: {
                     target_ext.timers[TimerDiscordantChorus] = 2secs + 1;
                 } break;
-                case UnitId::ZergQuazrokor:
-                case UnitId::ZergNathrokor: {
-                    attacker_ext.timers[TimerZergAdrenalFrenzy] = 2secs + 1;
-                    data.attacker->update_speed();
+                case UnitId::ZergQuazilisk:
+                case UnitId::ZergQuazrokor: {
+                    if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
+                        attacker_ext.timers[TimerZergAdrenalFrenzy] = 2secs + 1;
+                        data.attacker->update_speed();
+                    }
                 } break;
                 case UnitId::ZergRilirokor:
                 case UnitId::ZergRililisk: {
@@ -941,6 +951,10 @@ namespace hooks {
                     if (data.attacker->remove_timer > Broodspawn::LifeTimer) {
                         data.attacker->remove_timer = Broodspawn::LifeTimer;
                     }
+                } break;
+                case UnitId::AskosiMimic: {
+                    target_ext.timers[TimerGoldRush] = Askosi::ScrapworldGoldRushTimer;
+                    target_ext.values[ValueGoldRushPlayer] = data.attacking_player_id;
                 } break;
                 case UnitId::AskosiGhostwrit: {
                     if (attacker_ext.units[UnitPuppeteerTarget] != data.target) {
@@ -1414,6 +1428,7 @@ namespace hooks {
                         if (data.attacker->order_signal & 0x20) {
                             data.attacker->order_signal &= ~0x20;
                             bw::heal_proc(data.attacker, data.attacking_player_id, AskosiCardinal::SustainingSermonRange, AskosiCardinal::SustainingSermonHeal);
+                            data.attacker->heal_hp(AskosiCardinal::SustainingSermonHeal, data.attacker);
                         }
                     } break;
                     case WeaponId::CrematoriumOkliQuadshard: {
@@ -1662,7 +1677,7 @@ namespace hooks {
 
             // Askosi Booming Blast
             if (target_ext.timers[TimerBoomingBlast] > 1) {
-                data.target->booming_blast_proc(false);
+                data.target->proc_booming_blast(false);
             }
 
             // Matraleth, Akistokor - Blissful Embrace - infest target

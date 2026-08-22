@@ -956,14 +956,13 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
                 u32 lanifects = 0;
                 u32 webs = 0;
                 cosmonarchy_finder_loop(unit, unit->position, ProtossLanifect::AISeekRange, Flags::Own, {}, [&](Unit* target) {
-                    if (target->id == UnitId::ProtossLanifect) {
+                    if (UnitId::has_disruption_field((UnitId::Enum)target->id)) {
                         lanifects += 1;
                         if (bw::get_generic_rust_value(target, RustId::ToggleDisruptionField)) {
                             webs += 1;
                         }
                     }
-                    });
-
+                });
                 u32 allies = cosmonarchy_unit_count(unit, unit->position, ProtossLanifect::AISeekRange, Flags::IncludingSelf | Flags::Ally | Flags::NoAir, {});
                 u32 enemies = cosmonarchy_unit_count(unit, unit->position, ProtossLanifect::AISeekRange, Flags::Enemy | Flags::NoAir, {});
                 u32 threshold = std::min(std::min(ceilf(enemies / 4), ceilf(lanifects / 4)), ceilf(allies / 2));

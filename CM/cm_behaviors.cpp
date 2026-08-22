@@ -259,6 +259,13 @@ void salvage_corpse(Thingy* corpse, u32 player) {
 	}
 	u32 mineral_cost = units_dat::mineral_cost[unit_id] / 4;
 	u32 vespene_cost = units_dat::vespene_cost[unit_id] / 4;
+	if (UnitId::is_triple_birth(unit_id)) {
+		mineral_cost /= 3;
+		vespene_cost /= 3;
+	} else if (units_dat::base_property[corpse->unit_id] & UnitProperty::TwoUnitsIn1Egg) {
+		mineral_cost /= 2;
+		vespene_cost /= 2;
+	}
 	// TODO: Probably offload this to a function that adds resources to players more generically
 	g_game_minerals[player] += mineral_cost;
 	g_total_minerals[player] += mineral_cost;

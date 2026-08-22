@@ -55,28 +55,26 @@ namespace hooks {
 
     // Replacement for proc @ 00423660. -iquare
     void btnsact_use_tech(u16 tech, GrpHead* head) { // 00423F70
-        bool tech_capable_unit = false;
+        bool skip_energy_check = false;
         bool can_play_local_sound = (*g_active_portrait_unit)->player == g_local_nation_id && !g_is_in_replay;
-        
+
         // Only taking the first unit has bad implications for toggles, since we toggle based on the first unit's state, which is not guaranteed
         // to be the same state as all other units in the selection.
         // We should think of a way to fix this! -Pr0nogo
-        Unit* unit = players_selections->unit[*g_active_nation_id][0];
-        if (unit) {
-            // Initial check for energy-based switch abilities
-            if (players_selections->unit[*g_active_nation_id][0]->id == UnitId::ProtossLanifect && bw::get_generic_rust_value(unit, RustId::ToggleDisruptionField) == 1) {
-                tech_capable_unit = true;
+        for (u32 i = 0; i < SelectionCap; ++i) {
+            Unit* unit = g_client_selection_group->unit[i];
+            if (!unit || !unit->is_completed()) {
+                continue;
+            }
+            if (tech == TechId::LanifectDisruptionField && UnitId::has_disruption_field((UnitId::Enum)unit->id) && bw::get_generic_rust_value(unit, RustId::ToggleDisruptionField) == 1) {
+                skip_energy_check = true;
+                break;
             }
         }
-        if (!tech_capable_unit) {
-            if (helper::check_energy_for_tech_use(tech)) {
-                tech_capable_unit = true;
-            }
-            if (!tech_capable_unit) {
-                Unit* portrait_unit = players_selections->unit[*g_active_nation_id][0];
-                helper::get_stat_txt_string(*g_active_portrait_unit, (*g_active_portrait_unit)->player, "Not enough energy");
-                return;
-            }
+        Unit* casting_unit = g_client_selection_group->unit[0];
+        if (!skip_energy_check && !helper::check_energy_for_tech_use(tech)) {
+            helper::get_stat_txt_string(casting_unit, casting_unit->player, "Not enough energy");
+            return;
         }
         switch (tech) {
             case TechId::MalkothrokorHiveTissue: {
@@ -138,7 +136,7 @@ namespace hooks {
                 helper::issue_tri_target_order(OrderId::FireYamatoGun1, OrderId::FireYamatoGun2, 0);
             } break;
             case TechId::FacadePryingEyes: {
-                if (!unit->is_in_air()) {
+                if (!casting_unit->is_in_air()) {
                     queue_generic_ability(RustId::CastPryingEyes, 1);
                 }
             } break;
@@ -193,10 +191,10 @@ namespace hooks {
                 helper::issue_tri_target_order(OrderId::CastMaelstrom, 0, 0);
             } break;
             case TechId::LanifectDisruptionField: {
-                queue_toggle_ability(RustId::ToggleDisruptionField, unit);
+                queue_toggle_ability(RustId::ToggleDisruptionField, casting_unit);
             } break;
             case TechId::DimensionalRecall: {
-                if ((unit->id == UnitId::ProtossDidact || unit->id == UnitId::ProtossSaladius) && can_play_local_sound) {
+                if ((casting_unit->id == UnitId::ProtossDidact || casting_unit->id == UnitId::ProtossSaladius) && can_play_local_sound) {
                     bw::play_action_sound(SoundId::Protoss_ARBITER_PAbPss00_WAV, *g_active_portrait_unit);
                 }
                 helper::issue_tri_target_order(OrderId::Teleport, 0, 0);
@@ -230,7 +228,7 @@ namespace hooks {
                 queue_generic_ability_simple();
             } break;
             case TechId::AskosiPuppeteer: {
-                queue_toggle_ability(RustId::CastPuppeteer, unit);
+                queue_toggle_ability(RustId::CastPuppeteer, casting_unit);
             } break;
             case TechId::CancelNewAbility: {
                 Unit* selected = *g_active_portrait_unit;

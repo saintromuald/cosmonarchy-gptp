@@ -269,6 +269,7 @@ enum ExtValueId {
     ValuePortraitOverrideSet,
     ValuePortraitOverrideId,
     ValueOverrideInfrastructureBurrow,
+    ValueImpactDissipationBlock,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,

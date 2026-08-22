@@ -1436,6 +1436,8 @@ namespace hooks {
         switch (unit->id) {
             // Sires
             case UnitId::ZergYblyleth:
+            case UnitId::ZergSovrokor:
+            case UnitId::ZergSovroleth:
             case UnitId::ZergZoryusthaleth:
             case UnitId::ZergKonvilisk:
             case UnitId::ZergVilgoleth:
@@ -1607,7 +1609,7 @@ namespace hooks {
             } break;
             case UnitId::ZergSovroleth: {
                 {
-                    EntryArray sovroleths = g_unit_search.radial_ex(unit, 8 * 32, FilterAlly, {UnitId::ZergSovroleth}); 
+                    EntryArray sovroleths = g_unit_search.radial_ex(unit, 8tiles, FilterAlly, {UnitId::ZergSovroleth}); 
                     unit_ext.values[ValueSovrolethLinkCount] = sovroleths.count();
                 }
                 should_update_speed = true;
@@ -1997,7 +1999,7 @@ namespace hooks {
             } break;
             case UnitId::ZergMatraleth: {
                 unit->proc_ensnaring_brood();
-                if (unit->order_signal & 32) {
+                if (unit->order_signal & 32) { // Casting Parasitic Excision
                     unit->order_signal &= ~32;
                     bw::decloak_passive_proc(unit);
                 }
@@ -2005,7 +2007,7 @@ namespace hooks {
             case UnitId::ExtInfestedKerrigan:
             case UnitId::BigInfestedKerrigan: {
                 unit->proc_ensnaring_brood();
-                unit->psi_storm_cancel();
+                unit->cancel_psi_storm();
             } break;
             case UnitId::ZergSasyrvoleth: {
                 // Sasyrvoleth - Lucilleri Pheremones
@@ -2277,32 +2279,31 @@ namespace hooks {
                         unit->air_weapon_cooldown = hooks::get_modified_weapon_cooldown(unit, WeaponId::GrandstandArteDriver);
                     }
                 }
-                unit->preylock_cast();
+                unit->cast_preylock();
             } break;
             case UnitId::AskosiEyelet:
             case UnitId::AskosiVicar:
             case UnitId::AskosiHistrion:
             case UnitId::AskosiEmissary: {
-                unit->rematerialize_cast();
+                unit->cast_rematerialize();
             } break;
             case UnitId::AskosiProselyte:
-            case UnitId::AskosiCardinal:
             case UnitId::AskosiRove:
             case UnitId::AskosiPetract: {
-                if (unit->rapid_rendezvous_cast()) {
+                if (unit->cast_rapid_rendezvous()) {
                     should_update_speed = true;
                 }
             } break;
             case UnitId::AskosiAvatar:
             case UnitId::AskosiInkblot:
             case UnitId::AskosiAuxine: {
-                unit->hijack_cast();
+                unit->cast_hijack();
             } break;
             case UnitId::AskosiParaclete: {
-                unit->remote_hijack_cast();
+                unit->cast_remote_hijack();
             } break;
             case UnitId::TerranTriton: {
-                unit->lobotomy_warhead_cast();
+                unit->cast_lobotomy_warhead();
             } break;
             case UnitId::TerranSerathiel: {
                 auto& try_cast = unit_ext.values[ValueTryCastCustomSpell];
@@ -2618,7 +2619,7 @@ namespace hooks {
                 if (unit_ext.values[ValueJustCastedHallucination] && unit->order_signal & 32) {
                     unit_ext.values[ValueJustCastedHallucination] = 0;
                 }
-                unit->psi_storm_cancel();
+                unit->cancel_psi_storm();
             } break;
             case UnitId::ProtossAmaranth: {
                 Unit* target = unit->order_target.unit;
@@ -2843,7 +2844,9 @@ namespace hooks {
                         if (!target_ext.timers[TimerSermonSalve]) {
                             target_ext.timers[TimerSermonSalve] = 3;
                         }
-                        needs_refresh = target->sermon_salve_cloak(unit);
+                        if (target->proc_sermon_salve_cloak(unit)) {
+                            needs_refresh = true;
+                        }
                     }
                     if (needs_refresh) {
                         bw::refresh_console();
@@ -2894,33 +2897,9 @@ namespace hooks {
                     }
                 }
             } break;
-            case UnitId::AskosiMimic: {
-                unit->mimicry_tick();
-                if (unit_ext.timers[TimerCorpseConsumptionDelay]) {
-                    break;
-                }
-                bool consumed = false;
-                for (Thingy* corpse : g_corpse_search.radial(unit->position, 32)) {
-                    bw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
-                    corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
-                    corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
-                    bw::play_sound({SoundId::AskosiScrap01, SoundId::AskosiScrap03}, corpse->sprite->position);
-                    consumed = true;
-                    unit_ext.timers[TimerCorpseConsumptionDelay] = 1secs;
-                    break;
-                }
-                if (consumed) {
-                    for (Unit* ally : g_unit_search.radial(unit->position, Askosi::VitalRemainsRange).filter(unit, FilterAlly | FilterCompleted | FilterNoBuilding)) {
-                        if (ally->hitpoints < ally->get_max_hp_raw()) {
-                            ally->heal_hp(Askosi::VitalRemainsHeal, unit);
-                            helper::add_overlay_below_main(ally->sprite, ImageId::HealingPulseUnderlay, 0, 0, 0);
-                        }
-                        ally->ext().timers[TimerVitalRemainsArmorPen] = Askosi::VitalRemainsArmorPenDuration;
-                    }
-                }
-            } break;
+            case UnitId::AskosiMimic:
             case UnitId::AskosiEgocent: {
-                unit->mimicry_tick();
+                unit->tick_mimicry();
             } break;
             case UnitId::AskosiDyad: {
                 if (unit->main_order_id != OrderId::AskosiSalvage) {
@@ -3026,13 +3005,17 @@ namespace hooks {
                         if (!target->is_completed()) {
                             continue;
                         }
-                        target->ext().timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
+                        auto& target_ext = target->ext();
+                        if (!target_ext.timers[TimerImpactDissipation]) {
+                            target_ext.timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
+                            target_ext.values[ValueImpactDissipationBlock] = 1;
+                        }
                         target->update_speed();
                     }
                 } else {
                     bool needs_refresh = false;
-                    for (Unit* target : g_unit_search.radial_ex(unit, AskosiSilversoul::CloakRange, FilterAlly)) {
-                        needs_refresh = target->sermon_salve_cloak(unit);
+                    for (Unit* target : g_unit_search.radial_ex(unit, AskosiSilversoul::CloakRange, FilterAlly | FilterNoBuilding)) {
+                        needs_refresh = target->proc_sermon_salve_cloak(unit);
                     }
                     if (needs_refresh) {
                         bw::refresh_console();
@@ -3044,10 +3027,11 @@ namespace hooks {
                 if (target && (bw::distance_between(unit->position, target->position) > 10tiles || target->ext().timers[TimerPuppeteerDebuff] == 0)) {
                     unit_ext.units[UnitPuppeteerTarget] = 0;
                 }
-                unit->puppeteer_cast(target);
+                unit->cast_puppeteer(target);
             } break;
+            case UnitId::AskosiCardinal:
             case UnitId::AskosiElgird: {
-                unit->ashbind_cast();
+                unit->cast_ashbind();
             } break;
         }
         // Huge switch statement ends
@@ -4067,7 +4051,7 @@ namespace hooks {
 
         if (unit_ext.timers[TimerBoomingBlast] == 1) {
             unit_ext.timers[TimerBoomingBlast] = 0;
-            unit->booming_blast_proc();
+            unit->proc_booming_blast();
             should_update_speed = true;
         }
 
@@ -4806,7 +4790,7 @@ namespace hooks {
                                             if (unit->has_energy_for(TechId::StroluumSkryspawn)) {
                                                 unit->spend_energy(TechId::energy_cost(TechId::StroluumSkryspawn));
                                                 if (!unit_ext.timers[TimerSkryspawn]) {
-                                                    unit_ext.timers[TimerSkryspawn] = 3 * 24 + 1;
+                                                    unit_ext.timers[TimerSkryspawn] = 3secs + 1;
                                                     unit->freeze();
                                                 }
                                             } else {

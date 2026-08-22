@@ -632,19 +632,19 @@ namespace hooks {
 
 	// Hooked to investigate Maelstrom double-calling disable_unit. -Pr0nogo
 	void set_maelstrom_timer(Unit* unit, u8 duration) { // 004553F0
-		UnitExt* unit_ext = get_unit_ext(unit);
-		if (!unit_ext->timers[TimerMindTyrantMaelstromSlow]) {
+		auto& unit_ext = unit->ext();
+		if (!unit_ext.timers[TimerMindTyrantMaelstromSlow]) {
 			Unit* final_unit = unit->subunit;
 			if (!final_unit) {
 				final_unit = unit;
 			}
 			final_unit->sprite->create_overlay(ImageId::MaelstromOverlay_Small + bw::get_overlay_offset(unit->id), 0, 0, 0);
 		}
-		u32 timer = unit_ext->timers[TimerMindTyrantMaelstromSlow];
+		u32 timer = unit_ext.timers[TimerMindTyrantMaelstromSlow];
 		if (duration > timer) {
 			timer = duration;
 		}
-		unit_ext->timers[TimerMindTyrantMaelstromSlow] = timer;
+		unit_ext.timers[TimerMindTyrantMaelstromSlow] = timer;
 	}
 
 	// Hooked to unfreeze subunits too. -Pr0nogo

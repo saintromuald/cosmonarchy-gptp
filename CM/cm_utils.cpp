@@ -579,8 +579,8 @@ u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id) {
         case UnitId::AskosiIconoclast:        damage += 1;  break;
         case UnitId::AskosiParaclete:         damage += 3;  break;
         case UnitId::AskosiLimire:            damage -= 8;  break;
-        case UnitId::AskosiEndbore:           damage += 6;  break;
-        case UnitId::AskosiTortare:           damage += 15;  break;
+        case UnitId::AskosiEndbore:           damage += 4;  break;
+        case UnitId::AskosiTortare:           damage += 15; break;
         case UnitId::ForerunnerFerrum:        damage -= 3;  break;
         case UnitId::ForerunnerChalyb:        damage -= 3;  break;
 
@@ -1042,7 +1042,13 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::IziraliskCorrosiveBioplasma:         return "Corrosive Bioplasma";
         case WeaponId::DoroninKorozzetBeastblades:          return "Korozzet Beastblades";
         case WeaponId::ThaumalogueUtsoCarbine:              return unit_id == UnitId::AskosiThaumalogue ? "Utso Carbine" : "Oldu Tripshard";
-        case WeaponId::CrematoriumOkliQuadshard:            return unit_id == UnitId::AskosiCrematorium ? "Okli Quadshard" : "Reforming Carbine";
+        case WeaponId::CrematoriumOkliQuadshard: {
+            switch (unit_id) {
+                case UnitId::AskosiAvatar:                  return "Reforming Carbine";
+                case UnitId::AskosiCrematorium:             return "Okli Quadshard";
+                case UnitId::AskosiEndbore:                 return "Irko Octorshard";
+            }
+        }
         case WeaponId::OscilliantRotatingRay:               return "Rotating Ray";
         case WeaponId::AphoristAnsaSunshot:                 return "Ansa Sunshot";
         case WeaponId::ExtatusRepeatingBlaster:             return "Repeating Blaster";
