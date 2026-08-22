@@ -12,8 +12,8 @@ struct Bullet { // With several 2023 contributions by DarkenedFantasies
     /*0x08*/ u32          hitpoints;				// Usually holds 1
     /*0x0C*/ Sprite*      sprite;
     /*0x10*/ Target       move_target;
-    /*0x18*/ v2u16      target_position_1;
-    /*0x1C*/ v2u16      target_position_2;		// Usually same as target_position_1
+    /*0x18*/ v2u16        target_position_1;
+    /*0x1C*/ v2u16        target_position_2;		// Usually same as target_position_1
     /*0x20*/ u8           movement_flags;			// Usually holds 0x09 for Scribes, 0x0b for Dracadins, 0x11 for Mutalisks
     /*0x21*/ u8           current_direction_1;
     /*0x22*/ u8           flingy_turn_rate;
@@ -21,7 +21,7 @@ struct Bullet { // With several 2023 contributions by DarkenedFantasies
     /*0x24*/ u16          flingy_id;
     /*0x26*/ u8           unknown_0x26;
     /*0x27*/ u8           flingy_move_control;
-    /*0x28*/ v2u16      position;
+    /*0x28*/ v2u16        position;
     /*0x2C*/ v2s32        halt;
     /*0x34*/ u32          flingy_top_speed;
     /*0x38*/ u32          current_speed_1;

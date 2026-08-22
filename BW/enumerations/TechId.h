@@ -43,6 +43,9 @@ namespace TechId {
         AskosiSalvage						= 41, // Unknown Tech 41
         AskosiPuppeteer                     = 52,
 
+    // Bloodsummon
+        BloodsummonBloodyBurst              = 53,
+
         // Brood War \\
 
         Stimpacks				=  0,

@@ -467,6 +467,8 @@ struct Unit : public UnitLayout {
     void cast_ashbind();
     void tick_mimicry();
     void tick_vital_remains();
+    bool has_coagulation();
+    void cast_bloody_burst();
 };
 
 C_ASSERT(sizeof(Flingy) == 76);

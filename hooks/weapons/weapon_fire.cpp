@@ -754,7 +754,15 @@ namespace hooks {
                     case WeaponId::IzirokorEnergizedBioplasma:
                     case WeaponId::KonviliskSowingSpines: {
                         // Crushing Tide - Tosgrilisk, Izirokor, Konvilisk
-                        fire_multiple(unit, weapon_id, 3, FilterEnemy, {});
+                        if (unit->id == UnitId::BloodsummonThrombocyte) {
+                            Bullet* bullet = fire_bullet(unit, weapon_id, weapon_target);
+                            if (unit->has_coagulation()) {
+                                BulletExt* bullet_ext = get_bullet_ext(bullet);
+                                bullet_ext->heals_allies = true;
+                            }
+                        } else {
+                            fire_multiple(unit, weapon_id, 3, FilterEnemy, {});
+                        }
                     } break;
                     case WeaponId::CherbrathalorVenemousBursts: {
                         // Crushing Tide - Cherbrathalor
@@ -809,7 +817,7 @@ namespace hooks {
                         }
                     } break;
                     default: {
-                        fire_bullet(unit, weapon_id, weapon_target);
+                        Bullet* bullet = fire_bullet(unit, weapon_id, weapon_target);
                     } break;
                 }
 
@@ -1282,7 +1290,7 @@ namespace hooks {
         bullet_ext->distance_traveled += bw::distance_between(old_position, bullet->position);
         bullet_ext->ticks_traveled += 1;
         if (weapon_id_bounces_caustic_fission(bullet->weapon_id) && !bullet_ext->bounced) {
-            u32 period = 4 * 32;
+            u32 period = 4tiles;
             if (bullet_ext->distance_traveled / period > old_distance_traveled / period) {
                 bullet->remaining_bounces += 1;
             }
@@ -1296,7 +1304,10 @@ namespace hooks {
             if (is_binding_plasma) {
                 next_bounce = 1;
             }
-
+            if (bullet->source_unit && bullet->source_unit->id == UnitId::BloodsummonThrombocyte) {
+                next_bounce = 0;
+                bullet->remaining_bounces = 0;
+            }
             bullet->remaining_bounces = next_bounce;
             g_iquare_globals->bounce_bullet = bullet;
             Unit* target = helper::find_next_bounce_target(bullet);
@@ -1355,7 +1366,7 @@ namespace hooks {
         if (!(helper::unit_is_carrier(bounce_source))) {
             bool is_valid = true;
             if (helper::unit_is_reaver(bounce_source)) {
-                if (target->status & UnitStatus::InAir) {
+                if (target->is_in_air()) {
                     return 0;
                 }
                 is_valid = helper::unit_has_path_to_target(bounce_source, target);
@@ -1363,7 +1374,7 @@ namespace hooks {
                 if (helper::unit_can_infest(bounce_source)) {
                     is_valid = helper::can_be_infested(0, target) != 0; // First arg is stupid?
                 } else {
-                    if (target->status & UnitStatus::InAir) {
+                    if (target->is_in_air()) {
                         is_valid = units_dat::air_weapon[bounce_source_unit->id] != WeaponId::None;
                     } else {
                         is_valid = units_dat::ground_weapon[bounce_source_unit->id] != WeaponId::None;
@@ -1419,7 +1430,7 @@ namespace hooks {
 
     // Hooked to resolve issues with multihit bullets - Pr0nogo
     Bullet* delete_bullet (Bullet* bullet) { // 0048A560
-        if (bullet->source_unit && (bullet->source_unit->id == UnitId::ZergLakizilisk || bullet->source_unit->id == UnitId::ZergLakiziliskZorthos)) {
+        if (bullet->source_unit && (unit_id_is_burrowed_attacker(bullet->source_unit->id))) {
             bullet->source_unit->order_signal &= ~64;
         }
         if (!bullet->sprite) {
@@ -1546,12 +1557,12 @@ namespace hooks {
         helper::bullet_behavior_reassign(bullet);
 
         reset_bullet_ext(bullet);
-        UnitExt* unit_ext = get_unit_ext(parent);
+        auto& unit_ext = parent->ext();
         BulletExt* bullet_ext = get_bullet_ext(bullet);
         bullet_ext->bullet_source = bullet->position;
-        bullet_ext->fire_index = unit_ext->values[ValueWeaponFireIndex];
-        bullet_ext->bullet_local_index = unit_ext->values[ValueWeaponBulletLocalIndex]++;
-        bullet_ext->bullet_total_index = unit_ext->values[ValueWeaponBulletTotalIndex]++;
+        bullet_ext->fire_index = unit_ext.values[ValueWeaponFireIndex];
+        bullet_ext->bullet_local_index = unit_ext.values[ValueWeaponBulletLocalIndex]++;
+        bullet_ext->bullet_total_index = unit_ext.values[ValueWeaponBulletTotalIndex]++;
 
         u8 launch_spin = weapons_dat::launch_spin[weapon_id];
         if (launch_spin) {
@@ -1713,8 +1724,8 @@ namespace hooks {
                 }
                 bullet->attack_target.pt.x = target_pos.x;
                 bullet->attack_target.pt.y = target_pos.y;
-                unit_ext->values[ValueMissileReturnX] = target_pos.x;
-                unit_ext->values[ValueMissileReturnY] = target_pos.y;
+                unit_ext.values[ValueMissileReturnX] = target_pos.x;
+                unit_ext.values[ValueMissileReturnY] = target_pos.y;
                 helper::attack_fly_to_target(bullet, target_pos.x, target_pos.y);
                 return 1;
             }
@@ -1778,8 +1789,7 @@ namespace hooks {
                     case WeaponBehavior_AppearOnTargetUnit:
                     case WeaponBehavior_AppearOnTargetSite:
                     case WeaponBehavior_AppearOnAttacker:
-                    case WeaponBehavior_AttackAndSelfDestruct:
-                    {
+                    case WeaponBehavior_AttackAndSelfDestruct: {
                         bullet->behavior_type = WeaponBehavior_AppearOnAttacker;
                         if (bullet->attack_target.unit && bullet->attack_target.unit->sprite) {
                             bullet->attack_target.pt.x = bullet->attack_target.unit->position.x;
@@ -1791,18 +1801,15 @@ namespace hooks {
                         bullet->order_unit_id = UnitId::None;
                         helper::play_sprite_iscript(bullet->sprite, IscriptAnimation::Death, 1);
                     } break;
-                    case WeaponBehavior_FlyFollowTarget:
-                    {
+                    case WeaponBehavior_FlyFollowTarget: {
                         helper::assign_weapon_data(bullet, WeaponBehavior_AppearOnTargetUnit);
                         helper::play_sprite_iscript(bullet->sprite, IscriptAnimation::GndAttkInit, 1);
                     }  break;
-                    case WeaponBehavior_Bounce:
-                    {
+                    case WeaponBehavior_Bounce: {
                         helper::assign_weapon_data(bullet, WeaponBehavior_PersistOnTargetSite);
                         helper::play_sprite_iscript(bullet->sprite, IscriptAnimation::GndAttkInit, 1);
                     }  break;
-                    case WeaponBehavior_PersistOnTargetSite:
-                    {
+                    case WeaponBehavior_PersistOnTargetSite: {
                         helper::assign_weapon_data(bullet, WeaponBehavior_AppearOnTargetSite);
                         Image* bullet_overlay = 0;
                         bullet_overlay = bullet->sprite->images.head;
@@ -1813,8 +1820,7 @@ namespace hooks {
                             } while (bullet_overlay);
                         }
                     } break;
-                    case WeaponBehavior_AttackNearbyArea:
-                    {
+                    case WeaponBehavior_AttackNearbyArea: {
                         helper::assign_weapon_data(bullet, WeaponBehavior_AttackAndSelfDestruct);
                         Image* bullet_overlay = bullet->sprite->images.head;
                         if (bullet_overlay) {
@@ -1824,8 +1830,7 @@ namespace hooks {
                             } while (bullet_overlay);
                         }
                     } break;
-                    default:
-                    {
+                    default: {
                         helper::assign_weapon_data(bullet, WeaponBehavior_FlyFollowTarget);
                         Image* bullet_overlay = bullet->sprite->images.head;
                         if (bullet_overlay) {
@@ -1839,36 +1844,28 @@ namespace hooks {
                 }
 
                 switch (bullet->behavior_type) {
-                    case 0:
-                    {
+                    case BulletBehaviorType_None: {
                         continue;
                     }
-                    case 1:
-                    {
+                    case BulletBehaviorType_Fly: {
                         helper::bullet_behavior_fly(bullet);
                     } break;
-                    case 2:
-                    {
+                    case BulletBehaviorType_FlyFollowTarget: {
                         helper::bullet_behavior_follow(bullet);
                     } break;
-                    case 3:
-                    {
+                    case BulletBehaviorType_Bounce: {
                         helper::bullet_behavior_bounce(bullet);
                     } break;
-                    case 4:
-                    {
+                    case BulletBehaviorType_PersistOnSite: {
                         helper::bullet_behavior_persist(bullet);
                     } break;
-                    case 5:
-                    {
+                    case BulletBehaviorType_AppearOnTarget: {
                         helper::bullet_behavior_instant(bullet);
                     } break;
-                    case 6:
-                    {
+                    case BulletBehaviorType_AttackTargetBox: {
                         helper::bullet_behavior_area(bullet);
                     } break;
-                    default:
-                    {
+                    default: {
                         return;
                     }
                 }

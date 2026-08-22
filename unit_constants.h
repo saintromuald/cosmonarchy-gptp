@@ -517,3 +517,9 @@ inline constexpr s32 RemoteHijackCastRange = 6tiles;
 
 inline constexpr s32 PuppeteerPullRange = 5tiles;
 }
+
+// BLOODSUMMON \\
+
+namespace Bloodsummon {
+inline constexpr s32 BloodyBurstRange = 3tiles;
+}

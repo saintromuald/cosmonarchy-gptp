@@ -2360,3 +2360,22 @@ void Unit::tick_vital_remains() {
         }
     }
 }
+
+bool Unit::has_coagulation() {
+    return this->id == UnitId::BloodsummonThrombocyte;
+}
+
+void Unit::cast_bloody_burst() {
+    if (!bw::get_generic_rust_value(this, RustId::CastBloodyBurst)) {
+        return;
+    }
+    bw::set_generic_rust_value(this, RustId::CastBloodyBurst, 0);
+    for (Unit* ally : g_unit_search.radial_ex(this, Bloodsummon::BloodyBurstRange, FilterAlly | FilterCompleted)) {
+        ally->heal_hp_then_shields(this->hitpoints, this);
+        helper::add_overlay_below_main(ally->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+    }
+    // TODO: Own audiovisuals
+    helper::create_thingy(SpriteId::ZergAirExplosionLarge, this->position.x, this->position.y, this->player);
+    bw::play_sound({ SoundId::AkrenoPassiveProc01, SoundId::AkrenoPassiveProc03 }, this->position);
+    this->bwfunc_remove();
+}
