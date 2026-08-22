@@ -485,6 +485,8 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
             switch (unit_id) {
                 case UnitId::ProtossEcclesiast: return UnitId::ProtossEcclesiastKhalendric;
                 case UnitId::ProtossHierophant: return UnitId::ProtossAshguard;
+                case UnitId::ProtossSimulacrum: return UnitId::ProtossSimulacrumKhalendric;
+                case UnitId::ProtossIdol:       return UnitId::ProtossIdolKhalendric;
             }
         } break;
         case Faction::ProtossOrderOfTheSacredSaber: {

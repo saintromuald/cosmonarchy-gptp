@@ -277,8 +277,9 @@ void init_player_data() {
         g_easter_egg_unit_names[UnitId::ProtossAccantor].push_back("Protoss iquare");
         g_easter_egg_unit_names[UnitId::ProtossServitor].push_back("Protoss Shoevitor");
 
-        g_easter_egg_unit_names[UnitId::ZergDroleth].push_back("Zerg Shambler");
-        g_easter_egg_unit_names[UnitId::ZergLiiralisk].push_back("Zerg Wigglehead Raptor");
+        g_easter_egg_unit_names[UnitId::ZergDroleth].push_back("Zerg Shambleth");
+        g_easter_egg_unit_names[UnitId::ZergZethrokor].push_back("Zerg Zethrocker");
+        g_easter_egg_unit_names[UnitId::ZergLiiralisk].push_back("Zerg Wigglelisk");
         g_easter_egg_unit_names[UnitId::ZergProtathalor].push_back("Zerg Pr0tathalor");
         g_easter_egg_unit_names[UnitId::ZergIzirokor].push_back("Zerg Chadrokor");
         g_easter_egg_unit_names[UnitId::ZergAzanthrokor].push_back("Zerg Dadthrokor");

@@ -138,6 +138,9 @@ namespace AI {
 			case UnitId::ProtossCantavis: {
 				// Psionic Storm
 				if (can_cast_spell_order(unit, TechId::PsionicStorm, OrderId::PsiStorm)) {
+					if (unit->ext().timers[TimerAI_GenericAbilityCooldown]) {
+						return false;
+					}
 					Unit* target = find_best_psi_storm_target(unit, is_unit_being_attacked);
 					if (unit->main_order_id == OrderId::PsiStorm && unit->order_target.unit == target) {
 						return false;

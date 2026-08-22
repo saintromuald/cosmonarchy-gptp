@@ -686,7 +686,12 @@ namespace hooks {
         if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossLattice)) {
             switch (unit_id) {
                 case UnitId::ProtossSimulacrum: {
-                    if (faction != Faction::ProtossAstralOmen) {
+                    if (faction != Faction::ProtossKhalendricKnights && faction != Faction::ProtossAstralOmen) {
+                        return true;
+                    }
+                } break;
+                case UnitId::ProtossSimulacrumKhalendric: {
+                    if (faction == Faction::ProtossKhalendricKnights) {
                         return true;
                     }
                 } break;
@@ -715,9 +720,18 @@ namespace hooks {
                         return true;
                     }
                 } break;
-                case UnitId::ProtossGolem:
-                case UnitId::ProtossIdol: {
+                case UnitId::ProtossGolem: {
                     return true;
+                } break;
+                case UnitId::ProtossIdol: {
+                    if (faction != Faction::ProtossKhalendricKnights) {
+                        return true;
+                    }
+                } break;
+                case UnitId::ProtossIdolKhalendric: {
+                    if (faction == Faction::ProtossKhalendricKnights) {
+                        return true;
+                    }
                 } break;
             }
         }
@@ -2642,7 +2656,13 @@ namespace hooks {
             case UnitId::ProtossLattice: {
                 switch (unit_id) {
                     case UnitId::ProtossSimulacrum: {
-                        if (faction != Faction::ProtossAstralOmen) {
+                        if (faction != Faction::ProtossKhalendricKnights && faction != Faction::ProtossAstralOmen) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::ProtossSimulacrumKhalendric: {
+                        if (faction == Faction::ProtossKhalendricKnights) {
                             return TECH_ACTIVE;
                         }
                         return TECH_HIDDEN;
@@ -2677,9 +2697,20 @@ namespace hooks {
                         }
                         return TECH_HIDDEN;
                     }
-                    case UnitId::ProtossGolem:
-                    case UnitId::ProtossIdol: {
+                    case UnitId::ProtossGolem: {
                         return TECH_ACTIVE;
+                    }
+                    case UnitId::ProtossIdol: {
+                        if (faction != Faction::ProtossKhalendricKnights) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::ProtossIdolKhalendric: {
+                        if (faction == Faction::ProtossKhalendricKnights) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
                     }
                     return TECH_HIDDEN;
                 }

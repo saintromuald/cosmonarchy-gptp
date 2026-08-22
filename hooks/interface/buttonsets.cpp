@@ -1899,7 +1899,12 @@ namespace hooks {
                             case UnitId::ProtossLattice: {
                                 switch (current_button->requirement_var) {
                                     case UnitId::ProtossSimulacrum: {
-                                        if (faction != Faction::ProtossAstralOmen) {
+                                        if (faction != Faction::ProtossKhalendricKnights && faction != Faction::ProtossAstralOmen) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::ProtossSimulacrumKhalendric: {
+                                        if (faction == Faction::ProtossKhalendricKnights) {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
@@ -1928,9 +1933,18 @@ namespace hooks {
                                             current_button_state = Button_State::Enabled;
                                         }
                                     } break;
-                                    case UnitId::ProtossGolem:
-                                    case UnitId::ProtossIdol: {
+                                    case UnitId::ProtossGolem: {
                                         current_button_state = Button_State::Enabled;
+                                    } break;
+                                    case UnitId::ProtossIdol: {
+                                        if (faction != Faction::ProtossKhalendricKnights) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::ProtossIdolKhalendric: {
+                                        if (faction == Faction::ProtossKhalendricKnights) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
                                     } break;
                                 }
                             } break;
@@ -3579,6 +3593,7 @@ namespace hooks {
                                 } break;
                                 case UnitId::ProtossHierophant:
                                 case UnitId::ProtossPatriarch:
+                                case UnitId::ProtossIdolKhalendric:
                                 case UnitId::ProtossEpigraph: {
                                     if (current_button->icon_id == IconId::PhotonCannonWeapon			// Signify: Cowardice
                                     ||  current_button->icon_id == IconId::DidactPhaseDisruptorCannon	// Signify: Malice
@@ -3738,8 +3753,9 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::ProtossSimulacrumKhalendric:
                                 case UnitId::ProtossAurora: {
-                                    if (current_button->icon_id == IconId::MojoScout) { // Last Orders
+                                    if (current_button->icon_id == IconId::DishonorableDischarge) { // Last Orders
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
