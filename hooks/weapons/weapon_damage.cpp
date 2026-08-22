@@ -1379,10 +1379,12 @@ namespace hooks {
                     case WeaponId::HierophantPhaseSignifier:
                     case WeaponId::EpigraphLitanyCannons:
                     case WeaponId::PatriarchIronhandWeaver: {
-                        target_ext.values[ValueSignifyStacks]++;
-                        target_ext.timers[TimerSignify] = 3secs + 1;
-                        target_ext.values[ValueSignifyPlayer] = data.attacking_player_id;
-                        bw::update_signify_status(data.target, &target_ext);
+                        proc_signify(data.target, data.attacking_player_id);
+                    } break;
+                    case WeaponId::IdolPrismaticBlaster: {
+                        if (data.attacker->id == UnitId::ProtossIdolKhalendric) {
+                            proc_signify(data.target, data.attacking_player_id);
+                        }
                     } break;
                     case WeaponId::ApostleCharonRifle: {
                         if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
@@ -1583,11 +1585,16 @@ namespace hooks {
                 }
                 fatal_deal_damage = false;
             } break;
+            case UnitId::ProtossSimulacrumKhalendric:
             case UnitId::ProtossAurora: {
                 // Last Orders - Aurora behavior
                 if (target_ext.values[ValueLastOrdersInit] == 0) {
                     target_ext.values[ValueLastOrdersInit] = 1;
 
+                    auto filter = FilterEnemy | FilterInvincible | FilterVisible;
+                    if (!data.target->is_in_air()) {
+                        filter |= FilterNoAir;
+                    }
                     auto targets = g_unit_search
                         .radial_ex(data.target, 9tiles, FilterEnemy | FilterInvincible | FilterVisible)
                         .sort_by_distance(data.target->position);

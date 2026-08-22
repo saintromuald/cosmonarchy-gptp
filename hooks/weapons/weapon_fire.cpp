@@ -536,6 +536,7 @@ namespace hooks {
                 unit_ext.current_storm = g_iquare_globals->create_effect(EffectId::PsiStorm, UINT_MAX, target_pos, v2u16{4tiles, 4tiles}, // smh I thought it's rectangular, turns out that wasn't needed...
                     SpriteId::Psionic_Storm, 20, unit->player, unit, {.move_target = target_pos, .move_speed = 1.5tiles});
             }
+            unit_ext.timers[TimerAI_GenericAbilityCooldown] = 1secs;
             return;
         }
 

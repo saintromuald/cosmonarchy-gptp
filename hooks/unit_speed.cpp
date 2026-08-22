@@ -244,6 +244,7 @@ namespace hooks {
             case UnitId::TerranSiren:
             case UnitId::TerranPhalanxTankMode:
             case UnitId::ProtossAccantor:
+            case UnitId::ProtossIdolKhalendric:
             case UnitId::ZergBactalisk:
             case UnitId::ZergEvigrilisk: {
                 speed *= 0.9fp;
@@ -307,6 +308,7 @@ namespace hooks {
                 speed *= 1.25fp;
             } break;
             case UnitId::TerranCyprian:
+            case UnitId::ProtossSimulacrumKhalendric:
             case UnitId::ZergYblyleth:
             case UnitId::ZergVorvrokor:
             case UnitId::ZergGarvrokor:

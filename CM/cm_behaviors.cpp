@@ -681,3 +681,11 @@ void necromastery_proc(UnitId::Enum unit_id) {
 		}
 	}
 }
+
+void proc_signify(Unit* target, u32 attacking_player) {
+	auto& target_ext = target->ext();
+	target_ext.values[ValueSignifyStacks]++;
+	target_ext.timers[TimerSignify] = 3secs + 1;
+	target_ext.values[ValueSignifyPlayer] = attacking_player;
+	bw::update_signify_status(target, &target_ext);
+}

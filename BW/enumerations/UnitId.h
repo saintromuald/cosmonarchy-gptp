@@ -290,6 +290,8 @@ namespace UnitId {
         ProtossPathlight                                    = 601,
         ProtossSaladius                                     = 602,
         ProtossGarantis                                     = 603,
+        ProtossSimulacrumKhalendric                         = 621,
+        ProtossIdolKhalendric                               = 622,
         ProtossVestige                                      = 623,
 
     // Protoss-Building

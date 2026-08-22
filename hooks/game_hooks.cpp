@@ -918,6 +918,18 @@ namespace hooks {
                     }
                 }
             }
+
+            // Replace preplaced units with factional counterparts where appropriate.
+            if (bw::get_game_kind() == GameKind::Scenario) {
+                for (auto player = 0; player < PlayerLimit; player++) {
+                    for (auto* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
+                        auto factional_id = get_factional_unit_id(player, static_cast<UnitId::Enum>(unit->id));
+                        if (unit->id != factional_id) {
+                            helper::replace_unit_with_id(unit, factional_id);
+                        }
+                    }
+                }
+            }
         }
 
         *g_ai_update_cooldown = 0; // We want the AI to update spending requests every tick, so we can have precision. -Veeq7

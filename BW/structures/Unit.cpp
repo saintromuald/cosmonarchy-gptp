@@ -1605,7 +1605,8 @@ SpriteId::Enum Unit::get_custom_corpse(SpriteId::Enum id) {
 }
 
 bool Unit::has_last_orders() {
-    return this->id == UnitId::ProtossAurora;
+    return this->id == UnitId::ProtossAurora
+        || this->id == UnitId::ProtossSimulacrumKhalendric;
 }
 
 void Unit::autophagy_spawn() {

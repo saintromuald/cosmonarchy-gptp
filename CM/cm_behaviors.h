@@ -59,3 +59,4 @@ void apply_goremast_effect(v2u16 position, u32 timer, bool do_damage);
 
 void unload_unit_on_transport_death(Unit* transport, u32 index);
 void necromastery_proc(UnitId::Enum unit_id);
+void proc_signify(Unit* target, u32 attacking_player);
