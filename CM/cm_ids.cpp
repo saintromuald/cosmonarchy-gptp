@@ -461,9 +461,11 @@ bool unit_id_is_factional(u16 unit_id) {
         || unit_id == UnitId::ZergGarvrokor
         || unit_id == UnitId::ZergZethalor
         || unit_id == UnitId::ZergNathrelisk
+        || unit_id == UnitId::ZergHydrokor
         || unit_id == UnitId::ZergRozirokor
         || unit_id == UnitId::ZergIziralisk
         || unit_id == UnitId::ZergInzorthrokor
+        || unit_id == UnitId::ZergAlzurokor
         || unit_id == UnitId::ZergQuazrokor
         || unit_id == UnitId::ZergLakiziliskZorthos
         || unit_id == UnitId::ZergHydraliskOrkoti
@@ -544,6 +546,7 @@ bool unit_collides_with_titanic(Unit* unit) {
         || unit->id == UnitId::ZergKeskathalor
         || unit->id == UnitId::ZergKethrostalor
         || unit->id == UnitId::ZergUltrokor
+        || unit->id == UnitId::ZergAlzurokor
         || unit->id == UnitId::ZergZoltorokor
         || unit->id == UnitId::AskosiPhontis
         || unit->id == UnitId::AskosiZonguard
@@ -1174,6 +1177,8 @@ u32 get_mutate_image_id(u32 unit_id) {
         case UnitId::ZergNathrokor:		return ImageId::NathrokorMutate;
         case UnitId::ZergCikralisk:		return ImageId::CikraliskMutate;
         case UnitId::ZergProtathalor:	return ImageId::ProtathalorMutate;
+        case UnitId::ZergHydralisk:		return ImageId::HydraliskMutate;
+        case UnitId::ZergHydrokor:		return ImageId::HydrokorMutate;
         case UnitId::ZergIzirokor:		return ImageId::IzirokorMutate;
         case UnitId::ZergRozirokor:		return ImageId::RozirokorMutate;
         case UnitId::ZergIziralisk:		return ImageId::IziraliskMutate;
@@ -1202,7 +1207,8 @@ bool unit_is_tower(Unit* unit) {
 bool unit_applies_ensnare(Unit* unit) {
     switch (unit->id) {
         case UnitId::ZergVorvrokor:
-        case UnitId::ZergAkistrokor: {
+        case UnitId::ZergAkistrokor:
+        case UnitId::ZergAlzurokor: {
             return true;
         } break;
     }
@@ -1281,6 +1287,7 @@ u32 get_death_sfx_id(u32 unit_id) {
         case UnitId::ZergVithrilisk:	return SoundId::Zerg_Devourer_ZDvDth00_WAV;
         case UnitId::ZergAlkajelisk:	return SoundId::Zerg_Guardian_ZGuDth00_WAV;
         case UnitId::ZergUltrokor:		return SoundId::Zerg_Ultra_ZUlDth00_WAV;
+        case UnitId::ZergAlzurokor:		return SoundId::Zerg_Ultra_ZUlDth00_WAV;
         case UnitId::ZergZarcavrokor:	return bw::rand_between(SoundId::GorgrokorDeath01, SoundId::GorgrokorDeath02);
         case UnitId::ZergTetcaerokor:	return SoundId::Zerg_Hydra_ZHyDth00_WAV;
         case UnitId::ZergAkistrokor:	return SoundId::Zerg_Queen_ZQuDth00_WAV;
@@ -1754,6 +1761,7 @@ SpriteId::Enum get_corpse_sprite_id(UnitId::Enum unit_id) {
         case UnitId::ZergTosgrilisk:                     return SpriteId::Corpse_ZergUnitMedium;
         case UnitId::ZergMortothrokor:                   return SpriteId::Corpse_Mortothrokor;
         case UnitId::ZergHydralisk:                      return SpriteId::Corpse_Hydralisk;
+        case UnitId::ZergHydrokor:                       return SpriteId::Corpse_Hydrokor;
         case UnitId::ZergHydraliskOrkoti:                return SpriteId::Corpse_HydraliskOrkoti;
         case UnitId::ZergIzirokor:                       return SpriteId::Corpse_Izirokor;
         case UnitId::ZergRozirokor:                      return SpriteId::Corpse_Rozirokor;
@@ -1771,6 +1779,7 @@ SpriteId::Enum get_corpse_sprite_id(UnitId::Enum unit_id) {
         case UnitId::ZergKonvilisk:                      return SpriteId::Corpse_Konvilisk;
         case UnitId::ZergRilirokor:                      return SpriteId::Corpse_Rilirokor;
         case UnitId::ZergUltrokor:                       return SpriteId::Corpse_Ultrokor;
+        case UnitId::ZergAlzurokor:                      return SpriteId::Corpse_Alzurokor;
         case UnitId::ZergIsthrathaleth:                  return SpriteId::Corpse_Isthrathaleth;
 
         case UnitId::AskosiMissionary:             return SpriteId::Corpse_Missionary;

@@ -965,6 +965,9 @@ namespace SpriteId {
 
         Corpse_Rozirokor                = 1161,
 
+        Corpse_Alzurokor                = 1180,
+        Corpse_Hydrokor                 = 1181,
+
         Corpse_ZergBuildingSmall	    = 186,
         Corpse_ZergBuildingLarge	    = 187,
 

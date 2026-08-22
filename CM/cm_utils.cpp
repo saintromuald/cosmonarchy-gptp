@@ -517,12 +517,14 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
                 case UnitId::ZergQuazilisk:     return UnitId::ZergQuazrokor;
                 case UnitId::ZergIzirokor:      return UnitId::ZergRozirokor;
                 case UnitId::ZergZoryusthaleth: return UnitId::ZergInzorthrokor;
+                case UnitId::ZergUltrokor:      return UnitId::ZergAlzurokor;
             }
         } break;
         case Faction::ZergGoszirithTendril: {
             switch (unit_id) {
                 case UnitId::ZergZethrokor: return UnitId::ZergSovrokor;
                 case UnitId::ZergVorvrokor: return UnitId::ZergGarvrokor;
+                case UnitId::ZergHydralisk: return UnitId::ZergHydrokor;
             }
         } break;
         case Faction::ZergOrkotiTendril: {
@@ -563,7 +565,9 @@ u32 get_modified_damage(Unit* unit, WeaponId::Enum weapon_id) {
         case UnitId::ProtossSimulacrumAstral: damage -= 2;  break;
         case UnitId::ZergGarvrokor:           damage += 1;  break;
         case UnitId::ZergZethalor:            damage -= 4;  break;
+        case UnitId::ZergHydrokor:            damage -= 3;  break;
         case UnitId::ZergRozirokor:           damage -= 17; break;
+        case UnitId::ZergAlzurokor:           damage += 6; break;
         case UnitId::AskosiAvatar:            damage += 10; break;
         case UnitId::AskosiInsurant:          damage += 1;  break;
         case UnitId::AskosiSilversoul:        damage -= 1;  break;
@@ -637,7 +641,8 @@ UnitId::Enum get_factional_regression(UnitId::Enum unit_id, Faction faction) {
         } break;
         case UnitId::ZergBactalisk: {
             switch (faction) {
-                case Faction::ZergOrkotiTendril: return UnitId::ZergHydraliskOrkoti;
+                case Faction::ZergGoszirithTendril: return UnitId::ZergHydrokor;
+                case Faction::ZergOrkotiTendril:    return UnitId::ZergHydraliskOrkoti;
             }
             return UnitId::ZergHydralisk;
         } break;
@@ -647,12 +652,6 @@ UnitId::Enum get_factional_regression(UnitId::Enum unit_id, Faction faction) {
                 case Faction::ZergZorthosTendril: return UnitId::ZergIziralisk;
             }
             return UnitId::ZergIzirokor;
-        } break;
-        case UnitId::ZergUltrokor: {
-            switch (faction) {
-                case Faction::ZergImicrenTendril: return UnitId::ZergInzorthrokor;
-            }
-            return UnitId::ZergZoryusthaleth;
         } break;
         case UnitId::ZergZarcavrokor: {
             switch (faction) {
@@ -838,7 +837,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::ZethrokorClaws:                      return "Zethrok Claws";
         case WeaponId::VorvrokorVorvrokClaws:               return unit_id == UnitId::ZergVorvrokor ? "Vorvrok Claws" : "Garvrol Claws";
         case WeaponId::NathrokorVestigialStrike:            return "Vestigial Strike";
-        case WeaponId::HydraliskNeedleSpines:               return "Needle Spines";
+        case WeaponId::HydraliskNeedleSpines:               return unit_id == UnitId::ZergHydralisk ? "Needle Spines" : "Hydrok Claws";
         case WeaponId::PenumbraErebolShockCannon:           return "Erebol Shock Cannon";
         case WeaponId::UltrokorKaiserBlades: {
             switch (unit_id) {
@@ -982,7 +981,7 @@ const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         case WeaponId::AionLazarusSalvo:                    return "Lazarus Salvo";
         case WeaponId::HeraldStellarTorch:                  return "Stellar Torch";
         case WeaponId::CikraliskAcidSalvo:                  return unit_id == UnitId::ZergCikralisk ? "Acid Salvo" : "Horlain Chemthrower";
-        case WeaponId::TethzorokorSaberArray:               return "Saber Array";
+        case WeaponId::TethzorokorSaberArray:               return unit_id == UnitId::ZergTethzorokor ? "Saber Array" : "Embracing Mandibles";
         case WeaponId::ProtathalorPungentSpores:            return "Pungent Spores";
         case WeaponId::VilgorokorDissolvingSabers:          return "Dissolving Sabers";
         case WeaponId::TosgriliskExplosiveSpores:           return "Explosive Spores";

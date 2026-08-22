@@ -585,9 +585,19 @@ namespace hooks {
                         data.damage += 2hp;
                     }
                 } break;
+                case WeaponId::HydraliskNeedleSpines: {
+                    if (data.attacker->id == UnitId::ZergHydrokor) {
+                        data.damage -= 3hp;
+                    }
+                } break;
                 case WeaponId::KethrostalorStaggeredSpores: {
                     if (data.attacker->id == UnitId::ZergZethalor) {
                         data.damage -= 4 * 256;
+                    }
+                } break;
+                case WeaponId::TethzorokorSaberArray: {
+                    if (data.attacker->id == UnitId::ZergAlzurokor) {
+                        data.damage += 6hp;
                     }
                 } break;
                 case WeaponId::UltrokorKaiserBlades: {
@@ -860,6 +870,7 @@ namespace hooks {
                     target_ext.timers[TimerTranquilityArray] = 4;
                 }
             } break;
+            case UnitId::ZergHydrokor:
             case UnitId::ZergZoryusthaleth: {
                 if (!bw::is_allied_to(data.target->player, data.attacking_player_id)) {
                     incubate(data.target, 1, UnitId::ZergRilirokor, data.target->player);
@@ -1209,6 +1220,11 @@ namespace hooks {
                             mark_infesting(data.attacking_player_id, data.target);
                         }
                     } break;
+                    case WeaponId::TethzorokorSaberArray: {
+                        if (data.attacker->id == UnitId::ZergAlzurokor) { // TOOD: Extend weapons.datex and remove this
+                            mark_infesting(data.attacking_player_id, data.target);
+                        }
+                    }
                     case WeaponId::SavantDiscoidRailgun: {
                         // Power Siphon
                         if (data.attacker->id == UnitId::TerranSavantPowerSiphon && unit_is_combatant(data.target)) {
@@ -1495,6 +1511,9 @@ namespace hooks {
                 hp_factor += 1;
             } break;
             case WeaponId::TethzorokorSaberArray: {
+                if (data.attacker->id == UnitId::ZergAlzurokor) {
+                    break;
+                }
                 hp_factor += 1;
             } break;
             case WeaponId::MortothrokorWickedIncisors: {

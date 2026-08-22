@@ -294,6 +294,7 @@ namespace hooks {
             case UnitId::ZergAgrileth:
             case UnitId::ZergLiiralisk:
             case UnitId::ZergIzirokor:
+            case UnitId::ZergAlzurokor:
             case UnitId::AskosiMissionary:
             case UnitId::AskosiCardinal:
             case UnitId::AskosiDoronin: {
@@ -355,7 +356,8 @@ namespace hooks {
             case UnitId::AskosiConstituent: {
                 speed *= 1.65fp;
             } break;
-            case UnitId::ZergHydralisk: {
+            case UnitId::ZergHydralisk:
+            case UnitId::ZergHydrokor: {
                 speed *= 1.7fp;
             } break;
             case UnitId::TerranCannibal: {
