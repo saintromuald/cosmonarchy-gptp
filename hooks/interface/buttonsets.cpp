@@ -821,8 +821,7 @@ namespace hooks {
                         bool hide = true;
                         for (u32 i = 0; i < g_client_selection_count; ++i) {
                             Unit* unit = g_client_selection_group->unit[i];
-                            UnitExt* unit_ext = get_unit_ext(unit);
-                            if (!unit_ext->values[ValueIsNeutralBunker]) {
+                            if (!unit->ext().values[ValueIsNeutralBunker]) {
                                 hide = false;
                                 break;
                             }
@@ -1667,7 +1666,7 @@ namespace hooks {
                             case UnitId::TerranAnvil: {
                                 switch (current_button->requirement_var) {
                                     case UnitId::TerranMorningstar: {
-                                        if (!unit_ext->values[ValueAddonInactive] && !unit->building.silo.nuke && !is_training) {
+                                        if (!unit_ext.values[ValueAddonInactive] && !unit->building.silo.nuke && !is_training) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Invisible;
@@ -3051,7 +3050,7 @@ namespace hooks {
 
                         /* // Enable this when buttonsets.cpp doesn't have the selection order bug. -Pr0nogo
                         if (current_button->requirement_var == TechId::Stimpacks) {
-                            if (unit_ext->timers[TimerStimpackDelay] > 1) {
+                            if (unit_ext.timers[TimerStimpackDelay] > 1) {
                                 current_button_state = Button_State::Disabled;
                             } else {
                             //	current_button_state = Button_State::Enabled;
@@ -3065,7 +3064,7 @@ namespace hooks {
                             if (bw::client_selection_unit_id_count(unit->id) != g_client_selection_count) {
                                 current_button_state = Button_State::Invisible;
                             }
-                            if (unit_ext->values[ValueHasButtonsetOverride]) {
+                            if (unit_ext.values[ValueHasButtonsetOverride]) {
                                 current_button_state = Button_State::Enabled;
                             }
                             if (unit->is_detector()) {
@@ -4491,7 +4490,7 @@ namespace hooks {
                         }
 
                         if (unit->id == UnitId::TerranSavantEntropyGauntlets) {
-                            if (unit_ext->timers[TimerSavantFormSwitchCooldown] > 1) {
+                            if (unit_ext.timers[TimerSavantFormSwitchCooldown] > 1) {
                                 current_button_state = Button_State::Disabled;
                             } else {
                                 current_button_state = Button_State::Enabled;
@@ -4500,7 +4499,7 @@ namespace hooks {
 
                         // Hide ability button, since cancel is the same slot
                         if (UnitId::can_cast_recall(static_cast<UnitId::Enum>(unit->id)) && current_button->action_var == TechId::DimensionalRecall) {
-                            if (unit_ext->values[ValueDimensionalRecalling]) {
+                            if (unit_ext.values[ValueDimensionalRecalling]) {
                                 current_button_state = Button_State::Invisible;
                             } else {
                                 current_button_state = Button_State::Enabled;
@@ -4517,14 +4516,14 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::TerranWyvern: {
-                                    if (unit_ext->values[ValueWyvernLandGrabOn]) {
+                                    if (unit_ext.values[ValueWyvernLandGrabOn]) {
                                         can_cancel = true;
                                     }
                                 } break;
                                 case UnitId::ProtossXenolith:
                                 case UnitId::ProtossDidact:
                                 case UnitId::ProtossSaladius: {
-                                    if (unit_ext->values[ValueDimensionalRecalling]) {
+                                    if (unit_ext.values[ValueDimensionalRecalling]) {
                                         can_cancel = true;
                                     }
                                 } break;
@@ -4532,13 +4531,13 @@ namespace hooks {
                                 case UnitId::ExtTassadar:
                                 case UnitId::ExtInfestedKerrigan:
                                 case UnitId::BigInfestedKerrigan: {
-                                    if (g_iquare_globals->get_effect(unit_ext->current_storm)) {
+                                    if (g_iquare_globals->get_effect(unit_ext.current_storm)) {
                                         can_cancel = true;
                                     }
                                 } break;
                             }
                             
-                            if (unit_ext->timers[TimerControlledDemolition] && !unit_ext->timers[TimerEmergencyDetonation]) {
+                            if (unit_ext.timers[TimerControlledDemolition] && !unit_ext.timers[TimerEmergencyDetonation]) {
                                 can_cancel = true;
                             }
 
