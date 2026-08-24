@@ -1375,7 +1375,7 @@ enum GameCommand : u8 {
     GameCommand_VoiceEnable2 = 57,
     GameCommand_Unused1 = 58,
     GameCommand_Unused2 = 59,
-    GameCommand_StartCountdown = 60, // {id} 
+    GameCommand_StartCountdown = 60, // {id}
     GameCommand_MapFileTransferStatus = 61, // {id, u8 value}
     GameCommand_PlayerUpdate = 62, // Broadcast to all players when any player changes. {id, player_index, u8 first_byte_actions, playertype, race, force}
     GameCommand_PlayerPresence = 63, // Broadcast to all players, {id, u16 0, u16 1, u16 5}
@@ -1709,7 +1709,6 @@ enum class Faction : u8 {
 
     Count,
 };
-
 
 enum TriggerFlags : u32 {
     // Others currently unknown. -Pr0nogo

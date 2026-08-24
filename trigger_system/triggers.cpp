@@ -1157,20 +1157,20 @@ Registry g_triggers = Registry()
             g_globals->players[player].disabled_units = unit_ids;
         }
     })
-    .add_action("disable_units", [](PlayerBitset players, UnitIdBitset unit_ids, bool disable, bool hide) {
+    .add_action("disable_units", [](PlayerBitset players, UnitIdBitset unit_ids, std::optional<bool> disable, bool hide) {
         for (u32 player = 0; player < PlayerLimit; player++) {
             if (!players[player]) {
                 continue;
             }
             auto& cm_player = g_globals->players[player];
-            if (disable) {
+            if (disable.value_or(true)) {
                 cm_player.disabled_units |= unit_ids;
                 if (hide) {
                     cm_player.hidden_units |= unit_ids;
                 }
             } else {
                 cm_player.disabled_units &= ~unit_ids;
-                cm_player.hidden_units   &= ~unit_ids;
+                cm_player.hidden_units &= ~unit_ids;
             }
         }
     })
