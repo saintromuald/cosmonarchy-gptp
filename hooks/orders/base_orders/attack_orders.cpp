@@ -87,89 +87,68 @@ namespace hooks {
         }
     }
 
+    // Hooked to extend weapons.datex. -Pr0nogo
     void orders_attack_fixed_range(Unit* unit) { // 00477D00
-        bool jump_to_77E48 = false;
-        bool jump_to_77E99 = false;
         if (unit->unit_ai) {
             unit->order_target.unit = helper::find_best_attack_target(unit);
         } else {
             helper::pick_new_target_if_needed(unit);
         }
-
         Unit* target = unit->order_target.unit;
         if (target) {
             unit->order_target.pt.x = target->position.x;
             unit->order_target.pt.y = target->position.y;
         }
-        if (unit->is_frozen() || !target || target->is_invincible() || target->sprite->is_hidden() || helper::unit_cant_see_cloaked_target(unit, target)) {
-            jump_to_77E48 = true;
-        } else {
-            Unit* current_unit;
-            bool jump_to_77DEF = false;
-            if (unit->subunit->is_subunit()) {
-                current_unit = unit->subunit;
-            } else {
-                current_unit = unit;
-            }
-
-            if (unit->id == UnitId::ProtossSolarion) {
-                jump_to_77E99 = true;
-            } else if (!(unit->id == UnitId::ProtossAccantorOld)) {
-                jump_to_77DEF = true;
-            } else if (target->status & UnitStatus::InAir) {
-                jump_to_77E48 = true;
-            } else if (unit->has_path_to_unit(target)) {
-                jump_to_77E99 = true;
-            } else {
-                jump_to_77E48 = true;
-            }
-
-            if (jump_to_77DEF) {
-                if (helper::unit_can_infest(unit)) {
-                    if (helper::is_infestable_target(target)) {
-                        jump_to_77E99 = true;
-                    } else {
-                        jump_to_77E48 = true;
-                    }
-                } else {
-                    u32 current_weapon_id = current_unit->get_ground_weapon();
-                    if (target->is_in_air()) {
-                        current_weapon_id = current_unit->get_air_weapon();
-                    }
-                    if (current_weapon_id != WeaponId::None) {
-                        jump_to_77E99 = true;
-                    } else {
-                        jump_to_77E48 = true;
-                    }
-                }
-            }
-        }
-
-        if (jump_to_77E48) {
+        if (unit->is_frozen() || !target || target->is_invincible() || target->sprite->is_hidden() || helper::unit_can_see_cloaked_target(target, unit)) {
             if (unit->order_queue_head) {
                 unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
-                prepare_for_next_order(unit);
+                helper::do_next_queued_order(unit);
             } else if (unit->unit_ai) {
-                unit->order_computer(OrderId::ComputerAI);
+                helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
             } else {
-                unit->order_computer(units_dat::return_to_idle_order[unit->id]);
+                helper::issue_order_targeting_nothing(unit, units_dat::return_to_idle_order[unit->id]);
+            }
+            return;
+        }
+        Unit* final_unit = unit->subunit;
+        if (!final_unit || !final_unit->is_subunit()) {
+            final_unit = unit;
+        }
+        bool target_is_valid = false;
+        if (!helper::unit_is_carrier(unit)) {
+            if (helper::unit_is_reaver(unit)) {
+                if (target->is_in_air()) {
+                    target_is_valid = false;
+                } else {
+                    target_is_valid = helper::unit_has_path_to_target(unit, target);
+                }
+            } else {
+                if (target->is_in_air()) {
+                    target_is_valid = units_dat::air_weapon[final_unit->id] != WeaponId::None;
+                } else {
+                    target_is_valid = units_dat::ground_weapon[final_unit->id] != WeaponId::None;
+                }
+            }
+            if (!target_is_valid) {
+                if (unit->order_queue_head) {
+                    unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
+                    helper::do_next_queued_order(unit);
+                } else if (unit->unit_ai) {
+                    helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
+                } else {
+                    helper::issue_order_targeting_nothing(unit, units_dat::return_to_idle_order[unit->id]);
+                }
+                return;
             }
         }
 
-        if (jump_to_77E99) {
-            bool jump_to_77EC8 = false;
-            bool jump_to_77ED6 = false;
-            if (helper::is_unit_in_weapon_range(unit, target)) {
-                if (unit->order_target.pt.x != unit->next_target_waypoint.x || unit->order_target.pt.y != unit->next_target_waypoint.y) {
-                    unit->next_target_waypoint.x = unit->order_target.pt.x;
-                    unit->next_target_waypoint.y = unit->order_target.pt.y;
-                }
-                helper::get_weapon_begin_iscript(unit, IscriptAnimation::GndAttkRpt);
-            } else if (!unit->unit_ai) {
-                unit->order_to_idle();
-            } else {
-                unit->order_to(OrderId::AttackMove, unit->order_target.pt.x, unit->order_target.pt.y);
-            }
+        if (helper::is_unit_in_weapon_range(unit, unit->order_target.unit)) {
+            unit->next_target_waypoint = unit->order_target.pt;
+            helper::get_weapon_iscript_init(unit, IscriptAnimation::GndAttkRpt);
+        } else if (unit->unit_ai) {
+            helper::issue_order_targeting_ground(unit, OrderId::AttackMove, unit->order_target.pt.x, unit->order_target.pt.y);
+        } else {
+            helper::to_idle(unit);
         }
     }
 
@@ -234,8 +213,7 @@ namespace hooks {
         }
     }
 
-    void orders_sap_location(Unit* unit) // 00478A40
-    {
+    void orders_sap_location(Unit* unit) { // 00478A40
         bool bStopThere = false;
         if (unit->main_order_state == 0) {
             bStopThere = !helper::set_move_target_xy(unit, unit->order_target.pt.x, unit->order_target.pt.y);
@@ -326,9 +304,7 @@ namespace hooks {
     }
 
     void orders_attack_unit(Unit* unit) { // 00479BD0
-        if (g_player_table[unit->player].type != PlayerType::Computer
-        || (unit->order_target.unit && units_dat::base_property[(unit->order_target.unit)->id] & UnitProperty::Building)
-        || !helper::ai_try_return_home(unit, 0)) {
+        if (g_player_table[unit->player].type != PlayerType::Computer || (unit->order_target.unit && unit->order_target.unit->is_building()) || !helper::ai_try_return_home(unit, 0)) {
             helper::pick_new_target_if_needed(unit);
             if (helper::attack_unit_main(unit)) {
                 if (unit->unit_ai) {
@@ -415,80 +391,85 @@ namespace hooks {
         }
     }
 
+    // Internal helper func for orders_strafe_unit
+    static void orders_strafe_unit_proc_attack(Unit* unit, Unit* target) {
+        if (!target) {
+            helper::get_weapon_iscript_init(unit, IscriptAnimation::GndAttkRpt);
+        } else if (helper::is_target_visible(target, unit)) {
+            Unit* final_unit = unit->subunit;
+            if (!final_unit || !(units_dat::base_property[final_unit->id] & UnitProperty::Subunit)) {
+                final_unit = unit;
+            }
+            auto weapon_id = WeaponId::None;
+            if (target->is_in_air()) {
+                weapon_id = units_dat::air_weapon[final_unit->id];
+            } else {
+                if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->burrowed_attacker_can_attack()) {
+                    weapon_id = units_dat::ground_weapon[final_unit->id];
+                }
+            }
+            if (weapon_id != WeaponId::None) {
+                u32 min_range = weapons_dat::min_range[weapon_id];
+                if (!min_range || !helper::is_target_within_min_range(final_unit, min_range, target)) {
+                    u32 max_weapon_range = helper::get_unit_max_weapon_range(unit, weapon_id);
+                    if (helper::is_target_within_min_movement_range(final_unit, target, max_weapon_range)) {
+                        helper::get_weapon_iscript_init(unit, IscriptAnimation::GndAttkRpt);
+                    }
+                }
+            }
+        }
+        if (helper::is_target_within_min_movement_range(unit, 0, 50)) {
+            helper::get_next_strafe_position(unit, 1, unit->order_target.pt);
+            unit->main_order_state = 4;
+        } else {
+            helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+        }
+    }
+
     // Hooked to debug Stewards in a post-extender environment. -Pr0nogo
     void orders_strafe_unit(Unit* unit) { // 00465F60
-        if (unit->hangar_unit.parent && unit->hitpoints < units_dat::max_hitpoints[UnitId::ProtossSteward] << 8 >> 2) {
+        if (unit->hangar_unit.parent && unit->hitpoints < (units_dat::max_hitpoints[UnitId::ProtossSteward]) / 2) {
             helper::issue_order_targeting_nothing(unit, OrderId::Return);
-        } else if (helper::return_interceptor_if_cannot_attack(unit)) {
-            Unit* target = unit->order_target.unit;
-            switch (unit->main_order_state) {
-                case 0: {
-                    if (unit->hangar_unit.parent) {
-                        helper::play_sound_from_unit(SoundId::StewardLaunch01, unit, 1, 0);
-                        helper::get_next_strafe_position(unit, 3, unit->order_target.pt);
-                        unit->main_order_timer = 15;
-                        unit->main_order_state = 1;
-                        goto LABEL_9;
-                    }
-                    helper::orders_self_destructing(unit);
-                } break;
-                case 1: {
-                LABEL_9:
-                    if (!unit->main_order_timer) {
-                        unit->sprite->elevation += 2;
+            return;
+        }
+        if (!helper::return_interceptor_if_cannot_attack(unit)) {
+            return;
+        }
+        Unit* target = unit->order_target.unit;
+        switch (unit->main_order_state) {
+            case 0: {
+                if (unit->hangar_unit.parent) {
+                    bw::play_sound(SoundId::StewardLaunch01, unit->position);
+                    helper::get_next_strafe_position(unit, 3, unit->order_target.pt);
+                    unit->main_order_timer = 15;
+                    unit->main_order_state = 1;
+                    hooks::orders_strafe_unit_proc_attack(unit, target);
+                }
+                helper::orders_self_destructing(unit);
+            } break;
+            case 1: {
+                if (!unit->main_order_timer) {
+                    unit->sprite->elevation += 2;
+                    unit->main_order_state = 3;
+                    hooks::orders_strafe_unit_proc_attack(unit, target);
+                }
+            } break;
+            case 3: {
+                hooks::orders_strafe_unit_proc_attack(unit, target);
+            } break;
+            case 4: {
+                if (helper::is_distance_greater_than_halt_distance(unit, unit->move_target.pt.x, unit->move_target.pt.y, 50)) {
+                    helper::get_next_strafe_position(unit, 2, unit->order_target.pt);
+                    unit->main_order_state = 5;
+                }
+            } break;
+            case 5: {
+                if (helper::is_distance_greater_than_halt_distance(unit, unit->move_target.pt.x, unit->move_target.pt.y, 50)) {
+                    if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y)) {
                         unit->main_order_state = 3;
-                        goto LABEL_11;
                     }
-                } break;
-                case 3: {
-                LABEL_11:
-                    if (!target) {
-                        helper::get_weapon_iscript_init(unit, IscriptAnimation::GndAttkRpt);
-                    } else if (helper::is_target_visible(target, unit)) {
-                        Unit* final_unit = unit->subunit;
-                        if (!final_unit || !(units_dat::base_property[final_unit->id] & UnitProperty::Subunit)) {
-                            final_unit = unit;
-                        }
-
-                        u32 weapon_id = WeaponId::None;
-                        if (target->status & UnitStatus::InAir) {
-                            weapon_id = units_dat::air_weapon[final_unit->id];
-                        } else {
-                            if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->burrowed_attacker_can_attack()) {
-                                weapon_id = units_dat::ground_weapon[final_unit->id];
-                            }
-                        }
-                        if (weapon_id != WeaponId::None) {
-                            u32 min_range = weapons_dat::min_range[weapon_id];
-                            if (!min_range || !helper::is_target_within_min_range(final_unit, min_range, target)) {
-                                u32 max_weapon_range = helper::get_unit_max_weapon_range(unit, weapon_id);
-                                if (helper::is_target_within_min_movement_range(final_unit, target, max_weapon_range)) {
-                                    helper::get_weapon_iscript_init(unit, IscriptAnimation::GndAttkRpt);
-                                }
-                            }
-                        }
-                    }
-                    if (helper::is_target_within_min_movement_range(unit, 0, 50)) {
-                        helper::get_next_strafe_position(unit, 1u, unit->order_target.pt);
-                        unit->main_order_state = 4;
-                    } else {
-                        helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
-                    }
-                } break;
-                case 4: {
-                    if (helper::is_distance_greater_than_halt_distance(unit, unit->move_target.pt.x, unit->move_target.pt.y, 50)) {
-                        helper::get_next_strafe_position(unit, 2, unit->order_target.pt);
-                        unit->main_order_state = 5;
-                    }
-                } break;
-                case 5: {
-                    if (helper::is_distance_greater_than_halt_distance(unit, unit->move_target.pt.x, unit->move_target.pt.y, 50)) {
-                        if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y)) {
-                            unit->main_order_state = 3;
-                        }
-                    }
-                } break;
-            }
+                }
+            } break;
         }
     }
 
@@ -526,8 +507,8 @@ namespace hooks {
     // Ported from GPTP to change the Solarion-Steward launch timer. -Pr0nogo
     // Used when unit->main_order_id is OrderId::Carrier, OrderId::CarrierFight or OrderId::HoldPositionSolarion
     void orders_carrier_idle(Unit* unit) { // 004666A0
-        if (helper::order_hangar_unit(unit, ProtossSolarion::FighterRange, 0)) {
-            Unit* out_unit = release_fighter(unit);
+        if (helper::orders_carrier_reaver_idle(unit, ProtossSolarion::FighterRange, 0)) {
+            Unit* out_unit = hooks::release_fighter(unit);
             if (out_unit) {
                 // Originally set shields to full.
                 out_unit->sprite->elevation = unit->sprite->elevation- 1;
@@ -547,7 +528,6 @@ namespace hooks {
         while (launched_unit && !(launched_unit->status & UnitStatus::Completed)) {
             launched_unit = launched_unit->hangar_unit.hangar_link.prev;
         }
-
         if (launched_unit) {
             Unit* temp_unit = launched_unit->hangar_unit.hangar_link.prev;
             while (temp_unit) {
@@ -711,7 +691,7 @@ namespace hooks {
                     final_unit = unit;
                 }
 
-                u32 weapon_id = WeaponId::None;
+                auto weapon_id = WeaponId::None;
                 if (target_unit->status & UnitStatus::InAir) {
                     weapon_id = units_dat::air_weapon[final_unit->id];
                 } else {
@@ -723,11 +703,9 @@ namespace hooks {
                 }
                 if (weapon_id != WeaponId::None) {
                     u32 min_range = weapons_dat::min_range[weapon_id];
-                    if (!min_range || !helper::is_target_within_min_range(final_unit, min_range, target_unit))
-                    {
+                    if (!min_range || !helper::is_target_within_min_range(final_unit, min_range, target_unit)) {
                         u32 max_range = helper::get_unit_max_weapon_range(unit, weapon_id);
-                        if (helper::is_target_within_min_movement_range(final_unit, target_unit, max_range))
-                        {
+                        if (helper::is_target_within_min_movement_range(final_unit, target_unit, max_range)) {
                             unit->main_order_state = 1;
                             return 1;
                         }
@@ -911,11 +889,11 @@ namespace hooks {
         }
 
         Unit* subunit = unit->subunit;
-        u32 siege_mode_weapon = WeaponId::None;
-        u32 tank_mode_weapon = WeaponId::None;
+        WeaponId::Enum siege_mode_weapon = WeaponId::None;
+        WeaponId::Enum tank_mode_weapon = WeaponId::None;
         u32 range = 0;
         u32 range2 = 0;
-        u32 final_weapon = WeaponId::None;
+        WeaponId::Enum final_weapon = WeaponId::None;
         u32 final_range = 0;
         u32 max_range = 0;
 
@@ -1130,7 +1108,7 @@ namespace hooks {
         if (!hangar_unit) {
             return 0;
         }
-        while (!(hangar_unit->status & UnitStatus::Completed)) {
+        while (!hangar_unit->is_completed()) {
             hangar_unit = hangar_unit->hangar_unit.hangar_link.prev;
             if (!hangar_unit) {
                 return 0;
@@ -1138,7 +1116,7 @@ namespace hooks {
         }
         Unit* prev_hangar_unit = hangar_unit->hangar_unit.hangar_link.prev;
         for (s32 i = hangar_unit->hitpoints; prev_hangar_unit; prev_hangar_unit = prev_hangar_unit->hangar_unit.hangar_link.prev) {
-            if (prev_hangar_unit->status & UnitStatus::Completed && prev_hangar_unit->hitpoints > i) {
+            if (prev_hangar_unit->is_completed() && prev_hangar_unit->hitpoints > i) {
                 hangar_unit = prev_hangar_unit;
             }
         }
@@ -1183,5 +1161,115 @@ namespace hooks {
         helper::show_and_enable_unit(hangar_unit);
         hangar_unit->hangar_unit.is_outside_hangar = 1;
         return hangar_unit;
+    }
+
+    // Hooked to troubleshoot Solarions / Stewards post weapons extension. -Pr0nogo
+    b32 orders_carrier_reaver_idle(Unit* unit, Unit* target, u32 range, s32 range_2) { // 00465A60
+        bool is_holding_position = false;
+        if (unit->main_order_id == OrderId::HoldPositionSolarion || unit->main_order_id == OrderId::HoldPositionReaver) {
+            is_holding_position = true;
+            if (unit->movement_flags & MovementFlags_Accelerating) {
+                helper::set_resource_target(unit);
+            }
+        }
+        Unit* order_target = unit->order_target.unit;
+        if (order_target) {
+            if (order_target->is_invincible() || !helper::unit_can_attack_target(order_target, unit, 1)) {
+                target = unit->order_target.unit;
+                if (target == unit->auto_target_unit) {
+                    unit->auto_target_unit = nullptr;
+                }
+                unit->order_target.unit = nullptr;
+            } else {
+                Unit* order_target_2 = unit->order_target.unit;
+                unit->order_target.pt.x = order_target_2->sprite->position.x;
+                unit->order_target.pt.y = order_target_2->sprite->position.y;
+                if (helper::is_unit_visible(unit) && helper::is_target_within_min_movement_range(unit, 0, range) && (!range_2 || helper::is_distance_greater_than_path_distance_to_order_target(unit, range_2))) {
+                    helper::set_resource_target(unit);
+                } else if ((is_holding_position || (unit->status & UnitStatus::AttackMove)) && (g_player_table[unit->player].type != PlayerType::Computer || !(unit->status & UnitStatus::Disabled))) {
+                    if (unit->order_target.unit == unit->auto_target_unit) {
+                        unit->auto_target_unit = nullptr;
+                    }
+                    unit->order_target.unit = nullptr;
+                    return false;
+                }
+                if (!helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y)) {
+                    return false;
+                }
+            }
+        }
+        if (!(unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count)) {
+            helper::set_resource_target(unit);
+            if (unit->order_queue_head) {
+                unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
+                helper::do_next_queued_order(unit);
+                return false;
+            } else {
+                if (unit->unit_ai) {
+                    helper::issue_order_targeting_nothing(unit, OrderId::ComputerAI);
+                }
+                else {
+                    helper::issue_order_targeting_nothing(unit, units_dat::return_to_idle_order[unit->id]);
+                }
+                return false;
+            }
+        }
+        if (unit->main_order_timer) {
+            return false;
+        }
+        order_target = unit->order_target.unit;
+        if (!order_target) {
+            if (unit->order_queue_head) {
+                helper::do_next_queued_order(unit);
+                return false;
+            }
+            helper::pick_new_target_if_needed(unit);
+            if (UnitId::is_carrier((UnitId::Enum)unit->id) && unit->order_target.unit != order_target) {
+                helper::set_interceptors_to_standby(unit);
+            }
+        } else if (unit->status & UnitStatus::AttackMove) {
+            helper::pick_new_target_if_needed(unit);
+            if (UnitId::is_carrier((UnitId::Enum)unit->id) && unit->order_target.unit != order_target) {
+                helper::set_interceptors_to_standby(unit);
+            }
+        }
+        if (unit->order_target.unit) {
+            if (!is_holding_position) {
+                unit->main_order_id = helper::convert_current_order_to_carrier_reaver_fight_order(unit);
+            }
+            if (!helper::is_unit_visible(unit)) {
+                return false;
+            }
+            if (!helper::is_target_within_min_movement_range(unit, 0, range)) {
+                return false;
+            }
+            if (range_2) {
+                if (helper::is_distance_greater_than_path_distance_to_order_target(unit, range_2)) {
+                    return true;
+                }
+                return false;
+            }
+        } else {
+            Unit* random_target = helper::find_random_attack_target(unit);
+            if (!random_target) {
+                if (!is_holding_position) {
+                    unit->main_order_id = helper::convert_current_order_to_carrier_reaver_idle_order(unit);
+                }
+                return false;
+            }
+            if (!is_holding_position) {
+                unit->main_order_id = helper::convert_current_order_to_carrier_reaver_fight_order(unit);
+            }
+            unit->order_target.pt.x = random_target->sprite->position.x;
+            unit->order_target.pt.y = random_target->sprite->position.y;
+            helper::set_flag_attack_move(unit);
+            if (range_2) {
+                if (!helper::is_distance_greater_than_path_distance_to_order_target(unit, range_2)) {
+                    return false;
+                }
+            }
+            unit->order_target.unit = random_target;
+        }
+        return true;
     }
 }

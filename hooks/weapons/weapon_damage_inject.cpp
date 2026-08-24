@@ -9,7 +9,7 @@ namespace {
 		static Unit* attacker;
 		static s32 damage;
 		static s32 direction;
-		static u32 weapon_id;
+		static WeaponId::Enum weapon_id;
 		static u32 damage_divisor;
 		static u32 attacking_player_id;
 		__asm {
@@ -18,7 +18,7 @@ namespace {
 			MOV damage, EAX					// Var 3
 			MOV target, EDI					// Unit 2
 			MOV EAX, [EBP + 0x08]
-			MOV weapon_id, EAX				// Var 1
+			MOV weapon_id, AX				// Var 1
 			MOV EAX, [EBP + 0x0C]
 			MOV damage_divisor, EAX			// Aise Signal
 			MOV EAX, [EBP + 0x10]
@@ -32,7 +32,7 @@ namespace {
 		if (direction == 33333) {
 			result = parse_aise_signal(attacker, target, (AiseSignal)damage_divisor, weapon_id, attacking_player_id, damage);
 		} else {
-			hooks::weapon_damage(damage, target, static_cast<WeaponId::Enum>(weapon_id & 0xff), attacker, attacking_player_id, direction, damage_divisor);
+			hooks::weapon_damage(damage, target, weapon_id, attacker, attacking_player_id, direction, damage_divisor);
 			result = 0;
 		}
 		__asm {
@@ -148,16 +148,50 @@ namespace {
 		}
 	}
 
+	void __declspec(naked) get_unit_bullet_damage_wrapper() { // 0048ACD0
+		static Unit* victim;
+		static Bullet* bullet;
+		static u32 result;
+		__asm {
+			MOV victim, EAX
+			MOV bullet, EDX
+			PUSHAD
+		}
+		result = hooks::get_unit_bullet_damage(victim, bullet);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) get_unit_damage_bonus_wrapper() { // 00475EC0
+		static Unit* unit;
+		static WeaponId::Enum weapon_id;
+		static u32 result;
+		__asm {
+			MOV unit, EAX
+			MOV weapon_id, DX
+			PUSHAD
+		}
+		result = hooks::get_unit_damage_bonus(unit, weapon_id);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 	const u32 kill_target_unit_check_7986A = 0x0047986A;
 	const u32 kill_target_unit_check_7986F = 0x0047986F;
 	void __declspec(naked) kill_target_unit_check_patch_79863() {
 		__asm {
 			MOV		dword ptr[EBX + 8], 0
-			CMP[EBX + 0x4D], 41//unit->main_order_id == OrderId::ZergBirth
+			CMP		[EBX + 0x4D], 41 // unit->main_order_id == OrderId::ZergBirth
 			JE		offset loc_47986F
 			JMP		kill_target_unit_check_7986A
 
-			loc_47986F :
+		loc_47986F:
 			JMP		kill_target_unit_check_7986F
 		}
 	}
@@ -172,6 +206,8 @@ namespace hooks {
 		jump_patch(unit_was_hit_wrapper,				0x004795D0, 1);
 		jump_patch(ask_for_help_wrapper,				0x00476E60, 2);
 		jump_patch(react_to_hit_wrapper,				0x004776C0, 1);
+		jump_patch(get_unit_bullet_damage_wrapper,				0x0048ACD0, 1);
+		jump_patch(get_unit_damage_bonus_wrapper,				0x00475EC0, 2);
 
 		jump_patch(kill_target_unit_check_patch_79863,	0x00479863, 2);	// DF - fixes hatching eggs not having death animations
 	}

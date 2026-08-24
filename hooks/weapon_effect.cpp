@@ -22,7 +22,7 @@ namespace {
 }
 
 namespace hooks {
-	void carapace_swarm_damage(u16 x, u16 y, u16 r, Bullet* bullet, u32 weapon_id) {
+	void carapace_swarm_damage(u16 x, u16 y, u16 r, Bullet* bullet, WeaponId::Enum weapon_id) {
 		Unit* swarm = bw::get_dark_swarm_from_position(x, y, r);
 		if (swarm) {
 			u32 damage = (weapons_dat::damage_amount[weapon_id] * 256) +
@@ -39,7 +39,7 @@ namespace hooks {
 		}
 	}
 
-	void splash(Bullet* bullet, u32 weapon_id, u8 splash_type, Unit* guaranteed_hit) {
+	void splash(Bullet* bullet, WeaponId::Enum weapon_id, u8 splash_type, Unit* guaranteed_hit) {
 		s32 splash = splash_type;
 		if (!bullet) {
 			return;
@@ -53,7 +53,8 @@ namespace hooks {
 		Unit* unit = bullet->source_unit;
 		if (unit && unit->sprite) { // Sprite is new.
 			auto& bullet_source_ext = unit->ext();
-			if (bullet->weapon_id == WeaponId::CyclopsBrontesPayload && unit->id == UnitId::TerranCyclopsFuturist) { // So we don't need to use another weapon id. -Pr0nogo
+			auto bullet_ext = get_bullet_ext(bullet);
+			if (bullet_ext->weapon_id == WeaponId::CyclopsBrontesPayload && unit->id == UnitId::TerranCyclopsFuturist) { // So we don't need to use another weapon id. -Pr0nogo
 				splash = SplashType::FriendlyNew;
 			}
 			if (unit->is_blind) {
@@ -114,7 +115,7 @@ namespace hooks {
 			}
 
 			// Units can't splash themselves, unless...
-			if (unit == target && !weapon_id_can_self_splash(bullet->weapon_id)) continue;
+			if (unit == target && !weapon_id_can_self_splash(bullet_ext->weapon_id)) continue;
 
 			// Don't hit allied units -- normally just checks target->player == bullet->player (also checks if type is 'splash enemy' or 'nuclear missile')
 			// if (bw::is_unit_enemy(bullet->player, target) == false && target != bullet->attack_target.unit) continue;
@@ -126,7 +127,7 @@ namespace hooks {
 			}
 
 			// Can the unit be targeted?
-			if (!bw::can_weapon_target_unit(bullet->weapon_id, target, target)) continue;
+			if (!bw::can_weapon_target_unit(bullet_ext->weapon_id, target, target)) continue;
 
 			if (!helper::is_unit_distance_within(target, bullet, outer)) continue;
 
@@ -145,12 +146,12 @@ namespace hooks {
 			helper::weapon_bullet_shot(target, bullet, 4); // 25% damage
 			bullet_ext->hit_count++;
 		}
-		if (bullet->weapon_id == WeaponId::PatriarchIronhandWeaver && bullet_ext->hit_count >= 8) {
+		if (bullet_ext->weapon_id == WeaponId::PatriarchIronhandWeaver && bullet_ext->hit_count >= 8) {
 			play_unit_banter(bullet->attack_target.unit, UnitId::ProtossPatriarch);
 		}
 	}
 
-	void lakizilisk_splash(Bullet* bullet, u32 weapon_id, u8 splash) {
+	void lakizilisk_splash(Bullet* bullet, WeaponId::Enum weapon_id, u8 splash) {
 		s16 x = bullet->sprite->position.x;
 		s16 y = bullet->sprite->position.y;
 		s16 r = weapons_dat::outer_splash_radius[weapon_id];
@@ -181,10 +182,11 @@ namespace hooks {
 			}
 
 			// Can the unit be targeted?
-			if (!bw::can_weapon_target_unit(bullet->weapon_id, target, target)) continue;
+			auto bullet_ext = get_bullet_ext(bullet);
+			if (!bw::can_weapon_target_unit(bullet_ext->weapon_id, target, target)) continue;
 
 			// We found units in a square around the target, but is the target within the splash radius?
-			if (!helper::is_unit_distance_within(target, bullet, weapons_dat::inner_splash_radius[bullet->weapon_id])) {
+			if (!helper::is_unit_distance_within(target, bullet, weapons_dat::inner_splash_radius[bullet_ext->weapon_id])) {
 				continue;
 			}
 
@@ -202,7 +204,7 @@ namespace hooks {
 		}
 	}
 
-	static void cleaving_attack(Bullet* bullet, u32 weapon_id) {
+	static void cleaving_attack(Bullet* bullet, WeaponId::Enum weapon_id) {
 		Unit* attacker = bullet->source_unit;
 		if (!attacker) {
 			return;
@@ -222,7 +224,8 @@ namespace hooks {
 			if (!helper::is_unit_distance_within(target, bullet, u32(outer))) {
 				continue;
 			}
-			if (!bw::can_weapon_target_unit(bullet->weapon_id, target, attacker)) {
+			auto bullet_ext = get_bullet_ext(bullet);
+			if (!bw::can_weapon_target_unit(bullet_ext->weapon_id, target, attacker)) {
 				continue;
 			}
 			if (!bw::is_unit_enemy(bullet->player, target) && target != attack_target) {
@@ -242,7 +245,7 @@ namespace hooks {
 	}
 
 	// clone of 'Normal' damage for reference
-	void normal_damage(Bullet* bullet, u32 weapon_id) {
+	void normal_damage(Bullet* bullet, WeaponId::Enum weapon_id) {
 		if (weapon_id_cleaves(weapon_id)) {
 			cleaving_attack(bullet, weapon_id);
 			return;
@@ -260,10 +263,11 @@ namespace hooks {
 		carapace_swarm_damage(bullet->attack_target.unit->position.x, bullet->attack_target.unit->position.y, 1, bullet, weapon_id);
 
 		// Kalkalisk behavior
-		if (weapon_id_is_incremental(bullet->weapon_id)) {
+		auto bullet_ext = get_bullet_ext(bullet);
+		if (weapon_id_is_incremental(bullet_ext->weapon_id)) {
 			g_iquare_globals->add_incremental_bullet_multihit(bullet, target);
 			u32 count = g_iquare_globals->get_multihit_count(bullet);
-			target->damage_with(bullet->weapon_id, (weapons_dat::damage_amount[bullet->weapon_id] - count) * 256, bullet->source_unit, bullet->player);
+			target->damage_with(bullet_ext->weapon_id, (weapons_dat::damage_amount[bullet_ext->weapon_id] - count) * 256, bullet->source_unit, bullet->player);
 			return;
 		}
 
@@ -288,9 +292,9 @@ namespace hooks {
 		} else {
 			if (weapons_dat::behavior[weapon_id] == WeaponBehavior_Bounce) {
 				if (bullet) {
-					if (bullet->source_unit && weapon_id_bounces_caustic_fission(bullet->weapon_id)) {
+					if (bullet->source_unit && weapon_id_bounces_caustic_fission(bullet_ext->weapon_id)) {
 						divisor = 1;
-					} else if (bullet->source_unit && WeaponId::bounces_power_breach(static_cast<WeaponId::Enum>(bullet->weapon_id))) {
+					} else if (bullet->source_unit && WeaponId::bounces_power_breach(static_cast<WeaponId::Enum>(bullet_ext->weapon_id))) {
 						divisor = UnitId::has_power_breach((UnitId::Enum)bullet->source_unit->id) ? (4 - bullet->remaining_bounces) : 1;
 					} else {
 						divisor = 2 - bullet->remaining_bounces;
@@ -301,8 +305,8 @@ namespace hooks {
 		}
 	}
 
-	// case WPNEffect_Splash_Air:
-	void air_splash(Bullet* bullet, u32 weapon_id) { // 0048B790
+	// case WeaponEffect_Splash_Air:
+	void air_splash(Bullet* bullet, WeaponId::Enum weapon_id) { // 0048B790
 		Unit* target = bullet->attack_target.unit;
 		if (!target || !target->sprite) {
 			return;
@@ -313,18 +317,11 @@ namespace hooks {
 		s16 pos_x = bullet_sprite->position.x;
 		s16 pos_y = bullet_sprite->position.y;
 		s32 list;
-		Box16* search_radius = {};
 
 		g_air_splash_list_count = 0;
-		search_radius->left = pos_x - radius;
-		search_radius->top = pos_y - radius;
-		search_radius->right = radius + pos_x;
-		search_radius->bottom = radius + pos_y;
-
-		s16 x, y, r;
-		x = bullet->sprite->position.x;
-		y = bullet->sprite->position.y;
-		r = weapons_dat::outer_splash_radius[weapon_id];
+		auto x = bullet->sprite->position.x;
+		auto y = bullet->sprite->position.y;
+		auto r = weapons_dat::outer_splash_radius[weapon_id];
 		// Get units within the outer splash radius
 		bw::UnitFinder units_in_splash(x - r, y - r, x + r, y + r);
 		carapace_swarm_damage(x, y, r, bullet, weapon_id);
@@ -332,17 +329,16 @@ namespace hooks {
 		s32 result;
 		for (s32 i = 0; i < units_in_splash.get_unit_count(); i++) {
 			// air_splash_proc
-			s8 weapon_id_loop;
+			WeaponId::Enum weapon_id_loop;
 			s32 list_count;
 			Unit* target = units_in_splash.get_unit(i);
 
-			weapon_id_loop = bullet->weapon_id;
+			auto bullet_ext = get_bullet_ext(bullet);
+			weapon_id_loop = bullet_ext->weapon_id;
 			if (target != bullet->source_unit && (target->player != bullet->player || target == bullet->attack_target.unit)) {
 				if (bw::can_weapon_target_unit(weapon_id_loop, target, target)) {
 					if (helper::is_unit_distance_within(target, bullet, weapons_dat::outer_splash_radius[weapon_id_loop])) {
-						if (helper::is_unit_distance_within(target, bullet, weapons_dat::inner_splash_radius[weapon_id_loop])
-							&& target == bullet->attack_target.unit)
-						{
+						if (helper::is_unit_distance_within(target, bullet, weapons_dat::inner_splash_radius[weapon_id_loop]) && target == bullet->attack_target.unit) {
 							g_air_splash_list[0] = target;
 							result = 1;
 							g_air_splash_list_count = 1;
@@ -368,13 +364,13 @@ namespace hooks {
 		splash(bullet, weapon_id, SplashType::FriendlyNew);
 	}
 
-	void nuke(Bullet* bullet, u32 weapon_id) {
+	void nuke(Bullet* bullet, WeaponId::Enum weapon_id) {
 		g_iquare_globals->create_effect(EffectId::MorningstarGroundZero, 24, bullet->position, 0, SpriteId::None, 5, bullet->player, bullet->source_unit);
 		splash(bullet, weapon_id, SplashType::Radial);
 	}
 
 	// clone of 'Yamato' damage for reference
-	void yamato_damage(Bullet* bullet, u32 weapon_id) {
+	void yamato_damage(Bullet* bullet, WeaponId::Enum weapon_id) {
 		if (!bullet->attack_target.unit) {
 			return;
 		}
@@ -382,7 +378,7 @@ namespace hooks {
 		splash(bullet, weapon_id, SplashType::Radial);
 	}
 
-	void parasite(Bullet* bullet, u32 weapon_id) {
+	void parasite(Bullet* bullet, WeaponId::Enum weapon_id) {
 		if (!bullet->source_unit) {
 			return;
 		}
@@ -392,7 +388,7 @@ namespace hooks {
 		}
 	}
 
-	void broodlings(Bullet* bullet, u32 weapon_id) {
+	void broodlings(Bullet* bullet, WeaponId::Enum weapon_id) {
 		if (!bullet->source_unit) {
 			return;
 		}
@@ -400,7 +396,7 @@ namespace hooks {
 		hooks::broodling_hit(bullet->source_unit, target, bullet);
 	}
 
-	void lockdown(Bullet* bullet, u32 weapon_id) {
+	void lockdown(Bullet* bullet, WeaponId::Enum weapon_id) {
 		s16 x = bullet->sprite->position.x;
 		s16 y = bullet->sprite->position.y;
 		s16 r = weapons_dat::outer_splash_radius[weapon_id];
@@ -431,7 +427,8 @@ namespace hooks {
 	// Hooked to allow Valkyries to splash Stewards.
 	// This is intended to return false always. -Pr0nogo
 	bool splash_target_check(Bullet* bullet, Unit* target) { // 0048B570
-		const auto weapon_id = bullet->weapon_id;
+		auto bullet_ext = get_bullet_ext(bullet);
+		const auto weapon_id = bullet_ext->weapon_id;
 		if (target == bullet->source_unit && weapon_id != WeaponId::PsiStorm) {
 			return false;
 		}
@@ -459,6 +456,69 @@ namespace hooks {
 				return false;
 			}
 			helper::weapon_bullet_shot(target, bullet, 4);
+		}
+		return false;
+	}
+
+	// Hooked to extend weapons to u16. -Pr0nogo
+	bool air_splash_proc(Unit* target, Bullet* bullet) { // 0048B150
+		auto bullet_ext = get_bullet_ext(bullet);
+		WeaponId::Enum weapon_id = bullet_ext->weapon_id;
+		if (target == bullet->source_unit) {
+			return false;
+		}
+		if (target->player == bullet->player && target != bullet->attack_target.unit) {
+			return false;
+		}
+		if (!helper::can_weapon_target_unit(weapon_id, target, target)) {
+			return false;
+		}
+		if (!helper::is_unit_distance_within(target, bullet, weapons_dat::outer_splash_radius[weapon_id])) {
+			return false;
+		}
+		if (!helper::is_unit_distance_within(target, bullet, weapons_dat::inner_splash_radius[weapon_id]) || target != bullet->attack_target.unit) {
+			g_air_splash_list[g_air_splash_list_count] = target;
+			g_air_splash_list_count = g_air_splash_list_count + 1;
+			return false;
+		}
+		g_air_splash_list[0] = target;
+		g_air_splash_list_count = 1;
+		return true;
+	}
+
+	bool lakiz_splash_proc(Unit* target, Bullet* bullet) { // 0048B680
+		auto bullet_ext = get_bullet_ext(bullet);
+		WeaponId::Enum weapon_id = bullet_ext->weapon_id;
+		if (target != bullet->source_unit && (target->player != bullet->player || target == bullet->attack_target.unit)) {
+			if (!helper::can_weapon_target_unit(weapon_id, target, target)) {
+				return false;
+			}
+			if (!helper::is_unit_distance_within(target, bullet, weapons_dat::inner_splash_radius[weapon_id])) {
+				return false;
+			}
+			Unit* attacker = bullet->source_unit;
+			if (!attacker) {
+				helper::weapon_bullet_shot(target, bullet, 1);
+				return false;
+			}
+			Unit** splash_list = g_lakiz_splash_list;
+			u32 iterator = 0;
+			while (splash_list[0] != attacker || splash_list[1] != target) {
+				++iterator;
+				splash_list += 2;
+				if (iterator >= 512) {
+					auto index = *g_last_bullet_index;
+					if (*g_last_bullet_index != 16) {
+						auto attacker_entry = 2 * (*g_last_bullet_index + 16 * *g_lakiz_splash_list_index);
+						index = *g_last_bullet_index + 1;
+						g_lakiz_splash_list[attacker_entry] = attacker;
+						g_lakiz_splash_list[attacker_entry + 1] = target;
+						*g_last_bullet_index = index;
+					}
+					helper::weapon_bullet_shot(target, bullet, 1);
+					break;
+				}
+			}
 		}
 		return false;
 	}

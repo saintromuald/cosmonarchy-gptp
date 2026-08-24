@@ -336,7 +336,7 @@ namespace hooks {
     }
 
     // Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
-    void iscript_fireweapon(Unit* unit, u8 weapon_id) { // 00479D40
+    void iscript_fireweapon(Unit* unit, WeaponId::Enum weapon_id) { // 00479D40
         helper::fire_unit_weapon(unit, weapon_id);
         if (weapons_dat::damage_factor[weapon_id] == 2) {
             helper::fire_unit_weapon(unit, weapon_id);
@@ -387,7 +387,7 @@ namespace hooks {
             } break;
             case AttackTargetingType::Diadem: break;
         }
-        u32 weapon_id = WeaponId::None;
+        WeaponId::Enum weapon_id = WeaponId::None;
         if (is_ground_weapon != 1) {
             weapon_id = units_dat::air_weapon[unit->id];
         } else if (!unit_id_is_burrowed_attacker(unit->id) || unit->burrowed_attacker_can_attack()) {
@@ -397,7 +397,7 @@ namespace hooks {
     }
 
     // Reimplemented by X405, ported by Pr0nogo, to extend iscript.bin and add functionality. -Pr0nogo
-    void iscript_useweapon(Unit* unit, u8 weapon_id) { // 00479C30
+    void iscript_useweapon(Unit* unit, WeaponId::Enum weapon_id) { // 00479C30
         if (weapons_dat::flingy_id[weapon_id]) {
             if (!unit) {
                 bw::print("error: iscript_useweapon called on a unitless sprite!");
@@ -783,7 +783,7 @@ namespace hooks {
                     }
                 } break;
                 case IscriptOpcodes::opc_useweapon: {
-                    char weapon_id = take_iscript_datum<char>(program_state);
+                    auto weapon_id = take_iscript_datum<WeaponId::Enum>(program_state);
                     if (noop) {
                         break;
                     }
@@ -1209,9 +1209,9 @@ namespace hooks {
 
     void __declspec(naked) iscript_fireweapon_wrapper() { // 00479D40
         static Unit* unit;
-        static u8 weapon_id;
+        static WeaponId::Enum weapon_id;
         __asm {
-            MOV weapon_id, BL
+            MOV weapon_id, BX
             MOV unit, EAX
             PUSHAD
         }
@@ -1246,7 +1246,7 @@ namespace hooks {
 
     void __declspec(naked) iscript_useweapon_wrapper() { // 00479C30
         static Unit* unit;
-        static u16 weapon_id;
+        static WeaponId::Enum weapon_id;
         __asm {
             PUSH EBP
             MOV EBP, ESP
@@ -1307,6 +1307,48 @@ namespace hooks {
         }
     }
 
+    void __declspec(naked) iscript_cases_attack_patch() {
+        static u32 var;
+        __asm {
+            MOV var, EDX
+            PUSHAD
+        }
+        var = units_dat::air_weapon[var];
+        __asm {
+            POPAD
+            MOV CX, word ptr var
+            MOV[EBP - 0x10], CX
+            RETN
+        }
+    }
+
+    void __declspec(naked) iscript_cases_castspell_patch_A() {
+        static u32 var;
+        __asm {
+            MOV var, EAX
+            PUSHAD
+        }
+        var = orders_dat::order_weapon_id[var];
+        __asm {
+            POPAD
+            CMP word ptr var, 130//WeaponId::None
+            RETN
+        }
+    }
+
+    void __declspec(naked) iscript_cases_castspell_patch_B() {
+        static u32 var;
+        __asm {
+            MOV var, ECX
+            PUSHAD
+        }
+        var = orders_dat::order_weapon_id[var];
+        __asm {
+            POPAD
+            MOV BX, word ptr var
+            RETN
+        }
+    }
 
     void inject_image_hooks() {
         jump_patch(initialize_image_data_wrapper,	 0x004D5A50, 2);
@@ -1322,14 +1364,19 @@ namespace hooks {
         jump_patch(iscript_useweapon_wrapper,		 0x00479C30, 3);
         jump_patch(iscript_nobrkcodeend_wrapper,	 0x004753E0, 4);
 
-        // Allow subunits to use turnccwise and so on.
+        // Allow subunits to use turnccwise and so on. -DF
         call_patch(progress_subunit_direction_patch, 0x004EB663);
 
-        // Resolve buffer overflow crash after large graphics are drawn
+        // Resolve buffer overflow crash after large graphics are drawn. -DF
         memory_patch(0x004D5CDD, &new_warp_texture_buffer);
         memory_patch(0x004D5CF1, &new_warp_texture_buffer);
         memory_patch(0x004D5C9D, &new_warp_texture_buffer);
         memory_patch(0x004D5CB1, &new_warp_texture_buffer);
+
+        // Treat weapon ids as u16. -DF
+        call_patch(iscript_cases_attack_patch, 0x004D80D3, 4);
+        call_patch(iscript_cases_castspell_patch_A, 0x004D8129, 2);
+        call_patch(iscript_cases_castspell_patch_B, 0x004D814B, 1);
 
         // Fix Lakizilisk nullsprites. -DF
         memory_patch(0x004D838C, &iscript_cases_deathloop);

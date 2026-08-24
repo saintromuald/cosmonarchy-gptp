@@ -10,6 +10,7 @@ void issue_tri_target_order(u8 order_1, u8 order_2, u8 order_3);											// 00
 void orders_defensive_matrix(Unit* caster);																	// 004550A0
 bool cannot_cast_spell(Unit* unit);																			// 00492140
 b32 spell_order_move_towards_target(Unit* caster, u32 range);												// 00492450
+bool can_cast_ordered_spell_now(Unit* unit);																// 00491DB0
 
 void inject_cast_order_hooks();
 } // namespace hooks

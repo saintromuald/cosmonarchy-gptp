@@ -551,7 +551,7 @@ namespace hooks
 
 	void __declspec(naked) calculate_unit_strength_wrapper() { // 00431270
 		static u32 unit_id;
-		static u32 weapon_id;
+		static WeaponId::Enum weapon_id;
 		static u32 result;
 		__asm {
 			PUSH EBP
@@ -559,7 +559,7 @@ namespace hooks
 			SUB ESP, 0x08
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV weapon_id, EAX
+			MOV weapon_id, AX
 			POP EAX
 			MOV unit_id, EAX
 			PUSHAD
@@ -638,7 +638,7 @@ namespace hooks
 	void __declspec(naked) attack_overlay_and_notify_wrapper() {
 		static Unit* victim;
 		static Unit* attacker;
-		static u8 weapon_id;
+		static WeaponId::Enum weapon_id;
 		static u8 direction;
 		__asm {
 			MOV victim, EAX
@@ -648,7 +648,7 @@ namespace hooks
 			SUB ESP, 0x08
 			PUSH EAX
 			MOV EAX, [EBP + 0x0C]
-			MOV weapon_id, AL
+			MOV weapon_id, AX
 			MOV EAX, [EBP + 0x10]
 			MOV direction, AL
 			POP EAX
@@ -704,23 +704,6 @@ namespace hooks
 		hooks::update_building_construct_shields_amount(a1);
 		__asm {
 			POPAD
-			RETN
-		}
-	}
-
-	void __declspec(naked) get_unit_bullet_damage_wrapper() { // 0048ACD0
-		static Unit* victim;
-		static Bullet* bullet;
-		static s32 result;
-		__asm {
-			MOV victim, EAX
-			MOV bullet, EDX
-			PUSHAD
-		}
-		result = hooks::get_unit_bullet_damage(victim, bullet);
-		__asm {
-			POPAD
-			MOV EAX, result
 			RETN
 		}
 	}
@@ -781,7 +764,6 @@ namespace hooks
 		//	jump_patch(attack_overlay_and_notify_wrapper,					0x00479730, 1);
 		//	jump_patch(drawImageHPBar_0_Wrapper,							0x0047A820, 1);
 		//	jump_patch(update_building_construct_shields_amount_wrapper,	0x0047B6A0, 0);
-		//	jump_patch(get_unit_bullet_damage_wrapper,						0x0048ACD0, 1);
 		//	jump_patch(modify_unit_shields,									0x004C5A20, 2);
 		//	jump_patch(ai_find_best_transport_wrapper,						0x004E6EF0, 1);
 		//	jump_patch(mapDataTransfer_Wrapper,								0x004EAFE0, 1);

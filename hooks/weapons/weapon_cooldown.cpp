@@ -5,7 +5,7 @@
 #include "globals.h"
 
 namespace hooks {
-	u32 get_modified_armor_pen(Unit* unit, Unit* target, u8 weapon_id) {
+	u32 get_modified_armor_pen(Unit* unit, Unit* target, WeaponId::Enum weapon_id) {
 		u32 armor_pen = weapons_dat::armor_pen[weapon_id];
 		if (!unit) {
 			return armor_pen;
@@ -26,8 +26,6 @@ namespace hooks {
 		// @TODO: Extend weapon ids and remove this
 		switch (unit->id) {
 			case UnitId::TerranCamazotz:      armor_pen -= 1; break;
-			case UnitId::TerranCutlass:       armor_pen -= 1; break;
-			case UnitId::TerranCutlassTurret: armor_pen -= 1; break;
 			case UnitId::ProtossRenesair:	  armor_pen += 1; break;
 			case UnitId::ZergZethalor:		  armor_pen -= 3; break;
 			case UnitId::ZergHydrokor:		  armor_pen += 2; break;
@@ -54,8 +52,6 @@ namespace hooks {
 
 		// @TODO: Extend weapon ids and remove this
 		switch (unit->id) {
-			case UnitId::TerranCutlass:				  cooldown /= 1.35fp; break;
-			case UnitId::TerranCutlassTurret:		  cooldown /= 1.35fp; break;
 			case UnitId::TerranBroadsideTurret:		  cooldown /= 1.06fp; break;
 			case UnitId::TerranArquebus:			  cooldown *= 1.35fp; break;
 			case UnitId::TerranPhoenix:			      cooldown /= 1.50fp; break;
@@ -236,7 +232,7 @@ namespace hooks {
 
 	/// Calculates the unit's weapon cooldown, factoring in upgrades and status effects.
 	/// @return	the modified cooldown value.
-	u32 get_modified_weapon_cooldown(Unit* unit, u8 weapon_id) {
+	u32 get_modified_weapon_cooldown(Unit* unit, WeaponId::Enum weapon_id) {
 		auto cooldown = weapons_dat::cooldown[weapon_id];
 		switch (unit->id) {
 			case UnitId::AskosiMimic: {
@@ -251,15 +247,15 @@ namespace hooks {
 		return get_modified_cooldown(unit, cooldown, true);
 	}
 
-	fp32 get_weapon_cooldown_fp(Unit* unit, u8 weapon_id) {
+	fp32 get_weapon_cooldown_fp(Unit* unit, WeaponId::Enum weapon_id) {
 		return get_modified_weapon_cooldown(unit, weapon_id) / 24.0fp;
 	}
 
-	fp32 get_current_dps(Unit* unit, u8 weapon_id) {
+	fp32 get_current_dps(Unit* unit, WeaponId::Enum weapon_id) {
 		return weapons_dat::damage_amount[weapon_id] / get_weapon_cooldown_fp(unit, weapon_id);
 	}
 
-	fp32 get_current_dps_from_damage(Unit* unit, u8 weapon_id, u32 damage) {
+	fp32 get_current_dps_from_damage(Unit* unit, WeaponId::Enum weapon_id, u32 damage) {
 		return damage / get_weapon_cooldown_fp(unit, weapon_id);
 	}
 }

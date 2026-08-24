@@ -23,7 +23,7 @@ namespace hooks {
 					final_unit_id = unit_id;
 				}
 
-				u32 air_weapon_id = units_dat::air_weapon[final_unit_id];
+				WeaponId::Enum air_weapon_id = units_dat::air_weapon[final_unit_id];
 				if (air_weapon_id == WeaponId::None) {
 					air_strength = 1;
 				} else {
@@ -31,7 +31,7 @@ namespace hooks {
 					air_strength = helper::filter_unit_strength((UnitId::Enum)unit_id, air_strength_calc);
 				}
 
-				u32 ground_weapon_id = units_dat::ground_weapon[final_unit_id];
+				WeaponId::Enum ground_weapon_id = units_dat::ground_weapon[final_unit_id];
 				if (ground_weapon_id == WeaponId::None) {
 					ground_strength = 1;
 				} else {

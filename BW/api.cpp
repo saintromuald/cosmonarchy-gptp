@@ -100,7 +100,7 @@ bool is_witness() {
     return !bw::in_replay() && g_globals->players[g_local_nation_id].witness_mode;
 }
 
-Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, v2u16 target_pt, v2u16 origin_pt) {
+Bullet* artificial_bullet_from(WeaponId::Enum weapon_id, u8 player, Unit* source, Unit* target, v2u16 target_pt, v2u16 origin_pt) {
     Unit* target_unit = source->order_target.unit;
     v2u16 target_pos = source->order_target.pt;
     source->order_target.unit = target;
@@ -121,7 +121,7 @@ Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* targ
     return bullet;
 }
 
-Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, u16 x, u16 y) {
+Bullet* artificial_bullet_from(WeaponId::Enum weapon_id, u8 player, Unit* source, Unit* target, u16 x, u16 y) {
     return artificial_bullet_from(weapon_id, player, source, target, {x, y});
 }
 
@@ -251,14 +251,14 @@ void printf_console(const char* format, ...) {
 //-------- Unit checks --------//
 
 // Identical to function @ 0x00475CE0
-bool can_weapon_target_unit(u8 weapon_id, Unit* target, Unit* attacker) {
+bool can_weapon_target_unit(WeaponId::Enum weapon_id, Unit* target, Unit* attacker) {
     if (weapon_id >= WeaponsIdLimit) {
         return false;
     }
     if (!target) {
         return weapons_dat::target_flags[weapon_id].terrain;
     }
-    if (target->status & UnitStatus::Invincible) {
+    if (target->is_invincible()) {
         return false;
     }
 
@@ -1113,7 +1113,7 @@ u32 get_sized_overlay(Unit* unit, u32 initial) {
     return initial;
 }
 
-static bool can_use_cliff_advantage(Unit* unit, u8 weapon_id) {
+static bool can_use_cliff_advantage(Unit* unit, WeaponId::Enum weapon_id) {
     switch (unit->id) {
         case UnitId::TerranHarakan:
         case UnitId::TerranHarakanGolden:
@@ -1131,8 +1131,8 @@ static bool can_use_cliff_advantage(Unit* unit, u8 weapon_id) {
     return !unit->is_in_air() && (weapon_id == WeaponId::None || weapons_dat::max_range[weapon_id] > 32) && weapon_id != WeaponId::DurendalAbaddonFlamethrowers;
 }
 
-fp32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_to_max_bonus) {
-    if (!can_use_cliff_advantage(unit, weapon)) {
+fp32 get_cliff_advantage(Unit* unit, Unit* target_unit, WeaponId::Enum weapon_id, bool default_to_max_bonus) {
+    if (!can_use_cliff_advantage(unit, weapon_id)) {
         return 0fp;
     }
     v2u16 unit_pos;
@@ -1197,7 +1197,7 @@ s32 get_overlay_offset(u16 unit_id, bool xlarge_allowed) {
     return 0;
 }
 
-s32 get_final_damage(Unit* unit, u16 weapon_id) {
+s32 get_final_damage(Unit* unit, WeaponId::Enum weapon_id) {
     s32 upgrade_type = get_upgrade_type(unit);
     s32 base_damage = weapons_dat::damage_amount[weapon_id];
     s32 bonus_damage = weapons_dat::armor_pen[weapon_id] * bw::get_upgrade_level(unit->player, upgrade_type);
@@ -2234,7 +2234,7 @@ bool buttonset_id_is_submenu(u32 buttonset_id) {
         || buttonset_id == UnitId::Buttons_ZergAdvancedMutations;
 }
 
-u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id) {
+WeaponId::Enum get_custom_secondary_weapon_from_unit_id(u32 unit_id) {
     switch (unit_id) {
         case UnitId::TerranTarasque:	return WeaponId::TarasqueAcceleratedPlasmid;
         case UnitId::TerranDurendal:	return WeaponId::DurendalPhilistineSalvo;
@@ -2318,7 +2318,7 @@ bool move_unit_ai(Unit* unit, AiRegion* ai_region) {
     return false;
 }
 
-void astral_blessing_proc(Unit* victim, u32 attacking_player_id, u32 weapon_id) {
+void astral_blessing_proc(Unit* victim, u32 attacking_player_id, WeaponId::Enum weapon_id) {
     u32 heal_amount = 3;
     u32 range = 96;
     switch (weapon_id) {
@@ -2520,7 +2520,7 @@ GuardAi* create_guard_ai(u32 player, u32 unit_id, v2u16 position) {
 }
 
 // Returns the special damage multiplier factor for units that don't use the "Damage Factor" property in weapons.dat.
-u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit) {
+u8 get_damage_factor_for_tooltip(WeaponId::Enum weapon_id, Unit* unit) {
     switch (weapon_id) {
         // @TODO: Extend weapon ids and remove these
         case WeaponId::KethrostalorStaggeredSpores: {
@@ -2726,7 +2726,7 @@ bool binding_plasma_proc(Unit* victim, UnitId::Enum source_unit_id, const Bindin
     bool procced = false;
     for (Unit* target : targets) {
         u32 angle = bw::get_angle(victim->position.x, victim->position.y, target->position.x, target->position.y);
-        Bullet* bullet = helper::create_bullet((u32)options.weapon_id, victim, victim->position.x, victim->position.y, player, angle);
+        Bullet* bullet = helper::create_bullet(options.weapon_id, victim, victim->position.x, victim->position.y, player, angle);
         if (!bullet) {
             break;
         }
@@ -3147,8 +3147,8 @@ void play_action_sound(u32 sound_id, Unit* unit) {
     }
 }
 
-u32 get_unit_weapon_based_on_target(Unit* attacker, Unit* target) {
-    u32 weapon_id = WeaponId::None;
+WeaponId::Enum get_unit_weapon_based_on_target(Unit* attacker, Unit* target) {
+    WeaponId::Enum weapon_id = WeaponId::None;
     if (target->is_in_air()) {
         weapon_id = units_dat::air_weapon[attacker->id];
     } else {
@@ -3858,7 +3858,7 @@ void draw_shape(u32 i_0, float scale, Point32* offset, u8 color) {
     } while (i_0);
 }
 
-void draw_weapon_range(Unit* unit, u8 weapon_id, u8 color) {
+void draw_weapon_range(Unit* unit, WeaponId::Enum weapon_id, u8 color) {
     v2u16 pos = unit->sprite->position;
     Box16 bounds = units_dat::unit_bounds[unit->id];
     Point32 bounds_wy = {bounds.right + pos.x, -bounds.top + pos.y};
@@ -3956,7 +3956,7 @@ u32 get_decloak_sound_id(Unit* unit) {
     return SoundId::Terran_PHOENIX_TPhClo01_WAV;
 }
 
-void launch_return_missile(Unit* unit, u32 weapon_id) {
+void launch_return_missile(Unit* unit, WeaponId::Enum weapon_id) {
     UnitExt* unit_ext = get_unit_ext(unit);
     v2u16 position = unit->position;
     v2u16 spr_position = unit->sprite->position;
@@ -3978,7 +3978,7 @@ void launch_return_missile(Unit* unit, u32 weapon_id) {
     }
 }
 
-void fire_incremental_bullet(Bullet* bullet, u32 weapon_id, Unit* target, v2u16 position) {
+void fire_incremental_bullet(Bullet* bullet, WeaponId::Enum weapon_id, Unit* target, v2u16 position) {
     g_iquare_globals->add_incremental_bullet_multihit(bullet, target);
     s32 count = g_iquare_globals->get_multihit_count(bullet) - 1;
     bw::create_and_init_thingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, position.x, position.y, bullet->player);
@@ -4121,7 +4121,7 @@ void select(std::vector<Unit*>& units, bool play_response) {
     bw::refresh_console();
 }
 
-u32 get_unit_weapon_fire_sound(Unit* unit, u32 weapon_id) {
+u32 get_unit_weapon_fire_sound(Unit* unit, WeaponId::Enum weapon_id) {
     u32 sound_id = SoundId::None;
     switch (unit->id) {
         case UnitId::TerranSavantEntropyGauntlets: return bw::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05);
@@ -4151,7 +4151,7 @@ u32 get_unit_weapon_fire_sound(Unit* unit, u32 weapon_id) {
     return sound_id;
 }
 
-u32 get_weapon_fire_sound(u32 weapon_id, Unit* unit) {
+u32 get_weapon_fire_sound(WeaponId::Enum weapon_id, Unit* unit) {
     switch (weapon_id) {
         case WeaponId::MaverickGaussRifle:                  return SoundId::Bullet_TMaFir00_wav;
         case WeaponId::MaverickFuturistGaussSlugger:        return bw::rand_between(SoundId::MaverickFuturistWeaponfire01, SoundId::MaverickFuturistWeaponfire03);

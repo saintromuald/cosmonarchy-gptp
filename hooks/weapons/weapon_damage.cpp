@@ -50,7 +50,7 @@ void apply_corrosive_spores_internal(Unit* unit, u32 timer) {
     unit_ext.timers[TimerCorrosiveTouch] = timer;
 }
 
-bool carapace_swarm_blocks_damage(Unit* target, u32 weapon_id, u32 damage_divisor) {
+bool carapace_swarm_blocks_damage(Unit* target, WeaponId::Enum weapon_id, u32 damage_divisor) {
     return bw::is_under_carapace_swarm(target)
         && weapons_dat::max_range[weapon_id] > 32
         && (damage_divisor == 1 || weapon_id == WeaponId::GeszithalorAcidSpore)
@@ -350,9 +350,11 @@ namespace hooks {
         bool shield_overlay = false;
         if (!data.is_phase_link_damage_instance && data.damage_type != DamageType::IgnoreArmor && !data.ignore_flat_armor) {
             s32 armor_pen = hooks::get_modified_armor_pen(data.attacker, data.target, data.weapon_id) + data.bonus_armor_pen;
-            if (weapon_damage_current_bullet && weapon_damage_current_bullet->weapon_id == WeaponId::AlgoztaliskBottomlessSpinestacks) {
-                BulletExt* bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
-                armor_pen += bullet_ext->distance_traveled / 32;
+            if (weapon_damage_current_bullet) {
+                auto bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
+                if (bullet_ext->weapon_id == WeaponId::AlgoztaliskBottomlessSpinestacks) {
+                    armor_pen += bullet_ext->distance_traveled / 32;
+                }
             }
             s32 armor_total = (hooks::get_armor_internal(data.target) - armor_pen);
 
@@ -530,11 +532,6 @@ namespace hooks {
         if (data.attacker) {
             switch (data.weapon_id) {
                 // @TODO: Extend weapons and remove these
-                case WeaponId::SentinelCerberusRailgun: {
-                    if (data.attacker->id == UnitId::TerranCutlass || data.attacker->id == UnitId::TerranCutlassTurret) {
-                        data.damage -= 9 * 256;
-                    }
-                } break;
                 case WeaponId::HeraclesJavelinCannons: {
                     if (data.attacker->id == UnitId::AskosiInsurant) {
                         data.damage += 1 * 256;
@@ -735,7 +732,7 @@ namespace hooks {
                 if (!current_bullet_ext->is_phantom) {
                     data.attacker->sprite->create_overlay(ImageId::PhantomStrikeProc);
                 //	WeaponOffsets offsets = get_weapon_offsets(data.weapon_id);
-                    Bullet* phantom_strike = fire_bullet(data.attacker, data.weapon_id, { data.attacker->order_target.pt, data.target }, {.apply_cooldown = false});
+                    Bullet* phantom_strike = fire_bullet(data.attacker, data.weapon_id, {data.attacker->order_target.pt, data.target}, {.apply_cooldown = false});
                     if (phantom_strike) {
                         BulletExt* phantom_ext = get_bullet_ext(phantom_strike);
                         phantom_ext->is_phantom = true;
@@ -2003,5 +2000,44 @@ namespace hooks {
                 helper::order_interrupt(victim, 0, flee_target.pt.x, flee_target.pt.y, OrderId::Move);
             }
         }
+    }
+
+    // Hooked to extend weapons to u16. -Pr0nogo
+    u32 get_unit_bullet_damage(Unit* victim, Bullet* bullet) { // 0048ACD0
+        auto bullet_ext = get_bullet_ext(bullet);
+        if (weapons_dat::explosion_type[bullet_ext->weapon_id] != WeaponEffect::NuclearMissile) {
+            // Previously handled upgrades here.
+            return weapons_dat::damage_amount[bullet_ext->weapon_id] * 1hp;
+        }
+        auto max_hp = units_dat::max_hitpoints[victim->id] / 1hp;
+        u32 double_vitality = 0;
+        if (units_dat::shields_enabled[victim->id]) {
+            if (!max_hp) {
+                max_hp = (victim->hitpoints + 255) / 256;
+                if (!max_hp) {
+                    max_hp = 1;
+                }
+            }
+            double_vitality = 2 * (max_hp + units_dat::max_shield_points[victim->id]);
+        } else {
+            if (!max_hp) {
+                max_hp = (victim->hitpoints + 255) / 256;
+                if (!max_hp) {
+                    max_hp = 1;
+                }
+            }
+            double_vitality = 2 * max_hp;
+        }
+        auto vitality_fraction = double_vitality / 3;
+        if (vitality_fraction < 500) {
+            vitality_fraction = 500;
+        }
+        return vitality_fraction * 256;
+    }
+
+    // Hooked to extend weapons to u16. -Pr0nogo
+    u32 get_unit_damage_bonus(Unit* unit, u32 weapon_id) { // 00475EC0
+        // Originally calculated damage bonus from upgrades. These are not used in Cosmonarchy.
+        return 0;
     }
 }

@@ -143,13 +143,13 @@ namespace hooks {
 
 		if (bullet->hit_flags & 2) {
 			if (bullet->source_unit) {
-				target->damage_with(bullet->weapon_id, base_damage, bullet->source_unit, bullet->player, bullet->current_direction_1, damage_divisor);
+				target->damage_with(bullet_ext->weapon_id, base_damage, bullet->source_unit, bullet->player, bullet->current_direction_1, damage_divisor);
 			} else {
-				helper::attack_overlay_and_notify(bullet->source_unit, target, bullet->weapon_id, bullet->current_direction_1); // no damage, but still ask for retaliation
+				helper::attack_overlay_and_notify(bullet->source_unit, target, bullet_ext->weapon_id, bullet->current_direction_1); // no damage, but still ask for retaliation
 			}
 		} else {
 			weapon_damage_current_bullet = bullet;
-			target->damage_with(bullet->weapon_id, base_damage, bullet->source_unit, bullet->player, bullet->current_direction_1, damage_divisor);
+			target->damage_with(bullet_ext->weapon_id, base_damage, bullet->source_unit, bullet->player, bullet->current_direction_1, damage_divisor);
 			weapon_damage_current_bullet = 0;
 		}
 	}

@@ -88,7 +88,7 @@ namespace {
     void __declspec(naked) stats_weapon_level_wrapper() { // 00425790
         static BinDlg* dialog;
         static u16 status_screen_index;
-        static u8 weapon_id;
+        static WeaponId::Enum weapon_id;
         __asm {
             PUSH EBP
             MOV EBP, ESP
@@ -96,7 +96,7 @@ namespace {
             MOV EAX, [EBP + 0x08]
             MOV status_screen_index, AX
             MOV EAX, [EBP + 0x0C]
-            MOV weapon_id, AL
+            MOV weapon_id, AX
             POP EAX
             MOV dialog, EAX
             PUSHAD

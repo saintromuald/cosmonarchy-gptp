@@ -57,12 +57,12 @@ namespace hooks {
 	bool find_next_bounce_target_proc(Unit* pIterator);															// 0048AFD0
 	Unit* find_next_bounce_target(Bullet* a1);																	// 0048B1E0
 	Bullet* delete_bullet(Bullet* bullet);																		// 0048A560
-	Bullet* create_bullet(s32 weapon_id, Unit* parent, s32 x, s16 y, u8 player, s32 angle);						// 0048C260
-	s32 initialize_bullet(u8 player, Unit* parent, s16 y, Bullet* bullet, s32 weapon_id, s32 x, s32 angle);		// 0048BEC0
+	Bullet* create_bullet(WeaponId::Enum weapon_id, Unit* parent, s32 x, s16 y, u8 player, s32 angle);			// 0048C260
+	s32 initialize_bullet(u8 player, Unit* parent, s16 y, Bullet* bullet, WeaponId::Enum weapon_id, s32 x, s32 angle);		// 0048BEC0
 	void progress_bullet_frames();																				// 0048C3D0
 	void bullet_behavior_reassign(Bullet* bullet);																// 0048BD50
-	void get_weapon_iscript_init(Unit* unit, char iscript_anim);												// 00476ED0
-	s32 use_weapon_iscript(Unit* unit, u8 weapon_id, u32 attack_type, char iscript_anim);						// 00476C90
+	void get_weapon_iscript_init(Unit* unit, u8 iscript_anim);													// 00476ED0
+	s32 use_weapon_iscript(Unit* unit, WeaponId::Enum weapon_id, u32 attack_type, char iscript_anim);			// 00476C90
 	b32 should_stay_at_range(Unit* unit);																		// 00475A10
 	void move_for_melee_range(Unit* target, Unit* attacker);													// 00477F10
 	Bullet* assign_weapon_data(Bullet* bullet, char behavior);													// 0048AA80

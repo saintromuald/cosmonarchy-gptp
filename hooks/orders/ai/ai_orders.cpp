@@ -2943,7 +2943,7 @@ namespace hooks {
                 if (!helper_combatant->is_subunit()) {
                     helper_combatant = helper;
                 }
-                u32 final_weapon_id = helper->is_in_air() ? helper_combatant->get_air_weapon() : helper_combatant->get_ground_weapon();
+                WeaponId::Enum final_weapon_id = helper->is_in_air() ? helper_combatant->get_air_weapon() : helper_combatant->get_ground_weapon();
                 if (final_weapon_id != WeaponId::None) {
                     u32 max_range = helper::get_unit_max_weapon_range(helper_combatant, final_weapon_id);
                     if (distance <= max_range + 192) {

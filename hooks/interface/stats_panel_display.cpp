@@ -46,10 +46,6 @@ namespace hooks {
         Unit* active_unit = *g_active_portrait_unit;
         u32 index = 0;
         if (!(active_unit->status & UnitStatus::IsHallucination) || (!g_is_in_replay && active_unit->player != g_local_nation_id)) {
-            bool no_air_weapon_display;
-            u32 air_weapon;
-            u8 air_weapon_main_unit;
-            u8 air_weapon_subunit;
             u16 unit_id = helper::get_last_queue_slot_id(active_unit);
             if (units_dat::armor_upgrade[unit_id] != UpgradeId::GlobalUpgrade60) {
                 helper::stats_armor_level(dialog, index);
@@ -61,11 +57,10 @@ namespace hooks {
             }
 
             if (!unit_id_is_burrowed_attacker(active_unit->id) || active_unit->burrowed_attacker_can_attack()) {
-                UnitExt* unit_ext = get_unit_ext(active_unit);
                 bool no_ground_weapon_display = false;
-                u32 ground_weapon;
-                u8 ground_weapon_main_unit = units_dat::ground_weapon[active_unit->id];
-                u8 ground_weapon_subunit = WeaponId::None;
+                WeaponId::Enum ground_weapon;
+                WeaponId::Enum ground_weapon_main_unit = units_dat::ground_weapon[active_unit->id];
+                WeaponId::Enum ground_weapon_subunit = WeaponId::None;
                 if (ground_weapon_main_unit == WeaponId::None) {
                     if (!active_unit->subunit) {
                         no_ground_weapon_display = true;
@@ -133,8 +128,10 @@ namespace hooks {
                 }
             }
 
-            no_air_weapon_display = false;
-            air_weapon_main_unit = units_dat::air_weapon[active_unit->id];
+            bool no_air_weapon_display = false;
+            WeaponId::Enum air_weapon;
+            WeaponId::Enum air_weapon_subunit = WeaponId::None;
+            WeaponId::Enum air_weapon_main_unit = units_dat::air_weapon[active_unit->id];
             if (air_weapon_main_unit != WeaponId::None) {
                 air_weapon_subunit = air_weapon_main_unit;
             } else if (!active_unit->subunit) {
@@ -157,7 +154,7 @@ namespace hooks {
                     }
                 }
                 if (!no_air_weapon_display) {
-                    u8 ground_weapon;
+                    u16 ground_weapon = WeaponId::None;
                     if (unit_id_is_burrowed_attacker(active_unit->id) && !active_unit->burrowed_attacker_can_attack()) {
                         ground_weapon = WeaponId::None;
                     } else {
@@ -448,7 +445,7 @@ namespace hooks {
     }
 
     // Hooked to draw new values to icons. - Pr0nogo
-    void stats_weapon_level(BinDlg* dialog, u16 status_screen_index, u8 weapon_id) { // 00425790
+    void stats_weapon_level(BinDlg* dialog, u16 status_screen_index, WeaponId::Enum weapon_id) { // 00425790
         Unit* unit = *g_active_portrait_unit;
         UnitExt& unit_ext = unit->ext();
         u32 active_player = unit->player;

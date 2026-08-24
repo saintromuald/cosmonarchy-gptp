@@ -40,7 +40,8 @@ struct Bullet { // With several 2023 contributions by DarkenedFantasies
     /*0x58*/ Target       attack_target;
     // ^-- SHARED Bullet/Unit STRUCTURE END
 
-    /*0x60*/ u8           weapon_id;
+    /*0x60*/ u8           weapon_id_old;            // Retired with the weapons.datex u8 -> u16 extender.
+                                                    // Use bullet_ext->weapon_id instead.
     /*0x61*/ u8           remove_timer;
     /*0x62*/ u8           hit_flags;				// 0x01 = miss target; 0x02 = no damage (hallucination)
     /*0x63*/ u8           remaining_bounces;		// Bounce count for mutalisk weapon

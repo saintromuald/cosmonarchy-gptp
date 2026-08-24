@@ -12,24 +12,21 @@
 namespace hooks {
     bool is_unit_target_out_of_max_range(Unit* unit, Unit* target) { // 00476430
         if (!helper::is_target_visible(unit, target)) {
-            return 1;
+            return true;
         }
         Unit* final_unit = unit->subunit;
-        if (!final_unit || !(units_dat::base_property[final_unit->id] & UnitProperty::Subunit)) {
+        if (!final_unit || !final_unit->is_subunit()) {
             final_unit = unit;
         }
-
-        u32 weapon_id = WeaponId::None;
-        if (target->status & UnitStatus::InAir) {
+        WeaponId::Enum weapon_id = WeaponId::None;
+        if (target->is_in_air()) {
             weapon_id = units_dat::air_weapon[final_unit->id];
         } else if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->burrowed_attacker_can_attack()) {
             weapon_id = units_dat::ground_weapon[final_unit->id];
         }
-
         if (weapon_id == WeaponId::None) {
-            return 0;
+            return false;
         }
-
         u32 max_range = helper::get_unit_max_weapon_range(unit, weapon_id);
         return !helper::is_target_within_min_movement_range(final_unit, target, max_range);
     }
@@ -52,7 +49,7 @@ namespace hooks {
             final_attacker = attacker;
         }
 
-        u32 weapon_id = WeaponId::None;
+        WeaponId::Enum weapon_id = WeaponId::None;
         if (final_target->status & UnitStatus::InAir) {
             weapon_id = units_dat::air_weapon[final_attacker->id];
         } else {
@@ -231,10 +228,8 @@ namespace hooks {
             return false;
         }
 
-        if (units_dat::base_property[attacker->id] & UnitProperty::Building) {
-            if (!(attacker->status & UnitStatus::GroundedBuilding)) {
-                return false;
-            }
+        if (attacker->is_building() && !attacker->is_grounded_building()) {
+            return false;
         }
 
         Unit* final_attacker = attacker;
@@ -247,10 +242,8 @@ namespace hooks {
         }
 
         if (helper::unit_is_reaver(attacker)) {
-            if (!(target->status & UnitStatus::InAir)) {
-                if (helper::unit_has_path_to_target(attacker, target)) {
-                    return true;
-                }
+            if (!target->is_in_air() && helper::unit_has_path_to_target(attacker, target)) {
+                return true;
             }
             return false;
         }
@@ -271,7 +264,7 @@ namespace hooks {
             for (u32 i = 0; i < TransportCap; ++i) {
                 Unit* cargo_unit = attacker->get_loaded_unit(i);
                 if (cargo_unit) {
-                    u32 weapon = target->status & UnitStatus::InAir ? cargo_unit->get_air_weapon() : cargo_unit->get_ground_weapon();
+                    WeaponId::Enum weapon = target->status & UnitStatus::InAir ? cargo_unit->get_air_weapon() : cargo_unit->get_ground_weapon();
                     u32 range = hooks::get_max_weapon_range(attacker, weapon, target);
                     if (range > max_range) {
                         max_range = range;
@@ -286,7 +279,7 @@ namespace hooks {
         }
 
         bool air_unit = target->status & UnitStatus::InAir;
-        u32 weapon = air_unit ? final_attacker->get_air_weapon() : final_attacker->get_ground_weapon();
+        WeaponId::Enum weapon = air_unit ? final_attacker->get_air_weapon() : final_attacker->get_ground_weapon();
         if (air_unit && unit_id_has_custom_air_weapon(attacker->id)) {
             weapon = bw::get_custom_secondary_weapon_from_unit_id(attacker->id);
         }
@@ -300,72 +293,76 @@ namespace hooks {
         return weapon != WeaponId::None;
     }
 
-    // Hooked to help with the Titanic count game rule - Pr0nogo
+    // Hooked to help with the Titanic count game rule. -Pr0nogo
+    // Apparently only runs for Mavericks...
     void ai_attack_unit(Unit* unit) { // 0043FFD0
         if (!unit) {
             return;
         }
+        if (unit->id != UnitId::TerranMaverick) {
+            return;
+        }
+        Unit* unit_target = unit->order_target.unit;
+        if (!unit_target) {
+            return;
+        }
 
-        u32 unit_id = unit->id;
-        if (!unit_id || unit_id == UnitId::TerranHarakan) {
-            Unit* unit_target = unit->order_target.unit;
-            if (unit_target) {
-                s32 cooldown = 0;
-                if (unit->stim_timer) {
-                    cooldown = 1;
-                }
-                if (unit->status & UnitStatus::SpeedUpgrade) {
-                    ++cooldown;
-                }
-                if (unit->ensnare_timer) {
-                    --cooldown;
-                }
-                if (cooldown <= 0) {
-                    s32 unit_hp = units_dat::max_hitpoints[unit_id] >> 8;
-                    if (!unit_hp) {
-                        unit_hp = (unit->hitpoints + 255) >> 8;
-                        if (!unit_hp) {
-                            unit_hp = 1;
-                        }
-                    }
-                    if ((unit->hitpoints + 255) >> 8 >= unit_hp / 2) {
-                        if (unit_can_attack_target(unit, unit_target, 1)) {
-                            unit_target = unit->order_target.unit;
-                            if (!unit_target) {
-                                if (helper::tech_use_allowed(unit, 0, unit->player) == 1 && helper::get_current_hp_plus_shields(unit_target) >= 100) {
-                                    helper::stimpack_proc(unit);
-                                }
-                                return;
-                            }
-                            if (helper::is_target_visible(unit, unit_target)) {
-                                Unit* final_unit = unit->subunit;
-                                if (!final_unit || !(units_dat::base_property[final_unit->id] & UnitProperty::Subunit)) {
-                                    final_unit = unit;
-                                }
-                                u8 air_weapon;
-                                if (unit_target->status & UnitStatus::InAir) {
-                                    air_weapon = units_dat::air_weapon[final_unit->id];
-                                } else {
-                                    if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->burrowed_attacker_can_attack()) {
-                                        air_weapon = units_dat::ground_weapon[final_unit->id];
-                                    } else {
-                                        air_weapon = WeaponId::None;
-                                    }
-                                }
-                                if (air_weapon != WeaponId::None) {
-                                    u32 air_min_range = weapons_dat::min_range[air_weapon];
-                                    if (!air_min_range || !(helper::is_target_within_min_range(final_unit, air_min_range, unit_target))) {
-                                        s32 air_max_range = weapons_dat::max_range[air_weapon];
-                                        if (helper::is_target_within_min_movement_range(unit_target, final_unit, air_max_range)) {
-                                            if (helper::tech_use_allowed(unit, 0, unit->player) == 1 && helper::get_current_hp_plus_shields(unit_target) >= 100) {
-                                                helper::stimpack_proc(unit);
-                                            }
-                                            return;
-                                        }
-                                    }
-                                }
-                            }
-                        }
+        s32 cooldown = 0;
+        if (unit->stim_timer) {
+            cooldown = 1;
+        }
+        if (unit->status & UnitStatus::SpeedUpgrade) {
+            ++cooldown;
+        }
+        if (unit->ensnare_timer) {
+            --cooldown;
+        }
+        if (cooldown > 0) {
+            return;
+        }
+
+        s32 unit_hp = units_dat::max_hitpoints[unit->id] >> 8;
+        if (!unit_hp) {
+            unit_hp = (unit->hitpoints + 255) >> 8;
+            if (!unit_hp) {
+                unit_hp = 1;
+            }
+        }
+        if ((unit->hitpoints + 255) * 256 < unit_hp / 3) {
+            return;
+        }
+
+        if (!unit_can_attack_target(unit, unit_target, 1)) {
+            return;
+        }
+        unit_target = unit->order_target.unit;
+        if (!unit_target) {
+            if (helper::tech_use_allowed(unit, 0, unit->player) == 1 && helper::get_current_hp_plus_shields(unit_target) >= 100) {
+                helper::stimpack_proc(unit);
+            }
+            return;
+        }
+        if (!helper::is_target_visible(unit, unit_target)) {
+            return;
+        }
+
+        Unit* final_unit = unit->subunit;
+        if (!final_unit || !(units_dat::base_property[final_unit->id] & UnitProperty::Subunit)) {
+            final_unit = unit;
+        }
+        auto air_weapon = WeaponId::None;
+        if (unit_target->is_in_air()) {
+            air_weapon = units_dat::air_weapon[final_unit->id];
+        } else if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->burrowed_attacker_can_attack()) {
+            air_weapon = units_dat::ground_weapon[final_unit->id];
+        }
+        if (air_weapon != WeaponId::None) {
+            u32 air_min_range = weapons_dat::min_range[air_weapon];
+            if (!air_min_range || !(helper::is_target_within_min_range(final_unit, air_min_range, unit_target))) {
+                s32 air_max_range = weapons_dat::max_range[air_weapon];
+                if (helper::is_target_within_min_movement_range(unit_target, final_unit, air_max_range)) {
+                    if (helper::tech_use_allowed(unit, 0, unit->player) == 1 && helper::get_current_hp_plus_shields(unit_target) >= 100) {
+                        helper::stimpack_proc(unit);
                     }
                 }
             }
@@ -469,7 +466,7 @@ namespace hooks {
         }
 
         u8 use_weapon = orders_dat::use_weapon_targeting[order_id];
-        u8 weapon_id = orders_dat::order_weapon_id[order_id];
+        WeaponId::Enum weapon_id = orders_dat::order_weapon_id[order_id];
         u8 tech_id = orders_dat::tech_used[order_id];
         u32 energy_cost = 0;
         if (tech_id != TechId::None) {
@@ -857,7 +854,7 @@ namespace hooks {
     }
 
     // Hooked to patch nullsprite crash. -Pr0nogo
-    b32 is_ready_to_attack(Unit* unit, u8 weapon_id) { // 00476640
+    b32 is_ready_to_attack(Unit* unit, WeaponId::Enum weapon_id) { // 00476640
         if (unit->movement_flags & MovementFlags_StartingAttack) {
             return false;
         }
@@ -879,7 +876,7 @@ namespace hooks {
             return false;
         }
         if ((unit->next_target_waypoint.x != unit->position.x || unit->next_target_waypoint.y != unit->position.y)
-         && !helper::is_angle_in_attack_angle(unit->next_target_waypoint.x, unit->next_target_waypoint.y, unit, weapon_id))
+         && !helper::is_unit_in_attack_angle(unit->next_target_waypoint.x, unit->next_target_waypoint.y, unit, weapon_id))
         {
             unit->order_queue_timer = 0;
             return false;
@@ -999,7 +996,7 @@ namespace hooks {
     }
 
     // Hooked to eventually extend weapon ids past 255. -Pr0nogo
-    u8 get_air_weapon(Unit* unit) { // 00475840
+    WeaponId::Enum get_air_weapon(Unit* unit) { // 00475840
         return unit->get_air_weapon();
     }
 
@@ -1022,11 +1019,11 @@ namespace hooks {
             final_unit = unit;
         }
 
-        u32 weapon_id = WeaponId::None;
+        WeaponId::Enum weapon_id = WeaponId::None;
         if (target->is_in_air()) {
             weapon_id = units_dat::air_weapon[final_unit->id];
         } else {
-            if (final_unit->burrowed_attacker_can_attack() || !unit->is_burrowed()) {
+            if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->burrowed_attacker_can_attack()) {
                 weapon_id = units_dat::ground_weapon[final_unit->id];
             }
         }
@@ -1057,7 +1054,7 @@ namespace hooks {
         u32 weapon_id = WeaponId::None;
         if (target->is_in_air()) {
             weapon_id = units_dat::air_weapon[final_unit->id];
-        } else if (final_unit->burrowed_attacker_can_attack() || !final_unit->is_burrowed()) {
+        } else if (unit_id_is_burrowed_attacker(final_unit->id) || final_unit->burrowed_attacker_can_attack()) {
             weapon_id = units_dat::ground_weapon[final_unit->id];
         }
         u32 min_range = weapons_dat::min_range[weapon_id];
@@ -1068,11 +1065,11 @@ namespace hooks {
     }
 
     // Hooked to eventually extend weapon ids past 255. -Pr0nogo
-    u8 get_ground_weapon_id(Unit* unit) { // 00475A90
-        if (!unit->burrowed_attacker_can_attack()) {
+    WeaponId::Enum get_ground_weapon(Unit* unit) { // 00475A90
+        if (unit_id_is_burrowed_attacker(unit->id) && !unit->burrowed_attacker_can_attack()) {
             return WeaponId::None;
         }
-        u32 weapon_id = units_dat::ground_weapon[unit->id];
+        auto weapon_id = units_dat::ground_weapon[unit->id];
         if (weapon_id != WeaponId::None) {
             return weapon_id;
         }
@@ -1093,5 +1090,74 @@ namespace hooks {
         u16 pos_x = cursor_pos_x;
         helper::do_targeted_order(cursor_pos_x, cursor_pos_y, 0, UnitId::None);
         helper::show_cursor_marker(pos_y, pos_x);
+    }
+
+    // Hooked to extend weapons to u16. -Pr0nogo
+    bool can_weapon_target_unit(WeaponId::Enum weapon_id, Unit* target, Unit* attacker) { // 00475CE0
+        return bw::can_weapon_target_unit(weapon_id, target, attacker);
+    }
+
+    // Hooked to extend weapons to u16. -Pr0nogo
+    void get_targeting_error_string(WeaponId::Enum weapon_id, u32* out_error, Unit* target) { // 0046EFE0
+        if (target && target->is_invincible()) {
+            if (target->stasis_timer) {
+                *out_error = 900; // Units in stasis can't be targeted.
+            } else {
+                *out_error = 897; // Invalid target.
+            }
+            return;
+        }
+        if (*out_error == -1) {
+            *out_error = 879; // Unable to attack target.
+        }
+        if (weapon_id != WeaponId::None) {
+            *out_error = weapons_dat::error_message[weapon_id];
+        }
+    }
+
+    // Hooked to extend weapons to u16. -Pr0nogo
+    bool is_threat(Unit* candidate, Unit* self) { // 00476930
+        Unit* target = candidate;
+        if (!candidate) {
+            target = self->order_target.unit;
+            if (!target) {
+                return false;
+            }
+        }
+        u32 target_player = target->player == 11 ? target->sprite->player : target->player;
+        if (bw::is_allied_to(self->player, target_player)) {
+            return false;
+        }
+        if (target->is_hallucination()) {
+            if (helper::get_current_hp_plus_shields(target) != helper::get_total_hp_plus_shields(target)) {
+                return false;
+            }
+        }
+        if (helper::unit_can_attack_target(self, target, 1)) {
+            return helper::is_unit_target_out_of_max_range(target, self) == 0;
+        }
+        if (target->is_valid_garrison() && helper::is_unit_loaded(target)) {
+            return true;
+        }
+        return false;
+    }
+
+    // Hooked to eventually extend weapon ids past 255. -Pr0nogo
+    bool is_unit_in_attack_angle(s32 pos_x, s32 pos_y, Unit* unit, WeaponId::Enum weapon_id) { // 00475BE0
+        s32 angle = bw::get_angle(unit->position.x, unit->position.y, pos_x, pos_y);
+
+        if (unit_id_is_burrowed_attacker(unit->id)) {
+            unit->current_direction_1 = angle;
+            return true;
+        }
+
+        s32 angle_difference = unit->current_direction_1 - angle;
+        if (angle_difference < 0) {
+            angle_difference += 256;
+        }
+        if (angle_difference > 128) {
+            angle_difference = 256 - angle_difference;
+        }
+        return angle_difference <= weapons_dat::attack_angle[weapon_id];
     }
 }

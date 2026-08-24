@@ -97,13 +97,13 @@ static u8 get_max_weapon_cooldown(Unit* unit) {
 
     Unit* context = unit->subunit ? unit->subunit : unit;
 
-    u32 ground_weapon = context->get_ground_weapon();
+    WeaponId::Enum ground_weapon = context->get_ground_weapon();
     u32 ground_cooldown = 0;
     if (ground_weapon != WeaponId::None) {
         ground_cooldown = hooks::get_modified_weapon_cooldown(unit, ground_weapon);
     }
 
-    u32 air_weapon = context->get_air_weapon();
+    WeaponId::Enum air_weapon = context->get_air_weapon();
     u32 air_cooldown = 0;
     if (air_weapon != WeaponId::None) {
         air_cooldown = hooks::get_modified_weapon_cooldown(unit, air_weapon);
@@ -131,7 +131,7 @@ static bool is_channeling(Unit* unit) {
     return false;
 }
 
-static u32 get_damage_against(Unit* unit, u32 weapon_id, Unit* target) {
+static u32 get_damage_against(Unit* unit, WeaponId::Enum weapon_id, Unit* target) {
     if (target) {
         u32 type = weapons_dat::damage_type[weapon_id];
         u32 size = units_dat::size_type[target->id];
@@ -151,7 +151,7 @@ static u32 get_dps_against(Unit* source, Unit* target) {
         return (target->energy / 256 / 50) * 20;
     } else {
         Unit* context = source->subunit ? source->subunit : source;
-        u32 weapon_id = target->status & UnitStatus::InAir ? context->get_air_weapon() : context->get_ground_weapon();
+        WeaponId::Enum weapon_id = target->status & UnitStatus::InAir ? context->get_air_weapon() : context->get_ground_weapon();
         fp32 multiplier = weapons_dat::inner_splash_radius[weapon_id] ? 1.5fp : 1fp;
         return static_cast<u32>(hooks::get_current_dps_from_damage(target, weapon_id, get_damage_against(source, weapon_id, target)) * multiplier);
     }
@@ -249,8 +249,7 @@ s32 get_targeting_cost(Unit* source, Unit* target) {
 
     {
         Unit* context = source->subunit ? source->subunit : source;
-        u32 weapon_id = target->is_in_air() ? context->get_air_weapon() : context->get_ground_weapon();
-
+        WeaponId::Enum weapon_id = target->is_in_air() ? context->get_air_weapon() : context->get_ground_weapon();
         // Value Carapace Swarm immune units way less
         if (carapace_swarm_blocks_damage(target, weapon_id, 1)) {
             cost += 1000;
@@ -846,7 +845,7 @@ static fp32 get_blissful_embrace_target_cost(Unit* source, Unit* target) {
 
     // Value attacking units with higher dps
     Unit* context_target = target->subunit ? target->subunit : target;
-    u32 weapon_id = source->status & UnitStatus::InAir ? context_target->get_air_weapon() : context_target->get_ground_weapon();
+    WeaponId::Enum weapon_id = source->status & UnitStatus::InAir ? context_target->get_air_weapon() : context_target->get_ground_weapon();
     fp32 multiplier = weapons_dat::inner_splash_radius[weapon_id] ? 1.5fp : 1fp;
     cost -= hooks::get_current_dps(target, weapon_id) * multiplier;
 

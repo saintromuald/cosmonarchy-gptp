@@ -26,7 +26,7 @@ namespace hooks {
 						return 0;
 					}
 					helper::set_move_target_xy(caster, caster->position.x, caster->position.y);
-					if (!helper::is_angle_in_attack_angle(target_pos.x, target_pos.y, caster, TechId::Hallucination)) {
+					if (!helper::is_unit_in_attack_angle(target_pos.x, target_pos.y, caster, WeaponId::CantavisHallucinationCast)) {
 						helper::turn_unit(caster, bw::get_angle(caster->position, target_pos));
 						return 0;
 					}
@@ -159,7 +159,7 @@ namespace hooks {
 
 	void orders_spell(Unit* unit) { // 00492850
 		auto& unit_ext = unit->ext();
-		u32 order_weapon_id = orders_dat::order_weapon_id[unit->main_order_id];
+		WeaponId::Enum order_weapon_id = orders_dat::order_weapon_id[unit->main_order_id];
 		Unit* target = unit->order_target.unit;
 
 		// Paladin Skyfall
@@ -358,7 +358,7 @@ namespace hooks {
 	// Hooked to handle new ability cases. -Pr0nogo
 	bool cannot_cast_spell(Unit* unit) { // 00492140
 		u32 order_id = unit->main_order_id;
-		u32 order_weapon_id = orders_dat::order_weapon_id[order_id];
+		WeaponId::Enum order_weapon_id = orders_dat::order_weapon_id[order_id];
 		Unit* target = unit->order_target.unit;
 		if (unit->unit_ai) {
 			switch (order_id) {
@@ -480,7 +480,7 @@ namespace hooks {
 			}
 			if (caster->movement_flags & MovementFlags_Accelerating) {
 				if (!(target->movement_flags & MovementFlags_Accelerating)) {
-					final_range = range + (helper::get_flingy_halt_distance(caster) >> 8);
+					final_range = range + (helper::get_flingy_halt_distance_in_subpixels(caster) >> 8);
 				}
 
 				u32 velocity_diff = (u8)(target->velocity_direction_1 - caster->velocity_direction_1);
@@ -488,7 +488,7 @@ namespace hooks {
 					velocity_diff = 256 - velocity_diff;
 				}
 				if (velocity_diff > 32) {
-					final_range = range + (helper::get_flingy_halt_distance(caster) >> 8);
+					final_range = range + (helper::get_flingy_halt_distance_in_subpixels(caster) >> 8);
 				}
 			}
 
@@ -542,5 +542,33 @@ namespace hooks {
 				return false;
 			}
 		}
+	}
+
+	// Hooked to extend weapons to u16. -Pr0nogo
+	bool can_cast_ordered_spell_now(Unit* unit) { // 00491DB0
+		if (!helper::is_unit_visible(unit)) {
+			return false;
+		}
+		Unit* target = unit->order_target.unit;
+		if (!target) {
+			auto max_range = helper::get_unit_max_weapon_range(unit, orders_dat::order_weapon_id[unit->main_order_id]);
+			auto halt_distance = (helper::get_flingy_halt_distance_in_subpixels(unit) * 256) + max_range;
+			return halt_distance >= helper::get_distance_fast(unit->halt.x, unit->order_target.pt.x / 256, unit->halt.y, unit->order_target.pt.y / 256) * 256;
+		}
+		auto max_range = helper::get_unit_max_weapon_range(unit, orders_dat::order_weapon_id[unit->main_order_id]);
+		if (unit->movement_flags & MovementFlags_Accelerating) {
+			if (!(target->movement_flags & MovementFlags_Accelerating)) {
+				max_range += helper::get_flingy_halt_distance_in_subpixels(unit) / 256;
+			} else {
+				auto velocity = (target->velocity_direction_1 - unit->velocity_direction_1);
+				if (velocity > 128) {
+					velocity = 256 - velocity;
+				}
+				if (velocity > 32) {
+					max_range += helper::get_flingy_halt_distance_in_subpixels(unit) / 256;
+				}
+			}
+		}
+		return helper::is_target_within_min_range(unit, max_range, target);
 	}
 }

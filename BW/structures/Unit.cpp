@@ -69,7 +69,7 @@ bool Unit::shields_enabled() const {
 }
 
 //Identical to function @ 0x00475AD0
-u8 Unit::get_ground_weapon() const {
+WeaponId::Enum Unit::get_ground_weapon() const {
     if (unit_id_is_burrowed_attacker(this->id) && !(this->status & (UnitStatus::Burrowed | UnitStatus::InBuilding))) {
         return WeaponId::None;
     } else {
@@ -77,7 +77,7 @@ u8 Unit::get_ground_weapon() const {
     }
 }
 
-u8 Unit::get_air_weapon() const {
+WeaponId::Enum Unit::get_air_weapon() const {
     if (unit_id_is_burrowed_attacker(this->id) && !(this->status & (UnitStatus::Burrowed | UnitStatus::InBuilding))) {
         return WeaponId::None;
     }
@@ -151,7 +151,7 @@ u8 Unit::get_spell_countdown() const {
     return this->spell_cooldown;
 }
 
-u32 Unit::get_max_weapon_range(u8 weapon_id) const {
+u32 Unit::get_max_weapon_range(WeaponId::Enum weapon_id) const {
     static u32 func_address = 0x00475870;
     assert(this);
 
@@ -164,7 +164,7 @@ u32 Unit::get_max_weapon_range(u8 weapon_id) const {
     static u32 max_weapon_range;
     __asm {
         PUSHAD
-        MOV BL, weapon_id
+        MOV BX, weapon_id
         MOV EAX, this
         CALL func_address
         MOV max_weapon_range, EAX
@@ -501,7 +501,7 @@ u32 Unit::heal_energy_then_shields(s32 value, Unit* source, bool restore, bool p
     return heal_shields(heal_energy(value, source), source, restore, proc_flash_shielding);
 }
 
-void Unit::damage_with(u8 weapon_id, s32 damage, Unit* attacker, u8 attacking_player, s8 direction, u8 damage_divisor) {
+void Unit::damage_with(WeaponId::Enum weapon_id, s32 damage, Unit* attacker, u8 attacking_player, s8 direction, u8 damage_divisor) {
     const u32 func_address = 0x00479930; // Note: hooked in hooks/weapons/weapon_damage files
     assert(this);
     assert(weapon_id < WeaponsIdLimit);
@@ -517,7 +517,8 @@ void Unit::damage_with(u8 weapon_id, s32 damage, Unit* attacker, u8 attacking_pl
         PUSH attacker
         PUSH direction
         PUSH damage_divisor
-        PUSH weapon_id
+        MOVZX EBX, weapon_id
+        PUSH EBX
         CALL func_address
         POPAD
     }
@@ -1155,13 +1156,13 @@ bool Unit::can_attack_target(Unit* target, bool check_visibility) const {
     return result;
 }
 
-void Unit::fire_weapon(u8 weapon_id) const {
+void Unit::fire_weapon(WeaponId::Enum weapon_id) const {
     assert(this);
     const u32 func_address = 0x00479C90;
-    u32 weapon_id_xd = weapon_id;
     __asm {
         PUSHAD
-        PUSH weapon_id_xd
+        MOVZX EAX, weapon_id
+        PUSH EAX
         MOV ESI, this
         CALL func_address
         POPAD

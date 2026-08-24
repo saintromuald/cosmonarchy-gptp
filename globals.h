@@ -154,7 +154,7 @@ void refresh_debuffs(Unit* unit);
 void inherit_debuffs(Unit* parent, Unit* child);
 bool is_debuffed(Unit* unit);
 void restore_func(Unit* unit);
-void do_deconstruction_damage(Unit* unit, u16 weapon_id, bool play_sound = true);
+void do_deconstruction_damage(Unit* unit, WeaponId::Enum weapon_id, bool play_sound = true);
 
 void clear_clarion_links(Unit* unit);
 void place_clarion_links(Unit* unit);

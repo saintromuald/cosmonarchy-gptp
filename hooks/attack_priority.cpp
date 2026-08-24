@@ -26,7 +26,7 @@ AttackPriorityData attack_priority_data;
 bw::UnitFinder attack_target_finder;
 
 namespace {
-	bool is_target_pos_within_attack_angle(s32 x, s32 y, Unit* unit, u8 weapon_id);
+	bool is_target_pos_within_attack_angle(s32 x, s32 y, Unit* unit, WeaponId::Enum weapon_id);
 	// Returns the minimum edge/inside weapon distance of the @p unit, whichever is smaller.
 	u32 get_minimum_range(Unit* unit);
 
@@ -246,7 +246,7 @@ void AttackPriorityData::reset() {
 }
 
 namespace {
-	bool is_target_pos_within_attack_angle(s32 x, s32 y, Unit* unit, u8 weapon_id) { // 00475BE0
+	bool is_target_pos_within_attack_angle(s32 x, s32 y, Unit* unit, WeaponId::Enum weapon_id) { // 00475BE0
 		assert(unit);
 		s32 angle = bw::get_angle(unit->get_x(), unit->get_y(), x, y);
 		if (unit_id_is_burrowed_attacker(unit->id)) {
@@ -264,11 +264,11 @@ namespace {
 	}
 
 	u32 get_minimum_range(Unit* unit) { // 00440520
-		u8 ground_weapon = unit->get_ground_weapon();
+		u16 ground_weapon = unit->get_ground_weapon();
 		if (ground_weapon == WeaponId::None && unit->subunit) {
 			ground_weapon = unit->subunit->get_ground_weapon();
 		}
-		u8 air_weapon = unit->get_air_weapon();
+		u16 air_weapon = unit->get_air_weapon();
 		if (air_weapon == WeaponId::None && unit->subunit) {
 			air_weapon = unit->subunit->get_air_weapon();
 		}

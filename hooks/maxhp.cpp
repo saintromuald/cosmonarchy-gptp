@@ -120,7 +120,7 @@ namespace hooks
 		return result;
 	}
 
-	u32 calculate_unit_strength(u32 unit_id, u32 weapon_id) { // 00431270
+	u32 calculate_unit_strength(u32 unit_id, WeaponId::Enum weapon_id) { // 00431270
 		s32 max_shields = 0;
 		if (units_dat::shields_enabled[unit_id]) {
 			max_shields = units_dat::max_shield_points[unit_id];
@@ -195,7 +195,7 @@ namespace hooks
 	}
 
 	// Hooked to improve functionality and extend max HP / shields. -Pr0nogo
-	void attack_overlay_and_notify(Unit* victim, Unit* attacker, u8 weapon_id, u8 direction) { // 00479730
+	void attack_overlay_and_notify(Unit* victim, Unit* attacker, WeaponId::Enum weapon_id, u8 direction) { // 00479730
 		s32 hitpoints = victim->hitpoints;
 		if (hitpoints && !(victim->status & UnitStatus::Invincible))
 		{
@@ -409,29 +409,17 @@ LABEL_32:
 		}
 	}
 
-	u32 get_unit_bullet_damage(Unit* victim, Bullet* bullet) // 0048ACD0
-	{
-		// Originally had Nuclear Missile code here.
-
-		u32 damage_amount = weapons_dat::damage_amount[bullet->weapon_id];
-
-		// Originally had code for upgrades here.
-
-		return damage_amount << 8;
-	}
-
-	b32 __stdcall modify_unit_shields(Unit* unit, s32 new_amount){ // 004C5A20
-		if (!unit){
+	b32 __stdcall modify_unit_shields(Unit* unit, s32 new_amount) { // 004C5A20
+		if (!unit) {
 			SErrSetLastError(87);
 			return 0;
 		}
-		if (!bw::unit_has_shields(unit)){
+		if (!bw::unit_has_shields(unit)) {
 			return 0;
 		}
 
 		s32 max_shields = units_dat::max_shield_points[unit->id];
-		if (max_shields >= (signed int)(new_amount * max_shields / 100))
-		{
+		if (max_shields >= (new_amount * max_shields / 100)) {
 			max_shields = new_amount * units_dat::max_shield_points[unit->id] / 100;
 		}
 		unit->shields = max_shields << 8;

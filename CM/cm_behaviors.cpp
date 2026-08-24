@@ -306,7 +306,7 @@ void set_custom_egg(Unit* egg, u32 unit_id, u32 time, u32 hp) {
 	egg_ext.values[ValueCustomEggHpMax]    = hp;
 }
 
-void fire_secondary_melee_weapon_if_needed(Unit* unit, u32 weapon_id) {
+void fire_secondary_melee_weapon_if_needed(Unit* unit) {
 	Unit* target = unit->order_target.unit;
 	if (unit->order_signal & 0x20 && unit->ground_weapon_cooldown <= 1) {
 		unit->order_signal &= ~0x20;

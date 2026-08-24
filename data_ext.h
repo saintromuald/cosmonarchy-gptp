@@ -646,6 +646,7 @@ struct BulletExt {
 
     Unit* cargo;
     u32 source_id;
+    WeaponId::Enum weapon_id;
     bool heals_allies = false;
 };
 

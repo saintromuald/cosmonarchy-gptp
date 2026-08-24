@@ -522,7 +522,7 @@ namespace hooks {
             
             // Ability ranges - DF
             if (g_config.show_ability_ranges && g_is_targeting && bw::can_show_custom_ui()) {
-                u32 weapon = WeaponId::None;
+                WeaponId::Enum weapon = WeaponId::None;
                 switch (*g_order_id_ground) {
                     case OrderId::FireYamatoGun1: {
                         weapon = WeaponId::YamatoGun;
@@ -970,7 +970,8 @@ namespace hooks {
 
         // Loop through bullets
         for (Bullet* bullet = *g_first_bullet; bullet; bullet = bullet->next) {
-            if (weapon_id_is_incremental(bullet->weapon_id)) {
+            auto bullet_ext = get_bullet_ext(bullet);
+            if (weapon_id_is_incremental(bullet_ext->weapon_id)) {
                 if (bullet->order_signal & 0x80) {
                     bullet->order_signal &= ~0x80;
                     g_iquare_globals->remove_multihit_bullet(bullet);
@@ -1847,7 +1848,7 @@ namespace hooks {
                 // Legionnaire - Blade Vortex || Cabalist - Silent Strides
                 Unit* target = unit->order_target.unit;
                 if (target && (unit->main_order_id == OrderId::Attack1 || unit->main_order_id == OrderId::AttackUnit) && !unit->ground_weapon_cooldown) {
-                    u32 weapon_id = target->status & UnitStatus::InAir ? unit->get_air_weapon() : unit->get_ground_weapon();
+                    WeaponId::Enum weapon_id = target->status & UnitStatus::InAir ? unit->get_air_weapon() : unit->get_ground_weapon();
                     u32 min_radius = weapons_dat::max_range[weapon_id];
                     u32 max_radius = Protoss::TeleportRange;
 
@@ -2008,7 +2009,7 @@ namespace hooks {
                 }
             } break;
             case UnitId::TerranOlympian: {
-                fire_secondary_melee_weapon_if_needed(unit, WeaponId::OlympianTitansFist);
+                fire_secondary_melee_weapon_if_needed(unit);
             } break;
             case UnitId::ZergMatraleth: {
                 unit->proc_ensnaring_brood();

@@ -852,7 +852,8 @@ namespace hooks {
     }
 
     static bool apply_bullet_interception(Bullet* bullet, v2u16 old_position, fp32 line_width) {
-        u32 intercept_type = weapon_id_intercepts(bullet->weapon_id);
+        auto bullet_ext = get_bullet_ext(bullet);
+        u32 intercept_type = weapon_id_intercepts(bullet_ext->weapon_id);
 
         Unit* best_unit = 0;
         fp32 best_t = std::numeric_limits<fp32>::max(); v2u16 best_cp = {}; 
@@ -894,7 +895,8 @@ namespace hooks {
     }
 
     static void apply_bullet_effect(Bullet* bullet, v2u16 cp, Unit* target) {
-        switch (bullet->weapon_id) {
+        auto bullet_ext = get_bullet_ext(bullet);
+        switch (bullet_ext->weapon_id) {
             // Same as default, but orange effect
             case WeaponId::CyprianTwinRailguns:
             case WeaponId::AutocratEminenceRifle:
@@ -938,11 +940,11 @@ namespace hooks {
             } break;
             case WeaponId::KalkaliskViscousAcid: {
                 // Kalkalisk - Ablative Spores
-                bw::fire_incremental_bullet(bullet, bullet->weapon_id, target, cp);
+                bw::fire_incremental_bullet(bullet, bullet_ext->weapon_id, target, cp);
             } break;
             case WeaponId::SkithrokorSkitteringSpores: {
                 // Skithrokor - Ablative Whiplash
-                bw::fire_incremental_bullet(bullet, bullet->weapon_id, target, cp);
+                bw::fire_incremental_bullet(bullet, bullet_ext->weapon_id, target, cp);
             } break;
             case WeaponId::ZergBonesofReflection: {
                 g_iquare_globals->add_bullet_multihit(bullet, target);
@@ -970,7 +972,8 @@ namespace hooks {
             if (bullet->attack_target.unit != unit && bw::is_allied_to(bullet->player, unit->player)) {
                 continue;
             }
-            if (!bw::can_weapon_target_unit(bullet->weapon_id, unit)) {
+            auto bullet_ext = get_bullet_ext(bullet);
+            if (!bw::can_weapon_target_unit(bullet_ext->weapon_id, unit)) {
                 continue;
             }
             if (g_iquare_globals->was_already_hit_by_multihit_bullet(bullet, unit)) {
@@ -990,10 +993,11 @@ namespace hooks {
 
         std::ranges::stable_sort(targets, [](const auto& a, const auto& b) { return a.t < b.t; });
         for (const auto& target : targets) {
-            bool stops_on_armor = weapon_id_piercing_stops_on_armor(bullet->weapon_id);
+            auto bullet_ext = get_bullet_ext(bullet);
+            bool stops_on_armor = weapon_id_piercing_stops_on_armor(bullet_ext->weapon_id);
             if (stops_on_armor) {
                 u32 armor = hooks::get_armor_internal(target.unit);
-                u32 armor_pen = hooks::get_modified_armor_pen(bullet->source_unit, target.unit, bullet->weapon_id);
+                u32 armor_pen = hooks::get_modified_armor_pen(bullet->source_unit, target.unit, bullet_ext->weapon_id);
                 if (armor >= armor_pen) {
                     bullet->attack_target.pt = target.cp;
                     bullet->attack_target.unit = target.unit;
@@ -1021,7 +1025,7 @@ namespace hooks {
         bullet_ext->t += 1.0fp / 24;
 
         fp32 z_climb{};
-        switch (bullet->weapon_id) {
+        switch (bullet_ext->weapon_id) {
             case WeaponId::PhalanxArcliteShockCannon: z_climb = fp32{0.25f}; break;
             case WeaponId::AphoristAnsaSunshot:       z_climb = fp32{0.40f}; break;
         }
@@ -1075,7 +1079,7 @@ namespace hooks {
         bullet->sprite->set_position(bullet->position.x, bullet->position.y);
 
         // Create explosions mid-flight
-        if (bullet->weapon_id == WeaponId::PositronAntimatterMissile) {
+        if (bullet_ext->weapon_id == WeaponId::PositronAntimatterMissile) {
             // Positron - Particle Annihilation
             u32 period = 1 * 32;
             if (bullet_ext->distance_traveled / period > old_distance_traveled / period) {
@@ -1083,18 +1087,18 @@ namespace hooks {
                 bw::play_sound({SoundId::PositronWeaponHit01, SoundId::PositronWeaponHit03}, bullet->position);
 
                 // Let's filter with no flags, since that should remove untargetable stuff and what not
-                for (Unit* target : g_unit_search.radial(bullet->position, weapons_dat::outer_splash_radius[bullet->weapon_id]).filter()) {
+                for (Unit* target : g_unit_search.radial(bullet->position, weapons_dat::outer_splash_radius[bullet_ext->weapon_id]).filter()) {
                     if (bw::is_allied_to(bullet->player, target->player)) {
                         continue;
                     }
                     u32 distance = bw::distance_between(bullet->position, target->position);
                     u32 divisor = 1;
-                    if (distance <= weapons_dat::inner_splash_radius[bullet->weapon_id]) {
+                    if (distance <= weapons_dat::inner_splash_radius[bullet_ext->weapon_id]) {
                         divisor = 4;
-                    } else if (distance <= weapons_dat::medium_splash_radius[bullet->weapon_id]) {
+                    } else if (distance <= weapons_dat::medium_splash_radius[bullet_ext->weapon_id]) {
                         divisor = 2;
                     }
-                    target->damage_with(bullet->weapon_id, -1, bullet->source_unit, bullet->player, bullet->current_direction_2, divisor);
+                    target->damage_with(bullet_ext->weapon_id, -1, bullet->source_unit, bullet->player, bullet->current_direction_2, divisor);
                 }
             }
         }
@@ -1102,7 +1106,7 @@ namespace hooks {
         u8 time = bullet->remove_timer--;
 
         // Accelerate missiles over time
-        if (weapon_id_accelerates(bullet->weapon_id)) {
+        if (weapon_id_accelerates(bullet_ext->weapon_id)) {
             u8 time_current = 255 - time;
             if (time_current == 8) {
                 bullet->flingy_top_speed *= 2;
@@ -1111,14 +1115,14 @@ namespace hooks {
         }
 
         // Split missiles
-        if (weapon_splits(static_cast<WeaponId::Enum>(bullet->weapon_id))
+        if (weapon_splits(static_cast<WeaponId::Enum>(bullet_ext->weapon_id))
         &&  bullet->source_unit && bullet->attack_target.unit && bullet->attack_target.unit->sprite && bullet->source_unit->sprite) {
             Unit* main_target = bullet->attack_target.unit;
             const u32 distance_from_source = bullet_ext->distance_traveled;
             const u32 distance_from_target = bw::distance_between(bullet->position, main_target->position);
             if (distance_from_target < CommonBehavior::MissileSplitProcDistance) {
                 u32 splits = 0;
-                switch (bullet->weapon_id) {
+                switch (bullet_ext->weapon_id) {
                     case WeaponId::ArchitectDispersiveSalvo: {
                         splits = distance_from_source / ProtossReactivePayload::SplitPeriod;
                     } break;
@@ -1139,7 +1143,7 @@ namespace hooks {
                         }
                         bullet->source_unit->order_target.unit = target;
                         s32 new_angle = bw::get_angle(bullet->position.x, bullet->position.y, target->position.x, target->position.y);
-                        Bullet* new_bullet = create_bullet_ex((WeaponId::Enum)bullet->weapon_id, bullet->source_unit, bullet->position.x, bullet->position.y, bullet->player, new_angle);
+                        Bullet* new_bullet = create_bullet_ex((WeaponId::Enum)bullet_ext->weapon_id, bullet->source_unit, bullet->position.x, bullet->position.y, bullet->player, new_angle);
                         if (new_bullet) {
                             new_bullet->position = bullet->position;
                             g_iquare_globals->add_multihit_empty_bullet(new_bullet, 1);
@@ -1161,9 +1165,9 @@ namespace hooks {
         if (time == 0 || (bullet->move_target.pt.x == bullet->position.x && bullet->move_target.pt.y == bullet->position.y)) {
             despawn_bullet = true;
         }
-        if (weapon_id_intercepts(bullet->weapon_id)) {
+        if (weapon_id_intercepts(bullet_ext->weapon_id)) {
             fp32 line_width = 16fp;
-            switch (bullet->weapon_id) {
+            switch (bullet_ext->weapon_id) {
                 case WeaponId::OptectonSunsplitBeam: {
                     line_width = 48fp;
                 } break;
@@ -1173,14 +1177,15 @@ namespace hooks {
                 despawn_bullet = true;
                 despawn_bullet_special = true;
             }
-        } else if (weapon_id_pierces(bullet->weapon_id)) {
+        } else if (weapon_id_pierces(bullet_ext->weapon_id)) {
             fp32 line_width = 16fp;
-            switch (bullet->weapon_id) {
+            switch (bullet_ext->weapon_id) {
                 case WeaponId::SavantDiscoidRailgunEntropy:
                 case WeaponId::AutocratEminenceRifle:
                 case WeaponId::ClaymoreHarpoonRailgun:
                 case WeaponId::WyvernJacksonCannon:
-                case WeaponId::SentinelCerberusRailgun: {
+                case WeaponId::SentinelCerberusRailgun:
+                case WeaponId::CutlassCortoRailgun: {
                     line_width = 32fp;
                 } break;
                 case WeaponId::PenumbraErebolShockCannon:
@@ -1204,7 +1209,7 @@ namespace hooks {
                 bullet->position = move_pt;
                 bullet->sprite->set_position(move_pt.x, move_pt.y);
             } else {
-                if (target && !target->is_dead() && weapons_dat::behavior[bullet->weapon_id] != WeaponBehavior_GoToMaxRange) {
+                if (target && !target->is_dead() && weapons_dat::behavior[bullet_ext->weapon_id] != WeaponBehavior_GoToMaxRange) {
                     bullet->attack_target.pt.x = target->position.x;
                     bullet->attack_target.pt.y = target->position.y;
                 } else {
@@ -1218,7 +1223,7 @@ namespace hooks {
                 helper::play_image_iscript(image, IscriptAnimation::Death);
             }
 
-            switch (bullet->weapon_id) {
+            switch (bullet_ext->weapon_id) {
                 case WeaponId::Irradiate: {
                     hooks::irradiate_hit_internal(bullet->source_unit, bullet->position, bullet->player);
                 } break;
@@ -1289,7 +1294,7 @@ namespace hooks {
         u32 old_distance_traveled = bullet_ext->distance_traveled;
         bullet_ext->distance_traveled += bw::distance_between(old_position, bullet->position);
         bullet_ext->ticks_traveled += 1;
-        if (weapon_id_bounces_caustic_fission(bullet->weapon_id) && !bullet_ext->bounced) {
+        if (weapon_id_bounces_caustic_fission(bullet_ext->weapon_id) && !bullet_ext->bounced) {
             u32 period = 4tiles;
             if (bullet_ext->distance_traveled / period > old_distance_traveled / period) {
                 bullet->remaining_bounces += 1;
@@ -1300,7 +1305,7 @@ namespace hooks {
             bullet_ext->bounced = true;
             u8 next_bounce = bullet->remaining_bounces - 1;
             // Gladius infinite bouncing
-            bool is_binding_plasma = WeaponId::bounces_binding_plasma(static_cast<WeaponId::Enum>(bullet->weapon_id));
+            bool is_binding_plasma = WeaponId::bounces_binding_plasma(static_cast<WeaponId::Enum>(bullet_ext->weapon_id));
             if (is_binding_plasma) {
                 next_bounce = 1;
             }
@@ -1311,7 +1316,7 @@ namespace hooks {
             bullet->remaining_bounces = next_bounce;
             g_iquare_globals->bounce_bullet = bullet;
             Unit* target = helper::find_next_bounce_target(bullet);
-            if (!WeaponId::can_attack_target(static_cast<WeaponId::Enum>(bullet->weapon_id), target)) {
+            if (!WeaponId::can_attack_target(static_cast<WeaponId::Enum>(bullet_ext->weapon_id), target)) {
                 target = 0; // TODO: Hook find_next_bounce_target / whatever other func is needed and search for target with proper flags. -Pr0nogo
             }
             bullet->next_bounce_unit = bullet->attack_target.unit;
@@ -1396,7 +1401,8 @@ namespace hooks {
         }
 
         // Gladius Binding Plasma behavior
-        if (WeaponId::bounces_binding_plasma(static_cast<WeaponId::Enum>(g_iquare_globals->bounce_bullet->weapon_id))) {
+        auto bounce_bullet_ext = get_bullet_ext(g_iquare_globals->bounce_bullet);
+        if (WeaponId::bounces_binding_plasma(static_cast<WeaponId::Enum>(bounce_bullet_ext->weapon_id))) {
             if (target && *g_bullet_bounce_missile_next && (*g_bullet_bounce_missile_next)->sprite && target->sprite) {
                 if (g_iquare_globals->was_already_hit_by_multihit_bullet(g_iquare_globals->bounce_bullet, target)) {
                     return false;
@@ -1472,8 +1478,8 @@ namespace hooks {
         return bullet;
     }
 
-    // Hooked to stop Valkyries from being cucked by lardcode. - Pr0nogo
-    Bullet* create_bullet(s32 weapon_id, Unit* parent, s32 x, s16 y, u8 player, s32 angle) { // 0048C260
+    // Hooked to allow Valkyries to attack despite high bullet counts. - Pr0nogo
+    Bullet* create_bullet(WeaponId::Enum weapon_id, Unit* parent, s32 x, s16 y, u8 player, s32 angle) { // 0048C260
         Bullet* free_bullet = *first_free_bullet;
         if (!*first_free_bullet) {
             return 0;
@@ -1530,7 +1536,7 @@ namespace hooks {
     }
 
     // Hooked so we don't need aise for Bactalisks. - Pr0nogo
-    s32 initialize_bullet(u8 player, Unit* parent, s16 pos_y, Bullet* bullet, s32 weapon_id, s32 pos_x, s32 angle) { // 0048BEC0
+    s32 initialize_bullet(u8 player, Unit* parent, s16 pos_y, Bullet* bullet, WeaponId::Enum weapon_id, s32 pos_x, s32 angle) { // 0048BEC0
         if (!helper::initialize_flingy(weapons_dat::flingy_id[weapon_id], pos_y, pos_x, (Flingy*)bullet, player, angle)) { // Unit/Bullet/Flingy have a shared header; casting it here is fine. -Pr0nogo
             return 0;
         }
@@ -1543,7 +1549,7 @@ namespace hooks {
         bullet->attack_target.pt.y = 0;
         bullet->order_signal = 0;
         bullet->main_order_timer = 0;
-        bullet->weapon_id = weapon_id;
+        bullet->weapon_id_old = weapon_id;
         bullet->remove_timer = weapons_dat::remove_after[weapon_id];
         bullet->order_unit_id = UnitId::None;
         bullet->remaining_bounces = 0;
@@ -1563,6 +1569,7 @@ namespace hooks {
         bullet_ext->fire_index = unit_ext.values[ValueWeaponFireIndex];
         bullet_ext->bullet_local_index = unit_ext.values[ValueWeaponBulletLocalIndex]++;
         bullet_ext->bullet_total_index = unit_ext.values[ValueWeaponBulletTotalIndex]++;
+        bullet_ext->weapon_id = weapon_id;
 
         u8 launch_spin = weapons_dat::launch_spin[weapon_id];
         if (launch_spin) {
@@ -1658,7 +1665,7 @@ namespace hooks {
                     default: {
                         if (weapon_id_bounces_crushing_tide(weapon_id)) {
                             bullet->remaining_bounces = 2;
-                        } else if (bullet->source_unit && WeaponId::bounces_power_breach(WeaponId::Enum(bullet->weapon_id))) {
+                        } else if (bullet->source_unit && WeaponId::bounces_power_breach(WeaponId::Enum(bullet_ext->weapon_id))) {
                             if (UnitId::has_power_breach((UnitId::Enum)bullet->source_unit->id)) {
                                 bullet->remaining_bounces = 4;
                             } else {
@@ -1699,7 +1706,7 @@ namespace hooks {
                     }
                     max_range *= 256;
                 } else {
-                    max_range = (weapons_dat::max_range[bullet->weapon_id] + 20) * 256;
+                    max_range = (weapons_dat::max_range[bullet_ext->weapon_id] + 20) * 256;
                 }
                 v2s32 target_pos = {};
                 target_pos.x = (s32)(parent->position.x + ((max_range * g_angle_distance[bullet->current_direction_1].x) >> 16));
@@ -1785,7 +1792,8 @@ namespace hooks {
             if (bullet->order_signal & 1) {
                 bullet->order_signal = bullet->order_signal & 0xFE;
                 Image* bullet_overlay = 0;
-                switch (weapons_dat::behavior[bullet->weapon_id]) {
+                auto bullet_ext = get_bullet_ext(bullet);
+                switch (weapons_dat::behavior[bullet_ext->weapon_id]) {
                     case WeaponBehavior_AppearOnTargetUnit:
                     case WeaponBehavior_AppearOnTargetSite:
                     case WeaponBehavior_AppearOnAttacker:
@@ -1876,11 +1884,12 @@ namespace hooks {
 
     // Hooked to help with kiting AI. Disabled! -Pr0nogo
     // Ended up useless sadly, as it calls way more often than I anticipated. Replaced with starting attack check from movement flags. -Veeq7
-    void get_weapon_iscript_init(Unit* unit, char iscript_anim) { // 00476ED0
+    // Now enabled to extend weapon ids to u16. -Pr0nogo
+    void get_weapon_iscript_init(Unit* unit, u8 iscript_anim) { // 00476ED0
         *g_last_bullet_creator = 0;
         if (!(unit->status & UnitStatus::CanNotAttack)) {
-            UnitExt* unit_ext = get_unit_ext(unit);
-            if (unit->order_target.unit && unit->order_target.unit->status & UnitStatus::InAir) {
+            Unit* target = unit->order_target.unit;
+            if (target && target->is_in_air()) {
                 helper::use_weapon_iscript(unit, units_dat::air_weapon[unit->id], 2, iscript_anim + 1);
             } else {
                 if (!unit_id_is_burrowed_attacker(unit->id) || unit->burrowed_attacker_can_attack()) {
@@ -1893,7 +1902,7 @@ namespace hooks {
     }
 
     // Hooked to remove randomization and move cooldown handling. -Pr0nogo
-    s32 use_weapon_iscript(Unit* unit, u8 weapon_id, u32 attack_type, char iscript_anim) { // 00476C90
+    s32 use_weapon_iscript(Unit* unit, WeaponId::Enum weapon_id, u32 attack_type, char iscript_anim) { // 00476C90
         if (weapon_id == WeaponId::None) {
             return false;
         }
@@ -1949,7 +1958,7 @@ namespace hooks {
         s32 tgt_x = target->position.x;
         s32 tgt_y = target->position.y;
 
-        s32 attacker_halt = helper::get_flingy_halt_distance(attacker);
+        s32 attacker_halt = helper::get_flingy_halt_distance_in_subpixels(attacker);
         s32 target_vel = target->velocity_direction_1;
         s32 attacker_halt_off1 = 3 * attacker_halt;
         s32 attacker_halt_off2 = 3 * attacker_halt * g_angle_distance[target_vel].x;

@@ -56,11 +56,11 @@ struct Unit : public UnitLayout {
 
     /// Returns the unit's inside weapon ID. If the unit is an unburrowed Lakizilisk,
     /// returns WeaponId::None instead.
-    u8 get_ground_weapon() const;
+    WeaponId::Enum get_ground_weapon() const;
 
     /// Returns the unit's edge weapon ID. This is identical to reading the value
     /// from units_dat::air_weapon[unit->id].
-    u8 get_air_weapon() const;\
+    WeaponId::Enum get_air_weapon() const;
 
     /// Returns the maximum energy amount of this unit (with upgrades).
     u16 get_max_energy() const;
@@ -77,7 +77,7 @@ struct Unit : public UnitLayout {
     /// Returns the maximum distance of a weapon in pixels. The weapon is assumed to
     /// be attached to this unit for calculating upgrade effects.
     /// This is affected by the Weapon Range hook module.
-    u32 get_max_weapon_range(u8 weapon_id) const;
+    u32 get_max_weapon_range(WeaponId::Enum weapon_id) const;
 
     /// Retrieves the in-game name of this unit. In UMS maps, this returns custom
     /// names (if they exist).
@@ -183,7 +183,7 @@ struct Unit : public UnitLayout {
 
     /// Deals damage to this unit, using a specific weapons.dat ID.
     void damage_with(
-        u8 weapon_id,				///< weapons.dat ID to use.
+        WeaponId::Enum weapon_id,	///< weapons.dat ID to use.
         s32 damage = -1,			///< Amount of damage dealt to this unit. -1 = inherit from weapon_id
         Unit* attacker = 0,			///< Attacking unit (for increasing kill count)
         u8 attacking_player = -1,	///< Attacking player (for increasing kill score)
@@ -338,7 +338,7 @@ struct Unit : public UnitLayout {
 
     // Makes the unit use the specified weapon to attack its current target unit stored in the Unit::order_target.unit member. This does not affect the unit's weapon cooldown. 
     // The spawned weapon sprite obeys the weapon behavior properties in weapons.dat. Affected by fire_weapon.cpp
-    void fire_weapon(u8 weapon_id) const;
+    void fire_weapon(WeaponId::Enum weapon_id) const;
 
     // Retrieves the unit pointer by @p index from the unit table (first unit is indexed at 1). If invalid, returns nullptr instead.
     static Unit* get_unit_from_index(u16 index);
