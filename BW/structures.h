@@ -346,7 +346,7 @@ struct Thingy {
     /*0C*/  Sprite* sprite;
 };
 
-struct CHKUnit {
+struct ChkUnit {
     /*00*/	u32	 chkid;
     /*04*/	u16	 x;
     /*06*/	u16	 y;

@@ -16,7 +16,7 @@ void AiLayouts::init() {
     m_player_layouts = {};
     m_town_layouts = {};
 
-    for (const CHKUnit& chk_unit : g_chk_cache) {
+    for (const ChkUnit& chk_unit : g_chk_cache) {
         if (chk_unit.player > PlayerLimit && chk_unit.player != 11) {
             continue;
         }
@@ -324,7 +324,7 @@ void AiLayouts::add_placeholder_unit_id(PlayerLayouts& layouts, AiPlaceholder& p
     placeholder.priority -= equivalent.priority_decrease;
 }
 
-void AiLayouts::add_placeholder_chk(const CHKUnit& unit, u32 player) {
+void AiLayouts::add_placeholder_chk(const ChkUnit& unit, u32 player) {
     AiPlaceholder placeholder = {};
     placeholder.position.x = unit.x;
     placeholder.position.y = unit.y;

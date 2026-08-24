@@ -4,11 +4,32 @@
 #include <array>
 
 enum ChkUnitFlags {
-	ChkUnitFlags_Cloaked      = 0x01, // Ai Layout
-	ChkUnitFlags_Burrowed     = 0x02, 
-	ChkUnitFlags_Lifted       = 0x04,
-	ChkUnitFlags_Hallucinated = 0x08, // Dont Request
-	ChkUnitFlags_Invincible   = 0x10, // Main Town
+	ChkUnitFlags_Cloaked      = 0x01, // AI: Is a layout, for build/guard requests
+	ChkUnitFlags_Burrowed     = 0x02, // Resource: Use HP field for resource area ID override
+	ChkUnitFlags_Lifted       = 0x04, // General: Spawn unit only if race matches unit's race
+	ChkUnitFlags_Hallucinated = 0x08, // AI: Don't request, only store layout
+	ChkUnitFlags_Invincible   = 0x10, // AI: Request and layout belongs to main town
+};
+
+struct ChkUnitValidProperties {
+	u16 owner	  : 1;
+	u16 hitpoints : 1;
+	u16 shields   : 1;
+	u16 energy    : 1;
+	u16 resources : 1;
+	u16 hangar    : 1;
+};
+
+struct ChkUnitSettings {
+	ChkUnitFlags valid_state_flags;
+	ChkUnitValidProperties valid_properties;
+	u8 player;
+	u8 hitpoints;
+	u8 shields;
+	u8 energy;
+	u32 resources;
+	u16 hangar;
+	ChkUnitFlags state_flags;
 };
 
 // This structure is mirrored in aise, be careful when you change it 
@@ -129,7 +150,7 @@ inline const AiUnitEquivalent equivalents[] = {
 	{UnitId::ZergElthrazalisk, UnitId::ZergRakzilisk},
 };
 
-inline std::vector<CHKUnit> g_chk_cache;
+inline std::vector<ChkUnit> g_chk_cache;
 
 inline bool g_show_player_layouts[PlayerLimit];
 inline u32 g_default_ai_expansion_block[PlayerLimit];
@@ -140,7 +161,7 @@ public:
 	void update();
 
 	void add_placeholder_unit_id(PlayerLayouts& layouts, AiPlaceholder& placeholder, UnitId::Enum unit_id);
-	void add_placeholder_chk(const CHKUnit& unit, u32 player);
+	void add_placeholder_chk(const ChkUnit& unit, u32 player);
 
 	v2u16 get_ai_town_position(AiTown& town);
 	PlayerLayouts& get_player_layouts(u32 player);

@@ -293,6 +293,8 @@
     <ClCompile Include="hooks\race_randomization_inject.cpp" />
     <ClCompile Include="hooks\replay_hooks.cpp" />
     <ClCompile Include="hooks\replay_hooks_inject.cpp" />
+    <ClCompile Include="hooks\resarea.cpp" />
+    <ClCompile Include="hooks\resarea_inject.cpp" />
     <ClCompile Include="hooks\snp_inject.cpp" />
     <ClCompile Include="hooks\update_unit_sight.cpp" />
     <ClCompile Include="hooks\update_unit_sight_inject.cpp" />
@@ -689,6 +691,7 @@
     <ClInclude Include="DatExtend\dat_limits.h" />
     <ClInclude Include="hooks\race_randomization.h" />
     <ClInclude Include="hooks\replay_hooks.h" />
+    <ClInclude Include="hooks\resarea.h" />
     <ClInclude Include="hooks\update_unit_sight.h" />
     <ClInclude Include="include\json.hpp" />
     <ClInclude Include="interpolation.h" />

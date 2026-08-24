@@ -16194,4 +16194,17 @@ namespace helper {
         }
         return result;
     }
+    
+    u32 get_resarea_id(Unit* unit) {
+        const u32 func_address = 0x00445930;
+        static u32 result;
+        __asm {
+            PUSHAD
+            MOV ESI, unit
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
 }
