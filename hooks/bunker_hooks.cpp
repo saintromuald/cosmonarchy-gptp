@@ -263,9 +263,9 @@ namespace hooks {
 	//	unit->ground_weapon_cooldown = cooldown;
 	//	unit->air_weapon_cooldown = cooldown;
 
-		IscriptAnimation::Enum iscript_anim = IscriptAnimation::GndAttkRpt;
+		IscriptAnimation::Enum iscript_anim = IscriptAnimation::GroundAttackRepeat;
 		if (target->is_in_air()) {
-			iscript_anim = IscriptAnimation::AirAttkRpt;
+			iscript_anim = IscriptAnimation::AirAttackRepeat;
 		}
 		for (Image* current_image = unit->sprite->images.head; current_image; current_image = current_image->link.next) {
 			current_image->play_iscript_animation(iscript_anim);

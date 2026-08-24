@@ -294,7 +294,7 @@ namespace hooks {
 							animation = IscriptAnimation::Walking;
 						} break;
 						case UnitId::ZergDroleth: {
-							animation = IscriptAnimation::AirAttkInit;
+							animation = IscriptAnimation::AirAttackInit;
 						} break;
 						case UnitId::ZergZethrokor:
 						case UnitId::ZergSovrokor: {
@@ -345,7 +345,7 @@ namespace hooks {
 			}
 		} else if (unit->main_order_state == 1) {
 			if (unit->id == UnitId::ZergEgg && unit->remaining_build_time < 19) {
-				unit->play_iscript_animation(IscriptAnimation::GndAttkInit);
+				unit->play_iscript_animation(IscriptAnimation::GroundAttackInit);
 				unit->remaining_build_time = 0;
 			}
 			if (unit->id == UnitId::ZergCocoon && unit->remaining_build_time < 12) {

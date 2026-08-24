@@ -175,7 +175,7 @@ namespace hooks {
                 case 8: {
                     if (!unit->main_order_timer) {
                         for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
-                            image->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
+                            image->play_iscript_animation(IscriptAnimation::GroundAttackToIdle);
                         }
                         unit->main_order_state = is_askosi_worker ? 7 : 4;
                     }

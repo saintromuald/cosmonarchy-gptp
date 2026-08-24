@@ -278,8 +278,9 @@ struct Identifier { std::string_view value; operator std::string_view() const { 
 struct Ticks      { u32 value; operator u32() const { return value; } };
 struct Seconds    { fp32 value; operator fp32() const { return value; } };
 
-struct TimeQuota  : Quota {};
-struct VarQuota   : Quota { bool create; };
+struct TimeQuota     : Quota {};
+struct EqualityQuota : Quota {};
+struct VarQuota      : Quota { bool create; };
 struct TimerQuota : Quota { bool create; };
 struct VarValue   { s32 value; operator s32() const { return value; } };
 struct TimerValue { s32 value; operator s32() const { return value; } };
@@ -408,7 +409,7 @@ public:
 	std::optional<Designator> get_designator();
 
 	std::optional<QuotaType> get_quota_type(QuotaType default_type);
-	std::optional<Quota> get_quota();
+	std::optional<Quota> get_quota(QuotaType default_type = QuotaType_GreaterOrEqual);
 	std::optional<TimeQuota> get_time_quota();
 
 	bool has_recolor();

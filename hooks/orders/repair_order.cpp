@@ -67,7 +67,7 @@ namespace hooks {
 					helper::unit_order_move_to_target_unit(unit, target);
 
 					if (!unit->is_target_within_min_range(target, 5) || target->main_order_id == OrderId::Liftoff) {
-						unit->sprite->play_iscript_animation(IscriptAnimation::GndAttkToIdle, true);
+						unit->sprite->play_iscript_animation(IscriptAnimation::GroundAttackToIdle, true);
 						unit->main_order_state = 1;
 					}
 					if (unit->worker.repair_resource_loss_timer) {

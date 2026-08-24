@@ -445,6 +445,17 @@ struct Parameter<Quota> {
 };
 
 template <>
+struct Parameter<EqualityQuota> {
+    static EqualityQuota get(Context& ctx) {
+        const auto quota = ctx.parser().get_quota(QuotaType_Equal).value_or(Quota{
+            .type = QuotaType_Equal,
+            .value = 0,
+        });
+        return EqualityQuota{quota};
+    }
+};
+
+template <>
 struct Parameter<std::optional<Recolor>> {
     static std::optional<Recolor> get(Context& ctx) {
         return ctx.parser().get_recolor();

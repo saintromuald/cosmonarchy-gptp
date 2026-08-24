@@ -205,12 +205,12 @@ namespace hooks {
             }
 
 
-            if (animation == IscriptAnimation::GndAttkRpt) {
-                if (image_anim != IscriptAnimation::GndAttkRpt && image_anim != IscriptAnimation::GndAttkInit) {
-                    final_anim = IscriptAnimation::GndAttkInit;
+            if (animation == IscriptAnimation::GroundAttackRepeat) {
+                if (image_anim != IscriptAnimation::GroundAttackRepeat && image_anim != IscriptAnimation::GroundAttackInit) {
+                    final_anim = IscriptAnimation::GroundAttackInit;
                 }
-            } else if (animation == IscriptAnimation::AirAttkRpt && image_anim != IscriptAnimation::AirAttkRpt && image_anim != IscriptAnimation::AirAttkInit) {
-                final_anim = IscriptAnimation::AirAttkInit;
+            } else if (animation == IscriptAnimation::AirAttackRepeat && image_anim != IscriptAnimation::AirAttackRepeat && image_anim != IscriptAnimation::AirAttackInit) {
+                final_anim = IscriptAnimation::AirAttackInit;
             }
             u32 offset = image->iscript_header_offset;
             IscriptHeader* iscript_header = (IscriptHeader*)(hooks::get_iscript_file(image) + image->iscript_header_offset);
@@ -235,7 +235,7 @@ namespace hooks {
         for (Image* i = thingy->sprite->images.head; i; i = i->link.next) {
             if (i->flags & ImageFlags::UseFullIscript) {
                 u32 header = i->iscript_header_offset;
-                i->set_iscript(IscriptAnimation::GndAttkInit);
+                i->set_iscript(IscriptAnimation::GroundAttackInit);
                 helper::iscript_opcode_cases(i, &i->iscript_header_offset, 0, 0);
             }
         }

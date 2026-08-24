@@ -14,6 +14,32 @@
 #include <limits>
 
 namespace trigger {
+
+enum class TriggerFaction : u8 {
+    None                  = u8(Faction::None),
+
+    OrionImperium         = u8(Faction::TerranOrionImperium),
+    HecatonCoalition      = u8(Faction::TerranHecatonCoalition),
+    FuturistFederation    = u8(Faction::TerranFuturistFederation),
+    GoldenRepublic        = u8(Faction::TerranGoldenRepublic),
+    NydusTrinity          = u8(Faction::TerranNydusTrinity),
+    UpstartTerran         = u8(Faction::TerranUpstart),
+
+    DivinePrimacy         = u8(Faction::ProtossDivinePrimacy),
+    OrderOfTheSacredSaber = u8(Faction::ProtossOrderOfTheSacredSaber),
+    KhalendricKnights     = u8(Faction::ProtossKhalendricKnights),
+    Starbound             = u8(Faction::ProtossStarbound),
+    AstralOmen            = u8(Faction::ProtossAstralOmen),
+
+    Ataltreth             = u8(Faction::ZergAtaltrethTendril),
+    Imicren               = u8(Faction::ZergImicrenTendril),
+    Goszirith             = u8(Faction::ZergGoszirithTendril),
+    Orkoti                = u8(Faction::ZergOrkotiTendril),
+    Zorthos               = u8(Faction::ZergZorthosTendril),
+
+    Count                 = u8(Faction::Count),
+};
+
 namespace {
 
 void apply_unit_stat(Designator designator, u32 count, TriggerStat trigger_stat, s32 value) {
@@ -56,7 +82,7 @@ Registry g_triggers = Registry()
     // -------------------------------------------------------------------------
     // Conditions
     // -------------------------------------------------------------------------
-    .add_condition("combat", [](Area area, PlayerBitset source_players, UnitIdBitset source_unit_ids, PlayerBitset target_players, UnitIdBitset target_unit_ids, TimeQuota time_quota, u32 scouting_player) {
+    .add_condition("combat", [](Area area, PlayerBitset source_players, UnitIdBitset source_unit_ids, PlayerBitset target_players, UnitIdBitset target_unit_ids, TimeQuota time_quota, PlayablePlayer scouting_player) {
         for (const TriggerEvent& event : combat_events) {
             if (!area.check(event.position, units_dat::base_property[event.target_unit_id] & UnitProperty::Flyer)) {
                 continue;
@@ -73,14 +99,14 @@ Registry g_triggers = Registry()
             if (!time_quota.check(g_elapsed_time_frames - event.timestamp)) {
                 continue;
             }
-            if (scouting_player && !(event.seen_by & 1 << (scouting_player - 1))) {
+            if (scouting_player && !(event.seen_by & 1 << *scouting_player)) {
                 continue;
             }
             return true;
         }
         return false;
     })
-    .add_condition("kills", [](Area area, PlayerBitset source_players, UnitIdBitset source_unit_ids, PlayerBitset target_players, UnitIdBitset target_unit_ids, Quota quota, TimeQuota time_quota, u32 scouting_player) {
+    .add_condition("kills", [](Area area, PlayerBitset source_players, UnitIdBitset source_unit_ids, PlayerBitset target_players, UnitIdBitset target_unit_ids, Quota quota, TimeQuota time_quota, PlayablePlayer scouting_player) {
         u32 count = 0;
         for (const TriggerEvent& event : kill_events) {
             if (!area.check(event.position, units_dat::base_property[event.target_unit_id] & UnitProperty::Flyer)) {
@@ -101,14 +127,14 @@ Registry g_triggers = Registry()
             if (!time_quota.check(g_elapsed_time_frames - event.timestamp)) {
                 continue;
             }
-            if (scouting_player && !(event.seen_by & 1 << (scouting_player - 1))) {
+            if (scouting_player && !(event.seen_by & 1 << *scouting_player)) {
                 continue;
             }
             count += 1;
         }
         return quota.check(count);
     })
-    .add_condition("deaths", [](Area area, PlayerBitset players, UnitIdBitset unit_ids, Quota quota, TimeQuota time_quota, u32 scouting_player) {
+    .add_condition("deaths", [](Area area, PlayerBitset players, UnitIdBitset unit_ids, Quota quota, TimeQuota time_quota, PlayablePlayer scouting_player) {
         u32 count = 0;
         for (TriggerEvent& event : kill_events) {
             if (!area.check(event.position, units_dat::base_property[event.target_unit_id] & UnitProperty::Flyer)) {
@@ -123,19 +149,19 @@ Registry g_triggers = Registry()
             if (!time_quota.check(g_elapsed_time_frames - event.timestamp)) {
                 continue;
             }
-            if (scouting_player && !(event.seen_by & 1 << (scouting_player - 1))) {
+            if (scouting_player && !(event.seen_by & 1 << *scouting_player)) {
                 continue;
             }
             count += 1;
         }
         return quota.check(count);
     })
-    .add_condition("unit_count", [](Designator designator, Quota quota, u32 scouting_player, TimeQuota scouting_time_quota, bool completed) {
+    .add_condition("unit_count", [](Designator designator, Quota quota, PlayablePlayer scouting_player, TimeQuota scouting_time_quota, bool completed) {
         u32 count = 0;
-        const auto units = scouting_player ? designator.search_seen(scouting_player - 1) : designator.search();
+        const auto units = scouting_player ? designator.search_seen(*scouting_player) : designator.search();
         for (Unit* unit : units) {
             const auto unit_ext = get_unit_ext(unit);
-            if (!scouting_player || !scouting_time_quota.value || scouting_time_quota.check(unit_ext->last_seen_timer[scouting_player - 1])) {
+            if (!scouting_player || !scouting_time_quota.value || scouting_time_quota.check(unit_ext->last_seen_timer[*scouting_player])) {
                 if (completed && !unit->is_completed()) {
                     continue;
                 }
@@ -179,7 +205,7 @@ Registry g_triggers = Registry()
             .count();
         return quota.check(count);
     })
-    .add_condition("player_race", [](Context& ctx, PlayablePlayer player, Quota op, PlayableRaceId race) {
+    .add_condition("player_race", [](Context& ctx, PlayablePlayer player, EqualityQuota op, PlayableRaceId race) {
         if (!player) {
             ctx.error("Invalid player");
             return false;
@@ -190,7 +216,7 @@ Registry g_triggers = Registry()
         }
         return false;
     })
-    .add_condition("player_type", [](Context& ctx, PlayablePlayer player, Quota op, CrigPlayerType type) {
+    .add_condition("player_type", [](Context& ctx, PlayablePlayer player, EqualityQuota op, CrigPlayerType type) {
         if (!player) {
             ctx.error("Invalid player");
             return false;
@@ -244,11 +270,11 @@ Registry g_triggers = Registry()
     .add_local_action("resume_music", []() {
         AudioSystem::instance().resume_music();
     })
-    .add_local_action("music_fade_in", [](f32 fade_in) {
-        AudioSystem::instance().set_music_fade_in(fade_in);
+    .add_local_action("music_fade_in", [](Seconds fade_in) {
+        AudioSystem::instance().set_music_fade_in(f32(fade_in.value));
     })
-    .add_local_action("music_fade_out", [](f32 fade_out) {
-        AudioSystem::instance().set_music_fade_out(fade_out);
+    .add_local_action("music_fade_out", [](Seconds fade_out) {
+        AudioSystem::instance().set_music_fade_out(f32(fade_out.value));
     })
     .add_local_action("music_volume", [](f32 volume, Seconds time) {
         AudioSystem::instance().set_music_volume(volume, f32(time.value));
@@ -338,7 +364,7 @@ Registry g_triggers = Registry()
         objective.max_score = objective.max_score - max_score;
         objective.score = std::clamp(objective.score - score, 0, (s32)objective.max_score);
     })
-    .add_local_action("objective_timer", [](s32 key, u32 time) {
+    .add_local_action("objective_timer", [](s32 key, Ticks time) {
         g_objectives.get(key).timer = time;
     })
     .add_local_action("objective_remove", [](s32 key) {
@@ -749,6 +775,7 @@ Registry g_triggers = Registry()
         ctx.subcommands(
             Subcommand{"armor", [=](s32 value) { apply_unit_stat(designator, count, TriggerStat::Armor, value); }},
             Subcommand{"weapon_range", [=](s32 value) { apply_unit_stat(designator, count, TriggerStat::WeaponRange, value); }},
+            Subcommand{"armor_pen", [=](s32 value) { apply_unit_stat(designator, count, TriggerStat::ArmorPenetration, value); }},
             Subcommand{"armor_penetration", [=](s32 value) { apply_unit_stat(designator, count, TriggerStat::ArmorPenetration, value); }},
             Subcommand{"damage", [=](s32 value) { apply_unit_stat(designator, count, TriggerStat::Damage, value); }},
             Subcommand{"splash_inner", [=](s32 value) { apply_unit_stat(designator, count, TriggerStat::SplashInner, value); }},
@@ -810,9 +837,13 @@ Registry g_triggers = Registry()
             }
         }
     })
-    .add_action("give_unit", [](Designator designator, u32 count, u32 target_player) {
+    .add_action("give_unit", [](Context& ctx, Designator designator, u32 count, PlayerOrNeutral target_player) {
+        if (!target_player) {
+            ctx.error("Invalid player");
+            return;
+        }
         for (Unit* unit : designator.search({.sort = count != 0}).take(count)) {
-            helper::give_unit(unit, target_player - 1, 1);
+            helper::give_unit(unit, *target_player, 1);
         }
     })
     .add_action("issue_order", [](Designator source, Designator target, u32 count, u32 order_id, u32 secondary_unit_id) {
@@ -1048,12 +1079,12 @@ Registry g_triggers = Registry()
             }
         }
     })
-    .add_action("set_faction", [](Context& ctx, PlayablePlayer player, Faction faction) {
+    .add_action("set_faction", [](Context& ctx, PlayablePlayer player, TriggerFaction faction) {
         if (!player) {
             ctx.error("Invalid player");
             return;
         }
-        g_globals->players[*player].faction          = faction;
+        g_globals->players[*player].faction          = Faction(u8(faction));
         g_globals->players[*player].faction_was_set  = true;
     })
     .add_action("set_advisor", [](Context& ctx, PlayablePlayer player, Advisor advisor) {
@@ -1174,7 +1205,7 @@ Registry g_triggers = Registry()
             }
         }
     })
-    .add_action("announce_player_defeat", [](PlayerBitset players, bool bool_state) {
+    .add_action("announce_player_defeat", [](PlayerBitset players, std::optional<bool> bool_state) {
         for (u32 player = 0; player < PlayerLimit; player++) {
             if (!players[player]) {
                 continue;
@@ -1183,7 +1214,7 @@ Registry g_triggers = Registry()
                 command.type = GameCommand_Custom,
                 command.subtype = NewGameCommand::AnnounceDefeat,
                 command.player = player,
-                command.show_player_number = bool_state,
+                command.show_player_number = bool_state.value_or(true),
             };
             helper::queue_game_command((u8*)&command, sizeof(command));
         }

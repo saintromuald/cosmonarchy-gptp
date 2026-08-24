@@ -411,8 +411,15 @@ std::optional<s32> Parser::get_var_value(bool is_timer) {
 std::optional<VarQuota> Parser::get_var_quota() {
 	const auto type = get_quota_type(QuotaType_Equal);
 	const auto create = get_char('=');
+	if (!type) {
+		return {};
+	}
+	if (*type == QuotaType_Anything) {
+		get_word(); // Consume the wildcard rewound by get_quota_type.
+		return VarQuota{Quota{.type = *type, .value = 0}, create};
+	}
 	const auto value = get_integer();
-	if (!type || !value) {
+	if (!value) {
 		return {};
 	}
 	return VarQuota{Quota{.type = *type, .value = *value}, create};
@@ -970,8 +977,8 @@ std::optional<QuotaType> Parser::get_quota_type(QuotaType default_type) {
 	return default_type;
 }
 
-std::optional<Quota> Parser::get_quota() {
-	const auto type = get_quota_type(QuotaType_GreaterOrEqual);
+std::optional<Quota> Parser::get_quota(QuotaType default_type) {
+	const auto type = get_quota_type(default_type);
 	const auto value = get_integer();
 	if (!type || !value) {
 		return {};

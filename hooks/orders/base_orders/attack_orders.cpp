@@ -144,7 +144,7 @@ namespace hooks {
 
         if (helper::is_unit_in_weapon_range(unit, unit->order_target.unit)) {
             unit->next_target_waypoint = unit->order_target.pt;
-            helper::get_weapon_iscript_init(unit, IscriptAnimation::GndAttkRpt);
+            helper::get_weapon_iscript_init(unit, IscriptAnimation::GroundAttackRepeat);
         } else if (unit->unit_ai) {
             helper::issue_order_targeting_ground(unit, OrderId::AttackMove, unit->order_target.pt.x, unit->order_target.pt.y);
         } else {
@@ -310,7 +310,7 @@ namespace hooks {
                 if (unit->unit_ai) {
                     helper::ai_attack_unit(unit);
                 }
-                helper::get_weapon_begin_iscript(unit, IscriptAnimation::GndAttkRpt);
+                helper::get_weapon_begin_iscript(unit, IscriptAnimation::GroundAttackRepeat);
             }
         }
     }
@@ -394,7 +394,7 @@ namespace hooks {
     // Internal helper func for orders_strafe_unit
     static void orders_strafe_unit_proc_attack(Unit* unit, Unit* target) {
         if (!target) {
-            helper::get_weapon_iscript_init(unit, IscriptAnimation::GndAttkRpt);
+            helper::get_weapon_iscript_init(unit, IscriptAnimation::GroundAttackRepeat);
         } else if (helper::is_target_visible(target, unit)) {
             Unit* final_unit = unit->subunit;
             if (!final_unit || !(units_dat::base_property[final_unit->id] & UnitProperty::Subunit)) {
@@ -413,7 +413,7 @@ namespace hooks {
                 if (!min_range || !helper::is_target_within_min_range(final_unit, min_range, target)) {
                     u32 max_weapon_range = helper::get_unit_max_weapon_range(unit, weapon_id);
                     if (helper::is_target_within_min_movement_range(final_unit, target, max_weapon_range)) {
-                        helper::get_weapon_iscript_init(unit, IscriptAnimation::GndAttkRpt);
+                        helper::get_weapon_iscript_init(unit, IscriptAnimation::GroundAttackRepeat);
                     }
                 }
             }
@@ -954,7 +954,7 @@ namespace hooks {
                     unit->next_target_waypoint.y = tgt_y;
                 }
                 if (!(unit->subunit->movement_flags & MovementFlags_Accelerating)) {
-                    helper::get_weapon_iscript_init(unit, IscriptAnimation::GndAttkRpt);
+                    helper::get_weapon_iscript_init(unit, IscriptAnimation::GroundAttackRepeat);
                 }
             }
         }

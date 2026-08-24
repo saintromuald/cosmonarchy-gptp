@@ -1811,11 +1811,11 @@ namespace hooks {
                     } break;
                     case WeaponBehavior_FlyFollowTarget: {
                         helper::assign_weapon_data(bullet, WeaponBehavior_AppearOnTargetUnit);
-                        helper::play_sprite_iscript(bullet->sprite, IscriptAnimation::GndAttkInit, 1);
+                        helper::play_sprite_iscript(bullet->sprite, IscriptAnimation::GroundAttackInit, 1);
                     }  break;
                     case WeaponBehavior_Bounce: {
                         helper::assign_weapon_data(bullet, WeaponBehavior_PersistOnTargetSite);
-                        helper::play_sprite_iscript(bullet->sprite, IscriptAnimation::GndAttkInit, 1);
+                        helper::play_sprite_iscript(bullet->sprite, IscriptAnimation::GroundAttackInit, 1);
                     }  break;
                     case WeaponBehavior_PersistOnTargetSite: {
                         helper::assign_weapon_data(bullet, WeaponBehavior_AppearOnTargetSite);
@@ -1833,7 +1833,7 @@ namespace hooks {
                         Image* bullet_overlay = bullet->sprite->images.head;
                         if (bullet_overlay) {
                             do {
-                                helper::play_image_iscript(bullet_overlay, IscriptAnimation::GndAttkInit);
+                                helper::play_image_iscript(bullet_overlay, IscriptAnimation::GroundAttackInit);
                                 bullet_overlay = bullet_overlay->link.next;
                             } while (bullet_overlay);
                         }
@@ -1843,7 +1843,7 @@ namespace hooks {
                         Image* bullet_overlay = bullet->sprite->images.head;
                         if (bullet_overlay) {
                             do {
-                                helper::play_image_iscript(bullet_overlay, IscriptAnimation::GndAttkInit);
+                                helper::play_image_iscript(bullet_overlay, IscriptAnimation::GroundAttackInit);
                                 bullet_overlay = bullet_overlay->link.next;
                             }
                             while (bullet_overlay);

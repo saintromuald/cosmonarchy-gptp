@@ -183,7 +183,7 @@ namespace hooks {
 		Unit* node = unit->order_target.unit;
 		if (node && !node->is_completed() && !unit->unit_ai) {
 			if (unit->sprite->main_graphic->animation == IscriptAnimation::AlmostBuilt) {
-				unit->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
+				unit->play_iscript_animation(IscriptAnimation::GroundAttackToIdle);
 			}
 			return;
 		}
@@ -402,7 +402,7 @@ namespace hooks {
 			if (worker->main_order_state == 3 && is_movable) {
 				if (target && !(target->status & UnitStatus::Completed) && !worker->unit_ai) {
 					if (worker->sprite->main_graphic->animation == IscriptAnimation::AlmostBuilt) {
-						worker->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
+						worker->play_iscript_animation(IscriptAnimation::GroundAttackToIdle);
 					}
 					return;
 				}
@@ -685,7 +685,7 @@ namespace hooks {
 			helper::set_gathering_flags(unit);
 			if (unit->main_order_state != 0 && unit->main_order_state != 4) {
 				if (unit->main_order_state == 5 && !unit->main_order_timer) {
-					helper::play_sprite_iscript(unit->sprite, IscriptAnimation::GndAttkToIdle, 1);
+					helper::play_sprite_iscript(unit->sprite, IscriptAnimation::GroundAttackToIdle, 1);
 					helper::transfer_resource_to_worker(node, unit);
 					helper::finished_mining(unit, node);
 					helper::delete_order(unit, OrderId::HarvestInterrupt);

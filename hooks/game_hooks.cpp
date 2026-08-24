@@ -1641,7 +1641,7 @@ namespace hooks {
                     unit->remaining_build_time = u16(units_dat::time_cost[morph_unit_id] * time_factor);
 
                     if (unit_ext.timers[TimerCustomEggHatch] == 1 + 19 && morph_unit_id == UnitId::ZergSovroleth) {
-                        unit->play_iscript_animation(IscriptAnimation::GndAttkInit);
+                        unit->play_iscript_animation(IscriptAnimation::GroundAttackInit);
                     }
                     if (unit_ext.timers[TimerCustomEggHatch] == 1) {
                         fp32 hp_factor = fp32(unit->hitpoints) / unit_ext.values[ValueCustomEggHpMax];
@@ -1659,7 +1659,7 @@ namespace hooks {
                     if (unit->order_signal & 8) {
                         unit->order_signal &= ~0x8;
                         helper::replace_sprite_images(unit->sprite, unit->id == UnitId::ZergEgg ? ImageId::Egg : ImageId::GuardianCocoon, 0);
-                        unit->sprite->play_iscript_animation(IscriptAnimation::GndAttkToIdle, true);
+                        unit->sprite->play_iscript_animation(IscriptAnimation::GroundAttackToIdle, true);
                     } else if (unit->can_play_training_sfx()) {
                         unit->play_training_sfx();
                     }
@@ -1987,10 +1987,10 @@ namespace hooks {
                 // Start the sequence
                 Unit* target = unit->order_target.unit;
                 switch (unit->sprite->main_graphic->animation) {
-                    case IscriptAnimation::GndAttkInit:
-                    case IscriptAnimation::GndAttkRpt:
-                    case IscriptAnimation::AirAttkInit:
-                    case IscriptAnimation::AirAttkRpt: {
+                    case IscriptAnimation::GroundAttackInit:
+                    case IscriptAnimation::GroundAttackRepeat:
+                    case IscriptAnimation::AirAttackInit:
+                    case IscriptAnimation::AirAttackRepeat: {
                         if (target && unit->get_distance_to_target(target) <= Centaur::MissileDistance && !unit_ext.timers[TimerSecondaryWeaponCooldown]) {
                             unit_ext.timers[TimerSecondaryWeaponCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::CentaurSunchaserMissiles);
                             unit_ext.values[ValueCentaurSecondaryWeaponCount] = 4;
@@ -3136,7 +3136,7 @@ namespace hooks {
         if (UnitId::has_interruptable_windup(static_cast<UnitId::Enum>(unit->id)) && unit->order_signal & 32) {
             if (unit_ext.timers[TimerTerranWindup]) {
                 Unit* final_unit = unit->subunit && unit->subunit->is_subunit() ? unit->subunit : unit;
-                final_unit->play_iscript_animation(IscriptAnimation::GndAttkRpt);
+                final_unit->play_iscript_animation(IscriptAnimation::GroundAttackRepeat);
             } else {
                 unit_ext.timers[TimerTerranWindup] = 24;
                 bw::play_sound(UnitId::get_windup_sfx(static_cast<UnitId::Enum>(unit->id)), unit);
@@ -3327,7 +3327,7 @@ namespace hooks {
                     if (unit->player == hijacker->player && unit->is_askosi_embedded()) {
                         unit_ext.values[ValueReassemblyActive] = false;
                         unit->heal_hp(unit->get_max_hp_raw());
-                        unit->play_iscript_animation(IscriptAnimation::GndAttkToIdle);
+                        unit->play_iscript_animation(IscriptAnimation::GroundAttackToIdle);
                         unit->update_speed();
                         unit->order_to_idle();
                         bw::play_sound({SoundId::AskosiDeploy01, SoundId::AskosiDeploy03}, unit->position);
