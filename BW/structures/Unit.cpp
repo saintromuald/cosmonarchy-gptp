@@ -2380,3 +2380,19 @@ void Unit::cast_bloody_burst() {
     bw::play_sound({ SoundId::AkrenoPassiveProc01, SoundId::AkrenoPassiveProc03 }, this->position);
     this->bwfunc_remove();
 }
+
+bool Unit::check_neutral_garrison_death() {
+    auto& unit_ext = this->ext();
+    for (u32 i = 0; i < TransportCap; ++i) {
+        unload_unit_on_transport_death(this, i);
+    }
+    if (unit_ext.timers[TimerStun]) {
+        return true; // Kill the neutral garrison if it takes fatal damage while stunned. -Pr0nogo
+    }
+    bw::play_sound(SoundId::Misc_Explo1_wav, this->position);
+    helper::create_thingy(SpriteId::CuirassStonewallProtocolOverlay, this->position.x, this->position.y, this->player);
+    unit_ext.timers[TimerStun] = 10secs + 1;
+    unit_ext.timers[TimerZapOverlay] = 10secs + 1;
+    this->set_hitpoints(this->get_max_hp_raw());
+    return false;
+}

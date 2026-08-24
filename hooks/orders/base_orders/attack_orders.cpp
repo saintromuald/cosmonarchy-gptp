@@ -1224,12 +1224,12 @@ namespace hooks {
                 return false;
             }
             helper::pick_new_target_if_needed(unit);
-            if (UnitId::is_carrier((UnitId::Enum)unit->id) && unit->order_target.unit != order_target) {
+            if (UnitId::has_interceptors((UnitId::Enum)unit->id) && unit->order_target.unit != order_target) {
                 helper::set_interceptors_to_standby(unit);
             }
         } else if (unit->status & UnitStatus::AttackMove) {
             helper::pick_new_target_if_needed(unit);
-            if (UnitId::is_carrier((UnitId::Enum)unit->id) && unit->order_target.unit != order_target) {
+            if (UnitId::has_interceptors((UnitId::Enum)unit->id) && unit->order_target.unit != order_target) {
                 helper::set_interceptors_to_standby(unit);
             }
         }

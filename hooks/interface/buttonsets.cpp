@@ -820,7 +820,7 @@ namespace hooks {
                         bool hide = true;
                         for (u32 i = 0; i < g_client_selection_count; ++i) {
                             Unit* unit = g_client_selection_group->unit[i];
-                            if (!unit->ext().values[ValueIsNeutralBunker]) {
+                            if (!unit->ext().values[ValueIsNeutralGarrison]) {
                                 hide = false;
                                 break;
                             }

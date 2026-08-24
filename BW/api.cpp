@@ -4562,7 +4562,7 @@ fp32 calculate_dark_ages_penalty(fp32 range) {
 }
 
 void zap_overlay(Unit* unit) {
-    UnitExt& unit_ext = unit->ext();
+    auto& unit_ext = unit->ext();
     if (!unit_ext.timers[TimerClaymoreKelvinMunitionsZap]) {
         u32 width = units_dat::unit_bounds[unit->id].x * 3 / 4;
         u32 height = units_dat::unit_bounds[unit->id].y * 3 / 4;

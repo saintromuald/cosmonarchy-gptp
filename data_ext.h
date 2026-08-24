@@ -89,7 +89,7 @@ enum ExtValueId {
     ValueBactaliskLaunchPos,
     ValueDracadinLaunchPos,
     ValueCharlatanLaunchPos,
-    ValueIsNeutralBunker,
+    ValueIsNeutralGarrison,
     ValueIsZombified,
     ValueCuirassIsSelfReviving,
     ValueSalvageAnimationTimer,
@@ -474,6 +474,7 @@ enum ExtTimerId {
     TimerHatedReflectionCooldown,
     TimerAtreusBindingPlasma,
     TimerForlornHaste,
+    TimerZapOverlay,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,

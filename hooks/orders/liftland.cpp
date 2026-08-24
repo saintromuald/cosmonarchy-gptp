@@ -199,7 +199,7 @@ namespace hooks {
 		if (unit_ext.timers[TimerLiftoffDelay] > 1) {
 			return;
 		}
-		if (unit_ext.values[ValueIsNeutralBunker]) {
+		if (unit_ext.values[ValueIsNeutralGarrison]) {
 			unit->order_to_idle();
 			return;
 		}

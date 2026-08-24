@@ -33,7 +33,7 @@ static void special_unload_unit(Unit* unit, Unit* transport) {
 
 static void special_post_unload_unit(Unit* unit, Unit* transport) {
     auto& transport_ext = transport->ext();
-    if (transport_ext.values[ValueIsNeutralBunker]) {
+    if (transport_ext.values[ValueIsNeutralGarrison]) {
         Unit* first_unit = transport->get_first_loaded_unit();
         if (first_unit) {
             if (first_unit->player != unit->player) {
@@ -200,7 +200,7 @@ void load_unit_proc(Unit* transport, Unit* cargo_unit) { // 004E78E0
     }
 
     if (transport->player == 11) {
-        transport->ext().values[ValueIsNeutralBunker] = 1;
+        transport->ext().values[ValueIsNeutralGarrison] = 1;
         transport->give_to(cargo_unit->player);
     }
 
@@ -349,7 +349,7 @@ char update_unit_transport_data(Unit* cargo, Unit* unused) { // 00401EA0
 
 // Hooked to extend transports. -Pr0nogo
 void kill_all_loaded_units(Unit* transport) { // 0049FDD0
-    UnitExt* transport_ext = get_unit_ext(transport);
+    auto& transport_ext = transport->ext();
     if (transport->is_in_transport()) {
         update_unit_transport_data(transport, 0);
     } else if (!transport->is_hallucination()) {
@@ -359,18 +359,7 @@ void kill_all_loaded_units(Unit* transport) { // 0049FDD0
             return;
         }
         for (u32 i = 0; i < TransportCap; ++i) {
-            Unit* unit = get_loaded_unit_from_index(transport, i);
-            if (unit) {
-                transport->main_order_timer = 0;
-                if (helper::unload_unit_proc(unit)) {
-                    if (!unit_id_is_garrison(transport->id) || transport_ext->timers[TimerEmergencyDetonation] == 1) {
-                        helper::orders_self_destructing(unit); // Just kill it! -Veeq7
-                    }
-                } else {
-                    helper::orders_self_destructing(unit);
-                }
-            }
-            transport_ext->loaded_unit[i].value = 0;
+            unload_unit_on_transport_death(transport, i);
         }
     }
 }

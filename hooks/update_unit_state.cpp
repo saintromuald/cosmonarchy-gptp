@@ -269,13 +269,12 @@ namespace hooks {
 		// Only for fully-constructed units and buildings. -GPTP
 		// Modified 24/01/23 to allow Zerg building morph sources to regenerate while mutating. -Pr0nogo
 		if (unit->is_completed() ||	unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergCocoon || bw::is_zerg_building_morph_result(unit->build_queue[unit->build_queue_slot])) {
-			bool stop_here = false;
 			if (unit->remove_timer != 0) {
 				if (unit->id != UnitId::ZergRilirokor || !bw::get_active_tile_at_coords(unit->position)->has_cagra) {
 					unit->remove_timer -= 1;
 					if (unit->remove_timer == 0) {
 						unit->bwfunc_remove();
-						stop_here = true;
+						return;
 					}
 				}
 			}
@@ -289,7 +288,7 @@ namespace hooks {
 			// Augur - Final Hour
 			if (unit->id == UnitId::ProtossAugur && unit->shields == 0) {
 				augur_sacrifice(unit);
-				stop_here = true;
+				return;
 			}
 
 			// Passive HP regeneration
@@ -347,22 +346,29 @@ namespace hooks {
 					});
 					unit->bwfunc_remove();
 					avenge_or_ascend_corpses_in_area(unit->position, 2tiles, unit->player);
-					stop_here = true;
+					return;
 				}
 			}
 
 			// Terran building burn-down
-			if (!stop_here && !unit_ext.values[ValueInfested] && !unit_ext.timers[TimerBurnDownDelay]) {
+			if (!unit_ext.values[ValueInfested] && !unit_ext.timers[TimerBurnDownDelay]) {
 				if (unit->get_race() != RaceId::Terran) {
 					return;
 				}
 				if (unit->is_building() && helper::unit_hp_is_in_redzone(unit)) {
-					// Manual handling of on-death behaviors. -Pr0nogo
-					if (unit->hitpoints <= 20 && unit_ext.timers[TimerInfesting]) {
-						blissful_embrace(unit, unit_ext.values[ValueInfestingPlayer]);
-						unit->set_hitpoints(100hp + units_dat::max_hitpoints[unit->id] / 3);
+					if (unit->hitpoints <= Terran::BurnDownDamage) {
+						// Manual handling of on-death behaviors. The next tick of BurnDownDamage would kill the unit, bypassing typical on-death behaviors. -Pr0nogo
+						if (unit_ext.timers[TimerInfesting]) {
+							blissful_embrace(unit, unit_ext.values[ValueInfestingPlayer]);
+							unit->set_hitpoints(100hp + units_dat::max_hitpoints[unit->id] / 3);
+							return;
+						}
+						if (unit_ext.values[ValueIsNeutralGarrison] && !unit->check_neutral_garrison_death()) {
+							return;
+						}
+						unit->bwfunc_remove();
 					} else {
-						unit->damage_hp(20, 0, unit->last_attacking_player, true);
+						unit->damage_hp(Terran::BurnDownDamage, 0, unit->last_attacking_player, true);
 						if (unit->plague_timer && unit->hitpoints <= 256) {
 							unit->bwfunc_remove();
 						}

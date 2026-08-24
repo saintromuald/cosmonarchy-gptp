@@ -1829,6 +1829,12 @@ namespace hooks {
                 data.target->status |= UnitStatus::Invincible;
                 return fatal_deal_damage;
             }
+
+            // Reset neutral garrisons
+            if (target_ext.values[ValueIsNeutralGarrison] && !data.target->check_neutral_garrison_death()) {
+                fatal_deal_damage = false;
+                return fatal_deal_damage;
+            }
             
             // Empress, Ashguard - Zombify target
             bool can_be_annexed = target_ext.values[ValueEmpressAnodyneAnnexStacks] || target_ext.indomitable_annex_stacks == KhalendricAshguard::IndomitableAnnexCap;
