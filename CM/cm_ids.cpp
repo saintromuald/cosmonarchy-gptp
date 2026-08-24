@@ -553,13 +553,13 @@ bool unit_collides_with_titanic(Unit* unit) {
         || unit->id == UnitId::AskosiBegolor;
 }
 
-bool weapon_id_is_for_harvesting(u32 weapon_id) {
+bool weapon_id_is_for_harvesting(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::MasonFusionCutterHarvest
         || weapon_id == WeaponId::ScribeParticleBeamHarvest
         || weapon_id == WeaponId::DrolethSpinesHarvest;
 }
 
-bool weapon_id_is_standard_weapon(u32 weapon_id) {
+bool weapon_id_is_standard_weapon(WeaponId::Enum weapon_id) {
     switch (weapons_dat::explosion_type[weapon_id]) {
         case WeaponEffect::NormalHit:
         case WeaponEffect::SplashRadial:
@@ -572,24 +572,24 @@ bool weapon_id_is_standard_weapon(u32 weapon_id) {
     return false;
 }
 
-bool weapon_id_bounces_lithe_organelle(u32 weapon_id) {
+bool weapon_id_bounces_lithe_organelle(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::MutaliskGlaveWurm
         || weapon_id == WeaponId::LiiraliskHollowedSpores
         || weapon_id == WeaponId::SpirtithCesiantSpirtilSpores;
 }
 
-bool weapon_id_bounces_crushing_tide(u32 weapon_id) {
+bool weapon_id_bounces_crushing_tide(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::IzirokorEnergizedBioplasma
         || weapon_id == WeaponId::TosgriliskExplosiveSpores
         || weapon_id == WeaponId::KonviliskSowingSpines
         || weapon_id == WeaponId::CherbrathalorVenemousBursts;
 }
 
-bool weapon_id_accelerates(u32 weapon_id) {
+bool weapon_id_accelerates(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::EmpyreanPlasmaBarrage;
 }
 
-bool weapon_id_is_melee_aoe(u32 weapon_id) {
+bool weapon_id_is_melee_aoe(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::SycophantSparringSaber
         || weapon_id == WeaponId::GolemPhaseLances
         || weapon_id == WeaponId::QuazrokorQuazrokSpray
@@ -601,12 +601,12 @@ bool weapon_id_is_melee_aoe(u32 weapon_id) {
         || weapon_id == WeaponId::DoroninKorozzetBeastblades;
 }
 
-bool weapon_id_cleaves(u32 weapon_id) {
+bool weapon_id_cleaves(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::TethzorokorSaberArray
         || weapon_id == WeaponId::DoroninKorozzetBeastblades;
 }
 
-u32 weapon_id_intercepts(u32 weapon_id) {
+u32 weapon_id_intercepts(WeaponId::Enum weapon_id) {
     switch (weapon_id) {
         case WeaponId::OptectonSunsplitBeam:
         case WeaponId::AccantorPlasmaShell: {
@@ -628,7 +628,7 @@ u32 weapon_id_intercepts(u32 weapon_id) {
     return InterceptType_None;
 }
 
-bool weapon_id_pierces(u32 weapon_id) {
+bool weapon_id_pierces(WeaponId::Enum weapon_id) {
     switch (weapon_id) {
         case WeaponId::CyprianTwinRailguns:
         case WeaponId::SavantDiscoidRailgunEntropy:
@@ -642,6 +642,7 @@ bool weapon_id_pierces(u32 weapon_id) {
         case WeaponId::MagnetarNewtonianShockCannon:
         case WeaponId::HippogriffChimeraCannons:
         case WeaponId::SentinelCerberusRailgun:
+        case WeaponId::CutlassCortoRailgun:
         case WeaponId::KalkaliskViscousAcid:
         case WeaponId::SkithrokorSkitteringSpores:
         case WeaponId::ZergBonesofReflection: {
@@ -651,14 +652,14 @@ bool weapon_id_pierces(u32 weapon_id) {
     return false;
 }
 
-bool weapon_id_piercing_stops_on_armor(u32 weapon_id) {
+bool weapon_id_piercing_stops_on_armor(WeaponId::Enum weapon_id) {
     if (weapon_id_is_incremental(weapon_id)) {
         return false;
     }
     return true;
 }
 
-bool weapon_is_melee_with_aoe(Bullet* bullet, u32 weapon_id) {
+bool weapon_is_melee_with_aoe(Bullet* bullet, WeaponId::Enum weapon_id) {
     if (bullet && bullet->source_unit) {
         switch (weapon_id) {
             case WeaponId::SycophantSparringSaber:
@@ -725,7 +726,7 @@ bool image_id_is_powerup(u32 image_id) {
         || image_id == ImageId::DataDisc;
 }
 
-ImageId::Enum analogue_image_id_overwrite(u32 weapon_id) {
+ImageId::Enum analogue_image_id_overwrite(WeaponId::Enum weapon_id) {
     switch (weapon_id) {
         case WeaponId::HarakanFlamethrower:				return ImageId::HarakanFlamethrower;
         case WeaponId::MatadorTwinstrikeFlamethrowers:	return ImageId::HarakanFlamethrower;
@@ -739,7 +740,7 @@ ImageId::Enum analogue_image_id_overwrite(u32 weapon_id) {
     return ImageId::None;
 }
 
-bool weapon_id_can_proc_onhits(u32 weapon_id) {
+bool weapon_id_can_proc_onhits(WeaponId::Enum weapon_id) {
     // A value of false makes the weapon ignore the following:
     // * Ancile Providence
     // * Clarion Phase Link
@@ -760,7 +761,7 @@ bool weapon_id_can_proc_onhits(u32 weapon_id) {
         && weapon_id != WeaponId::RemoteHijack;
 }
 
-WeaponOffsets* get_weapon_offsets(u32 weapon_id) {
+WeaponOffsets* get_weapon_offsets(WeaponId::Enum weapon_id) {
     // NOTE: using per case static so we can return a pointer to valid memory, since stack memory is invalidated after return
     // TODO: rework to using a weapon_id WeaponOffsets table, with some sort of optionality check (maybe a bool?)
     switch (weapon_id) {
@@ -1154,7 +1155,7 @@ bool unit_id_can_repair(u32 unit_id) {
         || unit_id == UnitId::TerranOgunWorkerMode;
 }
 
-bool weapon_id_is_flamethrower(u32 weapon_id) {
+bool weapon_id_is_flamethrower(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::HarakanFlamethrower
         || weapon_id == WeaponId::MatadorTwinstrikeFlamethrowers
         || weapon_id == WeaponId::DurendalAbaddonFlamethrowers
@@ -1228,7 +1229,7 @@ bool unit_can_be_ensnared(Unit* unit) {
     return true;
 }
 
-bool weapon_id_is_line_attack(u32 weapon_id) {
+bool weapon_id_is_line_attack(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::StrigaPhaseSaber
         || weapon_id == WeaponId::PariahIconoclastBlades
         || weapon_id == WeaponId::CikraliskAcidSalvo
@@ -1236,7 +1237,7 @@ bool weapon_id_is_line_attack(u32 weapon_id) {
         || weapon_id_is_flamethrower(weapon_id);
 }
 
-u32 get_splash_width_from_weapon_id(u32 weapon_id) {
+u32 get_splash_width_from_weapon_id(WeaponId::Enum weapon_id) {
     switch (weapon_id) {
         case WeaponId::PsiStorm: {
             return 5 * 32;
@@ -1251,7 +1252,7 @@ u32 get_splash_width_from_weapon_id(u32 weapon_id) {
     }
 }
 
-u32 get_splash_height_from_weapon_id(u32 weapon_id) {
+u32 get_splash_height_from_weapon_id(WeaponId::Enum weapon_id) {
     switch (weapon_id) {
         case WeaponId::PsiStorm: {
             return 4 * 32;
@@ -1266,7 +1267,7 @@ u32 get_splash_height_from_weapon_id(u32 weapon_id) {
     }
 }
 
-bool weapon_id_bounces_caustic_fission(u32 weapon_id) {
+bool weapon_id_bounces_caustic_fission(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::BactaliskCorrosiveAcid
         || weapon_id == WeaponId::AlkajeliskPlasmidSpores;
 }
@@ -1296,7 +1297,7 @@ u32 get_death_sfx_id(u32 unit_id) {
     }
 }
 
-u32 weapon_id_is_automatic(u32 weapon_id) {
+bool weapon_id_is_automatic(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::DurendalPhilistineSalvo
         || weapon_id == WeaponId::TarasqueAcceleratedPlasmid;
 }
@@ -1307,12 +1308,12 @@ bool unit_id_has_custom_air_weapon(u32 unit_id) {
         || unit_id == UnitId::ZergZobriolisk;
 }
 
-bool weapon_id_returns_to_attacker(u32 weapon_id) {
+bool weapon_id_returns_to_attacker(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::SkithrokorSkitteringSpores
         || weapon_id == WeaponId::LakiziliskSubterraneanSpines;
 }
 
-bool weapon_id_is_incremental(u32 weapon_id) {
+bool weapon_id_is_incremental(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::KalkaliskViscousAcid
         || weapon_id == WeaponId::SkithrokorSkitteringSpores;
 }
@@ -1560,7 +1561,7 @@ bool unit_id_is_hero(u32 unit_id) {
         || unit_id == UnitId::Ackmed;
 }
 
-bool weapon_id_can_self_splash(u32 weapon_id) {
+bool weapon_id_can_self_splash(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::CyclopsBrontesPayload
         || weapon_id == WeaponId::PsiStorm;
 }

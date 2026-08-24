@@ -520,7 +520,7 @@ namespace helper {
 
     // For AI_RestorationRequirementsProc
 
-    s32 can_weapon_target_unit(u8 weapon_id, Unit* target, Unit* attacker) {
+    s32 can_weapon_target_unit(WeaponId::Enum weapon_id, Unit* target, Unit* attacker) {
         const u32 Func_canWeaponTargetUnit = 0x00475CE0;
         static s32 result;
         __asm {
@@ -3536,28 +3536,29 @@ namespace helper {
         }
     }
 
-    u32 get_weapon_cooldown(Unit* unit, u8 weapon_id) {
-        const u32 Func_getUpgradedWpnCooldown = 0x00475DC0;
+    u32 get_weapon_cooldown(Unit* unit, WeaponId::Enum weapon_id) {
+        const u32 func_address = 0x00475DC0;
         static u32 return_value;
         __asm {
             PUSHAD
             MOVZX EAX, weapon_id
             MOV ESI, unit
-            CALL Func_getUpgradedWpnCooldown
+            CALL func_address
             MOV return_value, EAX
             POPAD
         }
         return return_value;
     }
 
-    bool is_ready_to_attack(Unit* unit, u32 weapon_id) {
-        const u32 Func_is_ready_to_attack = 0x00476640;
+    bool is_ready_to_attack(Unit* unit, WeaponId::Enum weapon_id) {
+        const u32 func_address = 0x00476640;
         static b32 pre_result;
         __asm {
             PUSHAD
-            PUSH weapon_id
+            MOVZX EBX, weapon_id
+            PUSH EBX
             MOV EAX, unit
-            CALL Func_is_ready_to_attack
+            CALL func_address
             MOV pre_result, EAX
             POPAD
         }
@@ -3955,13 +3956,13 @@ namespace helper {
         return return_value;
     }
 
-    s32 get_unit_max_weapon_range(Unit* unit, u8 weapon_id) {
+    s32 get_unit_max_weapon_range(Unit* unit, WeaponId::Enum weapon_id) {
         const u32 func_address = 0x00475870;
         static s32 result;
         __asm {
             PUSHAD
             MOV EAX, unit
-            MOVZX BL, weapon_id
+            MOVZX EBX, weapon_id
             CALL func_address
             MOV result, EAX
             POPAD
@@ -4001,13 +4002,14 @@ namespace helper {
         return result;
     }
 
-    b32 is_angle_in_attack_angle(s32 pos_x, s32 pos_y, Unit* unit, u8 weapon_id) {
+    bool is_unit_in_attack_angle(s32 pos_x, s32 pos_y, Unit* unit, WeaponId::Enum weapon_id) {
         const u32 func_address = 0x00475BE0;
         static b32 result;
-        u32 weapon_id_xd = weapon_id;
+        static u32 weapon_id_temp;
+        weapon_id_temp = weapon_id;
         __asm {
             PUSHAD
-            PUSH weapon_id_xd
+            PUSH weapon_id_temp
             MOV ESI, unit
             MOV ECX, pos_x
             MOV EAX, pos_y
@@ -4036,7 +4038,7 @@ namespace helper {
         return result = (bool)result;
     }
 
-    s32 get_flingy_halt_distance(Unit* unit) {
+    s32 get_flingy_halt_distance_in_subpixels(Unit* unit) {
         static s32 result;
         const u32 func_address = 0x00494F90;
         __asm {
@@ -4408,12 +4410,13 @@ namespace helper {
         }
     }
 
-    void stats_weapon_level(BinDlg* dialog, u32 index, u32 weapon_id) {
+    void stats_weapon_level(BinDlg* dialog, u32 index, WeaponId::Enum weapon_id) {
         const u32 func_address = 0x00425790;
         __asm {
             PUSHAD
             MOV EAX, dialog
-            PUSH weapon_id
+            MOVZX EBX, weapon_id
+            PUSH EBX
             PUSH index
             CALL func_address
             POPAD
@@ -4562,7 +4565,7 @@ namespace helper {
     // creates attack overlay & deals damage from the bullet (just calls overlayAndNotify if the weapon deals no damage, or calls target->damage_with if it does
     void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 damage_divisor) {
         const u32 func_address = 0x00479AE0;
-        if (bullet && target && bullet->source_unit && weapon_id_is_line_attack(bullet->weapon_id)) {
+        if (bullet && target && bullet->source_unit && weapon_id_is_line_attack(get_bullet_ext(bullet)->weapon_id)) {
             if (!g_iquare_globals->was_hit_by_line_attack(bullet->source_unit, target)) {
                 g_iquare_globals->register_line_attack_hit(bullet->source_unit, target);
             } else {
@@ -5217,19 +5220,19 @@ namespace helper {
         return builtUnit;
     }
 
-    Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction) {
+    Bullet* create_bullet(WeaponId::Enum weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction) {
         const u32 func_address = 0x0048C260;
-        u32 attacking_player_xd = attacking_player;
-        u32 direction_xd = direction;
-        s32 x_xd = x;
-        s32 y_xd = y;
         static Bullet* result;
         __asm {
             PUSHAD
-            PUSH direction_xd
-            PUSH attacking_player_xd
-            PUSH y_xd
-            PUSH x_xd
+            MOVZX EBX, direction
+            PUSH EBX
+            MOVZX EBX, attacking_player
+            PUSH EBX
+            MOVSX EBX, y
+            PUSH y
+            MOVSX EBX, x
+            PUSH EBX
             MOV EAX, source
             MOVZX ECX, weapon_id
             CALL func_address
@@ -5367,18 +5370,18 @@ namespace helper {
         return units_in_bounds;
     }
 
-    u32 get_unit_damage_bonus(Unit* unit, u8 weapon_id) {
+    u32 get_unit_damage_bonus(Unit* unit, WeaponId::Enum weapon_id) {
         const u32 func_address = 0x00475EC0;
-        static u32 damageBonus;
+        static u32 result;
         __asm {
             PUSHAD
             MOV EAX, unit
             MOVZX EDX, weapon_id
             CALL func_address
-            MOV damageBonus, EAX
+            MOV result, EAX
             POPAD
         }
-        return damageBonus;
+        return result;
     }
 
     // identical to increment_unit_kill_count @ 0x004759C0
@@ -6715,12 +6718,12 @@ namespace helper {
         return result;
     }
 
-    s32 _fastcall air_splash_proc(Unit* unit, Bullet* bullet) {
+    b32 _fastcall air_splash_proc(Unit* unit, Bullet* bullet) {
         const u32 func_address = 0x0048B150;
         static s32 result;
         __asm {
             PUSHAD
-            MOV EDX, result
+            MOV EDX, bullet
             MOV ECX, unit
             CALL func_address
             MOV result, EAX
@@ -6734,7 +6737,7 @@ namespace helper {
         static s32 result;
         __asm {
             PUSHAD
-            MOV EDX, result
+            MOV EDX, bullet
             MOV ECX, unit
             CALL func_address
             MOV result, EAX
@@ -7192,14 +7195,15 @@ namespace helper {
     }
 
     // For create_bullet
-    s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bullet, s32 weapon_id, s32 x, s32 angle) {
+    s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bullet, WeaponId::Enum weapon_id, s32 x, s32 angle) {
         const u32 func_address = 0x0048BEC0;
         static s32 result;
         __asm {
             PUSHAD
             PUSH angle
             PUSH x
-            PUSH weapon_id
+            MOVZX EBX, weapon_id
+            PUSH EBX
             PUSH bullet
             MOVZX DX, y
             MOV EAX, parent
@@ -7293,13 +7297,13 @@ namespace helper {
     // For ai_send_suicide
     bool is_threat(Unit* target, Unit* unit) {
         const u32 func_address = 0x00476930;
-        static bool result;
+        static b32 result;
         __asm {
             PUSHAD
             MOV EAX, target
             MOV ECX, unit
             CALL func_address
-            MOV result, AL
+            MOV result, EAX
             POPAD
         }
         return result;
@@ -10213,13 +10217,13 @@ namespace helper {
         }
     }
 
-    s32 use_weapon_iscript(Unit* unit, u8 weapon_id, u32 flag_or_timer, char iscript_anim) {
+    s32 use_weapon_iscript(Unit* unit, WeaponId::Enum weapon_id, u32 flag_or_timer, char iscript_anim) {
         static s32 result;
         const u32 func_address = 0x00476C90;
-        u32 iscript_anim_xd = iscript_anim;
         __asm {
             PUSHAD
-            PUSH iscript_anim_xd
+            MOVZX EBX, iscript_anim
+            PUSH EBX
             MOV EDI, flag_or_timer
             MOVZX EBX, weapon_id
             MOV EAX, unit
@@ -11514,14 +11518,14 @@ namespace helper {
         return (bool)result;
     }
 
-    u16 get_targeting_error_string(u32 weapon_id, s32* error, Unit* target) {
+    u16 get_targeting_error_string(WeaponId::Enum weapon_id, s32* error, Unit* target) {
         static u32 result;
         const u32 func_address = 0x0046EFE0;
         __asm {
             PUSHAD
             MOV ECX, target
             MOV EDX, error
-            MOV EAX, weapon_id
+            MOVZX EAX, weapon_id
             CALL func_address
             MOV result, EAX
             POPAD
@@ -11635,12 +11639,12 @@ namespace helper {
         return result;
     }
 
-    void fire_unit_weapon(Unit* unit, u8 weapon_id) {
+    void fire_unit_weapon(Unit* unit, WeaponId::Enum weapon_id) {
         const u32 func_address = 0x00479C90;
-        u32 weapon_id_xd = weapon_id;
         __asm {
             PUSHAD
-            PUSH weapon_id_xd
+            MOVZX EBX, weapon_id
+            PUSH EBX
             MOV ESI, unit
             CALL func_address
             POPAD
@@ -11660,17 +11664,17 @@ namespace helper {
         return result;
     }
 
-    void do_weapon_damage(u32 damage, Unit* target, u8 weapon_id, u32 divisor, char direction, Unit* attacker, u32 attacking_player) {
+    void do_weapon_damage(u32 damage, Unit* target, WeaponId::Enum weapon_id, u32 divisor, char direction, Unit* attacker, u32 attacking_player) {
         const u32 func_address = 0x00479930;
-        u32 weapon_id_xd = weapon_id;
-        u32 direction_xd = direction;
         __asm {
             PUSHAD
             PUSH attacking_player
             PUSH attacker
-            PUSH direction_xd
+            MOVZX EBX, direction
+            PUSH EBX
             PUSH divisor
-            PUSH weapon_id_xd
+            MOVZX EBX, weapon_id
+            PUSH EBX
             MOV EDI, target
             MOV EAX, damage
             CALL func_address
@@ -11680,15 +11684,15 @@ namespace helper {
 
     Image* iscript_create_image(Image* relative_image, u32 image_id, char x, char y, u8 draw_above) {
         const u32 func_address = 0x004D6D90;
-        s32 x_xd = x;
-        s32 y_xd = y;
-        u32 draw_above_xd = draw_above;
         static Image* result;
         __asm {
             PUSHAD
-            PUSH draw_above_xd
-            PUSH y_xd
-            PUSH x_xd
+            MOVZX EBX, draw_above
+            PUSH EBX
+            MOVSX EBX, y
+            PUSH EBX
+            MOVSX EBX, x
+            PUSH EBX
             PUSH image_id
             PUSH relative_image
             CALL func_address
@@ -12204,15 +12208,16 @@ namespace helper {
         return result;
     }
 
-    bool order_hangar_unit(Unit* unit, u32 range1, u32 range2) {
+    bool orders_carrier_reaver_idle(Unit* unit, u32 range1, u32 range2) {
         static b32 result;
-        const u32 Func_Sub465A60 = 0x00465A60;
+        const u32 func_address = 0x00465A60;
         __asm {
             PUSHAD
-            PUSH range1
             PUSH range2
+            PUSH range1
+            MOV ECX, 0
             MOV EAX, unit
-            CALL Func_Sub465A60
+            CALL func_address
             MOV result, EAX
             POPAD
         }
@@ -13055,23 +13060,23 @@ namespace helper {
         return result;
     }
 
-    void iscript_fireweapon(Unit* unit, u8 weapon_id) {
+    void iscript_fireweapon(Unit* unit, WeaponId::Enum weapon_id) {
         const u32 func_address = 0x00479D40;
         __asm {
             PUSHAD
             MOV EAX, unit
-            MOV BL, weapon_id
+            MOVZX EBX, weapon_id
             CALL func_address
             POPAD
         }
     }
 
-    void iscript_useweapon(Unit* unit, u16 weapon_id) {
+    void iscript_useweapon(Unit* unit, WeaponId::Enum weapon_id) {
         const u32 func_address = 0x00479C30;
-        u32 weapon_id_xd = weapon_id;
         __asm {
             PUSHAD
-            PUSH weapon_id_xd
+            MOVZX EBX, weapon_id
+            PUSH EBX
             MOV ESI, unit
             CALL func_address
             POPAD
@@ -14935,12 +14940,13 @@ namespace helper {
         }
     }
 
-    u32 calculate_unit_strength(UnitId::Enum unit_id, u32 weapon_id) {
+    u32 calculate_unit_strength(UnitId::Enum unit_id, WeaponId::Enum weapon_id) {
         const u32 func_address = 0x00431270;
         static u32 result;
         __asm {
             PUSHAD
-            PUSH weapon_id
+            MOVZX EBX, weapon_id
+            PUSH EBX
             MOV EAX, unit_id
             CALL func_address
             MOV result, EAX
@@ -16147,6 +16153,46 @@ namespace helper {
             PUSH system_time
             CALL func_address
             ADD ESP, 4
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    bool is_distance_greater_than_path_distance_to_order_target(Unit* unit, s32 distance) {
+        const u32 func_address = 0x00465480;
+        static b32 result;
+        __asm {
+            PUSHAD
+            PUSH distance
+            MOV unit, ECX
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    s32 convert_current_order_to_carrier_reaver_idle_order(Unit* unit) {
+        const u32 func_address = 0x00465390;
+        static s32 result;
+        __asm {
+            PUSHAD
+            MOV ECX, unit
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    s32 convert_current_order_to_carrier_reaver_fight_order(Unit* unit) {
+        const u32 func_address = 0x00465360;
+        static s32 result;
+        __asm {
+            PUSHAD
+            MOV ECX, unit
+            CALL func_address
             MOV result, EAX
             POPAD
         }

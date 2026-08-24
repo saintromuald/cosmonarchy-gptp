@@ -37,7 +37,7 @@ void salvage_corpse(Thingy* corpse, u32 player);
 
 void incubate(Unit* target, u32 count, u32 unit_id, u32 player);
 void set_custom_egg(Unit* egg, u32 unit_id, u32 time, u32 hp = 150 * 256);
-void fire_secondary_melee_weapon_if_needed(Unit* unit, u32 weapon_id);
+void fire_secondary_melee_weapon_if_needed(Unit* unit);
 bool can_infest(u32 player, Unit* target, bool force = false);
 void mark_infesting(u32 player, Unit* target);
 void blissful_embrace_tick(Unit* target);

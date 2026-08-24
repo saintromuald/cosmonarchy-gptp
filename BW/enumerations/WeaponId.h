@@ -1,7 +1,7 @@
 #pragma once
 
 namespace WeaponId {
-    enum Enum : u32 {
+    enum Enum : u16 {
         MaverickGaussRifle						 = 0x00,
         GaussRifle_JimRaynor_Marine				 = 0x01,
         EidolonCoronerRifle						 = 0x02,
@@ -183,62 +183,64 @@ namespace WeaponId {
         CannibalZuluSidekicks               = 243,
         SovrokorSovrolClaws                 = 250,
         ValkyrieHecatonLogiRockets          = 252,
+        CutlassCortoRailgun                 = 256,
 
         // Terran \\
             
-        HeraclesJavelinCannons				= 1,
-        ApostleCharonRifle					= 3,
-        CuirassHaymakerAutogun				= 5,
-        MadcapDanannAutogun					= 9,
-        PaladinCrusaderMissiles				= 10,
-        TalosFusionBattery					= 12,
-        BlackjackMonogun					= 15,
-        SalamanderPerditionBarrage			= 17,
-        GorgonArtificeBattery				= 18,
-        MadrigalFuriaMissiles				= 21,  // Madrigal toggled weapon
-        MadrigalImperiosoMissiles			= 22,  // Madrigal default weapon
-        CentaurArtaxCannon					= 23,
-        CentaurSunchaserMissiles			= 24,  // Centaur close-range weapon
-        CyprianTwinRailguns					= 26,
-        PenumbraErebolShockCannon			= 39,
-        PazuzuJupiterDriver					= 51,
-        SavantDiscoidRailgun				= 88,
-        CyclopsFlakCannons					= 93,
-        PhobosArgosLaserBatteries			= 94,
-        SirenCharybdalRifle					= 96,
-        AutocratEminenceRifle				= 116,
-        ClaymoreHarpoonRailgun				= 120,
-        LuminaryAuralAssault				= 121,
-        OlympianTitansFist					= 123,
-        OlympianMountainGun					= 124,
-        WyvernJacksonCannon					= 125,
-        DiademHammerfallBeacon				= 129, // Main weapon precursor
-        StrigaPhaseSaber					= 133,
-        AnticthonEncirclingMirror			= 137,
-        EmergencyDetonationExplosion		= 140,
-        MagnetarNewtonianShockCannon		= 141,
-        SentinelCerberusRailgun				= 147,
-        SundogBlindsideRockets				= 150,
-        MatadorTwinstrikeFlamethrowers		= 151,
-        HippogriffChimeraCannons			= 156,
-        HippogriffPegasusMissiles			= 158,
-        AionLazarusSalvo					= 159,
-        WendigoFusionSaw					= 168,
-        RamessesPharoahCannons				= 170,
-        DurendalAbaddonFlamethrowers		= 171,
-        DurendalPhilistineSalvo			    = 172,
-        CataphractLonginiusCannons			= 173,
-        DilettanteUpstartRifle				= 174,
-        SevenstepGeometricRifle				= 175,
-        HypnagogueKaleidoscopeCannon		= 176,
-        SilvertongueWordsmithRailgun		= 184,
-        DiademIonCannon						= 198,
-        SavantDiscoidRailgunEntropy		    = 199,
-        SevenstepGeometricRiflePiercing		= 200,
-        MatadorTwinstrikeCanlnons			= 201,
-        SalamanderAngeltearRockets			= 216,
-        TritonHydriaCannons                 = 245,
-        TritonLobotomyWarhead               = 246,
+        HeraclesJavelinCannons				 = 1,
+        ApostleCharonRifle					 = 3,
+        CuirassHaymakerAutogun				 = 5,
+        MadcapDanannAutogun					 = 9,
+        PaladinCrusaderMissiles				 = 10,
+        TalosFusionBattery					 = 12,
+        BlackjackMonogun					 = 15,
+        SalamanderPerditionBarrage			 = 17,
+        GorgonArtificeBattery				 = 18,
+        MadrigalFuriaMissiles				 = 21,  // Madrigal toggled weapon
+        MadrigalImperiosoMissiles			 = 22,  // Madrigal default weapon
+        CentaurArtaxCannon					 = 23,
+        CentaurSunchaserMissiles			 = 24,  // Centaur close-range weapon
+        CyprianTwinRailguns					 = 26,
+        PenumbraErebolShockCannon			 = 39,
+        PazuzuJupiterDriver					 = 51,
+        SavantDiscoidRailgun				 = 88,
+        LobotomyMineElectromagneticExplosion = 89,
+        CyclopsFlakCannons					 = 93,
+        PhobosArgosLaserBatteries			 = 94,
+        SirenCharybdalRifle					 = 96,
+        AutocratEminenceRifle				 = 116,
+        ClaymoreHarpoonRailgun				 = 120,
+        LuminaryAuralAssault				 = 121,
+        OlympianTitansFist					 = 123,
+        OlympianMountainGun					 = 124,
+        WyvernJacksonCannon					 = 125,
+        DiademHammerfallBeacon				 = 129, // Main weapon precursor
+        StrigaPhaseSaber					 = 133,
+        AnticthonEncirclingMirror			 = 137,
+        EmergencyDetonationExplosion		 = 140,
+        MagnetarNewtonianShockCannon		 = 141,
+        SentinelCerberusRailgun				 = 147,
+        SundogBlindsideRockets				 = 150,
+        MatadorTwinstrikeFlamethrowers		 = 151,
+        HippogriffChimeraCannons			 = 156,
+        HippogriffPegasusMissiles			 = 158,
+        AionLazarusSalvo					 = 159,
+        WendigoFusionSaw					 = 168,
+        RamessesPharoahCannons				 = 170,
+        DurendalAbaddonFlamethrowers		 = 171,
+        DurendalPhilistineSalvo			     = 172,
+        CataphractLonginiusCannons			 = 173,
+        DilettanteUpstartRifle				 = 174,
+        SevenstepGeometricRifle				 = 175,
+        HypnagogueKaleidoscopeCannon		 = 176,
+        SilvertongueWordsmithRailgun		 = 184,
+        DiademIonCannon						 = 198,
+        SavantDiscoidRailgunEntropy		     = 199,
+        SevenstepGeometricRiflePiercing		 = 200,
+        MatadorTwinstrikeCanlnons			 = 201,
+        SalamanderAngeltearRockets			 = 216,
+        TritonHydriaCannons                  = 245,
+        TritonLobotomyWarhead                = 246,
 
         // Protoss \\
         
@@ -293,7 +295,7 @@ namespace WeaponId {
         // Zerg \\
                     
         ZoryusthalethMonstrousMaw			= 28,
-        VorvrokorVorvrokClaws							= 36,
+        VorvrokorVorvrokClaws			    = 36,
         NathrokorVestigialStrike			= 37,
         KeskathalorScreamingVenom			= 41,
         AlkajeliskPlasmidSpores				= 45,
@@ -345,7 +347,6 @@ namespace WeaponId {
         DyadTwintorch						= 57,
         MissionaryAruoTwinshot              = 77, // was Didact weapon, hardcode beware
         CardinalInoaTwinaxe                 = 82, // was Accantor weapon, hardcode beware
-        CutlassCortoRailgun				    = 89, // unused
         VicarOspoTwinshard                  = 122,
         RoveElreScaleshot                   = 126,
         ObjectOrliMallet                    = 127,

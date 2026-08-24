@@ -12,7 +12,7 @@ namespace hooks {
 		if (!target) {
 			return false;
 		}
-		u32 weapon_id = target->is_in_air() ? attacker->get_air_weapon() : attacker->get_ground_weapon();
+		WeaponId::Enum weapon_id = target->is_in_air() ? attacker->get_air_weapon() : attacker->get_ground_weapon();
 		if (weapon_id == WeaponId::None) {
 			return false;
 		}
@@ -190,7 +190,7 @@ namespace hooks {
 			return true;
 		}
 
-		u8 weapon_id = unit->get_ground_weapon();
+		WeaponId::Enum weapon_id = unit->get_ground_weapon();
 		u8 cooldown = unit->ground_weapon_cooldown;
 		if (target->is_in_air()) {
 			weapon_id = units_dat::air_weapon[unit->id];

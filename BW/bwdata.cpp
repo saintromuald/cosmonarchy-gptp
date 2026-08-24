@@ -85,60 +85,60 @@ BW_DATA_DEF(u32*,								g_ai_strength_ground, ai_strength_ground_var);
 namespace units_dat {
     BW_DATA(const DatLoad*, unitsDat, 0x00513C30);
     
-    BW_DATA_DEF(u16*,			graphic,				unitsDat[0].address);	// 006644F8 -- DatExt changes this to u16 from u8
-    BW_DATA_DEF(u16*,			subunit,				unitsDat[1].address);	// 006607C0
-    BW_DATA_DEF(u16*,			subunit_2,				unitsDat[2].address);	// 00660C38
-    BW_DATA_DEF(u16*,			infested_unit_partial,	unitsDat[3].address);	// 00664980, (Id - UnitId::TerranMinistry) for it to work, last valid id is UnitId::Special_OvermindCocoon
-    BW_DATA_DEF(u32*,			construction_graphic,	unitsDat[4].address);	// 006610B0
-    BW_DATA_DEF(u8*,			start_direction,		unitsDat[5].address);	// 006605F0  Direction unit will face after it is created. From 0 (top) to 31 (before top turning clockwise).32 means random.
-    BW_DATA_DEF(u8*,			shields_enabled,		unitsDat[6].address);	// 006647B0
-    BW_DATA_DEF(u16*,			max_shield_points,		unitsDat[7].address);	// 00660E00
-    BW_DATA_DEF(s32*,			max_hitpoints,			unitsDat[8].address);	// 00662350
-    BW_DATA_DEF(u8*,			elevation,				unitsDat[9].address);	// 00663150
-    BW_DATA_DEF(u8*,			movement_flags,			unitsDat[10].address);	// 00660FC8
-    BW_DATA_DEF(u8*,			rank,					unitsDat[11].address);	// 00663DD0
-    BW_DATA_DEF(u8*,			computer_idle_order,	unitsDat[12].address);	// 00662EA0
-    BW_DATA_DEF(u8*,			human_idle_order,		unitsDat[13].address);	// 00662268
-    BW_DATA_DEF(u8*,			return_to_idle_order,	unitsDat[14].address);	// 00664898
-    BW_DATA_DEF(u8*,			attack_unit_order,		unitsDat[15].address);	// 00663320
-    BW_DATA_DEF(u8*,			attack_move_order,		unitsDat[16].address);	// 00663A50
-    BW_DATA_DEF(u8*,			ground_weapon,			unitsDat[17].address);	// 006636B8
-    BW_DATA_DEF(u8*,			max_ground_hits,		unitsDat[18].address);	// 006645E0
-    BW_DATA_DEF(u8*,			air_weapon,				unitsDat[19].address);	// 006616E0
-    BW_DATA_DEF(u8*,			max_air_hits,			unitsDat[20].address);	// 0065FC18
-    BW_DATA_DEF(u8*,			computer_ai_internal,	unitsDat[21].address);	// 00660178
-    BW_DATA_DEF(u32*,			base_property,			unitsDat[22].address);  // 00664080 AKA SpecialAbilityFlags, UnitProperty, etc. Use with UnitProperty::Enum.
-    BW_DATA_DEF(u8*,			seek_range,				unitsDat[23].address);  // 00662DB8 AKA Target Acquisition Range, Acquire Target Range, etc.
-    BW_DATA_DEF(u8*,			sight_range,			unitsDat[24].address);	// 00663238
-    BW_DATA_DEF(u8*,			armor_upgrade,			unitsDat[25].address);	// 006635D0
-    BW_DATA_DEF(u8*,			size_type,				unitsDat[26].address);	// 00662180
-    BW_DATA_DEF(u8*,			armor_amount,			unitsDat[27].address);	// 0065FEC8
-    BW_DATA_DEF(u8*,			right_click_action,		unitsDat[28].address);	// 00662098
-    BW_DATA_DEF(u16*,			sound_ready,			unitsDat[29].address);	// 00661FC0
-    BW_DATA_DEF(u16*,			sound_what_first,		unitsDat[30].address);	// 0065FFB0
-    BW_DATA_DEF(u16*,			sound_what_last,		unitsDat[31].address);	// 00662BF0
-    BW_DATA_DEF(u16*,			sound_annoyed_first,	unitsDat[32].address);	// 00663B38
-    BW_DATA_DEF(u16*,			sound_annoyed_last,		unitsDat[33].address);	// 00661EE8
-    BW_DATA_DEF(u16*,			sound_yes_first,		unitsDat[34].address);	// 00663C10
-    BW_DATA_DEF(u16*,			sound_yes_last,			unitsDat[35].address);	// 00661440
-    BW_DATA_DEF(v2u16*,		building_dimensions,	unitsDat[36].address);	// 00662860
-    BW_DATA_DEF(v2u16*,		addon_placement,		unitsDat[37].address);	// 006626E0
-    BW_DATA_DEF(Box16*,		unit_bounds,			unitsDat[38].address);	// 006617C8
-    BW_DATA_DEF(u16*,			portrait_id,			unitsDat[39].address);	// 00662F88
-    BW_DATA_DEF(u16*,			mineral_cost,			unitsDat[40].address);	// 00663888
-    BW_DATA_DEF(u16*,			vespene_cost,				unitsDat[41].address);	// 0065FD00
-    BW_DATA_DEF(u16*,			time_cost,				unitsDat[42].address);	// 00660428
-    BW_DATA_DEF(u16*,			requirement_offsets,	unitsDat[43].address);	// 00660A70 //"Restriction Address" according to EUDDB
-    BW_DATA_DEF(GroupFlag*,	group_flags,			unitsDat[44].address);	// 006637A0
-    BW_DATA_DEF(u8*,			supply_provided,		unitsDat[45].address);  // 006646C8 Supply shown in-game is (true supply) / 2; e.g. Zerglings have 1 true supply, Marines have 2 true supply, etc.
-    BW_DATA_DEF(u8*,			supply_required,		unitsDat[46].address);  // 00663CE8 Supply shown in-game is (true supply) / 2; e.g. Zerglings have 1 true supply, Marines have 2 true supply, etc.
-    BW_DATA_DEF(u8*,			space_required,			unitsDat[47].address);	// 00664410
-    BW_DATA_DEF(u8*,			space_provided,			unitsDat[48].address);	// 00660988
-    BW_DATA_DEF(u16*,			build_score,			unitsDat[49].address);	// 00663408
-    BW_DATA_DEF(u16*,			destroy_score,			unitsDat[50].address);	// 00663EB8
-    BW_DATA_DEF(u16*,			map_string_id,			unitsDat[51].address);	// 00660260
-    BW_DATA_DEF(u8*,			broodwar_only,			unitsDat[52].address);	// 006606D8
-    BW_DATA_DEF(u16*,			staredit_avail_flags,	unitsDat[53].address);	// 00661518 //"Staredit Availability sound_flags" according to EUDDB
+    BW_DATA_DEF(u16*,			    graphic,				unitsDat[0].address);	// 006644F8 -- DatExt changes this to u16 from u8
+    BW_DATA_DEF(u16*,			    subunit,				unitsDat[1].address);	// 006607C0
+    BW_DATA_DEF(u16*,			    subunit_2,				unitsDat[2].address);	// 00660C38
+    BW_DATA_DEF(u16*,			    infested_unit_partial,	unitsDat[3].address);	// 00664980, (Id - UnitId::TerranMinistry) for it to work, last valid id is UnitId::Special_OvermindCocoon
+    BW_DATA_DEF(u32*,			    construction_graphic,	unitsDat[4].address);	// 006610B0
+    BW_DATA_DEF(u8*,			    start_direction,		unitsDat[5].address);	// 006605F0  Direction unit will face after it is created. From 0 (top) to 31 (before top turning clockwise).32 means random.
+    BW_DATA_DEF(u8*,			    shields_enabled,		unitsDat[6].address);	// 006647B0
+    BW_DATA_DEF(u16*,			    max_shield_points,		unitsDat[7].address);	// 00660E00
+    BW_DATA_DEF(s32*,			    max_hitpoints,			unitsDat[8].address);	// 00662350
+    BW_DATA_DEF(u8*,			    elevation,				unitsDat[9].address);	// 00663150
+    BW_DATA_DEF(u8*,			    movement_flags,			unitsDat[10].address);	// 00660FC8
+    BW_DATA_DEF(u8*,			    rank,					unitsDat[11].address);	// 00663DD0
+    BW_DATA_DEF(u8*,			    computer_idle_order,	unitsDat[12].address);	// 00662EA0
+    BW_DATA_DEF(u8*,			    human_idle_order,		unitsDat[13].address);	// 00662268
+    BW_DATA_DEF(u8*,			    return_to_idle_order,	unitsDat[14].address);	// 00664898
+    BW_DATA_DEF(u8*,			    attack_unit_order,		unitsDat[15].address);	// 00663320
+    BW_DATA_DEF(u8*,			    attack_move_order,		unitsDat[16].address);	// 00663A50
+    BW_DATA_DEF(WeaponId::Enum*,	ground_weapon,			unitsDat[17].address);	// 006636B8
+    BW_DATA_DEF(u8*,			    max_ground_hits,		unitsDat[18].address);	// 006645E0
+    BW_DATA_DEF(WeaponId::Enum*,	air_weapon,				unitsDat[19].address);	// 006616E0
+    BW_DATA_DEF(u8*,			    max_air_hits,			unitsDat[20].address);	// 0065FC18
+    BW_DATA_DEF(u8*,			    computer_ai_internal,	unitsDat[21].address);	// 00660178
+    BW_DATA_DEF(u32*,			    base_property,			unitsDat[22].address);  // 00664080 AKA SpecialAbilityFlags, UnitProperty, etc. Use with UnitProperty::Enum.
+    BW_DATA_DEF(u8*,			    seek_range,				unitsDat[23].address);  // 00662DB8 AKA Target Acquisition Range, Acquire Target Range, etc.
+    BW_DATA_DEF(u8*,			    sight_range,			unitsDat[24].address);	// 00663238
+    BW_DATA_DEF(u8*,			    armor_upgrade,			unitsDat[25].address);	// 006635D0
+    BW_DATA_DEF(u8*,			    size_type,				unitsDat[26].address);	// 00662180
+    BW_DATA_DEF(u8*,			    armor_amount,			unitsDat[27].address);	// 0065FEC8
+    BW_DATA_DEF(u8*,			    right_click_action,		unitsDat[28].address);	// 00662098
+    BW_DATA_DEF(u16*,			    sound_ready,			unitsDat[29].address);	// 00661FC0
+    BW_DATA_DEF(u16*,			    sound_what_first,		unitsDat[30].address);	// 0065FFB0
+    BW_DATA_DEF(u16*,			    sound_what_last,		unitsDat[31].address);	// 00662BF0
+    BW_DATA_DEF(u16*,			    sound_annoyed_first,	unitsDat[32].address);	// 00663B38
+    BW_DATA_DEF(u16*,			    sound_annoyed_last,		unitsDat[33].address);	// 00661EE8
+    BW_DATA_DEF(u16*,			    sound_yes_first,		unitsDat[34].address);	// 00663C10
+    BW_DATA_DEF(u16*,			    sound_yes_last,			unitsDat[35].address);	// 00661440
+    BW_DATA_DEF(v2u16*,		        building_dimensions,	unitsDat[36].address);	// 00662860
+    BW_DATA_DEF(v2u16*,		        addon_placement,		unitsDat[37].address);	// 006626E0
+    BW_DATA_DEF(Box16*,		        unit_bounds,			unitsDat[38].address);	// 006617C8
+    BW_DATA_DEF(u16*,			    portrait_id,			unitsDat[39].address);	// 00662F88
+    BW_DATA_DEF(u16*,			    mineral_cost,			unitsDat[40].address);	// 00663888
+    BW_DATA_DEF(u16*,			    vespene_cost,			unitsDat[41].address);	// 0065FD00
+    BW_DATA_DEF(u16*,			    time_cost,				unitsDat[42].address);	// 00660428
+    BW_DATA_DEF(u16*,			    requirement_offsets,	unitsDat[43].address);	// 00660A70 //"Restriction Address" according to EUDDB
+    BW_DATA_DEF(GroupFlag*,	        group_flags,			unitsDat[44].address);	// 006637A0
+    BW_DATA_DEF(u8*,			    supply_provided,		unitsDat[45].address);  // 006646C8 Supply shown in-game is (true supply) / 2; e.g. Zerglings have 1 true supply, Marines have 2 true supply, etc.
+    BW_DATA_DEF(u8*,			    supply_required,		unitsDat[46].address);  // 00663CE8 Supply shown in-game is (true supply) / 2; e.g. Zerglings have 1 true supply, Marines have 2 true supply, etc.
+    BW_DATA_DEF(u8*,			    space_required,			unitsDat[47].address);	// 00664410
+    BW_DATA_DEF(u8*,			    space_provided,			unitsDat[48].address);	// 00660988
+    BW_DATA_DEF(u16*,			    build_score,			unitsDat[49].address);	// 00663408
+    BW_DATA_DEF(u16*,			    destroy_score,			unitsDat[50].address);	// 00663EB8
+    BW_DATA_DEF(u16*,			    map_string_id,			unitsDat[51].address);	// 00660260
+    BW_DATA_DEF(u8*,			    broodwar_only,			unitsDat[52].address);	// 006606D8
+    BW_DATA_DEF(u16*,			    staredit_avail_flags,	unitsDat[53].address);	// 00661518 //"Staredit Availability sound_flags" according to EUDDB
 } //units_dat (last entry at 0x00513EAC)
 
 namespace flingy_dat {
@@ -198,15 +198,15 @@ namespace weapons_dat {
 namespace upgrades_dat {
     BW_DATA(const DatLoad*, upgradesDat, 0x005136E0);
     
-    BW_DATA_DEF(u16*, mineral_cost_base,		upgradesDat[0].address);	// 00656740
+    BW_DATA_DEF(u16*, mineral_cost_base,	upgradesDat[0].address);	// 00656740
     BW_DATA_DEF(u16*, mineral_cost_factor,	upgradesDat[1].address);	// 006559C0
-    BW_DATA_DEF(u16*, vespene_cost_base,			upgradesDat[2].address);	// 00655840
-    BW_DATA_DEF(u16*, vespene_cost_factor,		upgradesDat[3].address);	// 006557C0
-    BW_DATA_DEF(u16*, time_cost_base,			upgradesDat[4].address);	// 00655B80
+    BW_DATA_DEF(u16*, vespene_cost_base,	upgradesDat[2].address);	// 00655840
+    BW_DATA_DEF(u16*, vespene_cost_factor,	upgradesDat[3].address);	// 006557C0
+    BW_DATA_DEF(u16*, time_cost_base,		upgradesDat[4].address);	// 00655B80
     BW_DATA_DEF(u16*, time_cost_factor,		upgradesDat[5].address);	// 00655940
     BW_DATA_DEF(u16*, requirement_offsets,	upgradesDat[6].address);	// 006558C0	//Restriction sound_flags according to EUDDB
     BW_DATA_DEF(u16*, upgrade_icon,			upgradesDat[7].address);	// 00655AC0	//"weapon_icon, cmdicons.grp frame" according to EUDDB
-    BW_DATA_DEF(u16*, label,					upgradesDat[8].address);	// 00655A40
+    BW_DATA_DEF(u16*, label,				upgradesDat[8].address);	// 00655A40
     BW_DATA_DEF(u8*,  race,					upgradesDat[9].address);	// 00655BFC
     BW_DATA_DEF(u8*,  max_repeats,			upgradesDat[10].address);	// 00655700
 //	BW_DATA_DEF(u8*, ???,						upgradesDat[11].address);	// 00655B3C	//Brood War Flag according to EUDDB
@@ -231,25 +231,25 @@ namespace techdata_dat {
 namespace orders_dat {
     BW_DATA(const DatLoad*, ordersDat, 0x00513EC8);
     
-    BW_DATA_DEF(u16*,		label,					ordersDat[0].address);	// 00665280
-    BW_DATA_DEF(u8*,		use_weapon_targeting,	ordersDat[1].address);	// 00664B00
-//	BW_DATA_DEF(u8*,		???,					ordersDat[2].address);	// 00665940 //May be "secondary order" used for debug/assert only / "Order goes in bSecondaryOrderID instead of bMainOrderID." according to EUDDB
-    BW_DATA_DEF(u8*,		Unused3,				ordersDat[3].address);	// 00665A00 //May be "Non-subunit" used for debug only
-    BW_DATA_DEF(u8*,		Unknown4,				ordersDat[4].address);	// 00664A40
-//	BW_DATA_DEF(u8*,		???,					ordersDat[5].address);	// 006657C0 //May be "Subunit can use" used for debug only
-    BW_DATA_DEF(b8*,		can_be_interrupted,		ordersDat[6].address);	// 00665040
-    BW_DATA_DEF(u8*,		Unknown7,				ordersDat[7].address);	// 00665100
-    BW_DATA_DEF(b8*,		can_be_queued,			ordersDat[8].address);	// 00665700
-    BW_DATA_DEF(u8*,		disabling_keeps_target,	ordersDat[9].address);	// 006651C0
-    BW_DATA_DEF(u8*,		can_be_obstructed,		ordersDat[10].address);	// 006654C0 //"Can Be Obstructed?" according to EUDDB
-    BW_DATA_DEF(u8*,		Unknown11,				ordersDat[11].address);	// 00664C80
-//	BW_DATA_DEF(u8*,		???,					ordersDat[12].address);	// 00664BC0 //May be "Order requires moving"
-    BW_DATA_DEF(u8*,		order_weapon_id,		ordersDat[13].address);	// 00665880
-    BW_DATA_DEF(u8*,		tech_used,				ordersDat[14].address);	// 00664E00
-    BW_DATA_DEF(u8*,		order_animation,		ordersDat[15].address);	// 00664D40 //Animation (IscriptAnimation) according to EUDDB
-    BW_DATA_DEF(s16*,		button_icon,			ordersDat[16].address);	// 00664EC0
-    BW_DATA_DEF(u16*,		req_offset,				ordersDat[17].address);	// 00665580 //based on context
-    BW_DATA_DEF(u8*,		obscured_order,			ordersDat[18].address);	// 00665400
+    BW_DATA_DEF(u16*,		        label,					ordersDat[0].address);	// 00665280
+    BW_DATA_DEF(u8*,		        use_weapon_targeting,	ordersDat[1].address);	// 00664B00
+//	BW_DATA_DEF(u8*,		        ???,					ordersDat[2].address);	// 00665940 //May be "secondary order" used for debug/assert only / "Order goes in bSecondaryOrderID instead of bMainOrderID." according to EUDDB
+    BW_DATA_DEF(u8*,		        Unused3,				ordersDat[3].address);	// 00665A00 //May be "Non-subunit" used for debug only
+    BW_DATA_DEF(u8*,		        Unknown4,				ordersDat[4].address);	// 00664A40
+//	BW_DATA_DEF(u8*,		        ???,					ordersDat[5].address);	// 006657C0 //May be "Subunit can use" used for debug only
+    BW_DATA_DEF(b8*,		        can_be_interrupted,		ordersDat[6].address);	// 00665040
+    BW_DATA_DEF(u8*,		        Unknown7,				ordersDat[7].address);	// 00665100
+    BW_DATA_DEF(b8*,		        can_be_queued,			ordersDat[8].address);	// 00665700
+    BW_DATA_DEF(u8*,		        disabling_keeps_target,	ordersDat[9].address);	// 006651C0
+    BW_DATA_DEF(u8*,		        can_be_obstructed,		ordersDat[10].address);	// 006654C0 //"Can Be Obstructed?" according to EUDDB
+    BW_DATA_DEF(u8*,		        Unknown11,				ordersDat[11].address);	// 00664C80
+//	BW_DATA_DEF(u8*,		        ???,					ordersDat[12].address);	// 00664BC0 //May be "Order requires moving"
+    BW_DATA_DEF(WeaponId::Enum*,    order_weapon_id,		ordersDat[13].address);	// 00665880
+    BW_DATA_DEF(u8*,		        tech_used,				ordersDat[14].address);	// 00664E00
+    BW_DATA_DEF(u8*,		        order_animation,		ordersDat[15].address);	// 00664D40 //Animation (IscriptAnimation) according to EUDDB
+    BW_DATA_DEF(s16*,		        button_icon,			ordersDat[16].address);	// 00664EC0
+    BW_DATA_DEF(u16*,		        req_offset,				ordersDat[17].address);	// 00665580 //based on context
+    BW_DATA_DEF(u8*,		        obscured_order,			ordersDat[18].address);	// 00665400
 } //orders_dat (last entry at 0x00513FA0)
 
 namespace sprites_dat {

@@ -75,7 +75,7 @@ namespace AI {
 	// In original functions:
 	// 0x00695604 would contains weapon_id
 	// 0x00695798 would contains total_enemy_life
-	s32 get_total_enemy_life_in_area(s32 x, s32 y, s32 search_bounds, Unit* caster, u8 weapon_id) {
+	s32 get_total_enemy_life_in_area(s32 x, s32 y, s32 search_bounds, Unit* caster, WeaponId::Enum weapon_id) {
 		unitStatTotalFinder.search(x - search_bounds, y - search_bounds, x + search_bounds, y + search_bounds);
 		s32 total_enemy_life = 0;
 		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count(); ++i) {
@@ -99,7 +99,7 @@ namespace AI {
 
 	// Loop content based on AIAllyUnitHPAccumulatorProc @ 0x00440D60
 	// 0x00695798 would contain total_ally_life
-	s32 get_total_ally_life_in_area(s32 x, s32 y, s32 search_bounds, Unit* caster, u8 weapon_id) {
+	s32 get_total_ally_life_in_area(s32 x, s32 y, s32 search_bounds, Unit* caster, WeaponId::Enum weapon_id) {
 		unitStatTotalFinder.search(x - search_bounds, y - search_bounds, x + search_bounds, y + search_bounds);
 		s32 total_ally_life = 0;
 		for (s32 i = 0; i < unitStatTotalFinder.get_unit_count(); ++i) {

@@ -178,7 +178,7 @@ namespace helper {
     s32 get_base_strength(s32 a1, Unit* a2);
 
     // For AI_RestorationRequirementsProc
-    s32 can_weapon_target_unit(u8 weapon_id, Unit* target, Unit* attacker);
+    s32 can_weapon_target_unit(WeaponId::Enum weapon_id, Unit* target, Unit* attacker);
 
     // For AI_EMPShieldRequirementsProc
     s32 ai_target_unit_is_worth_hitting(Unit* a1, Unit* a2);
@@ -530,8 +530,8 @@ namespace helper {
     void drop_powerup(Unit* powerup);																								// 004F3B70
 
     //// cast_order
-    u32 get_weapon_cooldown(Unit* unit, u8 weapon_id);																				// 00475DC0
-    bool is_ready_to_attack(Unit* unit, u32 weapon_id);																				// 00476640
+    u32 get_weapon_cooldown(Unit* unit, WeaponId::Enum weapon_id);																				// 00475DC0
+    bool is_ready_to_attack(Unit* unit, WeaponId::Enum weapon_id);																				// 00476640
     u32 get_stat_txt_string(Unit* unit, u32 player, const char* message);															// 0048EF30
     bool cannot_cast_spell(Unit* unit);																								// 00492140
     bool ordered_spell_progress_moving(Unit* unit, b32 order_state_zero);															// 00492620
@@ -587,16 +587,16 @@ namespace helper {
     //// target_related
 
     // for is_unit_target_out_of_max_range
-    s32 get_unit_max_weapon_range(Unit* unit, u8 weapon_id);																		// 00475870
+    s32 get_unit_max_weapon_range(Unit* unit, WeaponId::Enum weapon_id);																		// 00475870
 
     // for is_ready_to_attack
     u32 get_distance_to_unit(Unit* unit_1, Unit* unit_2);																			// 00430D30
     u32 distance_from_dbox_corner(Unit* a1, __int16 a2, __int16 a3);
-    b32 is_angle_in_attack_angle(s32 pos_x, s32 pos_y, Unit* unit, u8 weapon_id);
+    bool is_unit_in_attack_angle(s32 pos_x, s32 pos_y, Unit* unit, WeaponId::Enum weapon_id);
 
     // for can_cast_ordered_spell_now
     bool is_target_within_min_range(Unit* unit, u32 min_range, Unit* target);														// 00430F10
-    s32 get_flingy_halt_distance(Unit* unit);																						// 00494F90
+    s32 get_flingy_halt_distance_in_subpixels(Unit* unit);																						// 00494F90
 
     // for orders_stay_in_range
     void prepend_order_targeting_ground(__int8 order_id, __int16 x, __int16 y, Unit* unit);
@@ -639,7 +639,7 @@ namespace helper {
     void stats_hangar_count(BinDlg* dialog, u32 index);																				// 004253D0
     void stats_shield_level(BinDlg* dialog, u32 index);																				// 00425510
     void stats_armor_level(BinDlg* dialog, u32 index);																				// 00425600
-    void stats_weapon_level(BinDlg* dialog, u32 index, u32 weapon_id);																// 00425790
+    void stats_weapon_level(BinDlg* dialog, u32 index, WeaponId::Enum weapon_id);													// 00425790
     bool stat_spidermine_count(BinDlg* dialog, u32 index);																			// 00426300
 
     // For get_unit_rank_string and check_hotkey_char
@@ -660,7 +660,7 @@ namespace helper {
 
     //// api
     void apply_corrosive_spores(Unit* unit);
-    Bullet* create_bullet(u8 weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction);
+    Bullet* create_bullet(WeaponId::Enum weapon_id, Unit* source, s16 x, s16 y, u8 attacking_player, u8 direction);
     void weapon_bullet_shot(Unit* target, Bullet* bullet, u32 damage_divisor);
     Unit* create_unit_at_pos(u16 unit_id, u16 player, u32 x, u32 y);																// 004CD360
     Flingy* create_flingy(u32 flingy_id, u32 player, u32 x, u32 y);																	// 00496460
@@ -777,7 +777,7 @@ namespace helper {
     Unit* iterate_units_at_location_target_proc(Box16* a1, Unit*(__fastcall* a2)(Unit*, Unit*), Unit* a3);							// 004E8280
 
     // For create_bullet
-    s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bullet, s32 weapon_id, s32 x, s32 angle);						// 0048BEC0
+    s32 initialize_bullet(char player, Unit* parent, s16 y, Bullet* bullet, WeaponId::Enum weapon_id, s32 x, s32 angle);						// 0048BEC0
 
     // For writeBullets
     /*
@@ -789,11 +789,11 @@ namespace helper {
     Bullet* unpackBulletData(Bullet* a1, s32 a2); // 0048A8D0
     */
 
-    //// wpnspellhit
+    //// weapon_spellhit
     bool can_unit_id_fit_at_xy(s32 x, s32 y, u32 unit_id);														    // 0042D810
     Unit** get_all_units_in_bounds(Box16* coords);																	// 0042FF80
     void increment_unit_kill_count(Unit* unit);																		// 004759C0
-    u32 get_unit_damage_bonus(Unit* unit, u8 weapon_id);															// 00475EC0
+    u32 get_unit_damage_bonus(Unit* unit, WeaponId::Enum weapon_id);															// 00475EC0
     void attack_overlay_and_notify(Unit* attacker, Unit* target, u32 weaponType, u32 direction);			        // 00479730
     u32 get_unit_bullet_damage(Bullet* bullet, Unit* target);														// 0048ACD0
     u32 get_tech_use_error_message(Unit* target, u8 player, u16 tech_id);										    // 00491E80
@@ -818,7 +818,7 @@ namespace helper {
     // For CBulletDamage
     s32 _fastcall lakizilisk_splash_proc(Unit* target, Bullet* bullet);												// 0048B680
     s32 _fastcall ground_splash_proc(Unit* target, Bullet* bullet);													// 0048B750
-    s32 _fastcall air_splash_proc(Unit* unit, Bullet* bullet);														// 0048B150
+    b32 _fastcall air_splash_proc(Unit* unit, Bullet* bullet);														// 0048B150
     s32 _fastcall air_splash_proc_2(Unit* unit, Bullet* bullet);													// 0048B730
     bool unit_has_no_main_order_type(Unit* unit);																	// 00475A50
     s32 set_unit_event_complete();																					// 004C36C0
@@ -1337,7 +1337,7 @@ namespace helper {
     bool ai_has_incomplete_military_in_region(AiRegion* region);											// 00436EB0
 
     void update_burrowing_cloaking_units();																	// 00492EB0
-    s32 use_weapon_iscript(Unit* unit, u8 weapon_id, u32 flag_or_timer, char iscript_anim);					// 00476C90
+    s32 use_weapon_iscript(Unit* unit, WeaponId::Enum weapon_id, u32 flag_or_timer, char iscript_anim);				// 00476C90
 
     bool place_building_resource_restriction_check(u32 check_vision, u16 tile_x, u16 tile_y);				// 00473990
 
@@ -1483,7 +1483,7 @@ namespace helper {
 
     u32 can_target_order_on_fow_unit(Unit* self, char order_id, u16 fow_unit_id, s32* error);						// 004746D0
     bool unit_can_attack_ground_type(u16 fow_unit_id, Unit* self);													// 00475C80
-    u16 get_targeting_error_string(u32 weapon_id, s32* error, Unit* target);										// 0046EFE0
+    u16 get_targeting_error_string(WeaponId::Enum weapon_id, s32* error, Unit* target);						    	// 0046EFE0
     char cmdact_target_order(u8 order_id, Unit* target, u16 x_pos, u16 y_pos, u16 fow_unit_id, char keycode_used);	// 004C0300
 
     void show_cursor_marker(u16 x_pos, u16 y_pos);															// 00488660
@@ -1496,9 +1496,9 @@ namespace helper {
     Image* update_image_frame_index(Image* image);															// 004D5940
     u32 get_path_distance_to(Unit* unit, v2u16 position);													// 0042FA30
 
-    void fire_unit_weapon(Unit* unit, u8 weapon_id);																					// 00479C90
+    void fire_unit_weapon(Unit* unit, WeaponId::Enum weapon_id);																					// 00479C90
     Thingy* ufl_unstable_randomize(Flingy* flingy);																						// 004955F0
-    void do_weapon_damage(u32 damage, Unit* target, u8 weapon_id, u32 divisor, char direction, Unit* attacker, u32 attacking_player);	// 00479930
+    void do_weapon_damage(u32 damage, Unit* target, WeaponId::Enum weapon_id, u32 divisor, char direction, Unit* attacker, u32 attacking_player);	// 00479930
     Image* iscript_create_image(Image* relative_image, u32 image_id, char x, char y, u8 draw_above);									// 004D6D90
     u32 iscript_use_lo_file(void* out_coords, Image* image, u8 a3, u8 frame_offset);													// 004D5770
     void hide_image(Image* image);																										// 00401100
@@ -1550,7 +1550,7 @@ namespace helper {
 
     Image* copy_image_palette_type(Image* image, Image* from);																			// 004D5E40
 
-    bool order_hangar_unit(Unit* unit, u32 range1, u32 range2);												// 00465A60
+    bool orders_carrier_reaver_idle(Unit* unit, u32 range1, u32 range2);												// 00465A60
     b32 can_draw_placement_rect_maybe(u16 unit_id, Unit* unit);												// 00436A10
     Image* prepare_placement_preview();																		// 004D5B60
     void place_building_normal_proc();																		// 0048E490
@@ -1628,8 +1628,8 @@ namespace helper {
     b32 is_at_home(Unit* unit);																				// 00462930
     u32 is_under_carapace_swarm(Unit* unit);																// 00476210
 
-    void iscript_fireweapon(Unit* unit, u8 weapon_id);														// 00479D40
-    void iscript_useweapon(Unit* unit, u16 weapon_id);														// 00479C30
+    void iscript_fireweapon(Unit* unit, WeaponId::Enum weapon_id);														// 00479D40
+    void iscript_useweapon(Unit* unit, WeaponId::Enum weapon_id);														// 00479C30
 
     void draw_button_graphic(BinDlg* dialog, void* dest);													// 004F0050
     void draw_alternate_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest);						// 004EFEB0
@@ -1831,7 +1831,7 @@ namespace helper {
     void status_update_tooltip();												// 00457FE0
     void status_update_single_wireframe();										// 004568B0
 
-    u32 calculate_unit_strength(UnitId::Enum unit_id, u32 weapon_id);			// 00431270
+    u32 calculate_unit_strength(UnitId::Enum unit_id, WeaponId::Enum weapon_id);			// 00431270
     u32 filter_unit_strength(UnitId::Enum unit_id, u32 strength);				// 00431150
     bool should_attack_unit(u32 attacking_player, Unit* target);				// 00431550
     u32 get_targeting_priority(Unit* unit, b32 is_ground_target);				// 00431730
@@ -1962,4 +1962,8 @@ namespace helper {
     void set_fog_mask(u32 tile_flags, u32 x_tile, u32 y_tile, u32 x_final, u32 y_final);            // 00472E50
 
     u32 get_system_time(LPSYSTEMTIME system_time);                 // 0040C7DF
+
+    bool is_distance_greater_than_path_distance_to_order_target(Unit* unit, s32 distance);  // 00465480
+    s32 convert_current_order_to_carrier_reaver_idle_order(Unit* unit);                     // 00465390
+    s32 convert_current_order_to_carrier_reaver_fight_order(Unit* unit);                    // 00465360
 }

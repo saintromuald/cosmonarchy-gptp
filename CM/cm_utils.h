@@ -16,7 +16,7 @@ u32 get_construction_graphic(Unit* unit);
 void init_omnipresence();
 void init_duopoly();
 void disconnect_addon_no_event(Unit* unit);
-u32 get_bullet_damage(Bullet* bullet, u32 weapon_id);
+u32 get_bullet_damage(Bullet* bullet, WeaponId::Enum weapon_id);
 const char* game_kind_to_string(GameKind game_kind);
 const char* game_kind_to_filename_string(GameKind game_kind);
 const char* race_to_string(RaceId::Enum race);

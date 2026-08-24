@@ -187,6 +187,21 @@ namespace {
         }
     }
 
+    void __declspec(naked) can_cast_ordered_spell_now_wrapper() { // 00491DB0
+        static Unit* unit;
+        static b32 result;
+        __asm {
+            MOV unit, EAX
+            PUSHAD
+        }
+        result = hooks::can_cast_ordered_spell_now(unit);
+        __asm {
+            POPAD
+            MOV EAX, result
+            RETN
+        }
+    }
+
     // Patches \\
 
     const u32 sub_491DB0_91E6C = 0x00491E6C;
@@ -256,5 +271,6 @@ namespace hooks {
         jump_patch(orders_defensive_matrix_wrapper,		0x004550A0, 0);
         jump_patch(cannot_cast_spell_wrapper,				0x00492140, 0);
         jump_patch(spell_order_move_towards_target_wrapper,		0x00492450, 0);
+        jump_patch(can_cast_ordered_spell_now_wrapper,	0x00491DB0, 0);
     }
 } // namespace hooks

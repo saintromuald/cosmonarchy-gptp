@@ -52,7 +52,7 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
     }
 
     // Height advantage
-    bonus_amount += bw::get_cliff_advantage(unit, target, 0, true);
+    bonus_amount += bw::get_cliff_advantage(unit, target, WeaponId::None, true);
 
     if (unit_ext.unar_solitary_focus_stacks) {
         bonus_amount += unit_ext.unar_solitary_focus_stacks;
@@ -83,8 +83,6 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
     switch (unit->id) {
         case UnitId::TerranCamazotz:              final_range =  3; break;
         case UnitId::TerranBlackjackGolden:       final_range -= 1; break;
-        case UnitId::TerranCutlass:               final_range -= 4; break;
-        case UnitId::TerranCutlassTurret:         final_range -= 4; break;
         case UnitId::TerranBroadside:             final_range -= 2; break;
         case UnitId::TerranBroadsideTurret:       final_range -= 2; break;
         case UnitId::TerranArquebus:              final_range -= 1; break;
@@ -110,7 +108,7 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
 };
 
 // Only used for the tooltip
-u32 get_base_weapon_range(u8 weapon_id, u16 unit_id) {
+u32 get_base_weapon_range(WeaponId::Enum weapon_id, u16 unit_id) {
     u32 final_range = weapons_dat::max_range[weapon_id];
     if (bw::get_game_kind() == GameKind::DarkAges && weapons_dat::max_range[weapon_id] > 32 && !unit_id_is_trap(unit_id)) {
         final_range -= static_cast<u32>(round(bw::calculate_dark_ages_penalty(weapons_dat::max_range[weapon_id] / 32.0fp))) * 32;
@@ -119,8 +117,6 @@ u32 get_base_weapon_range(u8 weapon_id, u16 unit_id) {
     switch (unit_id) {
         case UnitId::TerranCamazotz:              final_range -= 3tiles; break;
         case UnitId::TerranBlackjackGolden:       final_range -= 1tiles; break;
-        case UnitId::TerranCutlass:               final_range -= 4tiles; break;
-        case UnitId::TerranCutlassTurret:         final_range -= 4tiles; break;
         case UnitId::TerranBroadside:             final_range -= 2tiles; break;
         case UnitId::TerranBroadsideTurret:       final_range -= 2tiles; break;
         case UnitId::TerranArquebus:              final_range -= 1tiles; break;
@@ -155,7 +151,7 @@ u32 get_base_weapon_range(u8 weapon_id, u16 unit_id) {
 // Returns the modified max distance for the weapon, which is assumed to be attached to the given unit.
 // This hook affects the behavior of Unit::get_max_weapon_range().
 // Note: Weapon ranges are measured in pixels.
-u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cliff_advantage) {
+u32 get_max_weapon_range(Unit* unit, WeaponId::Enum weapon_id, Unit* target, bool ignore_cliff_advantage) {
     auto& unit_ext = unit->ext();
 
     fp32 bonus_amount{};
@@ -216,8 +212,6 @@ u32 get_max_weapon_range(Unit* unit, u8 weapon_id, Unit* target, bool ignore_cli
         switch (unit->id) {
             case UnitId::TerranCamazotz:              final_range -= 3tiles; break;
             case UnitId::TerranBlackjackGolden:       final_range -= 1tiles; break;
-            case UnitId::TerranCutlass:               final_range -= 4tiles; break;
-            case UnitId::TerranCutlassTurret:         final_range -= 4tiles; break;
             case UnitId::TerranBroadside:             final_range -= 2tiles; break;
             case UnitId::TerranBroadsideTurret:       final_range -= 2tiles; break;
             case UnitId::TerranArquebus:              final_range -= 1tiles; break;
@@ -257,15 +251,48 @@ void reassign_target_seek_range() { // 0049E010
             attacker_unit_id = unit_id;
         }
         auto seek_range = units_dat::seek_range[attacker_unit_id];
-        auto ground_weapon = units_dat::ground_weapon[attacker_unit_id];
+        WeaponId::Enum ground_weapon = units_dat::ground_weapon[attacker_unit_id];
         if (ground_weapon != WeaponId::None) {
             seek_range = std::max<u8>(seek_range, weapons_dat::max_range[ground_weapon] / 32);
         }
-        auto air_weapon = units_dat::air_weapon[attacker_unit_id];
+        WeaponId::Enum air_weapon = units_dat::air_weapon[attacker_unit_id];
         if (air_weapon != WeaponId::None) {
             seek_range = std::max<u8>(seek_range, weapons_dat::max_range[air_weapon] / 32);
         }
         units_dat::seek_range[unit_id] = seek_range;
+    }
+}
+
+// Hooked to eventually extend weapon ids past 255.
+// Originally type int and always returned 0. Now type void and returns 0 in hook wrapper. -Pr0nogo
+void get_standard_attack_target(Unit* target, Unit* attacker) { // 00442DA0
+    if (target == attacker) {
+        return;
+    }
+    if (!(target->sprite->visibility_status & (1 << attacker->player))) {
+        return;
+    }
+    if (!helper::unit_can_attack_target(target, attacker, 1) || !helper::is_unit_enemy(attacker, target)) {
+        return;
+    }
+    if (g_min_range[9] && helper::is_target_within_min_range(attacker, g_min_range[9], target)) {
+        return;
+    }
+    if (!helper::is_target_within_min_range(attacker, *g_max_range_in_px, target)) {
+        return;
+    }
+
+    Unit* final_attacker = attacker->subunit;
+    if (!helper::unit_is_subunit(attacker->subunit)) {
+        final_attacker = attacker;
+    }
+    if (!(final_attacker->status & UnitStatus::CanTurnAroundToAttack)) {
+        if (!helper::is_unit_in_attack_angle(target->sprite->position.y, target->sprite->position.x, final_attacker, units_dat::ground_weapon[final_attacker->id])) {
+            return;
+        }
+    }
+    if (!helper::cannot_chase_target(attacker, target)) {
+        helper::add_unit_to_possible_targets(helper::get_target_priority(attacker, target), target);
     }
 }
 } // namespace hooks

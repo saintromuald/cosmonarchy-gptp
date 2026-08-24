@@ -77,13 +77,19 @@ namespace DatExt {
 			}
 
 			dat_table_ptr[0].length = 2; // flingy ID to u16
+			dat_table_ptr[17].length = 2; // ground weapon ID to u16
+			dat_table_ptr[19].length = 2; // air weapon ID to u16
 
 			// these normally have a length of 2 and the number of entries multiplied accordingly, but for simplicity the length will be multiplied here instead
 			dat_table_ptr[36].length = 4; // placement box
 			dat_table_ptr[37].length = 4; // addon position
 			dat_table_ptr[38].length = 8; // unit size
 		}
-
+		
+		// orders.dat special cases
+		if (i == DatFile::Orders_Dat) {
+			dat_table_ptr[13].length = 2; // weapon ID to u16
+		}
 		// portdata.dat special cases
 		if (i == DatFile::Portdata_Dat) {
 			// Count must be a multiple of 5, so round up

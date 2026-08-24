@@ -1103,7 +1103,7 @@ bool is_slowed(Unit* unit) {
     return false;
 }
 
-void do_deconstruction_damage(Unit* unit, u16 weapon_id, bool play_sound) {
+void do_deconstruction_damage(Unit* unit, WeaponId::Enum weapon_id, bool play_sound) {
     // Deconstruction - Pazuzu passive
     UnitExt* unit_ext = get_unit_ext(unit);
     fp32 self_damage = (unit_ext->values[ValueDeconstruction] * 0.05fp * fp32(weapons_dat::damage_amount[weapon_id] * 256.0fp));

@@ -1,7 +1,7 @@
 #pragma once
 
 #define UnitsIdLimit 3000
-#define WeaponsIdLimit 256
+#define WeaponsIdLimit 1000
 #define FlingyIdLimit 1000
 #define SpritesIdLimit 2000
 #define ImagesIdLimit 3000

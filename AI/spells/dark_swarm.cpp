@@ -1,10 +1,8 @@
 #include "spells.h"
 #include <AI/ai_common.h>
 
-namespace AI
-{
-	b32 weapon_behavior_can_hit_target_check(Unit* caster, Unit* attacker, Unit* target)
-	{
+namespace AI {
+	b32 weapon_behavior_can_hit_target_check(Unit* caster, Unit* attacker, Unit* target) {
 		// code equivalent to is_under_carapace_swarm @ 0x00476210:
 		// a function different from bw::is_under_carapace_swarm(target) that just seeks a nearby Carapace Swarm active spell and is used in here.
 
@@ -52,8 +50,7 @@ namespace AI
 		return return_value;
 	}
 
-	bool dark_swarm_target_finder_match(Unit* caster, Unit* target)
-	{
+	bool dark_swarm_target_finder_match(Unit* caster, Unit* target) {
 		bool return_value;
 		if (is_target_worth_hitting(target, caster)) {
 			Unit* target_of_target = target->order_target.unit;
@@ -63,10 +60,10 @@ namespace AI
 				&&  !target_of_target->subunit
 				&& !(target_of_target->status & UnitStatus::InAir))
 				{
-					u8 tot_ground_weapon = target_of_target->get_ground_weapon();
+					u16 tot_ground_weapon = target_of_target->get_ground_weapon();
 					if (tot_ground_weapon != WeaponId::None && weapons_dat::behavior[tot_ground_weapon] == WeaponBehavior_AppearOnAttacker)
 					{
-						u8 target_ground_weapon;
+						u16 target_ground_weapon;
 						if (target->subunit->is_subunit()) {
 							target = target->subunit;
 						}
@@ -103,8 +100,7 @@ namespace AI
 	}
 
 	// Based on AI_AssignBestDarkSwarmTarget @ 0x00442840
-	Unit* find_best_carapace_swarm_target(Unit* caster, bool isUnderAttack)
-	{
+	Unit* find_best_carapace_swarm_target(Unit* caster, bool isUnderAttack) {
 		s32 bounds;
 		if (isUnderAttack) {
 			bounds = 32 * 9;	/*0x120*/

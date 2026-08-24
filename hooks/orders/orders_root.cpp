@@ -641,7 +641,7 @@ namespace hooks {
 					final_attacker = unit;
 				}
 
-				u32 weapon_id = bw::get_unit_weapon_based_on_target(final_attacker, target);
+				WeaponId::Enum weapon_id = bw::get_unit_weapon_based_on_target(final_attacker, target);
 				u32 min_range = weapons_dat::min_range[weapon_id];
 				u32 max_range = helper::get_unit_max_weapon_range(unit, weapon_id);
 				if (weapon_id == WeaponId::None
@@ -668,7 +668,7 @@ namespace hooks {
 					final_attacker_2 = unit;
 				}
 
-				u32 weapon_id = bw::get_unit_weapon_based_on_target(final_attacker_2, target);
+				WeaponId::Enum weapon_id = bw::get_unit_weapon_based_on_target(final_attacker_2, target);
 				if (weapon_id != WeaponId::None) {
 					u32 min_range_2 = weapons_dat::min_range[weapon_id];
 					if (!min_range_2 || !helper::is_target_within_min_range(final_attacker_2, min_range_2, target)) {

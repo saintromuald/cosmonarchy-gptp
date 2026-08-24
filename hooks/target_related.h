@@ -3,6 +3,7 @@
 #include "BW/bwdata.h"
 
 namespace hooks {
+bool is_unit_target_out_of_max_range(Unit* unit, Unit* target); // 00476430
 bool is_unit_in_weapon_range(Unit* target, Unit* attacker);															// 00476870
 Unit* cmdrecv_hold_position(s8* buffer);																			// 004C20C0
 u32 unit_can_see_cloaked_target(Unit* target, Unit* unit);															// 00401D60
@@ -25,11 +26,17 @@ Unit* unit_order_move_to_target_reset_order_state(Unit* unit, u8 order_id, Unit*
 b32 is_target_within_min_range(Unit* unit, u32 min_range, Unit* target);											// 00430F10
 u32 is_target_visible(Unit* target, Unit* unit);																	// 004E5E30
 b32 is_unit_enemy(Unit* self, Unit* target);																		// 0047B910
-b32 is_ready_to_attack(Unit* unit, u8 weapon_id);																	// 00476640
+b32 is_ready_to_attack(Unit* unit, WeaponId::Enum weapon_id);														// 00476640
 Unit* ai_choose_target(Unit** target_array, u32 player, Unit* unit, u32 region_id, b32 is_ground);					// 00431990
-u8 get_air_weapon(Unit* unit);																						// 00475840
+WeaponId::Enum get_air_weapon(Unit* unit);																			// 00475840
 void orders_watch_target(Unit* unit);																				// 0047BAB0
 bool target_is_inside_minimum_range(Unit* unit, Unit* target);														// 004764D0
+WeaponId::Enum get_ground_weapon(Unit* unit);																		// 00475A90
+void minimap_game_target_order(DialogEvent* event);																	// 004A55F0
+bool can_weapon_target_unit(WeaponId::Enum weapon_id, Unit* target, Unit* attacker);								// 00475CE0
+void get_targeting_error_string(WeaponId::Enum weapon_id, u32* out_error, Unit* target);							// 0046EFE0
+bool is_threat(Unit* candidate, Unit* self);																		// 00476930
+bool is_unit_in_attack_angle(s32 pos_x, s32 pos_y, Unit* unit, WeaponId::Enum weapon_id);							// 00475BE0
 
 void inject_target_related_hooks();
 }

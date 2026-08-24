@@ -294,8 +294,8 @@ bool is_zerg_building_morph_source(u16 id);
 bool is_larval_egg(Unit* unit);
 bool is_zerg_egg_new(Unit* unit, bool allow_larval_eggs = true, bool allow_larvae = true, u16 explicit_unit_id = UnitId::None);
 bool is_zerg_egg(u16 id, bool allow_normal_eggs = true, bool allow_larvae = true);
-Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, v2u16 target_pt, v2u16 origin_pt = {});
-Bullet* artificial_bullet_from(u8 weapon_id, u8 player, Unit* source, Unit* target, u16 x, u16 y);
+Bullet* artificial_bullet_from(WeaponId::Enum weapon_id, u8 player, Unit* source, Unit* target, v2u16 target_pt, v2u16 origin_pt = {});
+Bullet* artificial_bullet_from(WeaponId::Enum weapon_id, u8 player, Unit* source, Unit* target, u16 x, u16 y);
 std::string read_samase_file(char* name);
 bool teleport_to_point(Unit* unit, v2u16 target, u16 sprite_id = 0, bool preserve_order = false);
 bool teleport_to_unit(Unit* unit, Unit* target, u32 radius, const TeleportOptions& options, u16 sprite_id = 0);
@@ -362,8 +362,7 @@ bool can_be_entered_by(Unit* transport, Unit* unit);
 /// @param  target    If nullptr is passed, the function checks whether the
 ///                   weapon can target a position on the inside. If @p target
 ///                   is invincible, the function returns false.
-bool can_weapon_target_unit(u8 weapon_id, Unit* target = nullptr,
-    Unit* attacker = nullptr);
+bool can_weapon_target_unit(WeaponId::Enum weapon_id, Unit* target = nullptr, Unit* attacker = nullptr);
 
 /// Checks if @p unit is under a Dark Swarm. This does NOT check whether the
 /// unit is a inside unit or a building.
@@ -792,7 +791,7 @@ Unit* create_unit_from_bullet(UnitId::Enum unit_id, u32 player, v2u16 position, 
 void create_unit_from_ability(s32 unit_id, s32 count, u16 player, v2u16 position, Unit* creator = nullptr);
 u16 get_last_queue_slot_id(Unit* a1);
 s32 dir_saturate(s32 direction, s32 value);
-fp32 get_cliff_advantage(Unit* unit, Unit* target_unit, u8 weapon, bool default_to_max_bonus);
+fp32 get_cliff_advantage(Unit* unit, Unit* target_unit, WeaponId::Enum weapon_id, bool default_to_max_bonus);
 void set_offset_to_parent_special_overlay(Image* image);
 bool is_slowed(Unit* unit);
 void hide_and_disable_unit(Unit* unit);
@@ -803,7 +802,7 @@ void apply_ensnare(Unit* unit);
 bool is_enabled(Unit* unit);
 bool is_debuffed(Unit* unit);
 s32 get_upgrade_type(Unit* unit);
-s32 get_final_damage(Unit* unit, u16 weapon_id);
+s32 get_final_damage(Unit* unit, WeaponId::Enum weapon_id);
 bool order_is_spell(s32 order_id);
 void create_shield_overlay(Unit* unit, u32 attack_direction);
 void decloak_proc(Unit* unit, u32 timer);
@@ -884,7 +883,7 @@ bool order_id_is_aggressive(u32 order_id);
 bool ai_unit_id_can_flee_three_quarters(u32 unit_id);
 bool ai_unit_id_can_flee_two_thirds(u32 unit_id);
 bool buttonset_id_is_submenu(u32 buttonset_id);
-u32 get_custom_secondary_weapon_from_unit_id(u32 unit_id);
+WeaponId::Enum get_custom_secondary_weapon_from_unit_id(u32 unit_id);
 void set_bullet_target(Bullet* bullet, v2u16 target);
 void set_bullet_target(Bullet* bullet, Unit* target);
 void set_bullet_target_follow(Bullet* bullet, Target target);
@@ -892,7 +891,7 @@ void set_bullet_target_absolute(Bullet* bullet, Target target);
 void set_bullet_direction(Bullet* bullet, v2u16 target);
 void set_bullet_direction(Bullet* bullet, Unit* target);
 bool move_unit_ai(Unit* unit, AiRegion* ai_region);
-void astral_blessing_proc(Unit* victim, u32 attacking_player_id, u32 weapon_id);
+void astral_blessing_proc(Unit* victim, u32 attacking_player_id, WeaponId::Enum weapon_id);
 void shield_heal_proc(Unit* healer, u32 heal_source_player, u32 range, u32 heal_amount);
 void heal_proc(Unit* heal_source, u32 heal_source_player, u32 range, u32 heal_amount);
 bool is_attack_region(AiRegion* ai_region);
@@ -901,7 +900,7 @@ void town_add_spending_request(AiTown& town, u32 count, u32 unit_id, u32 priorit
 void military_add_spending_request(u32 player, u32 unit_id, v2u16 position, u32 priority, bool request_base = true);
 void guard_add_spending_request(u32 player, GuardAi* guard_ai, u32 priority, bool request_base = true);
 GuardAi* create_guard_ai(u32 player, u32 unit_id, v2u16 position);
-u8 get_damage_factor_for_tooltip(u8 weapon_id, Unit* unit);
+u8 get_damage_factor_for_tooltip(WeaponId::Enum weapon_id, Unit* unit);
 void delete_ai_script(AiScript* ai_script);
 void delete_town(AiTown* ai_town);
 void delete_fow_sprite(Thingy* thingy);
@@ -957,7 +956,7 @@ PlayingSound play_looping_sound(SoundSet sound_set, v2u16 pos = {});
 PlayingSound play_looping_sound(SoundSet sound_set, Unit* unit, bool force_globally = false);
 
 void play_action_sound(u32 sound_id, Unit* unit);
-u32 get_unit_weapon_based_on_target(Unit* attacker, Unit* target);
+WeaponId::Enum get_unit_weapon_based_on_target(Unit* attacker, Unit* target);
 void regress(Unit* unit, u32 regression_id);
 void unfreeze_channeling_unit(Unit* unit);
 bool unit_can_flee(Unit* unit);
@@ -970,14 +969,14 @@ u32 get_advisor_sound_from_event_type(u32 player, u32 event_type);
 u32 get_advisor_sound_from_message_id(u32 player, u32 message_id);
 bool has_custom_advisor(u32 player);
 void draw_shape(u32 i_0, float scale, Point32* offset, u8 color);
-void draw_weapon_range(Unit* unit, u8 weapon_id, u8 color);
+void draw_weapon_range(Unit* unit, WeaponId::Enum weapon_id, u8 color);
 void draw_aura_range(Unit* unit, u16 radius, u8 color);
 void reveal_attacker(Unit* attacker, Unit* victim);
 void unload_or_kill_loaded_units(Unit* transport);
 u32 get_cloak_sound_id(Unit* unit);
 u32 get_decloak_sound_id(Unit* unit);
-void launch_return_missile(Unit* unit, u32 weapon_id);
-void fire_incremental_bullet(Bullet* bullet, u32 weapon_id, Unit* target, v2u16 position);
+void launch_return_missile(Unit* unit, WeaponId::Enum weapon_id);
+void fire_incremental_bullet(Bullet* bullet, WeaponId::Enum weapon_id, Unit* target, v2u16 position);
 bool client_selection_id_check(u32 unit_id);
 u32 client_selection_count();
 u32 client_selection_unit_id_count(u32 unit_id);
@@ -989,8 +988,8 @@ bool game_kind_supports_kills(GameKind game_kind);
 bool unit_can_fire_secondary_weapon(Unit* unit);
 void cancel_targeting_and_place_building();
 void select(std::vector<Unit*>& units, bool play_response);
-u32 get_unit_weapon_fire_sound(Unit* unit, u32 weapon_id);
-u32 get_weapon_fire_sound(u32 weapon_id, Unit* unit);
+u32 get_unit_weapon_fire_sound(Unit* unit, WeaponId::Enum weapon_id);
+u32 get_weapon_fire_sound(WeaponId::Enum weapon_id, Unit* unit);
 bool unit_regenerates_hp(Unit* unit);
 fp32 get_regeneration_factor(Unit* unit);
 bool unit_has_shields(Unit* unit);

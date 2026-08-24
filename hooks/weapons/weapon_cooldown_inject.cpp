@@ -4,11 +4,11 @@
 namespace {
 	void __declspec(naked) get_modified_weapon_cooldown_wrapper() {
 		static Unit* unit;
-		static u8 weapon_id;
+		static WeaponId::Enum weapon_id;
 		static u32 result;
 		__asm {
 			MOV unit, ESI
-			MOV weapon_id, AL
+			MOV weapon_id, AX
 			PUSHAD
 		}
 		result = hooks::get_modified_weapon_cooldown(unit, weapon_id);

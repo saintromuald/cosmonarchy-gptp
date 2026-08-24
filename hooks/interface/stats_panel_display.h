@@ -33,7 +33,7 @@ const char* get_unit_rank_string(Unit* unit);																									// 0042F37
 void draw_unit_kills_string(BinDlg* dialog);																									// 00425DD0
 void draw_building_info(BinDlg* dlg);																											// 00427890
 void stats_armor_level(BinDlg* dialog, Unit* unit, u16 status_screen_index);																	// 00425600
-void stats_weapon_level(BinDlg* dialog, u16 status_screen_index, u8 weapon_id);																	// 00425790
+void stats_weapon_level(BinDlg* dialog, u16 status_screen_index, WeaponId::Enum weapon_id);																	// 00425790
 void stats_shield_level(BinDlg* dialog, u16 status_screen_index);																				// 00425510
 b32 stats_spidermine_count(BinDlg* dialog, u16 index);																							// 00426300
 const char* get_unit_name(Unit* unit);																											// 0047B5A0

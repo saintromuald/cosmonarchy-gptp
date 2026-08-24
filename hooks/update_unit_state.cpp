@@ -448,12 +448,12 @@ namespace hooks {
 
 		helper::update_burrowing_cloaking_units();
 		helper::update_unit_power();
-		s32 lurker_splash_index = (*g_lurker_splash_list_index)++ + 1;
-		if (*g_lurker_splash_list_index == 32) {
+		s32 lurker_splash_index = (*g_lakiz_splash_list_index)++ + 1;
+		if (*g_lakiz_splash_list_index == 32) {
 			lurker_splash_index = 0;
-			*g_lurker_splash_list_index = 0;
+			*g_lakiz_splash_list_index = 0;
 		}
-		memset(&g_lurker_splash_list[32 * lurker_splash_index], 0, 0x80u);
+		memset(&g_lakiz_splash_list[32 * lurker_splash_index], 0, 0x80u);
 		*g_last_bullet_index = 0;
 
 		for (Unit* unit = *g_first_scanner_sweep; unit; unit = next_unit) {
