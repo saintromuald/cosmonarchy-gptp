@@ -5230,7 +5230,7 @@ namespace helper {
             MOVZX EBX, attacking_player
             PUSH EBX
             MOVSX EBX, y
-            PUSH y
+            PUSH EBX
             MOVSX EBX, x
             PUSH EBX
             MOV EAX, source
