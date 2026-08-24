@@ -628,7 +628,7 @@ static FraudSpawnSource* get_closest_source(FraudSpawnLocation* location, v2u16 
 InitPositions sources_positions;
 InitPositions rally_positions;
 
-bool init_threshold_spawn(CHKUnit* unit, u32 flags) {
+bool init_threshold_spawn(ChkUnit* unit, u32 flags) {
 	if (unit->player != 11 || bw::get_game_kind() != GameKind::Scenario) {
 		return false;
 	}

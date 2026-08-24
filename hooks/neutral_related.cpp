@@ -2,7 +2,7 @@
 #include <BW/api.h>
 
 namespace hooks {
-	bool unit_is_not_neutral(CHKUnit* unit) { // 004CBE20
+	bool unit_is_not_neutral(ChkUnit* unit) { // 004CBE20
 		if (game_data->starting_units == StartingUnits::MapUnits) {
 			return false;
 		}

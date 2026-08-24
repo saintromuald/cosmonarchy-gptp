@@ -331,7 +331,7 @@ namespace hooks {
         return 0;
     }
 
-    Unit* create_preplaced_unit(CHKUnit* chkunit) { // 004CD740
+    Unit* create_preplaced_unit(ChkUnit* chkunit) { // 004CD740
         u32 flags = chkunit->valid_state_flags & chkunit->state_flags;
 
         if (init_threshold_spawn(chkunit, flags)) {
@@ -369,6 +369,7 @@ namespace hooks {
         		return 0;
         	}
         }
+        // Do not spawn layout-only units.
         if (flags & ChkUnitFlags_Cloaked || chkunit->unit_id == UnitId::TownCenterMarker) {
             return 0;
         }
@@ -395,7 +396,7 @@ namespace hooks {
     }
 
     // Hooked to add more cases. -Pr0nogo
-    bool chkunit_invalid_for_melee(CHKUnit* chkunit) { // 004CBE20
+    bool chkunit_invalid_for_melee(ChkUnit* chkunit) { // 004CBE20
         if (g_starting_units != StartingUnits::MapUnits) {
             if (chkunit->player == 11) {
                 return false;

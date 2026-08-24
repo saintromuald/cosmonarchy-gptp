@@ -133,6 +133,7 @@
 #include "hooks/interface/mainmenu/custom_glues.h"
 #include "hooks/snp.h"
 #include "hooks/lobby_command_receive.h"
+#include "hooks/resarea.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.
@@ -956,6 +957,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     hooks::inject_snp_hooks();
     hooks::inject_lobby_command_hooks();
 
+    hooks::inject_resarea_hooks();
+    
     return TRUE;
 }
 

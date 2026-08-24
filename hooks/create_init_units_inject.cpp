@@ -85,7 +85,7 @@ namespace {
 	}
 
 	void __declspec(naked) create_preplaced_unit_wrapper() { // 004CD740
-		static CHKUnit* chk_unit;
+		static ChkUnit* chk_unit;
 		static Unit* result;
 		__asm {
 			PUSH EBP
@@ -119,7 +119,7 @@ namespace {
 	}
 
 	void __declspec(naked) chkunit_invalid_for_melee_wrapper() { // 004CBE20
-		static CHKUnit* chkunit;
+		static ChkUnit* chkunit;
 		static bool result;
 		__asm {
 			MOV chkunit, EAX

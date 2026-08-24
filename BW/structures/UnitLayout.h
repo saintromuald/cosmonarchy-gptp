@@ -334,7 +334,7 @@ struct UnitLayout {
             /*0x0CB*/     u8		landing_timer;
             /*0x0CC*/     u8		creep_timer;
             /*0x0CD*/     u8		upgrade_level;
-            /*0x0CE*/     u16		_padding_0E;
+            /*0x0CE*/     u16		temp_custom_resarea_id; // was _padding_0E -- unused in vanilla
             /*0x0D0*/     union {
                 struct {
                     /*0x0D0*/		u16     resource_amount;		

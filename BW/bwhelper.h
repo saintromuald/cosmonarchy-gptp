@@ -118,6 +118,9 @@ namespace helper {
     BW_FUNC(0x004be120, void __stdcall, refresh_cursor);
 
     BW_FUNC(0x004F2DE0, b32 __fastcall, is_stacked, Unit* unit);
+    
+    BW_FUNC(0x00445E80, void __stdcall, assign_to_nearest_resarea, u32 res_type, u8* res_type_list);
+    BW_FUNC(0x00446350, void, create_resource_areas);
 
     BW_FUNC(0x0045B850, void __stdcall, aiscript_cases, AiScript* script);
     
@@ -1968,4 +1971,6 @@ namespace helper {
     bool is_distance_greater_than_path_distance_to_order_target(Unit* unit, s32 distance);  // 00465480
     s32 convert_current_order_to_carrier_reaver_idle_order(Unit* unit);                     // 00465390
     s32 convert_current_order_to_carrier_reaver_fight_order(Unit* unit);                    // 00465360
+    
+    u32 get_resarea_id(Unit* unit);                                 // 00445930
 }
