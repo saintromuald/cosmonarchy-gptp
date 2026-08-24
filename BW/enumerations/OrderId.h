@@ -126,7 +126,7 @@ enum Enum {
                     * Default Requirements: Unit must be Reaver/Warbringer. Allow on hallucinated units. */
     ReaverFight            = 0x3D, /**< Reaver attack unit.
                     * Default Requirements: Unit must be Reaver/Warbringer. Allow on hallucinated units. */
-    HoldPositionReaver             = 0x3E, /**< Reaver hold position.
+    HoldPositionReaver     = 0x3E, /**< Reaver hold position.
                     * Default Requirements: Unit must be Reaver/Warbringer. Allow on hallucinated units. */
     TrainFighter           = 0x3F, /**< Training subunit(scarab, hangar_unit). Causes all interceptors within a unit_with_hangar to be healed when not attacking.
                     * Default Requirements: Unused. */

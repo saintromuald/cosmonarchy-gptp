@@ -54,7 +54,7 @@ namespace hooks {
 				}
 			}
 		}
-		if (UnitId::is_carrier((UnitId::Enum)unit_id)) {
+		if (UnitId::has_interceptors((UnitId::Enum)unit_id)) {
 			helper::return_all_interceptors(unit);
 		}
 		u8 order_id = unit->main_order_id;

@@ -2214,7 +2214,8 @@ bool has_far_transport_pickup_range(UnitId::Enum unit_id) {
     return unit_id == UnitId::AskosiEmissary;
 }
 
-bool is_carrier(UnitId::Enum unit_id) {
+// Signifies which units have Interceptor-like hangar units.
+bool has_interceptors(UnitId::Enum unit_id) {
     return unit_id == UnitId::ProtossSolarion;
 }
 

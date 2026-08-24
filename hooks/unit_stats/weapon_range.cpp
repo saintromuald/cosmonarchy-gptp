@@ -161,8 +161,8 @@ u32 get_max_weapon_range(Unit* unit, WeaponId::Enum weapon_id, Unit* target, boo
 
     // Stellar Enforcement - Magister behavior
     if (target) {
-        UnitExt* target_ext = get_unit_ext(target);
-        if (target_ext->timers[TimerStellarEnforcement]) {
+        auto& target_ext = target->ext();
+        if (target_ext.timers[TimerStellarEnforcement]) {
             bonus_amount += 64;
         }
     }

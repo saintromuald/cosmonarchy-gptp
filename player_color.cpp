@@ -268,14 +268,17 @@ void init_player_data() {
         SBmpLoadImage("game\\tminimap.pcx", 0, g_tminimap_colors, MinimapColorCount, 0, 0, 0);
         SBmpLoadImage("game\\tunit.pcx", 0, g_tunit_colors, UnitColorCount, 0, 0, 0);
 
+        g_easter_egg_unit_names[UnitId::ResourceVespeneGeyser].push_back("Vespene Georger");
+
         g_easter_egg_unit_names[UnitId::TerranHarakan].push_back("Terran Ackmed Clone");
         g_easter_egg_unit_names[UnitId::TerranCohort].push_back("Terran Nekron");
         g_easter_egg_unit_names[UnitId::TerranCataphract].push_back("Terran Catfact");
-        g_easter_egg_unit_names[UnitId::TerranHadron].push_back("Terran Hardon");
 
         g_easter_egg_unit_names[UnitId::ProtossLegionnaire].push_back("Protoss Purifier");
-        g_easter_egg_unit_names[UnitId::ProtossAccantor].push_back("Protoss iquare");
+        g_easter_egg_unit_names[UnitId::ProtossAccantor].push_back("Protoss Iquaretor");
         g_easter_egg_unit_names[UnitId::ProtossServitor].push_back("Protoss Shoevitor");
+        g_easter_egg_unit_names[UnitId::ProtossPositron].push_back("Protoss Sositron");
+        g_easter_egg_unit_names[UnitId::ProtossArdentAuthority].push_back("Protoss Arbuz Authority");
 
         g_easter_egg_unit_names[UnitId::ZergDroleth].push_back("Zerg Shambleth");
         g_easter_egg_unit_names[UnitId::ZergZethrokor].push_back("Zerg Zethrocker");

@@ -1955,7 +1955,7 @@ AiScript* run_ai(u32 player, Box32 area, s32 name) {
             v2u16 center = {};
             center.x = area.left + (area.right - area.left) / 2;
             center.y = area.top + (area.top - area.bottom) / 2;
-            ai_script->flags |= bw::get_closest_resarea(center) << 3;
+            ai_script->resarea_id = bw::get_closest_resarea(center);
         }
         return ai_script;
     } else {

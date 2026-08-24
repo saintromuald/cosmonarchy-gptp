@@ -24,6 +24,7 @@ bool has_resources_for_unit(u16 unit_id, u32 player);																	// 004487B
 void ai_make_guard(u32 player_id, Unit* unit);																			// 0043A010
 u32 get_default_refinery_type(u32 player);																				// 004320D0
 u32 ai_get_queued_count(Unit* builder, u32 unit_id);																	// 00466B70
+void aiscript_loop();									// 0045CBD0
 
 void inject_ai_request_hooks();
-}
+} // namespace hooks

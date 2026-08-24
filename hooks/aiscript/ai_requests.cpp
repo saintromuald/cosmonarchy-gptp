@@ -1095,9 +1095,7 @@ namespace hooks {
             helper::display_error_message_id_with_sfx(player, 851, g_console_index + 150);
             return false;
         }
-        if (g_aiscript_controller[player].minerals_available < g_ai_minerals_reserve[player]
-        ||  g_aiscript_controller[player].vespene_available < g_ai_vespene_reserve[player])
-        {
+        if (g_aiscript_controller[player].minerals_available < g_ai_minerals_reserve[player] || g_aiscript_controller[player].vespene_available < g_ai_vespene_reserve[player]) {
             return false;
         }
         return true;
@@ -1205,4 +1203,19 @@ namespace hooks {
         }
         return count;
     }
-}
+
+    void aiscript_loop() { // 0045CBD0
+        AiScript* script_prev; // Do not optimize - ai_stop otherwise we will receive the wrong pointer when the script gets put back into the free scripts linked list. -DF
+        for (AiScript* script = *g_first_active_aiscript; script; script = script_prev) {
+            script_prev = script->link.prev;
+            if (!script->sleep--) {
+                if (script->kill_thread) {
+                    helper::ai_stop(script);
+                    helper::delete_ai_town_if_needed(script->town);
+                } else {
+                    helper::aiscript_cases(script);
+                }
+            }
+        }
+    }
+} // namespace hooks

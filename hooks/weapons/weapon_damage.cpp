@@ -1903,7 +1903,7 @@ namespace hooks {
 
     // Hooked to reveal fog around attackers when they attack allies. -Pr0nogo
     void unit_was_hit(Unit* victim, Unit* attacker, u32 reveal) { // 004795D0
-        if (!attacker || attacker->player == victim->player) {
+        if (!attacker || !attacker->sprite || attacker->player == victim->player) {
             return;
         }
         victim->last_attacking_player = attacker->player;
