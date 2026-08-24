@@ -4097,6 +4097,10 @@ namespace hooks {
             bw::zap_overlay(unit);
         }
 
+        if (unit_ext.timers[TimerZapOverlay] > 1) {
+            bw::zap_overlay(unit);
+        }
+
         if (unit_ext.timers[TimerBoomingBlast] == 1) {
             unit_ext.timers[TimerBoomingBlast] = 0;
             unit->proc_booming_blast();

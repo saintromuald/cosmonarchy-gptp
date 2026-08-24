@@ -427,6 +427,7 @@ namespace hooks {
 		add_status(statuses, "Imploded", -1, 1, unit_ext.timers[TimerScrapworldImplosion], TimerType::Gptp);
 		add_status(statuses, "Crippled", -1, 1, unit_ext.timers[TimerGoremastSlow], TimerType::Gptp);
 		add_status(statuses, "Mechanical Rage", -1, 1, unit_ext.timers[TimerMechanicalRage], TimerType::Gptp);
+		add_status(statuses, "Stunned", -1, 1, unit_ext.timers[TimerStun], TimerType::Gptp);
 
 		// GPTP Value
 		add_status(statuses, "Ensnaring Brood", unit_ext.timers[TimerEnsnaringBrood], 1);

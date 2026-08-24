@@ -469,6 +469,7 @@ struct Unit : public UnitLayout {
     void tick_vital_remains();
     bool has_coagulation();
     void cast_bloody_burst();
+    bool check_neutral_garrison_death();
 };
 
 C_ASSERT(sizeof(Flingy) == 76);

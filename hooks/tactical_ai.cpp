@@ -911,7 +911,7 @@ void tactical_ai(Unit* unit, UnitExt* unit_ext) {
             }
             unit_ext->timers[TimerAI_GenericAbilityCooldown] = 2 * 24;
             unit_ext->values[ValueAI_BunkerCustom] = 1;
-        } else if (!unit_ext->values[ValueIsNeutralBunker] && unit_ext->values[ValueAI_BunkerCustom]) {
+        } else if (!unit_ext->values[ValueIsNeutralGarrison] && unit_ext->values[ValueAI_BunkerCustom]) {
             for (u32 i = 0; i < garrison_capacity; ++i) {
                 Unit* target = unit->get_loaded_unit(i);
                 if (target && target->unit_ai) {
