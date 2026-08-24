@@ -8813,20 +8813,16 @@ namespace helper {
         return result;
     }
 
-    // not functional!
-    AiScript* ai_stop(AiScript* ai_script) {
+    void ai_stop(AiScript* ai_script) {
         static AiScript* result;
         const u32 Func_AI_Stop = 0x00403380;
-        const void* Var_AI_thread_end = (void*)0x0068C0FC;
         __asm {
             PUSHAD
             MOV EAX, ai_script
-            MOV EDX, Var_AI_thread_end
+            MOV EDX, 0x0068C0FC // AI_thread_end
             CALL Func_AI_Stop
-            MOV result, EAX
             POPAD
         }
-        return result;
     }
 
     AiTown* aiscript_start_town(u32 x, u32 y, u32 resarea, u32 player) {

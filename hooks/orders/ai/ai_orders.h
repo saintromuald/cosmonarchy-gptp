@@ -67,6 +67,7 @@ b32 is_unreachable(Unit* target, Unit* unit);																		// 00476C50
 void get_ai_town_capabilities(AiRegion* region, b32* has_ground_military, b32* cant_attack_ground, b32* cant_attack_air); // 00438FC0
 bool ai_unit_can_attack(Unit* unit);																				// 00476180
 void __stdcall ai_ask_for_help(Unit* unit, Unit* target, bool only_nearby);                                         // 0043ADA0
+b32 ai_flee(Unit* unit, Unit* target);                                                                              // 0043E400
 
 void inject_ai_orders_hooks();
 }

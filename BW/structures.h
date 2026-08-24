@@ -1023,7 +1023,10 @@ struct AiScript {
     Box32				loc_bounds;		// 0x14
     v2s32			    loc_center;		// 0x24
     AiTown*				town;			// 0x2C
-    s32					flags;			// 0x30
+    u32                 bw_script       : 1;  // To become 2 with the aiscript extender.
+    u32                 killable        : 1;
+    u32                 kill_thread     : 1;
+    u32                 resarea_id      : 29; // To become 28 with the aiscript extender.
 };
 C_ASSERT(sizeof(AiScript) == 52);
 

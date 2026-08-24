@@ -471,32 +471,45 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) aiscript_loop_wrapper() { // 0045CBD0
+		__asm {
+			PUSHAD
+		}
+		hooks::aiscript_loop();
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks {
-	void inject_ai_request_hooks() {
-	//	jump_patch(ai_build_tech_upgrade_wrapper,					0x00431F90, 2);
-		jump_patch(ai_progress_build_wrapper,						0x00434480, 1);
-		jump_patch(ai_perform_task_wrapper,							0x004361A0, 0);
-	//	jump_patch(ai_plan_do_merge_morph_wrapper,					0x00435F10, 1);
-	//	jump_patch(ai_train_defensive_military_wrapper,				0x0043F990, 1);
-		jump_patch(ai_build_wrapper,								0x004323D0, 1);
-		jump_patch(ai_build_gas_node_wrapper,						0x00433660, 1);
+void inject_ai_request_hooks() {
+//	jump_patch(ai_build_tech_upgrade_wrapper,								0x00431F90, 2);
+	jump_patch(ai_progress_build_wrapper,						0x00434480, 1);
+	jump_patch(ai_perform_task_wrapper,						0x004361A0, 0);
+//	jump_patch(ai_plan_do_merge_morph_wrapper,								0x00435F10, 1);
+//	jump_patch(ai_train_defensive_military_wrapper,							0x0043F990, 1);
+	jump_patch(ai_build_wrapper,								0x004323D0, 1);
+	jump_patch(ai_build_gas_node_wrapper,						0x00433660, 1);
 
-		jump_patch(ai_request_guard_wrapper,						0x00448630, 0);
-		jump_patch(ai_region_train_attack_force_wrapper,			0x0043E670,	4);
-		jump_patch(ai_add_town_spending_request_wrapper,			0x00448400, 0);
+	jump_patch(ai_request_guard_wrapper,						0x00448630, 0);
+	jump_patch(ai_region_train_attack_force_wrapper,			0x0043E670,	4);
+	jump_patch(ai_add_town_spending_request_wrapper,			0x00448400, 0);
 
-		jump_patch(ai_player_need_priority_wrapper,					0x0045BE1F, 2);
-		jump_patch(ai_update_guard_needs_wrapper,					0x004630C0, 1);
-		jump_patch(ai_add_spending_request_from_towns_wrapper,		0x00436320, 1);
-		jump_patch(pop_spending_request_wrapper,					0x004476D0, 1);
-	//	jump_patch(ai_try_progress_spending_queue_worker_wrapper,	0x004348C0, 1); // This hook is faulty; Enabling it makes AI build unit "Reserved"
-		jump_patch(ai_add_spending_request_wrapper,					0x00447980, 1);
-	//	jump_patch(ai_make_detector_behavior_wrapper,				0x00435130, 0);
-		jump_patch(has_resources_for_unit_wrapper,					0x004487B0, 1);
-	//	jump_patch(ai_make_guard_wrapper,							0x0043A010, 1);
-		jump_patch(get_default_refinery_type_wrapper,				0x004320D0, 5);
-		jump_patch(ai_get_queued_count_wrapper,						0x00466B70, 3);
-	}
+	jump_patch(ai_player_need_priority_wrapper,				0x0045BE1F, 2);
+	jump_patch(ai_update_guard_needs_wrapper,					0x004630C0, 1);
+	jump_patch(ai_add_spending_request_from_towns_wrapper,	0x00436320, 1);
+	jump_patch(pop_spending_request_wrapper,					0x004476D0, 1);
+//	jump_patch(ai_try_progress_spending_queue_worker_wrapper,				0x004348C0, 1); // This hook is faulty; Enabling it makes AI build unit "Reserved"
+	jump_patch(ai_add_spending_request_wrapper,				0x00447980, 1);
+//	jump_patch(ai_make_detector_behavior_wrapper,							0x00435130, 0);
+	jump_patch(has_resources_for_unit_wrapper,				0x004487B0, 1);
+//	jump_patch(ai_make_guard_wrapper,										0x0043A010, 1);
+	jump_patch(get_default_refinery_type_wrapper,				0x004320D0, 5);
+	jump_patch(ai_get_queued_count_wrapper,					0x00466B70, 3);
+
+	jump_patch(aiscript_loop_wrapper,							0x0045CBD0);
 }
+} // namespace hooks

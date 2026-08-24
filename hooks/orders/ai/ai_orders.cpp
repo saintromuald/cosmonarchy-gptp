@@ -26,7 +26,7 @@ namespace hooks {
         if (g_player_table[unit->player].type != PlayerType::Computer || unit->player >= PlayerLimit) {
             return;
         }
-        if (units_dat::base_property[unit->id] & UnitProperty::Building && unit->unit_ai) {
+        if (unit->is_building() && unit->unit_ai) {
             g_aiscript_controller[unit->player].previous_building_hit_second = *g_elapsed_time_seconds;
             if (unit->unit_ai->type == AiType::Building) {
                 unit->unit_ai->building_ai.town->in_battle = true;
@@ -46,7 +46,7 @@ namespace hooks {
         Unit* target = helper::ai_get_actual_target(unit, attacker);
         if (target->is_garrisoned()) {
             target = target->connected_unit;
-            if (!target) {
+            if (!target || !target->sprite) {
                 return;
             }
         }
@@ -155,8 +155,7 @@ namespace hooks {
                         return;
                     }
 
-                    if (!target || (!(target->status & UnitStatus::Reacts)
-                        && !g_aiscript_controller[unit->player].ai_flags.is_use_map_settings)) {
+                    if (!target || !target->sprite || (!(target->status & UnitStatus::Reacts) && !g_aiscript_controller[unit->player].ai_flags.is_use_map_settings)) {
                         return;
                     }
 
@@ -2952,5 +2951,32 @@ namespace hooks {
                 }
             }
         }
+    }
+
+    // Hooked to resolve null sprite crashes. -Pr0nogo
+    b32 ai_flee(Unit* unit, Unit* target) { // 0043E400
+        if (!unit->sprite) { // New, to resolve null sprite crashes.
+            return false;
+        }
+        if (!(unit->status & UnitStatus::Reacts) || unit->main_order_id == OrderId::Unburrow || unit_id_is_larva(unit->id)) {
+            return false;
+        }
+        if ((helper::unit_is_valid_caster(unit) || unit->id == UnitId::ZergOvileth) && helper::ai_return_to_nearest_base_forced(unit)) {
+            return true;
+        }
+        if (UnitId::has_interceptors(static_cast<UnitId::Enum>(unit->id)) && (unit->unit_with_hangar.in_hangar_count + unit->unit_with_hangar.out_hangar_count) <= 4) {
+            if (helper::ai_return_to_nearest_base_forced(unit)) {
+                return true;
+            }
+        }
+
+        Target flee_target = helper::ai_prepare_to_flee(target, unit);
+        Unit* flee_unit = flee_target.unit;
+        v2u16 flee_pos = flee_target.pt;
+        if (flee_pos != unit->position) { // Originally checked unit->sprite->position
+            helper::order_interrupt(unit, flee_unit, flee_pos.x, flee_pos.y, OrderId::Move);
+            return true;
+        }
+        return false;
     }
 }

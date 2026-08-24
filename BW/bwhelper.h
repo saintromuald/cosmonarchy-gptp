@@ -119,6 +119,8 @@ namespace helper {
 
     BW_FUNC(0x004F2DE0, b32 __fastcall, is_stacked, Unit* unit);
 
+    BW_FUNC(0x0045B850, void __stdcall, aiscript_cases, AiScript* script);
+    
     void glu_create(bool multiplayer); // 004af6d0
 
     bool has_money_can_make(Unit* builder, u32 unit_to_build);
@@ -1161,7 +1163,7 @@ namespace helper {
     bool is_ai_script_name_valid(u32 player, u32 name);																			// 0045AEA0
     s32 parse_aiscript_name(s32 name, s32* is_bw);																				// 0045AEF0
     AiScript* run_aiscript(Box32* area, u32 player, u32 block, u32 is_bw);														// 0045B170
-    AiScript* ai_stop(AiScript* ai_script);																						// 00403380
+    void ai_stop(AiScript* ai_script);																						// 00403380
 
     AiTown* aiscript_start_town(u32 x, u32 y, u32 resarea, u32 player);															// 00434220
     AiTown* aiscript_start_areatown(Box32* area, u32 resarea, u32 player);														// 00434060
