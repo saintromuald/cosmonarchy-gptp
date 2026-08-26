@@ -12,6 +12,13 @@ enum class PalettePreserve : u32 {
     WidgetColors = 2,  // indices 26..53
 };
 
+enum class Ease {
+    Linear,
+    In,
+    Out,
+    SmoothStep,
+};
+
 // True if `index` falls inside any range enabled by `mask`.
 constexpr bool preserves_index(PalettePreserve mask, u32 index) {
     if ((mask & PalettePreserve::FontShade)    != PalettePreserve::None
@@ -27,7 +34,7 @@ class PaletteFader {
 public:
     // Start new fade (cancelling any in progress).
     // on_complete is called when the fade finishes successfully.
-    void start(BinDlg* dialog, const Palette& target, u32 duration_ms,
+    void start(BinDlg* dialog, const Palette& target, u32 duration_ms, Ease ease,
                std::move_only_function<void()> on_complete = nullptr,
                PalettePreserve preserve = PalettePreserve::None);
 
@@ -36,10 +43,14 @@ public:
     void tick();
 
 private:
+    f32 ease(f32 t);
+
+private:
     Palette m_start{};
     Palette m_target{};
     u32 m_start_tick_ms{};
     u32 m_duration_ms{};
+    Ease m_ease = Ease::Linear;
     BinDlg* m_dialog{};
     u16 m_timer_id{};
     bool m_active{};
