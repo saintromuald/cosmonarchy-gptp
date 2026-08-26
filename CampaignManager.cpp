@@ -26,9 +26,6 @@ constexpr std::array OfficialCampaigns {
     // The Fall (Waiting for AI voice removal)
 };
 
-static const fs::path g_campaign_search_path = bw::get_starcraft_path()
-    / "Maps" / g_config.default_map_directory / "campaign";
-
 // For displaying campaign read error in the UI
 template <class... Args>
 static Campaign error_entry_campaign(const fs::path& manifest_path,
@@ -142,6 +139,8 @@ void CampaignManager::load_campaigns() {
     m_campaigns.clear();
     m_error_message.clear();
 
+    const fs::path g_campaign_search_path = bw::get_starcraft_path()
+        / "Maps" / g_config.default_map_directory / "campaign";
     std::error_code ec;
     if (!fs::exists(g_campaign_search_path, ec)) {
         set_error("Campaign directory not found: {}", g_campaign_search_path.string());

@@ -114,6 +114,7 @@ void GluCampaignList::on_init() {
     })->on_selection([&](ui::Widget& self, u16 index) {
         load_campaign_by_index(index);
     });
+    if (!g_music_playing) helper::dialog_music_fade(MusicId_Title);
 }
 
 void GluCampaignList::on_exit(u32 last_control) {
