@@ -15,6 +15,30 @@
 #include <vector>
 
 namespace ui {
+constexpr auto DefaultFadeMs = 400;
+
+class BackgroundState {
+public:
+    static BackgroundState& instance() {
+        static BackgroundState state;
+        return state;
+    }
+
+    BackgroundState(const BackgroundState&) = delete;
+    BackgroundState& operator=(const BackgroundState&) = delete;
+
+    const std::string& current() const { return m_current; }
+    void set_current(std::string path) { m_current = std::move(path); }
+    const Palette& default_palette();
+
+private:
+    BackgroundState() = default;
+
+    std::string m_current;
+    Palette m_default_palette{};
+    bool m_default_loaded = false;
+};
+
 enum class Align {
     Left,
     Right,
@@ -180,7 +204,7 @@ private:
 
 class Menu : public Group {
 public:
-    Menu(std::string background);
+    Menu(std::string background = "", PalettePreserve instant_colors = PalettePreserve::None);
 
     // Any copy or move would leave dangling pointers
     Menu(const Menu&) = delete;
@@ -194,11 +218,18 @@ public:
     u32 load();
 
     void change_background(std::string background,
-        PalettePreserve preserve = PalettePreserve::FontShade | PalettePreserve::WidgetColors, u32 fade_ms = 100);
+        PalettePreserve preserve = PalettePreserve::FontShade | PalettePreserve::WidgetColors, u32 fade_ms = DefaultFadeMs);
+    void fade_background_out(std::move_only_function<void()> on_complete = nullptr,
+        PalettePreserve preserve = PalettePreserve::FontShade | PalettePreserve::WidgetColors, u32 fade_ms = DefaultFadeMs);
+    void fade_background_in(std::string background = "",
+        PalettePreserve preserve = PalettePreserve::FontShade | PalettePreserve::WidgetColors, u32 fade_ms = DefaultFadeMs);
 
 protected:
     void on_top_dialog_init_children(Widget& top) override;
     void on_top_dialog_create      (Widget& top) override;
+
+private:
+    PalettePreserve m_instant_colors;
 };
 
 class Modal : public Group {

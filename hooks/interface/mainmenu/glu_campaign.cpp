@@ -17,11 +17,11 @@
 #include <sstream>
 
 GluCampaignList::GluCampaignList() 
-    : ui::Menu("glue\\dynamic\\backgrounds\\options.pcx") {
+    : ui::Menu("", ui::PalettePreserve::FontShade | ui::PalettePreserve::WidgetColors) {
 
     image(DialogBounds::from_ltrb(472, 356, 639, 446), "glue\\dynamic\\pCancel.pcx")->translucent();
     image(DialogBounds::from_ltrb(436, 336, 639, 406), "glue\\dynamic\\pOk.pcx")->translucent();
-    m_cancel_button = lightup_button(DialogBounds::from_ltrb(477, 419, 608, 440), "c\x04" "C\x01" "ancel")->enable_hotkey();
+    m_cancel_button = lightup_button(DialogBounds::from_ltrb(477, 419, 608, 440), "c\x04" "C\x01" "ancel")->enable_hotkey()->set_cancel();
     m_ok_button = lightup_button(DialogBounds::from_ltrb(441, 383, 592, 404), "o\x04" "O\x01" "k")->enable_hotkey()->set_default()->disable();
     
     image(DialogBounds::from_xywh(0, 336, 236, 71), "glue\\dynamic\\left_upper_button.pcx")->translucent();
@@ -78,11 +78,14 @@ void GluCampaignList::load_campaign_by_index(u16 index) {
     auto mission_count = std::format("{}{}/{} missions completed", static_cast<char>(3), completed, selected->missions.size());
     m_mission_count->set_text(mission_count);
 
-    if (selected->background && !selected->background->empty()) {
-        auto path = selected->directory.get() / *selected->background;
-        change_background(path.generic_string());
+    std::string background = selected->background && !selected->background->empty()
+        ? (selected->directory.get() / *selected->background).generic_string()
+        : "glue\\dynamic\\backgrounds\\options.pcx";
+
+    if (ui::BackgroundState::instance().current().empty()) {
+        fade_background_in(background, ui::PalettePreserve::FontShade | ui::PalettePreserve::WidgetColors, 600);
     } else {
-        change_background("glue\\dynamic\\backgrounds\\options.pcx");
+        change_background(background);
     }
 
     const auto unlocked = std::ranges::count_if(selected->missions,
@@ -141,11 +144,15 @@ static std::string initial_background() {
 }
 
 GluCampaignDetails::GluCampaignDetails()
-    : ui::Menu(initial_background()) {
+    // Start with whatever background the list left on screen so the transition is
+    // seamless; the mission selection below crossfades only if it differs.
+    : ui::Menu(ui::BackgroundState::instance().current().empty()
+        ? initial_background()
+        : ui::BackgroundState::instance().current()) {
 
     image(DialogBounds::from_ltrb(472, 356, 639, 446), "glue\\dynamic\\pCancel.pcx")->translucent();
     image(DialogBounds::from_ltrb(436, 336, 639, 406), "glue\\dynamic\\pOk.pcx")->translucent();
-    m_cancel_button = lightup_button(DialogBounds::from_ltrb(477, 419, 608, 440), "c\x04" "C\x01" "ancel")->enable_hotkey();
+    m_cancel_button = lightup_button(DialogBounds::from_ltrb(477, 419, 608, 440), "c\x04" "C\x01" "ancel")->enable_hotkey()->set_cancel();
     m_ok_button = lightup_button(DialogBounds::from_ltrb(441, 383, 592, 404), "o\x04" "O\x01" "k")->enable_hotkey()->set_default();
 
     m_title = label(DialogBounds::from_ltrb(35, 50, 335, 75), "")->fontsize(ui::FontSize::Large16x);

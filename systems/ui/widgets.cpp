@@ -688,7 +688,20 @@ void Group::connect_child(Widget* child) {
 // --------------------------------
 // Menu
 // --------------------------------
-Menu::Menu(std::string background) : Group() {
+const Palette& BackgroundState::default_palette() {
+    if (!m_default_loaded) {
+        Bitmap bitmap{};
+        if (load_bitmap("glue\\dynamic\\tfont.pcx", bitmap, &m_default_palette,
+                SFileScope::DiskAndMpq, false)) {
+            if (bitmap.buffer) SMemFree(bitmap.buffer);
+            m_default_loaded = true;
+        }
+    }
+    return m_default_palette;
+}
+
+Menu::Menu(std::string background, PalettePreserve instant_colors)
+    : Group(), m_instant_colors(instant_colors) {
     m_main = make(DialogBounds::from_xywh(0, 0, 640, 480), DialogControlType::DialogBoxDC, 0);
     m_main->m_text = std::move(background);
     m_main->dialog()->data<bw::MenuData>()->backup_surface.width = 640;
@@ -708,10 +721,22 @@ u32 Menu::load() {
 
 void Menu::on_top_dialog_init_children(Widget& top) {
     auto dialog = top.dialog();
-    load_bitmap(top.text().c_str(), dialog->bitmap, &g_init_palette);
+    if (top.text().empty()) {
+        constexpr u16 w = 640;
+        constexpr u16 h = 480;
+        dialog->bitmap.width = w;
+        dialog->bitmap.height = h;
+        dialog->bitmap.buffer = static_cast<u8*>(SMemAlloc(w * h));
+        g_init_palette = Palette{};
+        copy_preserved_indices(g_init_palette,
+            BackgroundState::instance().default_palette(), m_instant_colors);
+    } else {
+        load_bitmap(top.text().c_str(), dialog->bitmap, &g_init_palette);
+    }
 
     g_background = dialog->bitmap;
     g_background_palette = g_init_palette;
+    BackgroundState::instance().set_current(top.text());
 
     auto original_glues = g_gl_glues_mode;
     g_gl_glues_mode = g_gl_glues_mode > 25 ? MenuId::GlueSelConn : g_gl_glues_mode;
@@ -892,7 +917,7 @@ void Menu::change_background(std::string background, PalettePreserve preserve, u
     smem::ptr<u8[]> new_buffer{new_bitmap.buffer};
     const Palette black{};
     bw::Dialog* dialog = m_main->dialog();
-    ui::g_palette_fader.start(dialog->to_bindlg(), black, fade_ms,
+    ui::g_palette_fader.start(dialog->to_bindlg(), black, fade_ms, Ease::In,
         [this, new_bitmap, new_palette, new_buffer = std::move(new_buffer), preserve, fade_ms]() mutable {
             bw::Dialog* dialog = m_main->dialog();
             if (dialog->bitmap.buffer) {
@@ -906,6 +931,7 @@ void Menu::change_background(std::string background, PalettePreserve preserve, u
 
             g_background = dialog->bitmap;
             g_background_palette = new_palette;
+            BackgroundState::instance().set_current(m_main->m_text);
             *init_palette = new_palette;
             *game_palette = new_palette;
 
@@ -915,8 +941,51 @@ void Menu::change_background(std::string background, PalettePreserve preserve, u
             helper::update_dialog(dialog->to_bindlg());
 
             ui::g_palette_fader.start(dialog->to_bindlg(),
-                new_palette, fade_ms, nullptr, preserve);
+                new_palette, fade_ms, Ease::Out, nullptr, preserve);
         },
         preserve);
+}
+
+void Menu::fade_background_out(std::move_only_function<void()> on_complete,
+    PalettePreserve preserve, u32 fade_ms) {
+    const Palette black{};
+    bw::Dialog* dialog = m_main->dialog();
+    ui::g_palette_fader.start(dialog->to_bindlg(), black, fade_ms, Ease::In,
+        std::move(on_complete), preserve);
+}
+
+void Menu::fade_background_in(std::string background, PalettePreserve preserve, u32 fade_ms) {
+    bw::Dialog* dialog = m_main->dialog();
+
+    // Swap in a new background (display is assumed to be black) before revealing it.
+    if (!background.empty() && m_main->m_text != background) {
+        Bitmap  new_bitmap{};
+        Palette new_palette{};
+        if (load_bitmap(background.c_str(), new_bitmap, &new_palette,
+            SFileScope::DiskAndMpq, false)) {
+            m_main->m_text = background;
+
+            if (dialog->bitmap.buffer) {
+                SMemFree(dialog->bitmap.buffer);
+            }
+            dialog->bitmap = new_bitmap;
+
+            copy_preserved_indices(new_palette, g_display_palette, preserve);
+
+            g_background = dialog->bitmap;
+            g_background_palette = new_palette;
+            BackgroundState::instance().set_current(background);
+            *init_palette = new_palette;
+            *game_palette = new_palette;
+
+            helper::setup_dialog_palette_effects(nullptr, init_palette);
+
+            dialog->flags |= DialogFlags::UpdateNeeded;
+            helper::update_dialog(dialog->to_bindlg());
+        }
+    }
+
+    ui::g_palette_fader.start(dialog->to_bindlg(),
+        g_background_palette, fade_ms, Ease::Out, nullptr, preserve);
 }
 } // namespace ui

@@ -27,7 +27,7 @@ void copy_preserved_indices(Palette& destination, const Palette& source,
     }
 }
 
-void PaletteFader::start(BinDlg* dialog, const Palette& target, u32 duration_ms,
+void PaletteFader::start(BinDlg* dialog, const Palette& target, u32 duration_ms, Ease ease,
     std::move_only_function<void()> on_complete, PalettePreserve preserve) {
     if (m_active) cancel();
 
@@ -36,6 +36,7 @@ void PaletteFader::start(BinDlg* dialog, const Palette& target, u32 duration_ms,
     m_start = g_display_palette;
     m_target = target;
     m_duration_ms = std::max<u32>(1, duration_ms);
+    m_ease = ease;
     m_start_tick_ms = GetTickCount();
     m_on_complete = std::move(on_complete);
     m_active = true;
@@ -54,6 +55,16 @@ void PaletteFader::cancel() {
     m_on_complete = nullptr;
 }
 
+f32 PaletteFader::ease(f32 t){
+    switch (m_ease) {
+        case Ease::Linear: return t;
+        case Ease::In:   return t * t;
+        case Ease::Out:  return 1 - (1 - t) * (1 - t);
+        case Ease::SmoothStep: return t * t * (3 - 2 * t);
+    }
+    return t;
+}
+
 void PaletteFader::tick() {
     if (!m_active) return;
 
@@ -64,7 +75,7 @@ void PaletteFader::tick() {
     if (done) {
         display = m_target;
     } else {
-        const f32 t = static_cast<f32>(elapsed_ms) / static_cast<f32>(m_duration_ms);
+        const f32 t = ease(static_cast<f32>(elapsed_ms) / static_cast<f32>(m_duration_ms));
         for (u32 i = 0; i < 256; ++i) {
             display.colors[i].r = static_cast<u8>(utils::lerp<f32>(t, m_start.colors[i].r, m_target.colors[i].r));
             display.colors[i].g = static_cast<u8>(utils::lerp<f32>(t, m_start.colors[i].g, m_target.colors[i].g));
