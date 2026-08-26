@@ -1,5 +1,6 @@
 #include "custom_glues.h"
 #include "hooks/snp.h"
+#include "glu_campaign.h"
 
 static void update_window() {
     if (!g_main_window) return;
@@ -29,6 +30,8 @@ static void update_window() {
         SendMessageA(g_main_window, WM_SETICON, ICON_BIG, (LPARAM)large_icon);
         SetClassLongPtrA(g_main_window, GCLP_HICON, (LONG_PTR)large_icon);
     }
+
+    safe_copy(g_version_string, std::format("Cosmonarchy build {}", bw::get_commit_hash()));
 }
 
 void glu_main_switch() {
@@ -100,7 +103,8 @@ void glu_main_switch() {
             helper::glu_modem();
         } break;
         case MenuId::GlueExCampaign: {
-            glu_singleplayer();
+            GluCampaignList dialog{};
+            dialog.load();
         } break;
         case MenuId::GlueGeneric: {
             helper::glu_generic();
@@ -113,6 +117,14 @@ void glu_main_switch() {
         } break;
         case MenuId::GlueOptions: {
             glu_options();
+        } break;
+        case MenuId::GluCampaignList: {
+            GluCampaignList dialog{};
+            dialog.load();
+        } break;
+        case MenuId::GluCampaignDetails: {
+            GluCampaignDetails details{};
+            details.load();
         } break;
         default: { g_gl_glues_mode = MenuId::GlueMainMenu; } break;
     }

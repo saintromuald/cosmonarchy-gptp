@@ -8,6 +8,7 @@
 #include <cctype>
 #include <format>
 #include <fstream>
+#include <ranges>
 #include <string>
 #include <string_view>
 #include <system_error>
@@ -15,6 +16,15 @@
 #include <rfl/yaml.hpp>
 
 using namespace campaigns;
+
+constexpr std::array OfficialCampaigns {
+    "Tutorials",
+    "The Lost Gods",
+    "Day of Blood",
+    "Sovereign Saga",
+    "Butcher's Ballad",
+    // The Fall (Waiting for AI voice removal)
+};
 
 static const fs::path g_campaign_search_path = bw::get_starcraft_path()
     / "Maps" / g_config.default_map_directory / "campaign";
@@ -147,4 +157,12 @@ void CampaignManager::load_campaigns() {
 
         m_campaigns.push_back(load_campaign(manifest));
     }
+
+    std::ranges::sort(m_campaigns, {}, [](const Campaign& campaign) {
+        auto it = std::ranges::find(OfficialCampaigns, campaign.name);
+        if (it != OfficialCampaigns.end()) {
+            return std::make_tuple(std::distance(OfficialCampaigns.begin(), it), campaign.name);
+        }
+        return std::make_tuple((s32)OfficialCampaigns.size(), campaign.name);
+    });
 }

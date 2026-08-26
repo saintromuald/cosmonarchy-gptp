@@ -11,6 +11,7 @@
 #include "threshold.h"
 #include "graphics/graphics.h"
 #include "aise_signal.h"
+#include "CampaignManager.h"
 #include <limits>
 
 namespace trigger {
@@ -961,6 +962,31 @@ Registry g_triggers = Registry()
     })
     .add_action("bank_clear", [](Identifier bank) {
         g_trigger_vars.get_bank(std::string{bank}).clear();
+    })
+    .add_action("complete_mission", [](Context& ctx) {
+        auto* campaign = g_campaign_manager.selected_campaign();
+        auto* mission = g_campaign_manager.selected_mission();
+        if (!campaign || !mission) {
+            ctx.error("Campaign not active");
+            return;
+        }
+        g_trigger_vars.get_bank(campaign->bank_name()).set(Campaign::mission_key_for(mission->name), 1);
+    })
+    .add_action("campaign_link_var", [](Context& ctx, Identifier var, s32 default_value) {
+        auto* campaign = g_campaign_manager.selected_campaign();
+        if (!campaign) {
+            ctx.error("Campaign not active");
+            return;
+        }
+        g_trigger_vars.bank_link_var(std::string{campaign->bank_name()}, std::string{var}, default_value);
+    })
+    .add_action("campaign_clear", [](Context& ctx) {
+        auto* campaign = g_campaign_manager.selected_campaign();
+        if (!campaign) {
+            ctx.error("Campaign not active");
+            return;
+        }
+        g_trigger_vars.get_bank(std::string{campaign->bank_name()}).clear();
     })
     .add_action("convert_to_ai", [](Context& ctx, PlayablePlayer player) {
         if (!player) {

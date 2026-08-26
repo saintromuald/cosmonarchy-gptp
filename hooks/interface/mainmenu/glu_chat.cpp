@@ -165,7 +165,7 @@ static u32 __fastcall dlgproc_ok_button_host_only(BinDlg* dialog, DialogEvent* e
     if (event->number_order == DialogEventType_Dialog && event->user == DialogUserType_Show && !g_is_host) {
         return 1;
     }
-    return helper::g_default_dialogprocs[std::to_underlying(dialog->control_type)](dialog, event);
+    return helper::g_default_dialog_interaction_functions[std::to_underlying(dialog->control_type)](reinterpret_cast<bw::Dialog*>(dialog), event);
 };
 
 static u32 glu_chat_init_children(BinDlg* dialog, DialogEvent* event) {

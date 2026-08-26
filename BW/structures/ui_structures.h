@@ -396,7 +396,21 @@ struct Dialog {
     Dialog* next;       // For the child dialog linked-list
     DialogBounds bounds;
     Bitmap bitmap;      // Used for top level dialogs (menu background) as well as images
-    const char* text;
+    
+    safeunion::Union<
+        safeunion::Entry<DialogControlType::DialogBoxDC, const char*>,
+        safeunion::Entry<DialogControlType::DefaultButton, const char*>,
+        safeunion::Entry<DialogControlType::Button, const char*>,
+        safeunion::Entry<DialogControlType::OptionButton, const char*>,
+        safeunion::Entry<DialogControlType::CheckBox, const char*>,
+        safeunion::Entry<DialogControlType::Image, const char*>,
+        safeunion::Entry<DialogControlType::LabelLeftAlign, const char*>,
+        safeunion::Entry<DialogControlType::LabelCenterAlign, const char*>,
+        safeunion::Entry<DialogControlType::LabelRightAlign, const char*>,
+        safeunion::Entry<DialogControlType::LightUpButton, const char*>,
+        safeunion::Entry<DialogControlType::TextInput, std::array<char, 256>*>
+    > union_text;
+
     DialogFlags::Enum flags;
     u16 delay_timer;    // Probably for hiding widgets until fly-in animation is complete
     u16 unknown_1e;
@@ -435,6 +449,8 @@ struct Dialog {
         safeunion::Entry<DialogControlType::LightUpButton, LightUpButtonExtra>
     > union_extra;
 
+    template <typename T> auto text() { return union_text.cast<T>(type); }
+    template <typename T> auto text() const { return union_text.cast<T>(type); }
     template <typename T> auto data() { return union_data.cast<T>(type); }
     template <typename T> auto data() const { return union_data.cast<T>(type); }
     template <typename T> auto child() { return union_child.cast<T>(type); }
