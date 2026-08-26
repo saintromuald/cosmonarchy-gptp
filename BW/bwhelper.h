@@ -1549,7 +1549,7 @@ namespace helper {
 
     b32 set_temp_iscript_animation(IscriptAnimation::Enum animation);																	// 0042D600
 
-    u32 get_visibility_mask_from_position_and_size(u32 y_pos, u32 height, u32 width, u32 x_pos);										// 00402570
+    u32 get_visibility_mask_from_position_and_size(s16 x_pos, s16 y_pos, s16 width, s16 height);										// 00402570
 
     Image* copy_image_palette_type(Image* image, Image* from);																			// 004D5E40
 

@@ -12157,7 +12157,7 @@ namespace helper {
         const u32 func_address = 0x0042D600;
         __asm {
             PUSHAD
-            MOVZX AL, animation
+            MOVZX EAX, animation
             CALL func_address
             MOV result, EAX
             POPAD
@@ -12165,19 +12165,18 @@ namespace helper {
         return result;
     }
 
-    u32 get_visibility_mask_from_position_and_size(u32 x_pos, u32 y_pos, u32 width, u32 height) {
+    u32 get_visibility_mask_from_position_and_size(s16 x_pos, s16 y_pos, s16 width, s16 height) {
         static u32 result;
         const u32 func_address = 0x00402570;
         __asm {
             PUSHAD
-            MOVZX EBX, height
+            MOVSX EBX, width
             PUSH EBX
-            MOVZX EBX, width
+            MOVSX EBX, y_pos
             PUSH EBX
-            MOVZX EBX, y_pos
+            MOVSX EBX, x_pos
             PUSH EBX
-            MOVZX EBX, x_pos
-            PUSH EBX
+            MOVSX EDX, height
             CALL func_address
             MOV result, EAX
             POPAD
