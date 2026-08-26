@@ -5613,13 +5613,10 @@ namespace helper {
 
     // 0x00401170
     bool unit_is_owned_by_current_player(Unit* unit) {
-        bool return_value;
-        if (g_is_in_replay != 0 || unit->player != g_local_nation_id) {
-            return_value = false;
-        } else {
-            return_value = true;
+        if (g_is_in_replay || unit->player != g_local_nation_id) {
+            return false;
         }
-        return return_value;
+        return true;
     }
 
     // 0x00402A70
