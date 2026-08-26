@@ -111,7 +111,8 @@ void update_image_direction(Image* image, u32 direction) {
 	const u32 Func_updateImageDirection = 0x004D5EA0;
 	__asm {
 		PUSHAD
-		PUSH direction
+		MOVZX EBX, direction
+		PUSH EBX
 		MOV EAX, image
 		CALL Func_updateImageDirection
 		POPAD

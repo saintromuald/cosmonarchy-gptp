@@ -682,7 +682,7 @@ namespace hooks {
         result = hooks::ignore_iscript_and_go_to_idle(unit);
         __asm {
             POPAD
-            MOV AL, result
+            MOVZX EAX, result
             RETN
         }
     }

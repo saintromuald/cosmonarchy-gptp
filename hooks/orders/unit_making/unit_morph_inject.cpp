@@ -96,11 +96,10 @@ namespace {
 
     void change_unit_type(Unit* unit, u16 new_unit_id) {
         const u32 func_address = 0x0049FED0;
-        static u32 new_unit_id_xd;
-        new_unit_id_xd = new_unit_id;
         __asm {
             PUSHAD
-            PUSH new_unit_id_xd
+            MOVZX EBX, new_unit_id
+            PUSH EBX
             MOV EAX, unit
             CALL func_address
             POPAD
@@ -109,14 +108,12 @@ namespace {
 
     void replace_sprite_images(Sprite* sprite, u16 image_id, u8 image_direction) {
         const u32 func_address = 0x00499BB0;
-        static u32 image_id_xd;
-        static u32 image_direction_xd;
-        image_id_xd = image_id;
-        image_direction_xd = image_direction;
         __asm {
             PUSHAD
-            PUSH image_direction_xd
-            PUSH image_id_xd
+            MOVZX EBX, image_direction
+            PUSH EBX
+            MOVZX EBX, image_id
+            PUSH EBX
             MOV EAX, sprite
             CALL func_address
             POPAD

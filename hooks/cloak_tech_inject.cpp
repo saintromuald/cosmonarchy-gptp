@@ -179,8 +179,7 @@ namespace
 
 	//-------- Other wrappers --------//
 
-	void __declspec(naked) get_cloaking_tech_wrapper()
-	{
+	void __declspec(naked) get_cloaking_tech_wrapper() {
 		static Unit* unit;
 		static u8 result;
 		__asm {
@@ -190,7 +189,7 @@ namespace
 		result = hooks::get_cloaking_tech(unit);
 		__asm {
 			POPAD
-			MOV AL, result
+			MOVZX EAX, result
 			RETN
 		}
 	}

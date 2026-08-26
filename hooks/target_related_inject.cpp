@@ -505,7 +505,7 @@ namespace {
         result = hooks::get_air_weapon(unit);
         __asm {
             POPAD
-            MOVZX AX, result
+            MOVZX EAX, result
             RETN
         }
     }

@@ -10,12 +10,12 @@
 
 void Image::play_iscript_animation(IscriptAnimation::Enum animation) {
     assert(this);
-    u32 animation_ = (u8)animation;
 
     const u32 func_address = 0x004D8470; // AKA play_image_iscript();
     __asm {
         PUSHAD
-        PUSH animation_
+        MOVZX EBX, animation
+        PUSH EBX
         MOV ECX, this
         CALL func_address
         POPAD
@@ -48,12 +48,13 @@ void Image::initialize_data(Sprite* parent, u16 image_id, s8 x, s8 y) {
 // Same as function 0x004D5EA0, direction is 0-31
 void Image::set_image_direction(u8 direction) {
     assert(this);
-    constexpr u32 Func_setDir = 0x004D5EA0;
+    constexpr u32 func_address = 0x004D5EA0;
     __asm {
         PUSHAD
         MOV EAX, this
-        PUSH direction
-        CALL Func_setDir
+        MOVZX EBX, direction
+        PUSH EBX
+        CALL func_address
         POPAD
     }
 }

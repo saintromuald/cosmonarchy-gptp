@@ -423,7 +423,7 @@ namespace helper {
     // For updatePlacementState_Units
     bool does_building_block(Unit* unit, s32 xTile, s32 yTile);												// 00473410
     s32 is_tile_blocked_by(Unit** unit_array, Unit* builder, s32 tile_x, s32 tile_y,				    	// 00473300
-        char is_addon, char also_invisible);
+        bool is_addon, bool also_invisible);
 
     // For update_placement_state_for_placement_box
     s32 tile_location_is_unbuildable(Unit* builder, s32 player, s32 xTile, s32 yTile, s32 unit_id,			// 00473FB0
@@ -546,7 +546,7 @@ namespace helper {
     b32 spell_order_move_towards_target(Unit* caster, u32 range);																	// 00492450
 
     // For can_target_spell
-    s16 can_target_spell_on_fow_unit(s32 tech_id, s16 unit_id);																		// 004914B0
+    s16 can_target_spell_on_fow_unit(s32 tech_id, u16 unit_id);																		// 004914B0
 
     void increment_unit_death_scores(Unit* unit, u8 player);																		// 00488AF0
     void give_sprite(Unit* unit, u8 player);																						// 0049E4E0
@@ -931,7 +931,7 @@ namespace helper {
     Unit* list_push_back_hidden_unit_entry(Unit* unit);																// 0049DCE0
     Sprite* unit_destructor(Unit* unit);																			// 004A0990
     void* get_image_attack_frame(void* result_arg, Sprite* sprite, s32 index, u32 overlay_type);					// 00401DF0
-    void set_sprite_main_image_offset(Sprite* sprite, char x, char y);												// 00401E40
+    void set_sprite_main_image_offset(Sprite* sprite, s8 x, s8 y);												    // 00401E40
 
     //// psi_field_util
     bool add_psi_field_sprite(Unit* unit);
@@ -940,7 +940,7 @@ namespace helper {
     void queue_game_command(u8* params, u32 param_length);
 
     // misc
-    Thingy* create_thingy(u32 sprite_id, s16 x, s16 y, u32 player);
+    Thingy* create_thingy(u32 sprite_id, u16 pos_x, u16 pos_y, u32 player); // 00488210
     bool do_units_collide(Unit* first, Unit* second);
     void unburrow(Unit* unit);
     Image* create_healthbar(Sprite* sprite);
@@ -1001,7 +1001,7 @@ namespace helper {
     s32 get_tick_count();																					// 004FE0C4
 
     // For initialize_bullet
-    Flingy* initialize_flingy(s32 flingy_id, s16 y, s32 x, Flingy* flingy, char player, char angle);		// 00496360
+    Flingy* initialize_flingy(s32 flingy_id, s16 y, s32 x, Flingy* flingy, u8 player, s8 angle);		    // 00496360
     void bullet_behavior_reassign(Bullet* bullet);															// 0048BD50
     s32 weapon_behavior_can_hit_target_check(Unit* target, Unit* attacker);									// 004765B0
     void appear_on_target(Bullet* bullet, s16 x, s16 y);													// 004955C0
@@ -1193,7 +1193,7 @@ namespace helper {
     extern playNextMusic_Func* play_next_bw_music;
     extern stopMusic_Func* stop_bw_music;
 
-    void prepare_formation_movement(MovementGroup* movement_group, char can_be_obstructed);						// 0049A8C0
+    void prepare_formation_movement(MovementGroup* movement_group, bool can_be_obstructed);						// 0049A8C0
     Unit* find_fow_unit(u16 y_pos, u16 x_pos, u32 fow_unit_id);													// 00487FD0
     void targeted_order_unit(Unit* a1, Unit* a2, int a3, char a4);												// 004756E0
     void targeted_order_ground(int a1, int a2, Unit* a3, int a4, int a5, int a6);								// 004756B0
@@ -1220,8 +1220,6 @@ namespace helper {
     u32 ai_region_train_attack_force(AiRegion* region);															// 0043E670
     u32 ai_defend_region(AiRegion* military_region, s32 defense_region, s32 against_air, s32 region_strength);	// 0043F100
     u32 ai_add_base_unit_spending_request(u32 final_unit_id, u32 player_id, AiRegion* region, u8 priority);		// 004484A0
-
-    bool unit_has_power(u32 id, u32 x, u32 y, u32 player);
 
     void play_sound_global(u32 id);																		// 004BC2C0
     VectorHead* play_sound_from_file(const char* filename, char* unused);								// 004BC490
@@ -1380,7 +1378,7 @@ namespace helper {
     void update_current_buttonset();																		// 004599A0
     bool is_unit_owned_by_player_ex(u32 player, Unit* unit);												// 0045FEF0
 
-    char issue_place_building_order(char* unused, u32 unit_id, char order_id);								// 0048E730
+    char issue_place_building_order(char* unused, u32 unit_id, u8 order_id);								// 0048E730
 
     bool compare_unit_rank(Unit* unit, Unit* compare_unit);													// 0049A350
 
@@ -1970,6 +1968,12 @@ namespace helper {
     u32 get_system_time(LPSYSTEMTIME system_time);                 // 0040C7DF
 
     bool is_distance_greater_than_path_distance_to_order_target(Unit* unit, s32 distance);  // 00465480
+
+    void resize_replay_action_set(ReplayData* replay_data);         // 004CDD30
+    void new_replay_action(ReplayData* replay_data);                // 004CDDC0
+
+    bool unit_has_power(u16 unit_id, u32 pos_x, u32 pos_y, u8 player); // 004936B0
+
     s32 convert_current_order_to_carrier_reaver_idle_order(Unit* unit);                     // 00465390
     s32 convert_current_order_to_carrier_reaver_fight_order(Unit* unit);                    // 00465360
     

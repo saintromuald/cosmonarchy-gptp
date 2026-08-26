@@ -81,7 +81,7 @@ namespace {
         result = hooks::can_target_spell(tech_id, target, fow_unit_id, caster, x, y, error);
         __asm {
             POPAD
-            MOV AL, result
+            MOVZX EAX, result
             MOV ESP, EBP
             POP EBP
             RETN 0x10

@@ -207,10 +207,11 @@ void print(const char* text, TextColor color) {
         PUSHAD
         PUSH 0;//unknown
         MOV eax, text
-            PUSH gtc
-            PUSH color
-            CALL Func_PrintText
-            POPAD
+        PUSH gtc // game_text_counters
+        MOVZX EBX, color
+        PUSH EBX
+        CALL Func_PrintText
+        POPAD
     }
 }
 

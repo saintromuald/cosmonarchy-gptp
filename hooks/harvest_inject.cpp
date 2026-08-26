@@ -52,7 +52,7 @@ namespace {
 		result = hooks::unit_is_geyser_ex(resource_node, worker);
 		__asm {
 			POPAD
-			MOV AL, result
+			MOVZX EAX, result
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x4

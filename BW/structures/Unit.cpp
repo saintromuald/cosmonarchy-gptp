@@ -515,8 +515,10 @@ void Unit::damage_with(WeaponId::Enum weapon_id, s32 damage, Unit* attacker, u8 
         MOV EAX, damage
         PUSH attacking_player
         PUSH attacker
-        PUSH direction
-        PUSH damage_divisor
+        MOVSX EBX, direction
+        PUSH EBX
+        MOVZX EBX, damage_divisor
+        PUSH EBX
         MOVZX EBX, weapon_id
         PUSH EBX
         CALL func_address
@@ -839,14 +841,14 @@ void Unit::order_to_idle() {
     }
 }
 
-void Unit::order(u8 order_id, u16 x, u16 y, Unit* target, u16 target_unit_id, bool stop_previous_orders) {
+void Unit::order(u8 order_id, u16 x, u16 y, Unit* target, u16 fow_unit_id, bool stop_previous_orders) {
     assert(this);
     const u32 Func_Order = 0x00474810;
     static v2u16 pos; pos.x = x, pos.y = y;
-    u32 target_unit_id_xd = target_unit_id;
     __asm {
         PUSHAD
-        PUSH target_unit_id_xd
+        MOVZX EBX, fow_unit_id
+        PUSH EBX
         PUSH target
         PUSH pos
         MOVZX EAX, stop_previous_orders
@@ -1161,8 +1163,8 @@ void Unit::fire_weapon(WeaponId::Enum weapon_id) const {
     const u32 func_address = 0x00479C90;
     __asm {
         PUSHAD
-        MOVZX EAX, weapon_id
-        PUSH EAX
+        MOVZX EBX, weapon_id
+        PUSH EBX
         MOV ESI, this
         CALL func_address
         POPAD

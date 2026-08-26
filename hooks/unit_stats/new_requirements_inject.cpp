@@ -74,7 +74,7 @@ namespace
 
 		__asm {
 			POPAD
-			MOV AX, unit_id
+			MOVZX EAX, unit_id
 			RETN
 		}
 	}
@@ -90,7 +90,7 @@ namespace
 		unit_id = hooks::addon_datreq_fix(dat_req_offset, g_place_building_unit_id);
 		__asm {
 			POPAD
-			MOV AX, unit_id
+			MOVZX EAX, unit_id
 			RETN
 		}
 	}

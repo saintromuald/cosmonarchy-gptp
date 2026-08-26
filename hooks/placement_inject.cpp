@@ -254,7 +254,7 @@ namespace
         hooks::issue_place_building_order(unit_id, order_id);
         __asm {
             POPAD
-            MOV AL, 0 // unused return value
+            MOV EAX, 0 // unused return value
             MOV ESP, EBP
             POP EBP
             RETN 0x04
