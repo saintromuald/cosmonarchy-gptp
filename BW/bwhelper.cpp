@@ -15776,6 +15776,16 @@ namespace helper {
         }
     }
 
+    void menu_pop_z_index(BinDlg* dialog) {
+        const u32 func_address = 0x004dcc00;
+        __asm {
+            PUSHAD
+            MOV EBX, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
     void enable_sound_list(u16* sounds_array) {
         const u32 func_address = 0x004bccf0;
         __asm {
@@ -16204,6 +16214,17 @@ namespace helper {
             CALL func_address
             MOV result, EAX
             POPAD
+        }
+        return result;
+    }
+
+    bool modal_ok_cancel(const char* prompt) {
+        const u32 func_address = 0x004b73b0;
+        static bool result;
+        __asm {
+            MOV EAX, prompt
+            CALL func_address
+            MOV result, AL
         }
         return result;
     }

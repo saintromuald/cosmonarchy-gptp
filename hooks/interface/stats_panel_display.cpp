@@ -718,7 +718,7 @@ namespace hooks {
                 } break;
             }
         }
-        return helper::g_default_dialogprocs[std::to_underlying(dialog_var->control_type)](dialog, event);
+        return helper::g_default_dialog_interaction_functions[std::to_underlying(dialog_var->control_type)](reinterpret_cast<bw::Dialog*>(dialog), event);
     }
 
     // Hooked to correct errors and replace building morph id checks. -Pr0nogo

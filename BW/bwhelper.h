@@ -56,8 +56,8 @@ namespace helper {
     BW_FUNC(0x004dcc90, void __stdcall, glu_generic);
 
     // Default DlgProcs and UpdateFuncs indexed by DialogControlType
-    BW_ARRAY(BinDlgProc,       15, g_default_dialogprocs,    0x005014ac);
-    BW_ARRAY(DialogUpdateFunc, 15, g_default_dialog_updates, 0x00501504);
+    BW_ARRAY(bw::DialogInteraction*, 15, g_default_dialog_interaction_functions, 0x005014ac);
+    BW_ARRAY(bw::DialogDraw*,        15, g_default_dialog_draw_functions,        0x00501504);
 
     // Per control type
     BW_FUNC(0x00418eb0, u32 __fastcall, default_interaction_dialog,   BinDlg* dialog, DialogEvent* event);
@@ -66,7 +66,7 @@ namespace helper {
     BW_FUNC(0x004e1b50, u32 __fastcall, default_interaction_checkbox, BinDlg* dialog, DialogEvent* event);
     BW_FUNC(0x004191e0, u32 __fastcall, default_interaction_image,    BinDlg* dialog, DialogEvent* event);
     BW_FUNC(0x00415af0, u32 __fastcall, default_interaction_slider,   BinDlg* dialog, DialogEvent* event);
-    BW_FUNC(0x00416980, u32 __fastcall, default_interaction_textbox,  BinDlg* dialog, DialogEvent* event);
+    BW_FUNC(0x00416980, u32 __fastcall, default_interaction_textinput,  BinDlg* dialog, DialogEvent* event);
     BW_FUNC(0x00419190, u32 __fastcall, default_interaction_label,    BinDlg* dialog, DialogEvent* event);
     BW_FUNC(0x0041baa0, u32 __fastcall, default_interaction_listbox,  BinDlg* dialog, DialogEvent* event);
     BW_FUNC(0x0041bc40, u32 __fastcall, default_interaction_combobox, BinDlg* dialog, DialogEvent* event);
@@ -1918,6 +1918,7 @@ namespace helper {
     void gamma_adjust_palette(u32 palette_count, Palette* output_palette, Palette* input_palette);   // 0041dc20
     // Recomputes lookup table for translucency effect
     void setup_dialog_palette_effects(BinDlg* dialog, Palette* palette);            // 004178b0
+    void menu_pop_z_index(BinDlg* dialog);                                          // 004dcc00
     void glu_change_menu_palette(u32 fade_time);                                    // 0041e9e0
 
     void enable_sound_list(u16* sounds_array);                                      // 004bccf0
@@ -1973,4 +1974,6 @@ namespace helper {
     s32 convert_current_order_to_carrier_reaver_fight_order(Unit* unit);                    // 00465360
     
     u32 get_resarea_id(Unit* unit);                                 // 00445930
+
+    bool modal_ok_cancel(const char* prompt); // 004b73b0
 }
