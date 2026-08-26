@@ -670,7 +670,7 @@ void __declspec(naked) get_unit_portrait_override_wrapper() { // 0045E320
     result = get_unit_portrait_override(unit_id);
     __asm {
         POPAD
-        MOV AX, result
+        MOVZX EAX, result
         RETN
     }
 }

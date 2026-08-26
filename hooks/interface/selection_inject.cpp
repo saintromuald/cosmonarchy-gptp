@@ -198,7 +198,7 @@ namespace
         result = hooks::get_team_size(unit);
         __asm {
             POPAD
-            MOV AL, result
+            MOVZX EAX, result
             RETN
         }
     }

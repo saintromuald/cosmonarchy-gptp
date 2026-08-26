@@ -2,8 +2,7 @@
 #include "Target.h"
 #pragma pack(1)
 
-struct Order
-{
+struct Order {
 	/*00*/  Order*	prev;
 	/*04*/  Order*	next;
 	/*08*/  u16		order_id;

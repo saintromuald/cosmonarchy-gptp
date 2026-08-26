@@ -408,7 +408,7 @@ namespace {
 		result = hooks::stasis_field_overlay(unit, timer);
 		__asm {
 			POPAD
-			MOV AL, result
+			MOVZX EAX, result
 			MOV ESP, EBP
 			POP EBP
 			RETN 4
@@ -425,7 +425,7 @@ namespace {
 		result = hooks::disable_unit(unit);
 		__asm {
 			POPAD
-			MOV AL, result
+			MOVZX EAX, result
 			RETN
 		}
 	}
@@ -442,7 +442,7 @@ namespace {
 		result = hooks::maelstrom_proc(target, source);
 		__asm {
 			POPAD
-			MOV AL, result
+			MOVZX EAX, result
 			RETN
 		}
 	}
@@ -514,7 +514,7 @@ namespace {
 		hooks::set_maelstrom_timer(unit, duration);
 		__asm {
 			POPAD
-			MOV AL, 0
+			MOV EAX, 0
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x04

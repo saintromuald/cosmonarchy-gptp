@@ -28,7 +28,7 @@ namespace {
 		result = hooks::wireframe_shields(unit);
 		__asm {
 			POPAD
-			MOV AL, result
+			MOVZX EAX, result
 			RETN
 		}
 	}

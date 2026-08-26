@@ -354,7 +354,7 @@ namespace {
         result = hooks::input_mmb_down(event);
         __asm {
             POPAD
-            MOV AL, result
+            MOVSX EAX, result
             RETN
         }
     }
@@ -371,7 +371,7 @@ namespace {
         result = hooks::statport_dlg_interact(dialog, dlg_event);
         __asm {
             POPAD
-            MOV AL, result
+            MOVZX EAX, result
             RETN
         }
     }
@@ -386,7 +386,7 @@ namespace {
         result = hooks::CMDRECV_minimap_ping(buffer);
         __asm {
             POPAD
-            MOV AL, result
+            MOVSX EAX, result
             RETN
         }
     }
@@ -401,7 +401,7 @@ namespace {
         result = hooks::draw_game_menu_context(dialog);
         __asm {
             POPAD
-            MOV AX, result
+            MOVZX EAX, result
             RETN
         }
     }

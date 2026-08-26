@@ -70,32 +70,27 @@ namespace
 		}
 	}
 
-	void __declspec(naked) ai_perform_task_wrapper() // 004361A0
-	{
+	void __declspec(naked) ai_perform_task_wrapper() { // 004361A0
 		static Unit* unit;
 		static char result;
-		__asm
-		{
+		__asm {
 			MOV unit, ECX
 			PUSHAD
 		}
 		result = hooks::ai_perform_task(unit);
-		__asm
-		{
+		__asm {
 			POPAD
-			MOV AL, result
+			MOVSX EAX, result
 			RETN
 		}
 	}
 
-	void __declspec(naked) ai_plan_do_merge_morph_wrapper() // 00435F10
-	{
+	void __declspec(naked) ai_plan_do_merge_morph_wrapper() { // 00435F10
 		static char result;
 		static s32 player;
 		static Unit* unit;
 		static s32 boolSomething;
-		__asm
-		{
+		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -109,10 +104,9 @@ namespace
 			PUSHAD
 		}
 		result = hooks::ai_plan_do_merge_morph(player, unit, boolSomething);
-		__asm
-		{
+		__asm {
 			POPAD
-			MOV AL, result
+			MOVSX EAX, result
 			MOV ESP, EBP
 			POP EBP
 			RETN 0xC

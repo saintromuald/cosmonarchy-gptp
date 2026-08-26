@@ -70,7 +70,7 @@ namespace {
 		result = hooks::unit_has_path_to_dest(unit, x, y);
 		__asm {
 			POPAD
-			MOV AL, result
+			MOVZX EAX, result
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x8
@@ -89,7 +89,7 @@ namespace {
 		result = hooks::unit_has_path_to_unit(pather, target);
 		_asm {
 			POPAD
-			MOV AL, result
+			MOVZX EAX, result
 			RETN
 		}
 	}

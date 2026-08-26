@@ -53,7 +53,7 @@ namespace {
         result = hooks::update_unit_transport_data(cargo, unused);
         __asm {
             POPAD
-            MOV AL, result
+            MOVSX EAX, result
             RETN
         }
     }

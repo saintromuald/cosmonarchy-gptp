@@ -79,7 +79,7 @@ namespace {
 		result = hooks::initialize_unit_counts();
 		__asm {
 			POPAD
-			MOV AL, result
+			MOVSX EAX, result
 			RETN
 		}
 	}
@@ -118,7 +118,7 @@ namespace {
 		result = hooks::redraw_supply_info();
 		__asm {
 			POPAD
-			MOV AL, result
+			MOVZX EAX, result
 			RETN
 		}
 	}

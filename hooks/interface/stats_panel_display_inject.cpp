@@ -333,7 +333,7 @@ namespace {
         result = hooks::get_last_queue_slot_id(unit);
         __asm {
             POPAD
-            MOV AX, result
+            MOVZX EAX, result
             RETN
         }
     }

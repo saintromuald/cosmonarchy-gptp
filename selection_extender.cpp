@@ -1030,7 +1030,7 @@ void __declspec(naked) add_to_control_group_patch_969D9() {
             MOV		EDX, [ECX + ccmu_extender.unit_table - 0x144]//new_unit_table[-1].sprite
             TEST	EDX, EDX
             LEA		ECX, [ECX + ccmu_extender.unit_table - 0x150]//new_unit_table[-1]
-            MOV[EBP - 0xC], EDX//sprite_xd
+            MOV[EBP - 0xC], EDX//sprite
             JE		offset loc_496ABB
             MOV		DL, [ECX + 0x4D]//unit->main_order_id
             TEST	DL, DL
@@ -1047,8 +1047,8 @@ void __declspec(naked) add_to_control_group_patch_969D9() {
             CMP		EAX, ds: [0x00512678]//ACTIVE_NATION_ID
             MOV[EBP - 0x14], EAX//reference_player
             JNE		offset loc_496ADD//Changed from loc_496ABB to prevent culling mind controlled units from the ctrl group (for CMBW).
-            MOV		EAX, [EBP - 0xC]//sprite_xd
-            TEST	byte ptr[EAX + 0xE], 0x20//sprite_xd->flags & CSprite_Flags::Hidden
+            MOV		EAX, [EBP - 0xC]//sprite
+            TEST	byte ptr[EAX + 0xE], 0x20//sprite->flags & CSprite_Flags::Hidden
             JNE		offset loc_496ADD//Changed from loc_496ABB to prevent culling units inside transports from the ctrl group.
             CALL	unit_is_standard_and_movable
             TEST	EAX, EAX
@@ -1083,36 +1083,36 @@ void __declspec(naked) add_to_control_group_patch_969D9() {
         CALL	is_human_player_on_same_team
         TEST	EAX, EAX
         JE		offset loc_496AB5
-        MOV		ECX, [EBP - 0x14]//reference_player
-        MOV		ESI, [EBP - 0xC]//sprite_xd
+        MOV		ECX, [EBP - 0x14] // reference_player
+        MOV		ESI, [EBP - 0xC] // sprite
         XOR		EDX, EDX
-        MOV		DL, [ECX + 0x00581D6A]//g_selection_circle_color
+        MOV		DL, [ECX + 0x00581D6A] // g_selection_circle_color
         PUSH	EDX
         CALL	create_dashed_selection
-        MOV		ESI, ds: [0x0051267C]//ACTIVE_PLAYER_ID
+        MOV		ESI, ds: [0x0051267C] // ACTIVE_PLAYER_ID
 
     loc_496AB5 :
         INC		EDI
         JMP		offset loc_496ADD
 
     loc_496ABB :
-        MOV		EAX, [EBP - 4]//count
+        MOV		EAX, [EBP - 4] // count
         DEC		EAX
-        MOV[EBP - 4], EAX//count
+        MOV[EBP - 4], EAX // count
         MOV		ECX, tmp
         MOV		EDX, [ECX + EAX * 4]
-        MOV[ECX + EBX * 4], EDX//ccmu_extender.new_saved_selections[player][group][slot] = ccmu_extender.new_saved_selections[player][group][count];
-        MOV		dword ptr[ECX + EAX * 4], 0//ccmu_extender.new_saved_selections[player][group][count] = NULL;
+        MOV[ECX + EBX * 4], EDX // ccmu_extender.new_saved_selections[player][group][slot] = ccmu_extender.new_saved_selections[player][group][count];
+        MOV		dword ptr[ECX + EAX * 4], 0 // ccmu_extender.new_saved_selections[player][group][count] = NULL;
         CMP		EBX, EAX
         JL		offset loc_4969E0
-        MOV		EBX, [EBP - 0x10]//group
+        MOV		EBX, [EBP - 0x10] // group
         JMP		add_to_control_group_96AEC
 
     loc_496ADD:
         INC		EBX
-        CMP		EBX, [EBP - 4]//count
+        CMP		EBX, [EBP - 4] // count
         JL		offset loc_4969E0
-        MOV		EBX, [EBP - 0x10]//group
+        MOV		EBX, [EBP - 0x10] // group
         JMP		add_to_control_group_96AEC
     }
 }
@@ -1125,7 +1125,7 @@ void __declspec(naked) selectUnitGroup_patch_96B41() {
     __asm {
         MOV		EBP, ESP
         SUB		ESP, SelectionLimit_dword + 12
-        MOV		EAX, ds:[0x00512688]//g_local_human_id
+        MOV		EAX, ds:[0x00512688] // g_local_human_id
         MOVZX	ECX, [EBP + 8]
         PUSHAD
         MOV		EBP, ESP
@@ -1133,7 +1133,7 @@ void __declspec(naked) selectUnitGroup_patch_96B41() {
         MOV		group, ECX
     }
 
-    tmp = (u32) &ccmu_extender.new_saved_selections[player][group];//[0];
+    tmp = (u32) &ccmu_extender.new_saved_selections[player][group]; // [0];
 
     __asm {
         POPAD
@@ -1209,7 +1209,7 @@ void __declspec(naked) create_all_selection_circles_patch_99A70() {
         TEST	ESI, ESI
         JE		offset loc_499AAE
         MOVZX	EAX, word ptr [ESI + 0x64]
-        TEST	byte ptr [EAX * 4 + 0x00664080], 0x10//unitsdat_base_property
+        TEST	byte ptr [EAX * 4 + 0x00664080], 0x10 // unitsdat_base_property
         PUSH	EBX
         JE		offset loc_499AA1
         MOV		EAX, [ESI + 0x70]
@@ -1243,10 +1243,10 @@ void __declspec(naked) create_all_selection_circles_patch_99B23() {
         TEST	EAX, EAX
         JE		offset loc_499B8E
         MOVZX	ECX, byte ptr [EAX + 0x4C]
-        MOV		DL, [ECX + 0x00581D6A]//g_selection_circle_color
+        MOV		DL, [ECX + 0x00581D6A] // g_selection_circle_color
         MOV		ESI, [EAX + 0xC]
         MOV		BL, [ESI + 0xE]
-        MOV		byte ptr [EBP - 0x14], DL//color
+        MOV		byte ptr [EBP - 0x14], DL // color
         CALL	illegal_team_check
         XOR		ECX, ECX
         MOV		CL, BL
@@ -1266,21 +1266,21 @@ void __declspec(naked) create_all_selection_circles_patch_99B23() {
         AND		AL, 6
         CMP		AL, 2
         JA		offset loc_499B7F
-        MOV		EDX, [EBP - 0x14]//color
-        PUSH	0x23B//imageID
-        PUSH	EDX//spriteID
-        MOV		EAX, ESI//a1
+        MOV		EDX, [EBP - 0x14] // color
+        PUSH	0x23B // imageID
+        PUSH	EDX // spriteID
+        MOV		EAX, ESI // a1
         CALL	create_selection_circle
         TEST	EAX, EAX
         JNE		offset loc_499B7F
         AND		byte ptr [ESI + 0xE], 0xF9
 
         loc_499B7F:
-        MOV		EAX, [EBP - 4]//iterations
+        MOV		EAX, [EBP - 4] // iterations
         INC		EAX
         ADD		EDI, 4
         CMP		EAX, SelectionLimit
-        MOV		[EBP - 4], EAX//iterations
+        MOV		[EBP - 4], EAX // iterations
         JL		offset loc_499B23
 
         loc_499B8E:
@@ -1298,7 +1298,7 @@ void __declspec(naked) remove_from_selection_2_patch_9A185() {
         MOV		player, EDI
     }
 
-    tmp = (u32) &ccmu_extender.new_players_selections[player];//[1];
+    tmp = (u32) &ccmu_extender.new_players_selections[player]; // [1];
 
     __asm {
         POPAD
@@ -1403,7 +1403,7 @@ void __declspec(naked) remove_from_selection_2_patch_9A185() {
     __asm {
         POPAD
         MOV		EDI, tmp
-        LEA		ESI, [EDI + 4]//&ccmu_extender.new_players_selections[player][slot + 1]
+        LEA		ESI, [EDI + 4] // &ccmu_extender.new_players_selections[player][slot + 1]
         MOV		ECX, EAX
         SUB		ECX, EBX
         REPE MOVSD
@@ -1440,7 +1440,7 @@ void __declspec(naked) clear_selection_patch_9A749() {
         MOV		player, ESI
     }
 
-    tmp = (u32)&ccmu_extender.new_players_selections[player];//[0];
+    tmp = (u32)&ccmu_extender.new_players_selections[player]; // [0];
 
     __asm {
         POPAD
@@ -1502,14 +1502,14 @@ void __declspec(naked) get_active_player_first_selection_patch_9A857() {
     u32 slot;
 
     __asm {
-        CMP		BL, SelectionLimit//192-limit: g_unit_iterator_pos (0x006284B6) is a BYTE. Technically it appears to be a WORD, but is only referenced as a byte ptr thoughout the exe.
+        CMP		BL, SelectionLimit // 192-limit: g_unit_iterator_pos (0x006284B6) is a BYTE. Technically it appears to be a WORD, but is only referenced as a byte ptr thoughout the exe.
         JB		offset loc_49A860
         XOR		EAX, EAX
         POP		EBX
         RET
 
         loc_49A860:
-        MOV		EAX, ds:[0x0051267C]//ACTIVE_PLAYER_ID
+        MOV		EAX, ds:[0x0051267C] // ACTIVE_PLAYER_ID
         MOVZX	ECX, BL
         PUSHAD
         MOV		EBP, ESP
@@ -1526,16 +1526,16 @@ void __declspec(naked) get_active_player_first_selection_patch_9A857() {
 
         loc_49A870:
         MOV		EAX, tmp
-        MOV		EAX, [EAX]//unit
+        MOV		EAX, [EAX] // unit
         TEST	EAX, EAX
         JE		offset loc_49A898
-        MOV		ECX, [EAX + 0xC]//unit->sprite
+        MOV		ECX, [EAX + 0xC] // unit->sprite
         TEST	ECX, ECX
         JE		offset loc_49A88F
-        MOV		CL, [EAX + 0x4D]//unit->main_order_id
+        MOV		CL, [EAX + 0x4D] // unit->main_order_id
         TEST	CL, CL
         JNE		offset loc_49A898
-        CMP		byte ptr [EAX + 0x4E], 1//unit->main_order_state
+        CMP		byte ptr [EAX + 0x4E], 1 // unit->main_order_state
         JNE		offset loc_49A898
 
         loc_49A88F:
@@ -1591,18 +1591,18 @@ void __declspec(naked) select_unit_initial_patch_9B6A0() {
         MOV		ESI, [EBX * 4 + ccmu_extender.new_active_selection]
         TEST	ESI, ESI
         JE		offset loc_49B70D
-        MOV		EAX, ds:[0x006D0F14]//g_is_in_replay
+        MOV		EAX, ds:[0x006D0F14] // g_is_in_replay
         TEST	EAX, EAX
         JNZ		loc_49B6C0
-        MOVZX	EAX, byte ptr [ESI + 0x4C]//unit - >player
-        CMP		EAX, ds:[0x00512684]//g_local_nation_id
+        MOVZX	EAX, byte ptr [ESI + 0x4C] // unit - >player
+        CMP		EAX, ds:[0x00512684] // g_local_nation_id
         JE		offset loc_49B707
 
         loc_49B6C0:
-        MOVZX	ECX, word ptr [ESI + 0x64]//unit - >id
-        TEST	byte ptr [ECX * 4 + 0x00664080], 0x10//units_dat::Subunit
+        MOVZX	ECX, word ptr [ESI + 0x64] // unit - >id
+        TEST	byte ptr [ECX * 4 + 0x00664080], 0x10 // units_dat::Subunit
         JE		offset loc_49B6D3
-        MOV		EAX, [ESI + 0x70]//unit - >subunit
+        MOV		EAX, [ESI + 0x70] // unit - >subunit
         JMP		offset loc_49B6D5
 
         loc_49B6D3:
@@ -1610,13 +1610,13 @@ void __declspec(naked) select_unit_initial_patch_9B6A0() {
 
         loc_49B6D5:
         CALL	destroy_unit_selection
-        MOVZX	EDX, word ptr [ESI + 0x64]//unit - >id
-        TEST	byte ptr [EDX * 4 + 0x00664080], 0x10//units_dat::Subunit
+        MOVZX	EDX, word ptr [ESI + 0x64] // unit - >id
+        TEST	byte ptr [EDX * 4 + 0x00664080], 0x10 // units_dat::Subunit
         PUSH	EBX
         JE		offset loc_49B700
-        MOV		EAX, [ESI + 0x70]//unit - >subunit
+        MOV		EAX, [ESI + 0x70] // unit - >subunit
         CALL	create_unit_selection
-        MOV		ECX, [ESI + 0x70]//unit - >subunit
+        MOV		ECX, [ESI + 0x70] // unit - >subunit
         MOVZX	EAX, BL
         MOV		[EAX * 4 + ccmu_extender.new_active_selection], ECX
         JMP		offset loc_49B707
@@ -1643,16 +1643,16 @@ void __declspec(naked) select_unit_initial_patch_9B770() {
         MOV		EBX, [EDI]
         TEST	EBX, EBX
         JE		offset loc_49B846
-        MOV		EAX, ds:[0x006D0F14]//g_is_in_replay
+        MOV		EAX, ds:[0x006D0F14] // g_is_in_replay
         TEST	EAX, EAX
         JNE		offset loc_49B793
-        MOVZX	ECX, byte ptr [EBX + 0x4C]//unit - >player
-        CMP		ECX, ds:[0x00512684]//g_local_nation_id
+        MOVZX	ECX, byte ptr [EBX + 0x4C] // unit - >player
+        CMP		ECX, ds:[0x00512684] // g_local_nation_id
         JE		offset loc_49B833
 
         loc_49B793:
-        MOV		EDX, [EBX + 0xC]//unit - >sprite
-        MOV		CL, [EDX + 0xE]//sprite - >flags
+        MOV		EDX, [EBX + 0xC] // unit - >sprite
+        MOV		CL, [EDX + 0xE] // sprite - >flags
         MOV		AL, CL
         SHR		AL, 1
         TEST	AL, 3
@@ -1665,7 +1665,7 @@ void __declspec(naked) select_unit_initial_patch_9B770() {
         TEST	AL, 6
         MOV		[EDX + 0xE], AL
         JA		offset loc_49B7DD
-        MOV		ESI, [EDX + 0x20]//sprite - >image - >tail
+        MOV		ESI, [EDX + 0x20] // sprite - >image - >tail
         TEST	ESI, ESI
         JE		offset loc_49B7DD
         ALIGN 4
@@ -1688,10 +1688,10 @@ void __declspec(naked) select_unit_initial_patch_9B770() {
 
         loc_49B7DD:
         MOVZX	EDX, byte ptr [EBX + 0x4C]
-        MOV		AL, [EDX + 0x00581D6A]//g_selection_circle_color
+        MOV		AL, [EDX + 0x00581D6A] // g_selection_circle_color
         MOV		ESI, [EBX + 0xC]
         MOV		BL, [ESI + 0xE]
-        MOV		byte ptr [EBP - 0x14], AL//color
+        MOV		byte ptr [EBP - 0x14], AL // color
         CALL	illegal_team_check
         XOR		EDX, EDX
         MOV		DL, BL
@@ -1711,21 +1711,21 @@ void __declspec(naked) select_unit_initial_patch_9B770() {
         AND		AL, 6
         CMP		AL, 2
         JA		offset loc_49B833
-        MOV		EAX, [EBP - 0x14]//color
-        PUSH	0x23B//imageID
-        PUSH	EAX//spriteID
-        MOV		EAX, ESI//a1
+        MOV		EAX, [EBP - 0x14] // color
+        PUSH	0x23B // imageID
+        PUSH	EAX // spriteID
+        MOV		EAX, ESI // a1
         CALL	create_selection_circle
         TEST	EAX, EAX
         JNE		offset loc_49B833
         AND		byte ptr [ESI + 0xE], 0xF9
 
         loc_49B833:
-        MOV		EAX, [EBP - 8]//iterations_3
+        MOV		EAX, [EBP - 8] // iterations_3
         INC		EAX
         ADD		EDI, 4
         CMP		EAX, SelectionLimit
-        MOV		[EBP - 8], EAX//iterations_3
+        MOV		[EBP - 8], EAX // iterations_3
         JB		offset loc_49B770
 
         loc_49B846:
@@ -1857,7 +1857,7 @@ void __declspec(naked) remove_from_client_selection_3_patch_9F7FB() {
 const u32 CMDRECV_ShiftDeselect_BFB4F = 0x004BFB4F;
 void __declspec(naked) CMDRECV_ShiftDeselect_patch_BFB49() {
     __asm {
-        MOV		CL, [EDX + 1]//192-limit: selection count is a BYTE in the cmdact/cmdrecv buffer.
+        MOV		CL, [EDX + 1] // 192-limit: selection count is a BYTE in the cmdact/cmdrecv buffer.
         CMP		CL, SelectionLimit
         JMP		CMDRECV_ShiftDeselect_BFB4F
     }
@@ -1878,8 +1878,8 @@ void __declspec(naked) cmdact_select_patch_C0863() {
         REPE STOSW
         CLD
 
-        MOV		EBX, [EBP + 8]//count
-        MOV		EDI, [EBP + 0xC]//units
+        MOV		EBX, [EBP + 8] // count
+        MOV		EDI, [EBP + 0xC] // units
         XOR		EDX, EDX
         TEST	EBX, EBX
         JMP		cmdact_select_C08C0
@@ -1936,7 +1936,7 @@ const u32 queue_game_command = 0x00485BD0;
 void __declspec(naked) cmdact_select_patch_C0A71() {
     __asm {
         LEA		ECX, [EBP - buffer3_type]
-        LEA		EDX, [EAX + EAX + 2]//size
+        LEA		EDX, [EAX + EAX + 2] // size
         MOV		byte ptr [EBP - buffer3_type], 0x9
         MOV		byte ptr [EBP - buffer3_size], AL
         CALL	queue_game_command
@@ -1954,7 +1954,7 @@ void __declspec(naked) cmdact_select_patch_C0A8D() {
         TEST	EDX, EDX
         JE		offset loc_4C0AA4
         MOV		byte ptr [EBP - buffer2_size], DL
-        LEA		EDX, [EDX + EDX + 2]//size
+        LEA		EDX, [EDX + EDX + 2] // size
         LEA		ECX, [EBP - buffer2_type]
         MOV		byte ptr [EBP - buffer2_type], 0xB
         CALL	queue_game_command
@@ -1964,7 +1964,7 @@ void __declspec(naked) cmdact_select_patch_C0A8D() {
         TEST	EAX, EAX
         JE		offset loc_4C0ABE
         LEA		ECX, [EBP - buffer1_type]
-        LEA		EDX, [EAX + EAX + 2]//size
+        LEA		EDX, [EAX + EAX + 2] // size
         MOV		byte ptr [EBP - buffer1_type], 0xA
         MOV		byte ptr [EBP - buffer1_size], AL
         CALL	queue_game_command
@@ -1985,7 +1985,7 @@ void __declspec(naked) cmdrecv_shift_select_patch_C256D() {
     u32 player;
 
     __asm {
-        CMP		DL, SelectionLimit//192-limit: selection count is a BYTE in the cmdact/cmdrecv buffer.
+        CMP		DL, SelectionLimit // 192-limit: selection count is a BYTE in the cmdact/cmdrecv buffer.
         JNA		offset loc_4C2576
         POP		ESI
         MOV		ESP, EBP
@@ -1993,7 +1993,7 @@ void __declspec(naked) cmdrecv_shift_select_patch_C256D() {
         RETN	4
 
         loc_4C2576:
-        MOV		EAX, ds:[0x0051267C]//ACTIVE_PLAYER_ID
+        MOV		EAX, ds:[0x0051267C] // ACTIVE_PLAYER_ID
         PUSHAD
         MOV		EBP, ESP
         MOV		player, EAX
@@ -2056,7 +2056,7 @@ void __declspec(naked) cmdrecv_shift_select_patch_C256D() {
         MOVZX	EAX, DL
         LEA		EDX, [EAX + ECX]
         CMP		EDX, SelectionLimit
-        JA		offset loc_4C2747//Changed from JG to JA for unsigned comparison.
+        JA		offset loc_4C2747 // Changed from JG to JA for unsigned comparison.
         JMP		cmdrecv_shift_select_C25E9
 
         loc_4C2747:
@@ -2096,7 +2096,7 @@ const u32 cmdrecv_shift_select_C268A = 0x004C268A;
 void __declspec(naked) cmdrecv_shift_select_patch_C2685() {
     __asm {
         CMP		EDI, SelectionLimit
-        JAE		offset loc_4C26CE//Changed from JGE to JAE for unsigned comparison.
+        JAE		offset loc_4C26CE // Changed from JGE to JAE for unsigned comparison.
         JMP		cmdrecv_shift_select_C268A
 
         loc_4C26CE:
@@ -2111,7 +2111,7 @@ void __declspec(naked) cmdrecv_shift_select_patch_C26AB() {
     u32 slot;
 
     __asm {
-        MOV		EAX, ds:[0x0051267C]//ACTIVE_PLAYER_ID
+        MOV		EAX, ds:[0x0051267C] // ACTIVE_PLAYER_ID
         PUSHAD
         MOV		EBP, ESP
         MOV		unit, ESI
@@ -2133,7 +2133,7 @@ const u32 cmdrecv_select_C275E = 0x004C275E;
 void __declspec(naked) cmdrecv_select_patch_C2757() {
     __asm {
         MOV		ESI, [EBP + 8]
-        CMP		byte ptr [ESI + 1], SelectionLimit//192-limit: selection count is a BYTE in the cmdact/cmdrecv buffer.
+        CMP		byte ptr [ESI + 1], SelectionLimit // 192-limit: selection count is a BYTE in the cmdact/cmdrecv buffer.
         JMP		cmdrecv_select_C275E
     }
 }
@@ -2258,12 +2258,12 @@ void __declspec(naked) unit_is_owned_by_current_player_new() {
     __asm {
         PUSH	EBP
         MOV		EBP, ESP
-        MOV		EAX, ds:[0x006D0F14]//g_is_in_replay
+        MOV		EAX, ds:[0x006D0F14] // g_is_in_replay
         TEST	EAX, EAX
-        MOV		EAX, [EBP + 8]//pUnit
-        MOVZX	ECX, byte ptr [EAX + 0x4C]//unit->player
+        MOV		EAX, [EBP + 8] // pUnit
+        MOVZX	ECX, byte ptr [EAX + 0x4C] // unit->player
         JNE		offset is_in_replay
-        CMP		ECX, ds:[0x00512684]//g_local_nation_id
+        CMP		ECX, ds:[0x00512684] // g_local_nation_id
         JNE		offset loc_401194
 
         is_same_player:
