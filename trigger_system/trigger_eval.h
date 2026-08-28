@@ -60,26 +60,10 @@ auto ctx_get_params_tuple(Context& ctx) {
 }
 
 template <typename Func>
-Condition make_condition(Func&& condition) {
-    return [condition = std::forward<Func>(condition)](Context& ctx) {
-        return std::apply(condition, ctx_get_params_tuple<Func>(ctx));
-    };
-}
+Condition make_condition(Func&& condition);
 
 template <typename Func>
-Action make_action(Func&& action, bool is_local) {
-    return Action{
-        .is_local = is_local,
-        .func = [action = std::forward<Func>(action)](Context& ctx) {
-            if constexpr (std::is_same_v<typename fn::Traits<Func>::ReturnType, void>) {
-                std::apply(action, ctx_get_params_tuple<Func>(ctx));
-                return true;
-            } else {
-                return std::apply(action, ctx_get_params_tuple<Func>(ctx));
-            }
-        },
-    };
-}
+Action make_action(Func&& action, bool is_local);
 
 class Registry {
 public:
@@ -215,6 +199,7 @@ public:
 
     template <typename... Args>
     void error(std::string_view title, Args&&... args) {
+        m_had_errors = true;
         m_parser.error(title, std::forward<Args>(args)...);
     }
 
@@ -227,6 +212,9 @@ public:
     bool is_local_player() const { return m_player == g_local_nation_id; }
     OngoingWait& ongoing_wait() { return m_trigger_ext.ongoing_waits[m_player]; }
 
+    bool had_errors() const { return m_had_errors; }
+    void clear_errors() { m_had_errors = false; }
+
 private:
     Registry& m_registry;
     Parser m_parser;
@@ -234,7 +222,41 @@ private:
     TriggerExt& m_trigger_ext;
     TriggerAction* m_action;
     u8 m_player;
+    bool m_had_errors = false;
 };
+
+template <typename Func>
+Condition make_condition(Func&& condition) {
+    return [condition = std::forward<Func>(condition)](Context& ctx) {
+        ctx.clear_errors();
+        auto params_tuple = ctx_get_params_tuple<Func>(ctx);
+        if (ctx.had_errors()) {
+            return false;
+        }
+        return std::apply(condition, params_tuple);
+    };
+}
+
+template <typename Func>
+Action make_action(Func&& action, bool is_local) {
+    return Action{
+        .is_local = is_local,
+        .func = [action = std::forward<Func>(action)](Context& ctx) {
+            ctx.clear_errors();
+            auto params_tuple = ctx_get_params_tuple<Func>(ctx);
+            if (ctx.had_errors()) {
+                return true;
+            }
+
+            if constexpr (std::is_same_v<typename fn::Traits<Func>::ReturnType, void>) {
+                std::apply(action, params_tuple);
+                return true;
+            } else {
+                return std::apply(action, params_tuple);
+            }
+        },
+    };
+}
 
 template <>
 struct Parameter<Context> {
@@ -257,12 +279,6 @@ struct Parameter<std::optional<Any<T>>> {
     }
 };
 
-template <StringLiteral... Patterns>
-struct Parameter<std::optional<OneOf<Patterns...>>> {
-    static std::optional<OneOf<Patterns...>> get(Context& ctx) {
-        return ctx.parser().get_one_of<Patterns...>();
-    }
-};
 
 template <>
 struct Parameter<std::optional<std::string_view>> {
@@ -339,7 +355,11 @@ struct Parameter<std::optional<T>> {
 template <typename T> requires std::is_enum_v<T>
 struct Parameter<T> {
     static T get(Context& ctx) {
-        return Parameter<std::optional<T>>::get(ctx).value_or(T::None);
+        const auto value = Parameter<std::optional<T>>::get(ctx);
+        if (!value) {
+            ctx.error("Invalid enum");
+        }
+        return value.value_or(T{});
     }
 };
 
@@ -371,12 +391,6 @@ struct Parameter<std::optional<WeaponId::Enum>> {
     }
 };
 
-template <>
-struct Parameter<WeaponId::Enum> {
-    static WeaponId::Enum get(Context& ctx) {
-        return Parameter<std::optional<WeaponId::Enum>>::get(ctx).value_or(WeaponId::None);
-    }
-};
 
 template <>
 struct Parameter<std::optional<WeaponIdBitset>> {
@@ -399,12 +413,6 @@ struct Parameter<std::optional<FlingyIdBitset>> {
     }
 };
 
-template <>
-struct Parameter<flingy_id::Enum> {
-    static flingy_id::Enum get(Context& ctx) {
-        return Parameter<std::optional<flingy_id::Enum>>::get(ctx).value_or(flingy_id::Scourge);
-    }
-};
 
 template <>
 struct Parameter<std::optional<StatOperator>> {
@@ -413,12 +421,6 @@ struct Parameter<std::optional<StatOperator>> {
     }
 };
 
-template <>
-struct Parameter<StatOperator> {
-    static StatOperator get(Context& ctx) {
-        return Parameter<std::optional<StatOperator>>::get(ctx).value_or(StatOperator::Set);
-    }
-};
 
 template <>
 struct Parameter<std::optional<Designator>> {
@@ -490,6 +492,16 @@ struct Parameter<std::optional<PlayerId<AllowNeutral>>> {
     }
 };
 
+template <bool AllowNeutral>
+struct Parameter<PlayerId<AllowNeutral>> {
+    static PlayerId<AllowNeutral> get(Context& ctx) {
+        auto player = ctx.parser().get_player<AllowNeutral>();
+        if (!player) {
+            ctx.error("Invalid player");
+        }
+        return player.value_or(PlayerId<AllowNeutral>{});
+    }
+};
 
 template <>
 struct Parameter<std::optional<Ticks>> {
@@ -586,12 +598,6 @@ struct Parameter<std::optional<IscriptAnimation::Enum>> {
     }
 };
 
-template <>
-struct Parameter<IscriptAnimation::Enum> {
-    static IscriptAnimation::Enum get(Context& ctx) {
-        return Parameter<std::optional<IscriptAnimation::Enum>>::get(ctx).value_or(IscriptAnimation::Init);
-    }
-};
 
 template <>
 struct Parameter<std::optional<SoundId::Enum>> {

@@ -54,7 +54,6 @@ void init_trigger_system() {
     g_trigger.init = true;
     g_trigger.game_paused = false;
     g_action_table[47] = (ActionPointer)parse_comment_action;
-    g_action_table[47] = (ActionPointer)parse_comment_action;
     init_auto_celebration();
     init_recolors();
     g_objectives.reset();

@@ -2,7 +2,6 @@
 #include "BW/api.h"
 #include "color_palette.h"
 
-#include <array>
 #include <bitset>
 #include <charconv>
 #include <concepts>
@@ -142,7 +141,6 @@ enum class StatOperator {
 	Or,
 	InverseAnd,
 	Xor,
-	Count,
 };
 
 struct ParserMarker {
@@ -265,23 +263,18 @@ std::optional<T> sv_convert_to(std::string_view sv) {
 // Helper parameter types for parser getters that don't map to a unique C++ type.
 // Internal player index (0 - 7), or none. Users write 1 - 8 in crigs.
 template <bool AllowNeutral>
-struct PlayerId {
-	std::optional<u32> value;
-
-	operator bool() const { return value.has_value(); }
-	u32 operator*() const { return *value; }
-};
+struct PlayerId { u32 value; operator u32() const { return value; } };
 using PlayablePlayer  = PlayerId<false>;
 using PlayerOrNeutral = PlayerId<true>;
 
 struct Identifier { std::string_view value; operator std::string_view() const { return value; } };
 struct Ticks      { u32 value; operator u32() const { return value; } };
-struct Seconds    { fp32 value; operator fp32() const { return value; } };
+struct Seconds    { fp64 value; operator fp64() const { return value; } };
 
 struct TimeQuota     : Quota {};
 struct EqualityQuota : Quota {};
 struct VarQuota      : Quota { bool create; };
-struct TimerQuota : Quota { bool create; };
+struct TimerQuota    : Quota { bool create; };
 struct VarValue   { s32 value; operator s32() const { return value; } };
 struct TimerValue { s32 value; operator s32() const { return value; } };
 
@@ -293,20 +286,6 @@ struct Any {
     bool any;
 };
 
-template <size_t N>
-struct StringLiteral {
-    char value[N];
-    constexpr StringLiteral(const char (&string)[N]) { for (size_t i = 0; i < N; ++i) { value[i] = string[i]; } }
-    constexpr operator std::string_view() const { return {value, N - 1}; }
-};
-
-template <StringLiteral... Patterns>
-struct OneOf {
-    std::string_view value;
-
-    operator std::string_view() const { return value; }
-    bool operator==(std::string_view other) const { return value == other; }
-};
 
 std::string enum_name_to_snake_case(std::string_view name);
 
@@ -341,21 +320,6 @@ public:
 	std::optional<Area> get_area();
 	std::optional<v2u16> get_position();
 
-	template <StringLiteral... Patterns>
-	std::optional<OneOf<Patterns...>> get_one_of() {
-		static_assert(sizeof...(Patterns) > 0);
-		const auto token = get_word();
-		if (!token) {
-			return {};
-		}
-		constexpr std::array patterns{std::string_view{Patterns}...};
-		for (const auto pattern : patterns) {
-			if (sv_iequals(*token, pattern)) {
-				return OneOf<Patterns...>{pattern};
-			}
-		}
-		return OneOf<Patterns...>{patterns.back()};
-	}
 
 	template <typename T> requires std::is_enum_v<T>
 	std::optional<T> get_magic_enum() {
@@ -392,7 +356,7 @@ public:
 	}
 
 	template <bool AllowNeutral = false>
-	PlayerId<AllowNeutral> get_player();
+	std::optional<PlayerId<AllowNeutral>> get_player();
 	std::optional<PlayerBitset> get_player_bitset();
 
 	std::optional<UnitId::Enum> get_unit_id();
@@ -488,7 +452,7 @@ private:
 	void start_token();
 	void expand_token();
 
-	std::optional<fp32> get_time_seconds_raw();
+	std::optional<fp64> get_time_seconds_raw();
 
 	std::optional<std::string_view> eat_word();
 	void clear_token();

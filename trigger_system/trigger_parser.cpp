@@ -280,84 +280,55 @@ std::optional<bool> Parser::get_bool() {
 	return bool(*value);
 }
 
-enum TimeType {
-	TimeType_Hours,
-	TimeType_Minutes,
-	TimeType_Seconds,
-	TimeType_Milliseconds,
-	TimeType_Ticks,
-	TimeType_Count,
-};
-
-std::optional<fp32> Parser::get_time_seconds_raw() {
+std::optional<fp64> Parser::get_time_seconds_raw() {
 	if (!skip_whitespace() || !*m_at) {
 		return {};
 	}
 
-	bool add_to_total = false;
-	fp32 total_time{};
-	fp32 time{};
-	u32 time_type = TimeType_Seconds;
+	const auto add_time = [](fp64& total_seconds, fp64 time, char suffix) {
+		switch (suffix) {
+			case 'h': total_seconds += time * 60 * 60; break;
+			case 'm': total_seconds += time * 60;      break;
+			case 's': total_seconds += time;           break;
+			case 't': total_seconds += time / 24;      break;
+		}
+	};
 
+	fp64 total_seconds{};
 	start_token();
 	while (*m_at && !is_any_space(*m_at) && !is_separator(*m_at)) {
-		if (isdigit(*m_at) || *m_at == '.') {
+		if (isdigit(*m_at) || *m_at == '.' || (m_token.empty() && (*m_at == '+' || *m_at == '-'))) {
 			expand_token();
 			continue;
-		} else if (*m_at == 'h') {
-			time_type = TimeType_Hours;
-			add_to_total = true;
-		} else if (*m_at == 'm') {
-			if (m_at[1] == 's') {
-				time_type = TimeType_Milliseconds;
-				add_to_total = true;
-
-				expand_token();
-			} else {
-				time_type = TimeType_Minutes;
-				add_to_total = true;
-			}
-		} else if (*m_at == 's') {
-			time_type = TimeType_Seconds;
-			add_to_total = true;
-		} else if (*m_at == 't') {
-			time_type = TimeType_Ticks;
-			add_to_total = true;
 		}
 
-		if (add_to_total) {
-			add_to_total = false;
-			time = sv_convert_to<fp32>(m_token).value_or({});
-			switch (time_type) {
-				case TimeType_Hours: {
-					total_time += time * 60 * 60;
-				} break;
-				case TimeType_Minutes: {
-					total_time += time * 60;
-				} break;
-				case TimeType_Seconds: {
-					total_time += time;
-				} break;
-				case TimeType_Milliseconds: {
-					total_time += time / 1000;
-				} break;
-				case TimeType_Ticks: {
-					total_time += time / 24;
-				} break;
-			}
-			start_token();
-			time = 0;
+		const auto time = sv_convert_to<fp64>(m_token);
+		if (!time) {
+			return {};
 		}
 
-		expand_token();
+		if (*m_at == 'm' && m_at[1] == 's') {
+			total_seconds += *time / 1000;
+			expand_token();
+			expand_token();
+		} else if (*m_at == 'h' || *m_at == 'm' || *m_at == 's' || *m_at == 't') {
+			const auto suffix = *m_at;
+			add_time(total_seconds, *time, suffix);
+			expand_token();
+		} else {
+			return {};
+		}
+		start_token();
 	}
 
-	// add seconds by default if anything without type was left
 	if (!m_token.empty()) {
-		time = sv_convert_to<fp32>(m_token).value_or({});
-		total_time += fpm::ceil(time);
+		const auto time = sv_convert_to<fp64>(m_token);
+		if (!time) {
+			return {};
+		}
+		total_seconds += fpm::ceil(*time);
 	}
-	return total_time;
+	return total_seconds;
 }
 
 std::optional<Seconds> Parser::get_time_seconds() {
@@ -369,11 +340,60 @@ std::optional<Seconds> Parser::get_time_seconds() {
 }
 
 std::optional<Ticks> Parser::get_time_ticks() {
-	const auto seconds = get_time_seconds_raw();
-	if (!seconds) {
+	if (!skip_whitespace() || !*m_at) {
 		return {};
 	}
-	return Ticks{u32(fpm::ceil(*seconds * 24))};
+
+	const auto add_time = [](s64& total_ticks, fp32 time, char suffix) {
+		const s64 raw_time = time.raw_value();
+		switch (suffix) {
+			case 'h': total_ticks += raw_time * 60 * 60 * 24; break;
+			case 'm': total_ticks += raw_time * 60 * 24;      break;
+			case 's': total_ticks += raw_time * 24;           break;
+			case 't': total_ticks += raw_time;                break;
+		}
+	};
+
+	s64 total_ticks{};
+	start_token();
+	while (*m_at && !is_any_space(*m_at) && !is_separator(*m_at)) {
+		if (isdigit(*m_at) || *m_at == '.' || (m_token.empty() && (*m_at == '+' || *m_at == '-'))) {
+			expand_token();
+			continue;
+		}
+
+		const auto time = sv_convert_to<fp32>(m_token);
+		if (!time) {
+			return {};
+		}
+
+		if (*m_at == 'm' && m_at[1] == 's') {
+			total_ticks += s64(time->raw_value()) * 24 / 1000;
+			expand_token();
+			expand_token();
+		} else if (*m_at == 'h' || *m_at == 'm' || *m_at == 's' || *m_at == 't') {
+			const auto suffix = *m_at;
+			add_time(total_ticks, *time, suffix);
+			expand_token();
+		} else {
+			return {};
+		}
+		start_token();
+	}
+
+	if (!m_token.empty()) {
+		const auto time = sv_convert_to<fp32>(m_token);
+		if (!time) {
+			return {};
+		}
+		total_ticks += s64(fpm::ceil(*time).raw_value()) * 24;
+	}
+
+	constexpr s64 fraction_scale = fp32{1}.raw_value();
+	if (total_ticks > 0) {
+		total_ticks += fraction_scale - 1;
+	}
+	return Ticks{u32(total_ticks / fraction_scale)};
 }
 
 std::optional<s32> Parser::get_var_value(bool is_timer) {
@@ -552,28 +572,28 @@ std::optional<v2u16> Parser::get_position() {
 
 
 template <bool AllowNeutral>
-PlayerId<AllowNeutral> Parser::get_player() {
+std::optional<PlayerId<AllowNeutral>> Parser::get_player() {
 	const auto value = get_integer();
 	if (!value || *value == 0) {
 		return {};
 	}
 	const auto player = *value;
 	if (player >= 1 && player <= PlayerLimit) {
-		return {u32(player - 1)};
+		return PlayerId<AllowNeutral>{u32(player - 1)};
 	}
 	if (player == 13) {
-		return {u32(*g_current_trigger_player_id)};
+		return PlayerId<AllowNeutral>{u32(*g_current_trigger_player_id)};
 	}
 	if constexpr (AllowNeutral) {
 		if (player == 12) {
-			return {u32(player - 1)};
+			return PlayerId<AllowNeutral>{u32(player - 1)};
 		}
 	}
 	error("Invalid player", player);
 	return {};
 }
-template PlayerId<false> Parser::get_player<false>();
-template PlayerId<true>  Parser::get_player<true>();
+template std::optional<PlayerId<false>> Parser::get_player<false>();
+template std::optional<PlayerId<true>>  Parser::get_player<true>();
 
 static PlayerBitset player_bitset_combine(PlayerBitset a, PlayerBitset b) {
 	a |= b;
