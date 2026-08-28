@@ -9,8 +9,6 @@ enum class SpawnType {
 	Zerg,
 	Teleport,
 	Burrow,
-
-	Count,
 };
 
 struct SpawnSequence {

@@ -16,6 +16,17 @@
 
 namespace trigger {
 
+enum class UnitSoundOperation {
+    Clear,
+    Add,
+};
+
+enum class SoundVisibility {
+    Unexplored,
+    Explored,
+    Visible,
+};
+
 enum class TriggerFaction : u8 {
     None                  = u8(Faction::None),
 
@@ -37,8 +48,6 @@ enum class TriggerFaction : u8 {
     Goszirith             = u8(Faction::ZergGoszirithTendril),
     Orkoti                = u8(Faction::ZergOrkotiTendril),
     Zorthos               = u8(Faction::ZergZorthosTendril),
-
-    Count                 = u8(Faction::Count),
 };
 
 namespace {
@@ -83,7 +92,7 @@ Registry g_triggers = Registry()
     // -------------------------------------------------------------------------
     // Conditions
     // -------------------------------------------------------------------------
-    .add_condition("combat", [](Area area, PlayerBitset source_players, UnitIdBitset source_unit_ids, PlayerBitset target_players, UnitIdBitset target_unit_ids, TimeQuota time_quota, PlayablePlayer scouting_player) {
+    .add_condition("combat", [](Area area, PlayerBitset source_players, UnitIdBitset source_unit_ids, PlayerBitset target_players, UnitIdBitset target_unit_ids, TimeQuota time_quota, std::optional<PlayablePlayer> scouting_player) {
         for (const TriggerEvent& event : combat_events) {
             if (!area.check(event.position, units_dat::base_property[event.target_unit_id] & UnitProperty::Flyer)) {
                 continue;
@@ -107,7 +116,7 @@ Registry g_triggers = Registry()
         }
         return false;
     })
-    .add_condition("kills", [](Area area, PlayerBitset source_players, UnitIdBitset source_unit_ids, PlayerBitset target_players, UnitIdBitset target_unit_ids, Quota quota, TimeQuota time_quota, PlayablePlayer scouting_player) {
+    .add_condition("kills", [](Area area, PlayerBitset source_players, UnitIdBitset source_unit_ids, PlayerBitset target_players, UnitIdBitset target_unit_ids, Quota quota, TimeQuota time_quota, std::optional<PlayablePlayer> scouting_player) {
         u32 count = 0;
         for (const TriggerEvent& event : kill_events) {
             if (!area.check(event.position, units_dat::base_property[event.target_unit_id] & UnitProperty::Flyer)) {
@@ -135,7 +144,7 @@ Registry g_triggers = Registry()
         }
         return quota.check(count);
     })
-    .add_condition("deaths", [](Area area, PlayerBitset players, UnitIdBitset unit_ids, Quota quota, TimeQuota time_quota, PlayablePlayer scouting_player) {
+    .add_condition("deaths", [](Area area, PlayerBitset players, UnitIdBitset unit_ids, Quota quota, TimeQuota time_quota, std::optional<PlayablePlayer> scouting_player) {
         u32 count = 0;
         for (TriggerEvent& event : kill_events) {
             if (!area.check(event.position, units_dat::base_property[event.target_unit_id] & UnitProperty::Flyer)) {
@@ -157,7 +166,7 @@ Registry g_triggers = Registry()
         }
         return quota.check(count);
     })
-    .add_condition("unit_count", [](Designator designator, Quota quota, PlayablePlayer scouting_player, TimeQuota scouting_time_quota, bool completed) {
+    .add_condition("unit_count", [](Designator designator, Quota quota, std::optional<PlayablePlayer> scouting_player, TimeQuota scouting_time_quota, bool completed) {
         u32 count = 0;
         const auto units = scouting_player ? designator.search_seen(*scouting_player) : designator.search();
         for (Unit* unit : units) {
@@ -206,40 +215,26 @@ Registry g_triggers = Registry()
             .count();
         return quota.check(count);
     })
-    .add_condition("player_race", [](Context& ctx, PlayablePlayer player, EqualityQuota op, PlayableRaceId race) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return false;
-        }
+    .add_condition("player_race", [](PlayablePlayer player, EqualityQuota op, PlayableRaceId race) {
         switch (op.type) {
-            case QuotaType_Equal:    return g_player_table[*player].race == to_race_id(race);
-            case QuotaType_NotEqual: return g_player_table[*player].race != to_race_id(race);
+            case QuotaType_Equal:    return g_player_table[player].race == to_race_id(race);
+            case QuotaType_NotEqual: return g_player_table[player].race != to_race_id(race);
         }
         return false;
     })
-    .add_condition("player_type", [](Context& ctx, PlayablePlayer player, EqualityQuota op, CrigPlayerType type) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return false;
-        }
-        if (type == CrigPlayerType::None) {
-            ctx.error("Invalid player type", type);
-            return false;
-        }
+    .add_condition("player_type", [](PlayablePlayer player, EqualityQuota op, CrigPlayerType type) {
         const auto compare = [&](PlayerType::Enum t) {
             switch (op.type) {
-                case QuotaType_Equal:    return g_player_table[*player].type == t;
-                case QuotaType_NotEqual: return g_player_table[*player].type != t;
+                case QuotaType_Equal:    return g_player_table[player].type == t;
+                case QuotaType_NotEqual: return g_player_table[player].type != t;
             }
-            ctx.error("Invalid operator", op.type);
             return false;
         };
         const auto compare_witness = [&](WitnessMode mode) {
             switch (op.type) {
-                case QuotaType_Equal:    return g_globals->players[*player].witness_mode == mode;
-                case QuotaType_NotEqual: return g_globals->players[*player].witness_mode != mode;
+                case QuotaType_Equal:    return g_globals->players[player].witness_mode == mode;
+                case QuotaType_NotEqual: return g_globals->players[player].witness_mode != mode;
             }
-            ctx.error("Invalid operator", op.type);
             return false;
         };
         switch (type) {
@@ -250,7 +245,6 @@ Registry g_triggers = Registry()
             case CrigPlayerType::Witness:          return compare_witness(WitnessMode_Pure);
             case CrigPlayerType::WitnessDefeated:  return compare_witness(WitnessMode_Defeated);
         }
-        ctx.error("Invalid player type", type);
         return false;
     })
     .add_condition("is_multiplayer", [](bool value) {
@@ -291,24 +285,16 @@ Registry g_triggers = Registry()
     .add_local_action("playlist_shuffle", [](s32 do_shuffle) {
         AudioSystem::instance().set_playlist_shuffle(do_shuffle != 0);
     })
-    .add_local_action("set_player_name", [](Context& ctx, PlayablePlayer player, std::string_view name, s32 ignore_human_name) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return;
-        }
-        if (!ignore_human_name && (g_player_table[*player].type == PlayerType::Human || g_player_table[*player].type == PlayerType::HumanDefeated)) {
-            const auto player_name = std::format("{} ({})", name, g_player_table[*player].name);
-            set_player_name(*player, player_name.c_str(), true);
+    .add_local_action("set_player_name", [](PlayablePlayer player, std::string_view name, s32 ignore_human_name) {
+        if (!ignore_human_name && (g_player_table[player].type == PlayerType::Human || g_player_table[player].type == PlayerType::HumanDefeated)) {
+            const auto player_name = std::format("{} ({})", name, g_player_table[player].name);
+            set_player_name(player, player_name.c_str(), true);
         } else {
-            set_player_name(*player, std::string{name}.c_str(), true);
+            set_player_name(player, std::string{name}.c_str(), true);
         }
     })
-    .add_local_action("set_force_name", [](Context& ctx, PlayablePlayer player, std::string name) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return;
-        }
-        set_player_force_name(*player, name.c_str());
+    .add_local_action("set_force_name", [](PlayablePlayer player, std::string name) {
+        set_player_force_name(player, name.c_str());
     })
     .add_local_action("recolor", [](RecolorSet set, Seconds time) {
         TimedRecolor recolor {
@@ -386,22 +372,14 @@ Registry g_triggers = Registry()
         }
     })
     .add_local_action("set_player_unit_name", [](Context& ctx, PlayablePlayer player, UnitId::Enum unit_id, std::string_view name) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return;
-        }
         if (unit_id == UnitId::None) {
             ctx.error("Invalid unit id");
             return;
         }
-        g_globals->players[*player].custom_unit_names[unit_id] = std::string{name};
+        g_globals->players[player].custom_unit_names[unit_id] = std::string{name};
     })
-    .add_local_action("set_player_race_name", [](Context& ctx, PlayablePlayer player, std::string_view old_race, std::string_view new_race, UnitIdBitset unit_ids) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return;
-        }
-        auto& cm_player = g_globals->players[*player];
+    .add_local_action("set_player_race_name", [](PlayablePlayer player, std::string_view old_race, std::string_view new_race, UnitIdBitset unit_ids) {
+        auto& cm_player = g_globals->players[player];
         for (u32 i = 0; i < UnitId::Count; ++i) {
             if (!unit_ids[i]) {
                 continue;
@@ -419,14 +397,10 @@ Registry g_triggers = Registry()
             }
         }
     })
-    .add_local_action("reset_player_unit_names", [](Context& ctx, PlayablePlayer player) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return;
-        }
-        g_globals->players[*player].custom_unit_names.clear();
+    .add_local_action("reset_player_unit_names", [](PlayablePlayer player) {
+        g_globals->players[player].custom_unit_names.clear();
     })
-    .add_local_action("unit_sound", [](PlayerBitset players, UnitIdBitset unit_ids, Any<IscriptAnimation::Enum> animation, Any<SoundId::Enum> old_sound_id, std::string_view path, bool replace, OneOf<"clear", "add"> operation) {
+    .add_local_action("unit_sound", [](PlayerBitset players, UnitIdBitset unit_ids, Any<IscriptAnimation::Enum> animation, Any<SoundId::Enum> old_sound_id, std::string_view path, bool replace, UnitSoundOperation operation) {
         const auto replacement = SoundReplacement{
             .players = players,
             .unit_ids = unit_ids,
@@ -437,13 +411,13 @@ Registry g_triggers = Registry()
             .old_sound_id = u32(old_sound_id.value),
             .new_sound = AudioSystem::instance().get_sound(std::string{path}.c_str()),
         };
-        if (operation == "clear") {
+        if (operation == UnitSoundOperation::Clear) {
             std::erase_if(g_globals->sound_replacements, [&](auto& it) { return it == replacement; });
         } else {
             g_globals->sound_replacements.push_back(replacement);
         }
     })
-    .add_local_action("play_sound", [](Context& ctx, std::string_view path, PlayerBitset players, v2u16 position, OneOf<"unexplored", "explored", "visible"> min_visibility) {
+    .add_local_action("play_sound", [](Context& ctx, std::string_view path, PlayerBitset players, v2u16 position, SoundVisibility min_visibility) {
         const auto trigger_player = ctx.player();
         if (trigger_player < PlayerLimit && players[trigger_player]) {
             if (position.x == 0 && position.y == 0) {
@@ -451,9 +425,9 @@ Registry g_triggers = Registry()
             } else {
                 auto play = false;
                 const auto tile = bw::get_active_tile_at_coords(position.x, position.y);
-                if (min_visibility == "unexplored") {
+                if (min_visibility == SoundVisibility::Unexplored) {
                     play = true;
-                } else if (min_visibility == "explored") {
+                } else if (min_visibility == SoundVisibility::Explored) {
                     play = !(tile->explored_flags & (1 << g_local_nation_id));
                 } else {
                     play = !(tile->visibility_flags & (1 << g_local_nation_id));
@@ -475,17 +449,16 @@ Registry g_triggers = Registry()
     // -------------------------------------------------------------------------
     .add_action("wait", [](Context& ctx, Ticks time) {
         auto& ongoing_wait = ctx.ongoing_wait();
-        const auto init = ctx.action()->flags & 1;
-        if (!init) {
+        if (!ongoing_wait.active) {
             ongoing_wait.timer = time;
             ongoing_wait.parser_position = ctx.command_start_pos();
-            ctx.action()->flags |= 1;
+            ongoing_wait.active = true;
             return false;
         } else if (ongoing_wait.timer > 0) {
             return false;
         }
         ongoing_wait.parser_position = 0;
-        ctx.action()->flags &= ~1;
+        ongoing_wait.active = false;
         return true;
     })
     .add_action("wait_if", [](Context& ctx) {
@@ -580,15 +553,11 @@ Registry g_triggers = Registry()
     .add_action("clear_creep", [](Area location) {
         bw::clear_creep(location.box);
     })
-    .add_action("spawn", [](Context& ctx, s32 count, UnitId::Enum unit_id, PlayerOrNeutral player, SpawnType type, Ticks delay, Ticks stagger, v2u16 source_pos, v2u16 move_pos) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return;
-        }
+    .add_action("spawn", [](s32 count, UnitId::Enum unit_id, PlayerOrNeutral player, SpawnType type, Ticks delay, Ticks stagger, v2u16 source_pos, v2u16 move_pos) {
         const auto sequence = SpawnSequence{
             .count = u32(count),
             .unit_id = u32(unit_id),
-            .player = *player,
+            .player = player,
             .type = u32(type),
             .delay = u32(delay),
             .stagger = u32(stagger),
@@ -690,12 +659,8 @@ Registry g_triggers = Registry()
             }
         }
     })
-    .add_action("create_town", [](Context& ctx, PlayablePlayer player, v2u16 pos, s32 worker_count, s32 attach_to_nearest_resarea, Area claim_placeholders_area, UnitIdBitset unit_ids) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return;
-        }
-        const auto town = helper::create_ai_town(*player, pos.x, pos.y);
+    .add_action("create_town", [](PlayablePlayer player, v2u16 pos, s32 worker_count, s32 attach_to_nearest_resarea, Area claim_placeholders_area, UnitIdBitset unit_ids) {
+        const auto town = helper::create_ai_town(player, pos.x, pos.y);
         if (!town) {
             return;
         }
@@ -715,7 +680,7 @@ Registry g_triggers = Registry()
         }
         town->resource_units_not_set = town->resarea != 0;
         if (claim_placeholders_area.box.w && claim_placeholders_area.box.h) {
-            auto& layouts = g_ai_layouts.get_player_layouts(*player);
+            auto& layouts = g_ai_layouts.get_player_layouts(player);
             s32 idx = -1;
             for (AiPlaceholder& placeholder : layouts.placeholders) {
                 idx++;
@@ -727,36 +692,24 @@ Registry g_triggers = Registry()
                 }
                 if (!placeholder.town) {
                     placeholder.town = town;
-                    if (g_show_player_layouts[*player]) {
-                        bw::printf("Player %u claimed %s #%u from resarea %u", *player + 1, Unit::get_name(placeholder.unit_id), (u32)idx, placeholder.resarea);
+                    if (g_show_player_layouts[player]) {
+                        bw::printf("Player %u claimed %s #%u from resarea %u", player + 1, Unit::get_name(placeholder.unit_id), (u32)idx, placeholder.resarea);
                     }
                 }
             }
         }
     })
-    .add_action("set_start_location", [](Context& ctx, PlayablePlayer player, v2u16 position) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return;
-        }
-        g_start_positions[*player] = position;
+    .add_action("set_start_location", [](PlayablePlayer player, v2u16 position) {
+        g_start_positions[player] = position;
     })
-    .add_action("set_race", [](Context& ctx, PlayablePlayer player, PlayableRaceId race) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return;
-        }
-        g_player_table[*player].race = to_race_id(race);
-        if (*player == g_local_nation_id) {
+    .add_action("set_race", [](PlayablePlayer player, PlayableRaceId race) {
+        g_player_table[player].race = to_race_id(race);
+        if (player == g_local_nation_id) {
             g_globals->current_advisor = get_advisor_type_from_config(u32(to_race_id(race)));
         }
     })
-    .add_action("set_player_color", [](Context& ctx, PlayablePlayer player, PlayerColor player_color) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return;
-        }
-        set_player_color(*player, player_color);
+    .add_action("set_player_color", [](PlayablePlayer player, PlayerColor player_color) {
+        set_player_color(player, player_color);
     })
     .add_action("set_ai_auto_burrow", [](Designator designator, s32 enable) {
         for (Unit* unit : designator.search()) {
@@ -838,13 +791,9 @@ Registry g_triggers = Registry()
             }
         }
     })
-    .add_action("give_unit", [](Context& ctx, Designator designator, u32 count, PlayerOrNeutral target_player) {
-        if (!target_player) {
-            ctx.error("Invalid player");
-            return;
-        }
+    .add_action("give_unit", [](Designator designator, u32 count, PlayerOrNeutral target_player) {
         for (Unit* unit : designator.search({.sort = count != 0}).take(count)) {
-            helper::give_unit(unit, *target_player, 1);
+            helper::give_unit(unit, target_player, 1);
         }
     })
     .add_action("issue_order", [](Designator source, Designator target, u32 count, u32 order_id, u32 secondary_unit_id) {
@@ -988,13 +937,9 @@ Registry g_triggers = Registry()
         }
         g_trigger_vars.get_bank(std::string{campaign->bank_name()}).clear();
     })
-    .add_action("convert_to_ai", [](Context& ctx, PlayablePlayer player) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return;
-        }
-        g_player_table[*player].type = PlayerType::Computer;
-        bw::run_default_ai(*player, g_start_positions[*player]);
+    .add_action("convert_to_ai", [](PlayablePlayer player) {
+        g_player_table[player].type = PlayerType::Computer;
+        bw::run_default_ai(player, g_start_positions[player]);
     })
     .add_action("threshold_set_fraud_slots", [](PlayerBitset players) {
         threshold_config.enabled = true;
@@ -1053,14 +998,10 @@ Registry g_triggers = Registry()
             blissful_embrace(unit, infesting_player ? infesting_player - 1 : unit->player, true);
         }
     })
-    .add_action("set_sprite_player", [](Context& ctx, Designator designator, PlayablePlayer player, std::optional<u32> count) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return;
-        }
+    .add_action("set_sprite_player", [](Designator designator, PlayablePlayer player, std::optional<u32> count) {
         const auto unit_count = count.value_or(std::numeric_limits<u32>::max());
         for (Unit* unit : designator.search({.sort = unit_count != 0}).take(unit_count)) {
-            unit->sprite->player = *player + 1;
+            unit->sprite->player = player + 1;
         }
     })
     .add_action("witness_mode", [](Context& ctx, s32 value) {
@@ -1105,20 +1046,12 @@ Registry g_triggers = Registry()
             }
         }
     })
-    .add_action("set_faction", [](Context& ctx, PlayablePlayer player, TriggerFaction faction) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return;
-        }
-        g_globals->players[*player].faction          = Faction(u8(faction));
-        g_globals->players[*player].faction_was_set  = true;
+    .add_action("set_faction", [](PlayablePlayer player, TriggerFaction faction) {
+        g_globals->players[player].faction          = Faction(u8(faction));
+        g_globals->players[player].faction_was_set  = true;
     })
-    .add_action("set_advisor", [](Context& ctx, PlayablePlayer player, Advisor advisor) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return;
-        }
-        if (*player == g_local_nation_id) {
+    .add_action("set_advisor", [](PlayablePlayer player, Advisor advisor) {
+        if (player == g_local_nation_id) {
             g_globals->current_advisor = advisor;
         }
     })
@@ -1128,29 +1061,17 @@ Registry g_triggers = Registry()
             cm_player.neutral_hostile = state;
         }
     })
-    .add_action("set_player_team_ui", [](Context& ctx, PlayablePlayer player, bool state) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return;
-        }
-        auto& cm_player = g_globals->players[*player];
+    .add_action("set_player_team_ui", [](PlayablePlayer player, bool state) {
+        auto& cm_player = g_globals->players[player];
         if (cm_player.hide_in_team_ui != state) {
             cm_player.hide_in_team_ui = state;
         }
     })
-    .add_action("set_game_mode_race", [](Context& ctx, PlayablePlayer player, GameModeRace omni_state) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return;
-        }
-        g_globals->players[*player].game_mode_race = omni_state;
+    .add_action("set_game_mode_race", [](PlayablePlayer player, GameModeRace omni_state) {
+        g_globals->players[player].game_mode_race = omni_state;
     })
-    .add_action("set_player_build_multiplier", [](Context& ctx, PlayablePlayer player, u32 multiplier) {
-        if (!player) {
-            ctx.error("Invalid player");
-            return;
-        }
-        g_globals->players[*player].build_multiplier = multiplier;
+    .add_action("set_player_build_multiplier", [](PlayablePlayer player, u32 multiplier) {
+        g_globals->players[player].build_multiplier = multiplier;
     })
     .add_action("print", [](std::string_view text) {
         bw::print(std::string{text}.c_str());

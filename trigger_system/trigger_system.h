@@ -34,22 +34,7 @@ enum class CrigPlayerType {
     ComputerDefeated,
     Witness,
     WitnessDefeated,
-
-    None,
-    Count,
 };
-
-static const char* player_type_names[] = {
-    "human",
-    "human_defeated",
-    "computer",
-    "computer_defeated",
-    "witness",
-    "witness_defeated",
-
-    "none",
-};
-static_assert(std::size(player_type_names) == (u8)CrigPlayerType::Count);
 
 struct TriggerSystemState {
     bool game_paused;
@@ -81,8 +66,6 @@ enum class GameModeRace : u8 {
     TerranProtoss,
     ProtossZerg,
     ZergTerran,
-
-    Count,
 };
 
 enum class Advisor : u8 {
@@ -108,7 +91,6 @@ enum class Advisor : u8 {
     Artemis,
     GoldenRepublic,
 
-    None = Default,
     Count = GoldenRepublic + 1,
 };
 
@@ -190,6 +172,7 @@ static constexpr u8 default_yields[(size_t)YieldType::Count] = { 5, 5, 3, 5, 7, 
 struct OngoingWait {
     s32 timer;
     u32 parser_position;
+    bool active;
 };
 
 struct TriggerExt {
@@ -255,9 +238,6 @@ enum class TriggerStat : u8 {
     Buttonset,
     HealRange,
     Portrait,
-
-    Count,
-    None,
 };
 
 enum class TriggerBehavior : u8 {
@@ -270,9 +250,6 @@ enum class TriggerBehavior : u8 {
     AirTransport,
     NoEnergyOverlay,
     InfrastructureBurrow,
-
-    Count,
-    None,
 };
 
 inline auto g_globals = std::make_unique<Globals>();
