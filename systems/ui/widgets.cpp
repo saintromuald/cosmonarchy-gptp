@@ -99,7 +99,7 @@ static u32 option_button_handle_event(Widget& widget, DialogEvent* event) {
 
 static u32 top_dialog_handle_event(Widget& widget, DialogEvent* event) {
     Group* group = widget.parent();
-    if (group) {
+    if (group && event->number_order == DialogEventType_Dialog) {
         switch (event->user) {
             case DialogUserType_InitChildren:
                 group->on_top_dialog_init_children(widget);
