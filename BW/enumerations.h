@@ -1703,8 +1703,8 @@ enum class Faction : u8 {
 
     ZergAtaltrethTendril,
     ZergImicrenTendril,
-    ZergOrkotiTendril,
     ZergGoszirithTendril,
+    ZergOrkotiTendril,
     ZergZorthosTendril,
 
     Count,
