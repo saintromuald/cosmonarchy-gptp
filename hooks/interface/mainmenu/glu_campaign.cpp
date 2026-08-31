@@ -118,6 +118,10 @@ void GluCampaignList::on_init() {
         load_campaign_by_index(index);
     });
     if (!g_music_playing) helper::dialog_music_fade(MusicId_Title);
+
+    if (g_campaign_manager.has_transition_error()) {
+        ui::modal_ok(g_campaign_manager.take_transition_error());
+    }
 }
 
 void GluCampaignList::on_exit(u32 last_control) {

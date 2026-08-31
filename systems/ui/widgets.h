@@ -253,6 +253,7 @@ protected:
     void on_top_dialog_destroy     (Widget& top) override;
 };
 
-bool modal_ok_cancel(std::string_view prompt, bool use_dynamic_theme = true);
-bool modal_string_prompt(std::string_view prompt, std::string& value, bool use_dynamic_theme = true);
+bool modal_ok_cancel(std::string_view prompt);
+void modal_ok(std::string_view prompt);
+bool modal_string_prompt(std::string_view prompt, std::string& value);
 } // namespace ui

@@ -262,6 +262,8 @@
     <ClCompile Include="hooks\audiovisuals\image_render.cpp" />
     <ClCompile Include="hooks\audiovisuals\image_render_grp.cpp" />
     <ClCompile Include="hooks\audiovisuals\image_render_inject.cpp" />
+    <ClCompile Include="hooks\campaign.cpp" />
+    <ClCompile Include="hooks\campaign_inject.cpp" />
     <ClCompile Include="hooks\DatExtend\dat_load.cpp" />
     <ClCompile Include="hooks\DatExtend\dat_load_inject.cpp" />
     <ClCompile Include="hooks\grafting\grafting.cpp" />
@@ -656,6 +658,7 @@
     <ClInclude Include="BW\rand.h" />
     <ClInclude Include="BW\structures\ui_structures.h" />
     <ClInclude Include="CampaignManager.h" />
+    <ClInclude Include="hooks\campaign.h" />
     <ClInclude Include="safeunion.h" />
     <ClInclude Include="storm\sfile.h" />
     <ClInclude Include="storm\storm.h" />

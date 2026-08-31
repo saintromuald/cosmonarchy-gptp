@@ -92,6 +92,10 @@ public:
     const std::string& error_message() const { return m_error_message; }
     bool has_error() const { return !m_error_message.empty(); }
 
+    void set_transition_error(std::string message) { m_transition_error = std::move(message); }
+    std::string take_transition_error() { return std::exchange(m_transition_error, {}); }
+    bool has_transition_error() const { return !m_transition_error.empty(); }
+
     u32 campaign_index{};
     u32 mission_index{};
 
@@ -117,6 +121,7 @@ private:
     bool m_active = false;
     std::vector<Campaign> m_campaigns;
     std::string m_error_message;
+    std::string m_transition_error;
 };
 
 inline CampaignManager g_campaign_manager;

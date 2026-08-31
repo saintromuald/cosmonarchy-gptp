@@ -814,9 +814,6 @@ void Modal::on_top_dialog_destroy(Widget& top) {
     helper::menu_pop_z_index(top.dialog()->to_bindlg());
 }
 
-// --------------------------------
-// modal_ok_cancel
-// --------------------------------
 namespace {
 class OkCancelModal : public Modal {
 public:
@@ -841,7 +838,7 @@ public:
 };
 } // namespace
 
-bool modal_ok_cancel(std::string_view prompt, bool use_dynamic_theme) {
+bool modal_ok_cancel(std::string_view prompt) {
     // Todo: use_dynamic_theme = false - load appropriate background pDPopup.pcx
 
     OkCancelModal modal{std::string{prompt}, "glue\\dynamic\\pDPopup.pcx"};
@@ -849,9 +846,31 @@ bool modal_ok_cancel(std::string_view prompt, bool use_dynamic_theme) {
     return last_control == modal.m_ok_button->index();
 }
 
-// --------------------------------
-// modal_string_prompt
-// --------------------------------
+namespace {
+class OkModal : public Modal {
+public:
+    OkModal(std::string prompt, std::string background)
+        : Modal(std::move(background)) {
+        m_prompt_label = label(DialogBounds::from_ltrb(18, 20, 340, 145), std::move(prompt))
+            ->horizontal_align(Align::Center)
+            ->fontsize(FontSize::Medium14);
+        m_ok_button = lightup_button(DialogBounds::from_ltrb(104, 160, 260, 186), "o\x04" "O\x01" "k")
+            ->horizontal_align(Align::Center)
+            ->enable_hotkey()
+            ->set_default()
+            ->set_cancel();
+    }
+
+    Widget* m_prompt_label;
+    Widget* m_ok_button;
+};
+} // namespace
+
+void modal_ok(std::string_view prompt) {
+    OkModal modal{std::string{prompt}, "glue\\dynamic\\pokpopup.pcx"};
+    modal.load();
+}
+
 namespace {
 class StringPromptModal : public Modal {
 public:
@@ -879,9 +898,7 @@ public:
 };
 } // namespace
 
-bool modal_string_prompt(std::string_view prompt, std::string& value,bool use_dynamic_theme) {
-    // Todo: use_dynamic_theme = false - load appropriate background pDPopup.pcx
-
+bool modal_string_prompt(std::string_view prompt, std::string& value) {
     StringPromptModal modal{std::string{prompt}, "glue\\dynamic\\pEPopup.pcx"};
 
     if (!value.empty()) {
@@ -904,6 +921,9 @@ bool modal_string_prompt(std::string_view prompt, std::string& value,bool use_dy
     return false;
 }
 
+// --------------------------------
+// Menu
+// --------------------------------
 void Menu::change_background(std::string background, PalettePreserve preserve, u32 fade_ms) {
     if (m_main->m_text == background) return;
 
