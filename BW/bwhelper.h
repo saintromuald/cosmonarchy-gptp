@@ -1980,6 +1980,4 @@ namespace helper {
 
     bool modal_ok_cancel(const char* prompt); // 004b73b0
     s32 save_replay(char* filename, b32 delete_existing = true);   // 004DFAB0
-    void resize_replay_action_set(ReplayData* replay_data);        // 004CDD30
-    void new_replay_action(ReplayData* replay_data);               // 004CDDC0
 }

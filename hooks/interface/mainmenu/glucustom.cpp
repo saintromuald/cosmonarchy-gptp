@@ -7,14 +7,11 @@
 #include <BW/ui.h>
 #include <storm/storm.h>
 
-namespace hooks
-{
-	void display_establishing_shot() // 004D9200, hooked by X405
-	{
+namespace hooks {
+	void display_establishing_shot() { // 004D9200, hooked by X405
 		// This is the original original function which loads the establishing shots in campaigns
 		if (!g_multiplayer_mode && !(*g_cheat_state & CheatFlags::NoGlues) && g_campaign_index) {
-			for (s32 i = 0; i < 65; i++)
-			{
+			for (s32 i = 0; i < 65; i++) {
 				if (campaignMissions[i].mission_index == g_campaign_index) {
 					helper::load_init_credits_bin(campaignMissions[i].mission_name);
 				}
@@ -36,8 +33,7 @@ namespace hooks
 	}
 
 	// Hooked to fix crash after removing game speed settings. -Pr0nogo
-	void cmdact_game_speed(BinDlg* control) // 00481EF0
-	{
+	void cmdact_game_speed(BinDlg* control) { // 00481EF0
 		helper::process_options_change(control);
 		char interacting_bin = (bin_interact--) - 1;
 		if (bin_interact) {
@@ -51,8 +47,7 @@ namespace hooks
 
 	// Hooked to fix crash after removing save and load dialogs.
 	// Currently identical to IDA. -Pr0nogo
-	void hide_dialog(BinDlg* dialog) // 00418700
-	{
+	void hide_dialog(BinDlg* dialog) { // 00418700
 		if (dialog->flags & DialogFlags::Visible) {
 			DialogEvent dlg_event = {};
 			dlg_event.current.y = g_mouse->y;

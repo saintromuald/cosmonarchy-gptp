@@ -13122,7 +13122,7 @@ namespace helper {
         return result;
     }
 
-    u32 draw_box(u32 x, u32 y, u32 w, u32 h) {
+    u32 draw_box(u16 x, u16 y, u16 w, u16 h) {
         static u32 result;
         const u32 func_address = 0x004E1D20;
         __asm {
@@ -16309,25 +16309,5 @@ namespace helper {
             POPAD
         }
         return result;
-    }
-
-    void resize_replay_action_set(ReplayData* replay_data) {
-        static const u32 func_address = 0x004CDD30;
-        __asm {
-            PUSHAD
-            MOV ESI, replay_data
-            CALL func_address
-            POPAD
-        }
-    }
-
-    void new_replay_action(ReplayData* replay_data) {
-        static const u32 func_address = 0x004CDDC0;
-        __asm {
-            PUSHAD
-            MOV EAX, replay_data
-            CALL func_address
-            POPAD
-        }
     }
 }
