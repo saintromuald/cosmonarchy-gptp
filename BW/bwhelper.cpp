@@ -13142,21 +13142,6 @@ namespace helper {
         return result;
     }
 
-    s32 save_replay(char* name) {
-        static u32 result;
-        const u32 func_address = 0x004DFAB0;
-        __asm {
-            PUSHAD
-            PUSH 1
-            MOV EDX, 0
-            MOV EAX, name
-            CALL func_address
-            MOV result, EAX
-            POPAD
-        }
-        return result;
-    }
-
     s32 copy_last_replay(char* name) {
         static u32 result;
         const u32 func_address = 0x004DED30;
@@ -16305,7 +16290,44 @@ namespace helper {
             MOV EAX, prompt
             CALL func_address
             MOV result, AL
+            POPAD
         }
         return result;
+    }
+    
+    // Returns 1 (success), 0 (write error), or -1 (replace error), but the result is not used in SC.
+    // Could be changed to void type and forego the static s32 var if you don't plan on using it either. -DF
+    s32 save_replay(char* filename, b32 delete_existing) {
+        static const u32 func_address = 0x004DFAB0;
+        static s32 result;
+        __asm {
+            PUSHAD
+            PUSH delete_existing
+            MOV EAX, filename
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
+
+    void resize_replay_action_set(ReplayData* replay_data) {
+        static const u32 func_address = 0x004CDD30;
+        __asm {
+            PUSHAD
+            MOV ESI, replay_data
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void new_replay_action(ReplayData* replay_data) {
+        static const u32 func_address = 0x004CDDC0;
+        __asm {
+            PUSHAD
+            MOV EAX, replay_data
+            CALL func_address
+            POPAD
+        }
     }
 }
