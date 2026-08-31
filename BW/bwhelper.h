@@ -1639,8 +1639,7 @@ namespace helper {
     void draw_standard_button_graphic(BinDlg* dialog1, BinDlg* dialog2, void* dest);						// 004EFD90
     Unit* get_best_unit(Unit* unit, Box16* dimensions, bool(__fastcall* func)(Unit*, Unit*), Unit* unit2);	// 004E8740
 
-    u32 draw_box(u32 x, u32 y, u32 w, u32 h);																// 004E1D20
-    s32 save_replay(char* name);																			// 004DFAB0
+    u32 draw_box(u16 x, u16 y, u16 w, u16 h);																// 004E1D20
     s32 copy_last_replay(char* name);																		// 004DED30
 
     void insert_order_targeting_ground_before(u8 order_id, Order* order, Unit* unit, u16 pos_x, u16 pos_y);	// 00474790
@@ -1980,4 +1979,7 @@ namespace helper {
     u32 get_resarea_id(Unit* unit);                                 // 00445930
 
     bool modal_ok_cancel(const char* prompt); // 004b73b0
+    s32 save_replay(char* filename, b32 delete_existing = true);   // 004DFAB0
+    void resize_replay_action_set(ReplayData* replay_data);        // 004CDD30
+    void new_replay_action(ReplayData* replay_data);               // 004CDDC0
 }

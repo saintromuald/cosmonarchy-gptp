@@ -1842,4 +1842,11 @@ struct Command_PlayerJoined {
     u32 value = 0;
 };
 
+struct Command_SetReplaySpeed {
+    GameCommand command = GameCommand_SetReplaySpeed;
+    u8          set_to_paused;
+    u32         speed;
+    u32         speed_multiplier;
+};
+
 #pragma pack()
