@@ -232,6 +232,11 @@ BW_DATA(u32*,			g_replay_random_seed,		0x006D0F38);
 BW_DATA(u32*,			g_random_counts,			0x0051C610); // count of 0x400
 BW_DATA(u32*,           g_total_random_counts,		0x0051CA18);
 BW_REF(u16, 			g_campaign_index,           0x0057F244);
+BW_ARRAY(char, 32,		g_next_scenario_filename,	0x0057F246); // set by SetNextScenario trigger
+BW_REF(void*,			g_current_campaign_entry,	0x006D11CC); // 8-byte entry: +2 index, +4 cinematic, +6 race
+BW_ARRAY(void*, 3,		g_sc_campaign_lists,		0x005122A0);
+BW_ARRAY(void*, 3,		g_bw_campaign_lists,		0x005122AC);
+
 BW_DATA(void**,			map_archive_handle,			0x00596BC4);
 BW_DATA(GameData*,		game_data,					0x005967F8);
 BW_DATA(u8*,			map_started,				0x006D121C);
