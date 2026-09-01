@@ -40,8 +40,9 @@ namespace trigger {
 class Context;
 using Condition = std::function<bool(Context&)>;
 
+enum class ActionType { Local, Sync };
 struct Action {
-    bool is_local;
+    ActionType type;
     std::function<bool(Context&)> func; // false means skip the rest of actions for the current tick (e.g. wait, exit, etc.)
 };
 
@@ -63,27 +64,59 @@ template <typename Func>
 Condition make_condition(Func&& condition);
 
 template <typename Func>
-Action make_action(Func&& action, bool is_local);
+Action make_action(Func&& action, ActionType type);
+
+template <typename... Args> requires (std::convertible_to<Args, std::string> && ...)
+inline std::vector<std::string> aliases(Args&&... args) {
+    return {std::string{std::forward<Args>(args)}...};
+}
 
 class Registry {
 public:
     Registry() = default;
 
     template <typename Func>
-    Registry& add_condition(const std::string& name, Func&& condition) {
-        m_conditions.emplace(name, make_condition(std::forward<Func>(condition)));
+    Registry& add_condition(std::string name, Func&& func) {
+        m_conditions.emplace(std::move(name), make_condition(std::forward<Func>(func)));
         return *this;
     }
 
     template <typename Func>
-    Registry& add_action(const std::string& name, Func&& action) {
-        m_actions.emplace(name, make_action(std::forward<Func>(action), false));
+    Registry& add_condition(std::vector<std::string> names, Func&& func) {
+        const auto condition = make_condition(std::forward<Func>(func));
+        for (auto& name : names) {
+            m_conditions.emplace(std::move(name), condition);
+        }
         return *this;
     }
 
     template <typename Func>
-    Registry& add_local_action(const std::string& name, Func&& action) {
-        m_actions.emplace(name, make_action(std::forward<Func>(action), true));
+    Registry& add_local_action(std::string name, Func&& func) {
+        m_actions.emplace(std::move(name), make_action(std::forward<Func>(func), ActionType::Local));
+        return *this;
+    }
+
+    template <typename Func>
+    Registry& add_local_action(std::vector<std::string> names, Func&& func) {
+        const auto action = make_action(std::forward<Func>(func), ActionType::Local);
+        for (auto& name : names) {
+            m_actions.emplace(std::move(name), action);
+        }
+        return *this;
+    }
+
+    template <typename Func>
+    Registry& add_action(std::string name, Func&& action) {
+        m_actions.emplace(std::move(name), make_action(std::forward<Func>(action), ActionType::Sync));
+        return *this;
+    }
+
+    template <typename Func>
+    Registry& add_action(std::vector<std::string> names, Func&& action) {
+        const auto action = make_action(std::forward<Func>(action), ActionType::Sync);
+        for (auto& name : names) {
+            m_actions.emplace(std::move(name), action);
+        }
         return *this;
     }
 
@@ -116,7 +149,7 @@ class Subcommand {
 public:
     template <typename Func>
     Subcommand(const char* name, Func&& action)
-        : m_name{name}, m_action{make_action(std::forward<Func>(action), false)} {}
+        : m_name{name}, m_action{make_action(std::forward<Func>(action), ActionType::Sync)} {} // Note: ActionType doesn't matter in this context
 
     const char* name() const { return m_name; }
     bool invoke(Context& ctx) const { return m_action.func(ctx); }
@@ -189,8 +222,8 @@ public:
                 warn("Action name mismatch: {} should be {}", *command, name);
             }
             has_commands = true;
-            if (action.is_local && !is_local_player()) {
-                continue; // Skip local actions for non-local players
+            if (action.type == ActionType::Local && !is_local_player()) {
+                continue;
             }
             if (!action.func(*this)) {
                 return false;
@@ -264,9 +297,9 @@ Condition make_condition(Func&& condition) {
 }
 
 template <typename Func>
-Action make_action(Func&& action, bool is_local) {
+Action make_action(Func&& action, ActionType type) {
     return Action{
-        .is_local = is_local,
+        .type = type,
         .func = [action = std::forward<Func>(action)](Context& ctx) {
             ctx.clear_errors();
             auto params_tuple = ctx_get_params_tuple<Func>(ctx);

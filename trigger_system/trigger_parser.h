@@ -471,7 +471,8 @@ private:
 
 	std::optional<std::string_view> eat_word();
 	void clear_token();
-	bool skip_whitespace();
+	bool skip_to_next_line();
+	bool skip_spaces();
 	bool skip_non_word_chars();
 	bool get_negation();
 	char get_separator();
@@ -482,7 +483,6 @@ private:
 	friend class BitsetParser;
 
 	bool m_had_errors = false;
-	bool m_parsed_first_command{};
 	bool m_should_load_pos{};
 	const char* m_start{};
 	const char* m_at{};
