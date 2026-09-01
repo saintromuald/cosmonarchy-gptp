@@ -59,8 +59,8 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">$(SolutionDir)_Build\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_tmp\$(Configuration)\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">_tmp\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">false</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)_Build\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_tmp\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -87,6 +87,7 @@
     <TargetExt>.qdp</TargetExt>
     <LibraryPath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor_modified\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -102,7 +103,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <MinFilesInUnityFile>10000</MinFilesInUnityFile>
+      <MinFilesInUnityFile>1</MinFilesInUnityFile>
       <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
@@ -112,6 +113,7 @@
       <MaxFilesInUnityFile>
       </MaxFilesInUnityFile>
       <FloatingPointModel>Strict</FloatingPointModel>
+      <CombineFilesOnlyFromTheSameFolder>false</CombineFilesOnlyFromTheSameFolder>
     </ClCompile>
     <Link>
       <AdditionalDependencies>dsound.lib;version.lib;imm32.lib;storm.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -145,7 +147,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <MinFilesInUnityFile>10000</MinFilesInUnityFile>
+      <MinFilesInUnityFile>1</MinFilesInUnityFile>
       <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>

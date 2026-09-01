@@ -8,8 +8,9 @@
 #include <vector>
 #include <unordered_map>
 #include "BW/enumerations/IconId.h"
+#include "BW\enumerations\TechId.h"
 
-#pragma pack(1)
+#pragma pack(push, 1)
 
 struct Image;
 struct Sprite;
@@ -144,7 +145,6 @@ namespace RustId {
     };
 }
 
-#include "BW\enumerations\TechId.h"
 const u32 string_toggle_on[] = {1265};
 const u32 string_toggle_off[] = {1270};
 const u32 string_disabled_on[] = {1265};
@@ -430,4 +430,4 @@ struct UnitLayout {
     /*0x14E*/ Point8    drift_pos;						// (mapsizex / 1.5 max)
 };
 C_ASSERT(sizeof(UnitLayout) == 336);
-#pragma pack()
+#pragma pack(pop)

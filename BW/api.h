@@ -391,7 +391,7 @@ inline s32 get_angle(v2s32 start, v2s32 end) {
     return get_angle(start.x, start.y, end.x, end.y);
 }
 
-inline fp32 bw_angle_to_normal(s32 bw_angle);
+fp32 bw_angle_to_normal(s32 bw_angle);
 /// StarCraft's internal function used to quickly calculate distances between
 /// two points (x1, y1) and (x2, y2;).
 /// Warning: This function is inaccurate for long distances.

@@ -1,5 +1,6 @@
 #include "placement.h"
 #include "hook_tools.h"
+#include "hooks/grafting/grafting.h"
 
 namespace
 {

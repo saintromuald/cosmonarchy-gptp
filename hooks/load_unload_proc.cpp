@@ -19,7 +19,7 @@ static void special_load_unit(Unit* unit, Unit* transport) {
     }
 }
 
-static void special_unload_unit(Unit* unit, Unit* transport) {
+void special_unload_unit(Unit* unit, Unit* transport) {
     if (helper::spreads_creep(unit->id, unit->is_completed())) {
         bw::spawn_custom_creep_at(unit->position, unit->id, false, unit->is_building());
         helper::set_secondary_order(unit, OrderId::SpreadCreep);

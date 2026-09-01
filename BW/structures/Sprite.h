@@ -2,7 +2,7 @@
 #include "common.h"
 #include "List.h"
 #include "../enumerations.h"
-#pragma pack(1)
+#pragma pack(push, 1)
 
 struct Image;
 
@@ -79,4 +79,4 @@ struct Sprite
 C_ASSERT(sizeof(Sprite) == 36);
 //static_assert(sizeof(Sprite) == 36, "The count of the Sprite structure is invalid");
 
-#pragma pack()
+#pragma pack(pop)

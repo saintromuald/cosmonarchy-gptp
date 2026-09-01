@@ -1,7 +1,7 @@
 //Based on BWAPI's BW/Bitmap.h
 #pragma once
 #include "graphics.h"
-#pragma pack(1)
+#pragma pack(push, 1)
 
 //V241 for VS2008
 
@@ -43,4 +43,4 @@ namespace graphics
 
 } //graphics
 
-#pragma pack()
+#pragma pack(pop)

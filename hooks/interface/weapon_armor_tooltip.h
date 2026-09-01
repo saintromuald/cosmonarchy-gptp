@@ -1,6 +1,8 @@
 #pragma once
 #include <BW/structures/Unit.h>
 
+struct BinDlg;
+
 namespace hooks {
 s32 get_bonus_armor(Unit* unit, u8 base_armor);
 

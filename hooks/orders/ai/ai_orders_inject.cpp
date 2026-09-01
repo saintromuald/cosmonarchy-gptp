@@ -1,6 +1,7 @@
 #include "ai_orders.h"
 #include <hook_tools.h>
 #include "BW/api.h"
+#include "hooks/aiscript/ai_requests.h"
 
 namespace {
 	void __declspec(naked) ai_unit_was_hit_wrapper() { // 0043F320

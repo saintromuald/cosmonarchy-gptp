@@ -1,6 +1,6 @@
 #pragma once
 #include "common.h"
-#pragma pack(1)
+#pragma pack(push, 1)
 
 struct Unit;
 
@@ -11,4 +11,4 @@ struct Target {
     bool operator==(const Target& other) const = default;
 };
 
-#pragma pack()
+#pragma pack(pop)

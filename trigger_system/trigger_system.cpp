@@ -3,6 +3,7 @@
 #include <time.h>
 
 #include "triggers.h"
+#include "hooks/interface/uifeatures/hotkeys.h"
 
 #include <ranges>
 

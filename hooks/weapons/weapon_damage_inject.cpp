@@ -1,5 +1,6 @@
 #include "weapon_damage.h"
 #include "../../hook_tools.h"
+#include "aise_signal.h"
 
 extern const u32 Func_DoWeaponDamage;
 namespace {

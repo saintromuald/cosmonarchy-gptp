@@ -61,7 +61,7 @@ extern int IMAGE_TYPE_COUNT;   //= 999;
 #include "structures/Player.h" // made into external file to have .cpp
 #include "structures/ui_structures.h"
 
-#pragma pack(1)
+#pragma pack(push, 1)
 
 typedef b32 __fastcall unit_stat_cond();
 typedef void __fastcall unit_stat_act();
@@ -1849,4 +1849,4 @@ struct Command_SetReplaySpeed {
     u32         speed_multiplier;
 };
 
-#pragma pack()
+#pragma pack(pop)

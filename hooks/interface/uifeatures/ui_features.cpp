@@ -21,7 +21,7 @@ static s32* const g_fonts = (s32*)0x006CE0F4;
 static u32* const g_print_xy_pos_y = (u32*)0x006CE0E0;
 static Box16* const g_draw_text_box = (Box16*)0x006CE0C8;
 
-static CmdBtnPalette g_new_cmdbtn_palette[tIconCount];
+CmdBtnPalette g_new_cmdbtn_palette[tIconCount];
 
 void format_time(char* buffer, u32 size, const char* prefix, u32 seconds, bool allow_short) {
     u32 sec = seconds % 60;

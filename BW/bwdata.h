@@ -12,7 +12,7 @@
 #include <windows.h> 
 #include <array>
 
-#pragma pack(1)
+#pragma pack(push, 1)
 
 // Contains the definitions of various data structures, arrays, pointers and internal constants in StarCraft.exe.
 
@@ -1479,4 +1479,4 @@ BW_REF(void*, g_old_exception_filter, 0x00596B78);
 
 #undef BW_DATA
 #undef BW_DATA_REF
-#pragma pack()
+#pragma pack(pop)
