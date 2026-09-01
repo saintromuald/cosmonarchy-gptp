@@ -23,7 +23,8 @@ static bool load_standalone_scenario(std::string_view requested) {
     fs::path next = current.parent_path() / requested;
 
     if (GameRunner::instance().create_singleplayer_game(next, GameType::Scenario, 1) != GameRunner::Result::Success) {
-        g_gl_glues_mode = MenuId::GlueMainMenu;
+        g_campaign_manager.set_transition_error(std::format("Failed to load '{}'.", next.generic_string()));
+        g_gl_glues_mode = MenuId::GluCampaignList;
     }
     return true;
 }
@@ -31,35 +32,32 @@ static bool load_standalone_scenario(std::string_view requested) {
 // Always returns true. Returning false delegates next-menu handling to the caller, which we don't want
 b32 __stdcall continue_campaign(b32 victory) {
     g_sc_main_state = MainState::Glues;
-
-    if (!victory) {
-        g_gl_glues_mode = g_campaign_manager.active()
-            ? MenuId::GluCampaignList
-            : MenuId::GlueMainMenu;
-        return true;
-    }
-
     const auto requested = take_next_scenario();
+
+    // Non-campaign: load next scenario if specified, otherwise back to campaign list (singleplayer menu)
     if (!g_campaign_manager.active()) {
-        if (!requested.empty()) return load_standalone_scenario(requested);
-        g_gl_glues_mode = MenuId::GlueMainMenu;
+        if (!requested.empty()) {
+            return load_standalone_scenario(requested);
+        }
+        g_gl_glues_mode = MenuId::GluCampaignList;
         return true;
     }
 
     auto* campaign = g_campaign_manager.selected_campaign();
     if (!campaign) {
-        g_gl_glues_mode = MenuId::GlueMainMenu;
+        g_campaign_manager.set_transition_error(std::format("Campaign manager active but no campaign loaded."));
+        g_gl_glues_mode = MenuId::GluCampaignList;
         return true;
     }
 
     std::optional<u32> target;
-    if (!requested.empty()) {
-        const auto requested_filename = fs::path{requested}.filename();
+    if (!requested.empty()) { // User specified a next scenario to load, so find it in the campaign
+        const auto requested_path = fs::path{requested};
         for (u32 i = 0; i < campaign->missions.size(); ++i) {
-            if (fs::path{campaign->missions[i].filename}.filename() != requested_filename) continue;
+            if (fs::path{campaign->missions[i].filename} != requested_path) continue;
             if (!campaign->is_mission_unlocked(campaign->missions[i])) {
-                g_campaign_manager.set_transition_error(std::format("Next scenario '{}' is locked.", requested));
-                g_gl_glues_mode = MenuId::GluCampaignList;
+                g_campaign_manager.set_transition_error(std::format("Next scenario '{}' in campaign '{}' is locked.", requested, campaign->name));
+                g_gl_glues_mode = MenuId::GluCampaignDetails;
                 return true;
             }
             target = i;
@@ -67,19 +65,24 @@ b32 __stdcall continue_campaign(b32 victory) {
         }
         if (!target) {
             g_campaign_manager.set_transition_error(std::format("Next scenario '{}' was not found in campaign '{}'.", requested, campaign->name));
-            g_gl_glues_mode = MenuId::GluCampaignList;
+            g_gl_glues_mode = MenuId::GluCampaignDetails;
             return true;
         }
-    } else {
-        for (u32 i = g_campaign_manager.mission_index + 1; i < campaign->missions.size(); ++i) {
-            const auto& mission = campaign->missions[i];
-            if (campaign->is_mission_unlocked(mission) && !campaign->is_mission_completed(mission)) {
-                target = i;
-                break;
+    } else { // User didn't specify a next scenario, fallback to default behavior
+        if (victory) { // Find the next unlocked and uncompleted mission in the campaign
+            for (u32 i = g_campaign_manager.mission_index + 1; i < campaign->missions.size(); ++i) {
+                const auto& mission = campaign->missions[i];
+                if (campaign->is_mission_unlocked(mission) && !campaign->is_mission_completed(mission)) {
+                    target = i;
+                    break;
+                }
             }
+        } else { // Replay the same mission on loss
+            target = g_campaign_manager.mission_index;
         }
         if (!target) {
-            // Campaign complete (or nothing left to unlock)
+            // Campaign complete (or no further missions unlocked)
+            // TODO: Perhaps we should have a "Campaign Complete" screen here instead of just going back to the campaign list -Jesse
             g_gl_glues_mode = MenuId::GluCampaignList;
             return true;
         }
