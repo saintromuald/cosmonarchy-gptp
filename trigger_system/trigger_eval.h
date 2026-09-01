@@ -87,18 +87,22 @@ public:
         return *this;
     }
 
-    std::optional<Condition> get_condition(const std::string& name) const {
-        const auto it = m_conditions.find(name);
+    std::optional<std::pair<std::string, Condition>> get_condition(const std::string& name) const {
+        const auto it = std::ranges::find_if(m_conditions, [&](const auto& pair) {
+            return sv_iequals(pair.first, name);
+        });
         if (it != m_conditions.end()) {
-            return it->second;
+            return *it;
         }
         return {};
     }
 
-    std::optional<Action> get_action(const std::string& name) const {
-        const auto it = m_actions.find(name);
+    std::optional<std::pair<std::string, Action>> get_action(const std::string& name) const {
+        const auto it = std::ranges::find_if(m_actions, [&](const auto& pair) {
+            return sv_iequals(pair.first, name);
+        });
         if (it != m_actions.end()) {
-            return it->second;
+            return *it;
         }
         return {};
     }
@@ -137,21 +141,30 @@ public:
     bool evaluate_condition() {
         const auto token = m_parser.get_word();
         if (!token) {
-            error("Unknown condition");
+            error("Unknown condition: {}", *token);
             return false;
         }
-        const auto condition = m_registry.get_condition(std::string{*token});
-        if (condition) {
-            return (*condition)(*this);
+        const auto entry = m_registry.get_condition(std::string{*token});
+        if (!entry) {
+            error("Unknown condition: {}", *token);
+            return false;
         }
-        error("Unknown condition");
-        return false;
+        const auto& [name, condition] = *entry;
+        if (*token != name) {
+            warn("Condition name mismatch: {} should be {}", *token, name);
+        }
+        return condition(*this);
     }
 
     bool evaluate_comment_conditions() {
         while (const auto command = m_parser.get_command()) {
-            if (*command == "condition" && !evaluate_condition()) {
-                return false;
+            if (sv_iequals(*command, "condition")) {
+                if (*command != "condition") {
+                    warn("Condition name mismatch: {} should be condition", *command);
+                }
+                if (!evaluate_condition()) {
+                    return false;
+                }
             }
         }
         return true;
@@ -160,22 +173,26 @@ public:
     bool evaluate_comment_actions() {
         bool has_commands = false;
         while (const auto command = m_parser.get_command()) {
-            if (*command == "condition" || command->starts_with("#")) {
+            if (sv_iequals(*command, "condition") || command->starts_with("#")) {
                 continue;
             }
-            const auto action = m_registry.get_action(std::string{*command});
-            if (!action) {
+            const auto entry = m_registry.get_action(std::string{*command});
+            if (!entry) {
                 // Note: We can't always error here, since not all comments are crigs
                 if (has_commands) {
-                    error("Unknown action");
+                    error("Unknown action: {}", *command);
                 }
                 continue;
             }
+            const auto& [name, action] = *entry;
+            if (*command != name) {
+                warn("Action name mismatch: {} should be {}", *command, name);
+            }
             has_commands = true;
-            if (action->is_local && !is_local_player()) {
+            if (action.is_local && !is_local_player()) {
                 continue; // Skip local actions for non-local players
             }
-            if (!action->func(*this)) {
+            if (!action.func(*this)) {
                 return false;
             }
         }
@@ -184,23 +201,33 @@ public:
 
     template <typename... Subcommands> requires (std::is_same_v<Subcommands, Subcommand> && ...)
     bool subcommands(Subcommands&&... subcommands) {
-        const auto command = m_parser.get_string(false);
+        const auto command = m_parser.get_string(StringType::QuotesDeprecated);
         if (!command) {
-            error("Unknown subcommand");
+            error("Unknown subcommand: {}", *command);
             return false;
         }
         bool result = true;
         const auto found = ((sv_iequals(*command, subcommands.name()) ? (result = subcommands.invoke(*this), true) : false) || ...);
         if (!found) {
-            error("Unknown subcommand");
+            error("Unknown subcommand: {}", *command);
         }
         return result;
     }
 
     template <typename... Args>
-    void error(std::string_view title, Args&&... args) {
-        m_had_errors = true;
-        m_parser.error(title, std::forward<Args>(args)...);
+    void warn(std::format_string<Args...> fmt, Args&&... args) {
+        m_parser.warn(fmt, std::forward<Args>(args)...);
+    }
+
+    template <typename... Args>
+    void error(std::format_string<Args...> fmt, Args&&... args) {
+        m_parser.error(fmt, std::forward<Args>(args)...);
+    }
+
+    // Reports an error only if no previous errors have been reported in this context
+    template <typename... Args>
+    void error_once(std::format_string<Args...> fmt, Args&&... args) {
+        m_parser.error_once(fmt, std::forward<Args>(args)...);
     }
 
     Parser& parser() { return m_parser; }
@@ -212,8 +239,8 @@ public:
     bool is_local_player() const { return m_player == g_local_nation_id; }
     OngoingWait& ongoing_wait() { return m_trigger_ext.ongoing_waits[m_player]; }
 
-    bool had_errors() const { return m_had_errors; }
-    void clear_errors() { m_had_errors = false; }
+    bool had_errors() const { return m_parser.had_errors(); }
+    void clear_errors() { m_parser.clear_errors(); }
 
 private:
     Registry& m_registry;
@@ -222,7 +249,6 @@ private:
     TriggerExt& m_trigger_ext;
     TriggerAction* m_action;
     u8 m_player;
-    bool m_had_errors = false;
 };
 
 template <typename Func>
@@ -301,7 +327,7 @@ struct Parameter<std::optional<std::string>> {
 template <>
 struct Parameter<std::optional<Identifier>> {
     static std::optional<Identifier> get(Context& ctx) {
-        const auto value = ctx.parser().get_identifier();
+        const auto value = ctx.parser().get_string(StringType::Identifier);
         if (!value) {
             return {};
         }
@@ -357,7 +383,11 @@ struct Parameter<T> {
     static T get(Context& ctx) {
         const auto value = Parameter<std::optional<T>>::get(ctx);
         if (!value) {
-            ctx.error("Invalid enum");
+            auto marker = ctx.parser().marker();
+            auto string = ctx.parser().get_string(StringType::QuotesDeprecated);
+            ctx.parser().unwind(marker);
+
+            ctx.error_once("Invalid enum: {}", string.value_or(""));
         }
         return value.value_or(T{});
     }
@@ -497,7 +527,12 @@ struct Parameter<PlayerId<AllowNeutral>> {
     static PlayerId<AllowNeutral> get(Context& ctx) {
         auto player = ctx.parser().get_player<AllowNeutral>();
         if (!player) {
-            ctx.error("Invalid player");
+            auto marker = ctx.parser().marker();
+            bool is_var = ctx.parser().get_char('$');
+            auto token = ctx.parser().get_word();
+            ctx.parser().unwind(marker);
+
+            ctx.error_once("Invalid player: {}{}", is_var ? "$" : "", token.value_or(""));
         }
         return player.value_or(PlayerId<AllowNeutral>{});
     }
@@ -587,26 +622,6 @@ struct Parameter<std::optional<TimerValue>> {
             return {};
         }
         return TimerValue{.value = *value};
-    }
-};
-
-
-template <>
-struct Parameter<std::optional<IscriptAnimation::Enum>> {
-    static std::optional<IscriptAnimation::Enum> get(Context& ctx) {
-        return ctx.parser().get_magic_enum<IscriptAnimation::Enum>();
-    }
-};
-
-
-template <>
-struct Parameter<std::optional<SoundId::Enum>> {
-    static std::optional<SoundId::Enum> get(Context& ctx) {
-        const auto value = ctx.parser().get_integer();
-        if (!value) {
-            return {};
-        }
-        return SoundId::Enum(*value);
     }
 };
 

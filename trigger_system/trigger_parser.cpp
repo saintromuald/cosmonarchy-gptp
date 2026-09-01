@@ -223,35 +223,30 @@ bool Parser::eat_prefix(const char* prefix) {
 	return true;
 }
 
-std::optional<std::string_view> Parser::get_string(bool allow_quotes) {
+std::optional<std::string_view> Parser::get_string(StringType type) {
 	if (!skip_whitespace()) {
 		return {};
 	}
 
-	if (allow_quotes && get_char('"')) {
+	if (type != StringType::Identifier && get_char('"')) {
 		start_token();
 		while (*m_at && *m_at != '"' && !is_newline(*m_at)) {
 			expand_token();
 		}
 		get_char('"');
+
+        if (type == StringType::QuotesDeprecated) {
+            warn("Quotes are deprecated: \"{}\"", m_token);
+        }
 	} else {
 		start_token();
-		while (*m_at && !is_any_space(*m_at) && !is_separator(*m_at) && *m_at != '"') {
+		while (*m_at && !is_any_space(*m_at) && !is_separator(*m_at)) {
+            if (*m_at == '"') {
+                error("Unexpected quote after: {}", m_token);
+				break;
+            }
 			expand_token();
 		}
-	}
-
-	return m_token;
-}
-
-std::optional<std::string_view> Parser::get_identifier() {
-	if (!skip_whitespace()) {
-		return {};
-	}
-
-	start_token();
-	while (*m_at && !is_any_space(*m_at) && !is_separator(*m_at) && *m_at != '"') {
-		expand_token();
 	}
 
 	return m_token;
@@ -589,7 +584,6 @@ std::optional<PlayerId<AllowNeutral>> Parser::get_player() {
 			return PlayerId<AllowNeutral>{u32(player - 1)};
 		}
 	}
-	error("Invalid player", player);
 	return {};
 }
 template std::optional<PlayerId<false>> Parser::get_player<false>();
@@ -763,7 +757,7 @@ public:
 		while (true) {
 			m_negate = m_parser.get_negation();
 			m_marker = m_parser.marker();
-			const auto token = m_parser.get_string(false);
+			const auto token = m_parser.get_string(StringType::Identifier);
 			if (!token || token->empty()) {
 				return {};
 			}

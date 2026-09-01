@@ -286,6 +286,11 @@ struct Any {
     bool any;
 };
 
+enum class StringType {
+	Quotable,
+	QuotesDeprecated,
+	Identifier,
+};
 
 std::string enum_name_to_snake_case(std::string_view name);
 
@@ -302,8 +307,7 @@ public:
 	std::optional<std::string_view> get_command();
 	bool get_keyword(const char* keyword);
 	bool eat_prefix(const char* chars);
-	std::optional<std::string_view> get_string(bool allow_quotes = true);
-	std::optional<std::string_view> get_identifier();
+	std::optional<std::string_view> get_string(StringType type = StringType::Quotable);
 
 	std::optional<s32> maybe_get_var_value();
 	std::optional<bool> get_bool();
@@ -320,11 +324,10 @@ public:
 	std::optional<Area> get_area();
 	std::optional<v2u16> get_position();
 
-
 	template <typename T> requires std::is_enum_v<T>
 	std::optional<T> get_magic_enum() {
 		const auto marker = this->marker();
-		const auto token = get_string(false);
+		const auto token = get_string(StringType::QuotesDeprecated);
 		if (!token) {
 			return {};
 		}
@@ -392,21 +395,30 @@ public:
 		return sv;
 	}
 
-	template <typename... Ts>
-	void error(std::string_view title, Ts&&... args) {
-		std::ostringstream ss;
-		if (sizeof...(args) == 0) {
-			ss << "!";
-		} else {
-			ss << ": ";
-            size_t i = 0;
-            (ss << ... << std::format("{}{}{}{}", i++ > 0 ? ", " : "", char(TextColor::Yellow3), args, char(TextColor::White)));
-		}
+	template <typename... Args>
+    void warn(std::format_string<Args...> fmt, Args&&... args) {
+		bw::play_sound(SoundId::Misc_Buzz_wav_1);
+        bw::println();
+        bw::println(TextColor::Yellow3, "Crig Warning: {}{}", TextColor::White, std::format(fmt, std::forward<Args>(args)...));
+        bw::println(TextColor::Grey, "{}", current_command_line());
+    }
+
+	template <typename... Args>
+	void error(std::format_string<Args...> fmt, Args&&... args) {
+		m_had_errors = true;
 		bw::play_sound(SoundId::Misc_Buzz_wav_1);
 		bw::println();
-		bw::println(TextColor::Red, "Crig Error: {}{}{}", TextColor::White, title, ss.str());
+		bw::println(TextColor::Red, "Crig Error: {}{}", TextColor::White, std::format(fmt, std::forward<Args>(args)...));
 		bw::println(TextColor::Grey, "{}", current_command_line());
 	}
+
+    // Reports an error only if no previous errors have been reported in this context
+    template <typename... Args>
+    void error_once(std::format_string<Args...> fmt, Args&&... args) {
+        if (!m_had_errors) {
+            error(fmt, std::forward<Args>(args)...);
+        }
+    }
 
 	template <std::integral T = s32>
 	std::optional<T> get_integer(u32 base = 10) {
@@ -445,6 +457,9 @@ public:
         return sv_convert_to<T>(*token);
 	}
 
+    bool had_errors() const { return m_had_errors; }
+    void clear_errors() { m_had_errors = false; }
+
 private:
 	template <typename Bitset, typename Func>
 	std::optional<Bitset> parse_bitset(Func&& callback);
@@ -466,6 +481,7 @@ private:
 	template <typename Bitset>
 	friend class BitsetParser;
 
+	bool m_had_errors = false;
 	bool m_parsed_first_command{};
 	bool m_should_load_pos{};
 	const char* m_start{};
