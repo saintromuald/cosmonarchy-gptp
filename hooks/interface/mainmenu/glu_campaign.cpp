@@ -200,6 +200,14 @@ void GluCampaignDetails::on_init() {
         }
         const u16 target = first_uncompleted_index.value_or(last_index);
         quick_send_event(self.dialog()->to_bindlg(), DialogUserType_SetSelectionIndex, target);
+
+        if (!g_music_playing) {
+            helper::dialog_music_fade(MusicId_Title);
+        }
+
+        if (g_campaign_manager.has_transition_error()) {
+            ui::modal_ok(g_campaign_manager.take_transition_error());
+        }
     });
     m_combobox->on_selection([&](ui::Widget& self, u16 index) {
         g_campaign_manager.mission_index = index;
