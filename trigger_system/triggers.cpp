@@ -1,5 +1,6 @@
 #include "triggers.h"
 #include "systems/audio_system.h"
+#include "trigger_parser.h"
 #include "trigger_recolor.h"
 #include "trigger_objectives.h"
 #include "trigger_spawn.h"
@@ -16,12 +17,14 @@
 
 namespace trigger {
 
+namespace {
+
 enum class UnitSoundOperation {
     Clear,
     Add,
 };
 
-enum class SoundVisibility {
+enum class Visibility {
     Unexplored,
     Explored,
     Visible,
@@ -49,8 +52,6 @@ enum class TriggerFaction : u8 {
     Orkoti                = u8(Faction::ZergOrkotiTendril),
     Zorthos               = u8(Faction::ZergZorthosTendril),
 };
-
-namespace {
 
 void apply_unit_stat(Designator designator, u32 count, TriggerStat trigger_stat, s32 value) {
     for (Unit* unit : designator.search({.sort = count != 0}).take(count)) {
@@ -180,18 +181,20 @@ Registry g_triggers = Registry()
         }
         return quota.check(count);
     })
-    .add_condition("local_camera", [](Area area, Identifier min_visibility) {
+    .add_condition(aliases("camera", "local_camera"), [](Context& ctx, Area area, Visibility min_visibility, std::optional<PlayablePlayer> player) {
+        const auto actual_player = player.transform([](PlayablePlayer p) { return u32(p); }).value_or(g_multiplayer_mode ? ctx.player() : g_local_nation_id);
+        const auto camera = g_globals->players[actual_player].camera;
         const auto center = v2u16{
-            u16(g_move_to_x + 320),
-            u16(g_move_to_y + 200),
+            u16(camera.x + 320),
+            u16(camera.y + 200),
         };
 
         if (center.x >= area.box.left && center.x <= area.box.right &&
             center.y >= area.box.top  && center.y <= area.box.bottom) {
             const auto tile = bw::get_active_tile_at_coords(center.x, center.y);
-            if (sv_iequals(std::string_view{min_visibility}, "unexplored")) {
+            if (min_visibility == Visibility::Unexplored) {
                 return true;
-            } else if (sv_iequals(std::string_view{min_visibility}, "explored")) {
+            } else if (min_visibility == Visibility::Explored) {
                 return !(tile->explored_flags & (1 << g_local_nation_id));
             } else {
                 return !(tile->visibility_flags & (1 << g_local_nation_id));
@@ -417,7 +420,7 @@ Registry g_triggers = Registry()
             g_globals->sound_replacements.push_back(replacement);
         }
     })
-    .add_local_action("play_sound", [](Context& ctx, std::string_view path, PlayerBitset players, v2u16 position, SoundVisibility min_visibility) {
+    .add_local_action("play_sound", [](Context& ctx, std::string_view path, PlayerBitset players, v2u16 position, Visibility min_visibility) {
         const auto trigger_player = ctx.player();
         if (trigger_player < PlayerLimit && players[trigger_player]) {
             if (position.x == 0 && position.y == 0) {
@@ -425,9 +428,9 @@ Registry g_triggers = Registry()
             } else {
                 auto play = false;
                 const auto tile = bw::get_active_tile_at_coords(position.x, position.y);
-                if (min_visibility == SoundVisibility::Unexplored) {
+                if (min_visibility == Visibility::Unexplored) {
                     play = true;
-                } else if (min_visibility == SoundVisibility::Explored) {
+                } else if (min_visibility == Visibility::Explored) {
                     play = !(tile->explored_flags & (1 << g_local_nation_id));
                 } else {
                     play = !(tile->visibility_flags & (1 << g_local_nation_id));

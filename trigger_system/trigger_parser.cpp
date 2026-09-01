@@ -12,15 +12,12 @@ static bool is_any_space(char c) {
 	return isspace(c);
 }
 
-static bool is_separator(char c) {
+static bool is_flag_operator(char c) {
 	return c == '|' || c == '&';
 }
 
-static u32 is_newline(char c) {
-	if (c == '\r' || c == '\n') {
-		return 2;
-	}
-	return 0;
+static bool is_newline(char c) {
+	return c == '\r' || c == '\n';
 }
 
 static bool is_word_char(char c) {
@@ -47,7 +44,7 @@ void Parser::clear_token() {
 	m_token = {};
 }
 
-bool Parser::skip_whitespace() {
+bool Parser::skip_spaces() {
 	clear_token();
 	while (*m_at && is_any_space(*m_at)) {
 		if (is_newline(*m_at)) {
@@ -70,25 +67,25 @@ bool Parser::skip_non_word_chars() {
 }
 
 bool Parser::get_negation() {
-	if (!skip_whitespace()) {
+	if (!skip_spaces()) {
 		return false;
 	}
 	return get_char('!');
 }
 
 char Parser::get_separator() {
-	if (!skip_whitespace()) {
+	if (!skip_spaces()) {
 		return 0;
 	}
 
-	if (is_separator(*m_at)) {
+	if (is_flag_operator(*m_at)) {
 		return *m_at++;
 	}
 	return 0;
 }
 
 char Parser::get_relative_op() {
-	if (!skip_whitespace()) {
+	if (!skip_spaces()) {
 		return 0;
 	}
 
@@ -114,6 +111,9 @@ void Parser::unwind(const ParserMarker& marker) {
 }
 
 bool Parser::get_char(char c) {
+	if (!skip_spaces()) {
+		return false;
+	}
 	if (*m_at == c) {
 		++m_at;
 		return true;
@@ -174,23 +174,25 @@ void Parser::load_command_pos(u32 position) {
 std::optional<std::string_view> Parser::get_command() {
 	if (m_should_load_pos) {
 		m_should_load_pos = false;
-		m_parsed_first_command = true;
 		m_command_start_pos = m_at - m_start;
 		return eat_word();
 	}
 
-	// Skip to end of line
-	if (!m_parsed_first_command) {
-		m_parsed_first_command = true;
+	if (m_at == m_start) {
+		// Skip all whitespace
+        while (*m_at && is_any_space(*m_at)) {
+            ++m_at;
+        }
 	} else {
+		// Skip to end of line
 		while (*m_at && !is_newline(*m_at)) {
 			++m_at;
 		}
-	}
 
-	// Skip newlines
-	while (*m_at && is_newline(*m_at)) {
-		++m_at;
+        // Skip newlines
+        while (*m_at && is_newline(*m_at)) {
+            ++m_at;
+        }
 	}
 
 	return get_word(true);
@@ -224,7 +226,7 @@ bool Parser::eat_prefix(const char* prefix) {
 }
 
 std::optional<std::string_view> Parser::get_string(StringType type) {
-	if (!skip_whitespace()) {
+	if (!skip_spaces()) {
 		return {};
 	}
 
@@ -240,7 +242,7 @@ std::optional<std::string_view> Parser::get_string(StringType type) {
         }
 	} else {
 		start_token();
-		while (*m_at && !is_any_space(*m_at) && !is_separator(*m_at)) {
+		while (*m_at && !is_any_space(*m_at) && !is_flag_operator(*m_at)) {
             if (*m_at == '"') {
                 error("Unexpected quote after: {}", m_token);
 				break;
@@ -276,7 +278,7 @@ std::optional<bool> Parser::get_bool() {
 }
 
 std::optional<fp64> Parser::get_time_seconds_raw() {
-	if (!skip_whitespace() || !*m_at) {
+	if (!skip_spaces() || !*m_at) {
 		return {};
 	}
 
@@ -291,7 +293,7 @@ std::optional<fp64> Parser::get_time_seconds_raw() {
 
 	fp64 total_seconds{};
 	start_token();
-	while (*m_at && !is_any_space(*m_at) && !is_separator(*m_at)) {
+	while (*m_at && !is_any_space(*m_at) && !is_flag_operator(*m_at)) {
 		if (isdigit(*m_at) || *m_at == '.' || (m_token.empty() && (*m_at == '+' || *m_at == '-'))) {
 			expand_token();
 			continue;
@@ -335,7 +337,7 @@ std::optional<Seconds> Parser::get_time_seconds() {
 }
 
 std::optional<Ticks> Parser::get_time_ticks() {
-	if (!skip_whitespace() || !*m_at) {
+	if (!skip_spaces() || !*m_at) {
 		return {};
 	}
 
@@ -351,7 +353,7 @@ std::optional<Ticks> Parser::get_time_ticks() {
 
 	s64 total_ticks{};
 	start_token();
-	while (*m_at && !is_any_space(*m_at) && !is_separator(*m_at)) {
+	while (*m_at && !is_any_space(*m_at) && !is_flag_operator(*m_at)) {
 		if (isdigit(*m_at) || *m_at == '.' || (m_token.empty() && (*m_at == '+' || *m_at == '-'))) {
 			expand_token();
 			continue;
@@ -495,7 +497,7 @@ Location* Parser::get_location() {
 
 std::optional<Area> Parser::get_area() {
 	Area area = {};
-	if (!skip_whitespace()) {
+	if (!skip_spaces()) {
 		return {};
 	}
 
@@ -504,8 +506,8 @@ std::optional<Area> Parser::get_area() {
 		area.box.left = get_integer().value_or(0);
 		area.box.top  = get_integer().value_or(0);
 		{
-			u32 relative_op = get_relative_op();
-			const auto w = u32(get_integer().value_or(0));
+			const auto relative_op = get_relative_op();
+			const auto w = get_integer<u32>().value_or(0);
 			if (relative_op == '+') {
 				area.box.right = area.box.left + w;
 			} else if (relative_op == '-') {
@@ -519,8 +521,8 @@ std::optional<Area> Parser::get_area() {
 			}
 		}
 		{
-			u32 relative_op = get_relative_op();
-			const auto h = u32(get_integer().value_or(0));
+			const auto relative_op = get_relative_op();
+			const auto h = get_integer<u32>().value_or(0);
 			if (relative_op == '+') {
 				area.box.bottom = area.box.top + h;
 			} else if (relative_op == '-') {
@@ -543,11 +545,12 @@ std::optional<Area> Parser::get_area() {
         area.flags = ~location->flags;
         return area;
 	}
+    error("Expected area or location name, got: {}", m_token);
 	return {};
 }
 
 std::optional<v2u16> Parser::get_position() {
-	if (!skip_whitespace()) {
+	if (!skip_spaces()) {
 		return {};
 	}
 
@@ -925,7 +928,7 @@ std::optional<FlingyIdBitset> Parser::get_flingy_id_bitset() {
 
 
 std::optional<StatOperator> Parser::get_stat_operator() {
-	if (!skip_whitespace() || !*m_at) {
+	if (!skip_spaces() || !*m_at) {
 		return {};
 	}
 	if (eat_prefix("+=")) return StatOperator::Add;
@@ -961,7 +964,7 @@ std::optional<Designator> Parser::get_designator() {
 }
 
 std::optional<QuotaType> Parser::get_quota_type(QuotaType default_type) {
-	if (!skip_whitespace() || !*m_at) {
+	if (!skip_spaces() || !*m_at) {
 		return {};
 	}
 
@@ -1016,14 +1019,14 @@ std::optional<TimeQuota> Parser::get_time_quota() {
 }
 
 bool Parser::has_recolor() {
-	if (!skip_whitespace()) {
+	if (!skip_spaces()) {
 		return false;
 	}
 	return *m_at == '(';
 }
 
 std::optional<Recolor> Parser::get_recolor() {
-	if (!skip_whitespace() || !get_char('(')) {
+	if (!skip_spaces() || !get_char('(')) {
 		return {};
 	}
 
