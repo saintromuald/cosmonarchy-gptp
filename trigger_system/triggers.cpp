@@ -1170,7 +1170,7 @@ Registry g_triggers = Registry()
         TableEditor(ctx.parser()).run();
     })
     .add_action("move_location", [](Context& ctx, Location* location, Designator designator, s32 offset_left, s32 offset_top, s32 offset_right, s32 offset_bottom) {
-        if (!location) { ctx.error("Invalid location"); return; }
+        if (!location) { ctx.error("Invalid location"); return; } // TODO: Consider Parameter<Location&> for mandatory locations -Veeq7
         auto loc_offsets = location->dimensions.offsets_from_center();
         loc_offsets.left   += offset_left;
         loc_offsets.top    += offset_top;
