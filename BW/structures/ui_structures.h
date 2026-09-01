@@ -8,7 +8,7 @@
 #include <type_traits>
 #include <algorithm>
 
-#pragma pack(1)
+#pragma pack(push, 1)
 
 struct Unit;
 struct Button;
@@ -499,4 +499,4 @@ inline auto _keep_alive = &_pin_types;
 
 }
 
-#pragma pack()
+#pragma pack(pop)

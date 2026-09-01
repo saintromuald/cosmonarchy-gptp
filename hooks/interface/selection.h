@@ -2,7 +2,7 @@
 #include "../../BW/structures/Unit.h"
 #include "BW/structures.h"
 
-char g_grpwire_buffer[GroupWireframesCap][8];
+inline char g_grpwire_buffer[GroupWireframesCap][8];
 
 namespace hooks {
 void unit_selection_click(Unit* clicked_unit);																	// 0046FB40

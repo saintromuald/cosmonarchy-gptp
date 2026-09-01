@@ -1,5 +1,4 @@
 #pragma once
-#pragma pack(1)
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>

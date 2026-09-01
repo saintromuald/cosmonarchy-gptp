@@ -8,7 +8,7 @@
 #include <concepts>
 #include <numbers>
 
-#pragma pack(1)
+#pragma pack(push, 1)
 
 struct Point8 {
 	s8 x;
@@ -306,4 +306,4 @@ C_ASSERT(sizeof(Box16) == 8);
 C_ASSERT(sizeof(Box32) == 16);
 C_ASSERT(sizeof(Bounds) == 12);
 
-#pragma pack()
+#pragma pack(pop)

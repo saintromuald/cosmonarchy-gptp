@@ -3,6 +3,8 @@
 #include <graphics/Bitmap.h>
 #include "BW/bwdata.h"
 
+extern u8 new_warp_texture_buffer[65025];
+
 #define Step0 33	//originally 8
 //#define Step1 0		//originally 3
 #define updateFunc_None					(update_fxn*)0x004D55F0

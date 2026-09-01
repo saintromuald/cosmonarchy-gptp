@@ -1,6 +1,6 @@
 #pragma once
 #include "Target.h"
-#pragma pack(1)
+#pragma pack(push, 1)
 
 struct Order {
 	/*00*/  Order*	prev;
@@ -14,4 +14,4 @@ struct Order {
 };
 C_ASSERT(sizeof(Order) == 20);
 
-#pragma pack()
+#pragma pack(pop)

@@ -1,6 +1,6 @@
 #pragma once
 #include "Target.h"
-#pragma pack(1)
+#pragma pack(push, 1)
 
 struct Unit;
 struct Sprite;
@@ -63,4 +63,4 @@ enum BulletBehaviorType {
     BulletBehaviorType_AttackTargetBox,
 };
 
-#pragma pack()
+#pragma pack(pop)

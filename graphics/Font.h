@@ -1,7 +1,7 @@
 //Based on BWAPI's BW/Font.h
 #pragma once
 #include "../types.h"
-#pragma pack(1)
+#pragma pack(push, 1)
 
 //V241 for VS2008
 
@@ -37,4 +37,4 @@ struct Font {
 
 }
 
-#pragma pack()
+#pragma pack(pop)

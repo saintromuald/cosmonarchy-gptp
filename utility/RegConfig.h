@@ -45,7 +45,7 @@ void push_chars(std::vector<char>& vec, T const& str) {
 }
 
 template <>
-void push_chars(std::vector<char>& vec, const char* const& str) {
+inline void push_chars(std::vector<char>& vec, const char* const& str) {
 	for (const char* c = str; *c; c++) {
 		char ch = *c;
 		vec.push_back(ch);

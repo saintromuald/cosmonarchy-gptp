@@ -4,7 +4,7 @@
 #include "hooks/audiovisuals/sfxhooks.h"
 
 namespace hooks {
-	static void move_to_rally(Unit* unit, Target rally) {
+	void move_to_rally(Unit* unit, Target rally) {
 		if (rally.unit) {
 			if (bw::is_allied_to(unit->player, rally.unit->player)) {
 				unit->order_to(OrderId::Follow, rally.unit);

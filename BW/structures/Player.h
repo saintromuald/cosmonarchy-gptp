@@ -1,7 +1,6 @@
 #pragma once
 #include "common.h"
-#include "BW/bwdata.h"
-#include "BW/structures.h"
+#include <string_view>
 
 // Not like the advanced BWAPI struct
 struct Player {

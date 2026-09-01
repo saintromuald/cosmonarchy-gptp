@@ -1,6 +1,7 @@
 #include "trigger_parser.h"
 #include "trigger_vars.h"
 #include "BW/stat_txt_spec.h"
+#include "CM/cm_ids.h"
 
 #include <magic_enum/magic_enum_all.hpp>
 using namespace magic_enum::bitwise_operators;

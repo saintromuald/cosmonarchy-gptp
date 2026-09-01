@@ -2,7 +2,7 @@
 #include "common.h"
 #include "List.h"
 #include <BW/enumerations.h>
-#pragma pack(1)
+#pragma pack(push, 1)
 
 // Additions from bwapi/bwapi/BWMemoryEdit/Enums/RLE.cs
 // Additions from bwapi/bwapi/BWAPI/Source/BW/Image.h
@@ -154,4 +154,4 @@ namespace hooks {
     void inject_image_hooks();
 }
 
-#pragma pack()
+#pragma pack(pop)

@@ -2,7 +2,7 @@
 #include "BW/ui.h"
 #include "glu_chat.h"
 
-BinDlg* g_current_dialog;
+inline BinDlg* g_current_dialog = nullptr;
 
 class GluJoinCrownlinkContext {
 public:
