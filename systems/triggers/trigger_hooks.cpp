@@ -210,6 +210,21 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
             case PortraitId::Zeratul:      portrait_id = PortraitId::Trodin;         break; // Scintor
             case PortraitId::Prudence:     portrait_id = PortraitId::Tazarain;       break;
         }
+    } else if (g_current_map_name == "Amber Word"sv) {
+        switch (portrait_id) {
+            case PortraitId::ScannerSweep:      portrait_id = PortraitId::Cikralisk;   break; // Retoro
+            case PortraitId::Morningstar:       portrait_id = PortraitId::AdvisorInoa; break; // Pilgrim
+            case PortraitId::Zeratul:           portrait_id = PortraitId::Avatar;      break; // Onor
+            case PortraitId::Anticthon:         portrait_id = PortraitId::Daggoth;     break; // Organ
+        }
+    } else if (g_current_map_name == "Eye of the Needle"sv) {
+        switch (portrait_id) {
+            case PortraitId::Zeratul:           portrait_id = PortraitId::Sycophant;      break; // Tenos
+            case PortraitId::Morningstar:       portrait_id = PortraitId::Herald;         break; // Alathas
+            case PortraitId::ScannerSweep:      portrait_id = PortraitId::Gorn;           break; // Skletch
+            case PortraitId::Anticthon:         portrait_id = PortraitId::AdvisorImicren; break; // Imicren
+            case PortraitId::Legionnaire:       portrait_id = PortraitId::Adherent;       break;
+        }
     } else if (g_current_map_name == "Sunset Mission"sv
             || g_current_map_name == "Early Retirement"sv
             || g_current_map_name == "The Dead of Night"sv
@@ -226,13 +241,6 @@ u16 get_unit_portrait_override(u16 unit_id) { // 0045E320
             case PortraitId::Prudence:                  portrait_id = PortraitId::Hippogriff; break; // Prentat
             case PortraitId::DataDisc:                  portrait_id = PortraitId::Centaur;    break; // Heimberg
             case PortraitId::Amaranth:                  portrait_id = PortraitId::Goska;      break; // Tolrim
-        }
-    } else if (g_current_map_name == "Amber Word"sv) {
-        switch (portrait_id) {
-            case PortraitId::ScannerSweep:      portrait_id = PortraitId::Cikralisk;   break; // Retoro
-            case PortraitId::Morningstar:       portrait_id = PortraitId::AdvisorInoa; break; // Pilgrim
-            case PortraitId::Zeratul:           portrait_id = PortraitId::Avatar;      break; // Onor
-            case PortraitId::Anticthon:         portrait_id = PortraitId::Daggoth;     break; // Organ
         }
     } else if (g_current_map_name == "The Arbiter"sv) {
         switch (portrait_id) {
@@ -339,6 +347,21 @@ void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) { // 00
             case PortraitId::ScannerSweep:      portrait_id = PortraitId::OrganSenescent; break; // Relgant
             case PortraitId::Morningstar:       portrait_id = PortraitId::Medley;         break; // Sprinia
         }
+    } else if (g_current_map_name == "Amber Word"sv) {
+        switch (portrait_id) {
+            case PortraitId::ScannerSweep:      portrait_id = PortraitId::Cikralisk;   break; // Retoro
+            case PortraitId::Morningstar:       portrait_id = PortraitId::AdvisorInoa; break; // Pilgrim
+            case PortraitId::Zeratul:           portrait_id = PortraitId::Avatar;      break; // Onor
+            case PortraitId::Anticthon:         portrait_id = PortraitId::Daggoth;     break; // Organ
+        }
+    } else if (g_current_map_name == "Eye of the Needle"sv) {
+        switch (portrait_id) {
+            case PortraitId::Zeratul:           portrait_id = PortraitId::Sycophant;      break; // Tenos
+            case PortraitId::Morningstar:       portrait_id = PortraitId::Herald;         break; // Alathas
+            case PortraitId::ScannerSweep:      portrait_id = PortraitId::Gorn;           break; // Skletch
+            case PortraitId::Anticthon:         portrait_id = PortraitId::AdvisorImicren; break; // Imicren
+            case PortraitId::Legionnaire:       portrait_id = PortraitId::Adherent;       break;
+        }
     } else if (g_current_map_name == "The Arbiter"sv) {
         switch (portrait_id) {
             case PortraitId::ProtossAdvisor:    portrait_id = PortraitId::Prophet1;              break;
@@ -352,6 +375,11 @@ void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) { // 00
         switch (portrait_id) {
             case PortraitId::ScannerSweep:      portrait_id = PortraitId::EdmundDuke; break;
             case PortraitId::Zeratul:           portrait_id = PortraitId::JimRaynor;  break;
+        }
+    } else if (g_current_map_name == "T03) Desperate Alliance"sv) {
+        switch (portrait_id) {
+            case PortraitId::ScannerSweep:      portrait_id = PortraitId::EdmundDuke; break;
+            case PortraitId::Zeratul:           portrait_id = PortraitId::ArcturusMengsk; break;
         }
     }
 
@@ -424,6 +452,11 @@ void dialog_music_fade(u32 music_id) { // 004A6310
             } break;
             case MusicId_PRdyRoom: {
                 if (g_current_map_name == "The Arbiter"sv) {
+                    music_id = MusicId_None;
+                }
+            } break;
+            case MusicId_ZRdyRoom: {
+                if (g_current_map_name == "Eye of the Needle"sv) {
                     music_id = MusicId_None;
                 }
             } break;
