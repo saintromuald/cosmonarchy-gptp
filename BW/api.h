@@ -23,6 +23,7 @@ using namespace magic_enum::bitwise_operators;
 #include "CM/cm.h"
 #include "utility.h"
 #include "interpolation.h"
+#include "systems/audio_system.h"
 
 // Text colors
 #define BWTC_RESET		"\002"
@@ -271,19 +272,6 @@ struct TeleportOptions {
     bool preserve_order : 1 = false;
     bool check_distance : 1 = true;
 };
-
-inline bool harvester_is_active(Unit* unit, Unit* target) {
-    UnitExt* unit_ext = get_unit_ext(unit);
-    UnitExt* target_ext = get_unit_ext(target);
-    u32 activity = unit_ext->values[ValueHarvesterActivity];
-    if (target_ext->values[ValueAssignedHarvesters] <= 2) {
-        // Until 2 workers, we don't want to wander synced pairs (to allow worker micro),
-        return activity > 0 && activity <= HarvestTimer - 24;
-    } else {
-        // After 2 workers, we always wander since it's always optimal
-        return activity > 0;
-    }
-}
 
 std::filesystem::path get_starcraft_path();
 bool is_any_morph_result(u16 id);

@@ -1,5 +1,6 @@
 #include "cast_order.h"
 #include <hook_tools.h>
+#include <BW/bwdata.h>
 
 namespace {
     void __declspec(naked) orders_spell_wrapper() { // 00492850

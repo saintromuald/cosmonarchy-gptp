@@ -3,6 +3,9 @@
 #include <time.h>
 
 #include "triggers.h"
+#include "trigger_recolor.h"
+#include "trigger_objectives.h"
+#include "trigger_events.h"
 #include "hooks/interface/uifeatures/hotkeys.h"
 
 #include <ranges>

@@ -1,5 +1,6 @@
 #pragma once
 #include "../../BW/structures/Unit.h"
+#include "../../BW/structures/Bullet.h"
 
 extern Bullet* weapon_damage_current_bullet;
 

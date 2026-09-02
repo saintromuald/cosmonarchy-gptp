@@ -47,7 +47,7 @@ void load_racial_sounds(bool enable);   // 0048fb40
 void load_race_grp_and_sounds();        // 004ee2d0
 void load_console_image();              // 004c3950
 
-static void load_progressbar(BinDlg* dialog, BinDlgProc interaction_function,
+void load_progressbar(BinDlg* dialog, BinDlgProc interaction_function,
     Bitmap& empty, Bitmap& full, RaceId::Enum race); // 004596a0 & 00458050
 
 void load_command_buttons();    // 00459b90

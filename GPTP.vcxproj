@@ -490,8 +490,8 @@
     <ClCompile Include="hooks\orders\unit_making\unit_morph_inject.cpp" />
     <ClCompile Include="hooks\orders\unit_making\unit_train.cpp" />
     <ClCompile Include="hooks\orders\unit_making\unit_train_inject.cpp" />
-    <ClCompile Include="hooks\utils\utils.cpp" />
-    <ClCompile Include="hooks\utils\utils_inject.cpp" />
+    <ClCompile Include="hooks\utils\unit_utils.cpp" />
+    <ClCompile Include="hooks\utils\unit_utils_inject.cpp" />
     <ClCompile Include="hooks\interface\wireframe.cpp" />
     <ClCompile Include="hooks\interface\wireframe_inject.cpp" />
     <ClCompile Include="hooks\weapons\weapon_spellhit.cpp" />
@@ -660,6 +660,7 @@
     <ClInclude Include="BW\rand.h" />
     <ClInclude Include="BW\structures\ui_structures.h" />
     <ClInclude Include="CampaignManager.h" />
+    <ClInclude Include="effect_field.h" />
     <ClInclude Include="hooks\campaign.h" />
     <ClInclude Include="safeunion.h" />
     <ClInclude Include="storm\sfile.h" />
@@ -864,7 +865,7 @@
     <ClInclude Include="types.h" />
     <ClInclude Include="hooks\orders\unit_making\unit_morph.h" />
     <ClInclude Include="hooks\orders\unit_making\unit_train.h" />
-    <ClInclude Include="hooks\utils\utils.h" />
+    <ClInclude Include="hooks\utils\unit_utils.h" />
     <ClInclude Include="hooks\interface\wireframe.h" />
     <ClInclude Include="hooks\weapons\weapon_spellhit.h" />
     <ClInclude Include="AI\ai_common.h" />

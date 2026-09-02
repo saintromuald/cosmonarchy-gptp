@@ -2,6 +2,7 @@
 #include <BW/api.h>
 #include <hooks/rally_point.h>
 #include "globals.h"
+#include "hooks/limits/sfx_extender.h"
 
 namespace hooks {
 	void orders_repair_1(Unit * unit) { // 004673D0

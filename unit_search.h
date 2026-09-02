@@ -4,8 +4,10 @@
 #include <functional>
 #include <unordered_set>
 #include <ranges>
+#include <variant>
 
 #include "arena.h"
+#include "effect_field.h"
 
 enum SearchFilter : u64 {
 	FilterInvincible			= 1ull <<  0,
@@ -65,8 +67,6 @@ enum SearchFilterCorpse {
 	CorpseFilterNoHangar		= 1 << 17,
 	CorpseFilterVisible			= 1 << 18,
 };
-
-struct EffectField;
 
 namespace bw {
 Box32 clamp_box32(Box32 rect);

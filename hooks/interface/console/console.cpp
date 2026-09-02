@@ -195,7 +195,7 @@ void load_console_image() {
     g_console_surface = console_create_surface(0, 0, &g_console_image);
 }
 
-static void load_progressbar(BinDlg* dialog, BinDlgProc update_function, Bitmap& empty, Bitmap& full, RaceId::Enum race) {
+void load_progressbar(BinDlg* dialog, BinDlgProc update_function, Bitmap& empty, Bitmap& full, RaceId::Enum race) {
     dialog->fxn_update = update_function;
     dialog->graphic = 0;
     auto initial = get_race_initial(race).value_or('t');

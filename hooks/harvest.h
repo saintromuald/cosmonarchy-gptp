@@ -4,6 +4,10 @@
 u32 get_gas_tier(Unit* unit);
 u32 get_harvest_amount(Unit* unit);
 
+namespace bw {
+bool harvester_is_active(Unit* unit, Unit* target);
+}
+
 namespace hooks {
 void remove_powerup_image_overlay(Unit* worker);											// 004F3900
 void transfer_resource_to_worker(Unit* worker, Unit* resource);								// 004696D0

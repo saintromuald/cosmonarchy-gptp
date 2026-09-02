@@ -76,7 +76,7 @@ b32 __fastcall latency_interaction(BinDlg* dialog, DialogEvent* dialog_event);
 void set_latency (u8 latency);
 void load_latency_dialog();                                                         // 004ca0eb
 
-static bool is_valid_race(RaceId::Enum race);
+bool is_valid_race(RaceId::Enum race);
 u8 load_races_dropdown(BinDlg* dialog, RaceId::Enum race, std::optional<u32>slot_id = {});
 void load_races_dropdown_singleplayer(BinDlg* dialog);
 
