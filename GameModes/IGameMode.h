@@ -1,7 +1,6 @@
 #pragma once
 #include <memory>
 
-#include "BW/api.h"
 #include "hooks/weapons/weapon_damage.h"
 #include "Utils.h"
 

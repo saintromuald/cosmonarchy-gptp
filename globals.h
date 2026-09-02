@@ -10,68 +10,13 @@
 #include "data_ext.h"
 #include "Utils.h"
 #include "systems/audio_system.h"
+#include "effect_field.h"
 
 #include <variant>
-
-using SearchRadius = std::variant<u32, v2u16>;
 
 #define ATTACK_LIMIT 64
 
 struct IquareGlobals;
-
-enum class EffectId {
-    MorningstarGroundZero,
-    DiademIonField,
-    SalamanderFire,
-    Irradiate,
-    AspirantCriticality,
-    PsiStorm,
-    PsiStormPersistent,
-    HallucinatingField,
-    LanifectDisruptionField,
-    StarSovereignTheGriefOfAllGods,
-    KeskathalorCausticDischarge,
-    IsthrathalethPlagueField,
-    ReclamationField,
-    VilgolethHeal,
-    CyclopsRecursionRound,
-    CyclopsFuturistRecursionRound,
-    SevenstepMindMatter,
-    OscilliantBindingPlasma,
-    GladiusBindingPlasma,
-    MiasmaPlagueField,
-    DivineDisciplineField,
-    ScrapworldImplosion,
-    AtreusBindingPlasma,
-
-    Count,
-};
-
-struct EffectField {
-    EffectRef ref;
-    EffectId id;
-    v2u16 position;
-    SearchRadius radius;
-    u32 current_time;
-    u32 max_time;
-    SpriteId::Enum sprite_id;
-    u32 elevation;
-    u32 player;
-    Thingy* thingy;
-    Unit* source;
-
-    // Extras
-    Unit* origin;
-    u32 intervals;
-    v2u16 move_target;
-    u32 move_speed;
-
-    // Runtime Data
-    s32 tick = -1;
-    PlayingSound playing_sound;
-
-    void destroy();
-};
 
 struct EffectFieldExtras {
     Unit* origin = nullptr;

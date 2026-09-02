@@ -1,5 +1,7 @@
 #pragma once
 #include "types.h"
+#include "BW/structures/common.h"
+#include "BW/enumerations/UnitId.h"
 
 class Timer {
 public:

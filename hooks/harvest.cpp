@@ -3,6 +3,21 @@
 
 #include "trigger_system/trigger_system.h"
 
+namespace bw {
+bool harvester_is_active(Unit* unit, Unit* target) {
+    UnitExt* unit_ext = get_unit_ext(unit);
+    UnitExt* target_ext = get_unit_ext(target);
+    u32 activity = unit_ext->values[ValueHarvesterActivity];
+    if (target_ext->values[ValueAssignedHarvesters] <= 2) {
+        // Until 2 workers, we don't want to wander synced pairs (to allow worker micro),
+        return activity > 0 && activity <= HarvestTimer - 24;
+    } else {
+        // After 2 workers, we always wander since it's always optimal
+        return activity > 0;
+    }
+}
+}
+
 // Used for AI calcs (currently supported values: 4, 3, 2, 1)
 u32 get_gas_tier(Unit* unit) {
 	if (unit) {

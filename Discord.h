@@ -1,5 +1,6 @@
 #pragma once
 #include "types.h"
+#include "BW/api.h"
 
 #include <thread>
 #include <mutex>

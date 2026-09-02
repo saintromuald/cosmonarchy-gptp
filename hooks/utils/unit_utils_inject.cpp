@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "unit_utils.h"
 #include <hook_tools.h>
 
 namespace
@@ -44,7 +44,7 @@ namespace
 
 namespace hooks
 {
-	void inject_utils_hooks()
+	void inject_unit_utils_hooks()
 	{
 		jump_patch(unit_IsStandardAndMovableWrapper,		0x0047B770, 2);
 		//jump_patch(getActivePlayerFirstSelectionWrapper,	0x0049A850, 2);

@@ -5,6 +5,9 @@
 
 #include <functional>
 
+#include <magic_enum/magic_enum_all.hpp>
+using namespace magic_enum::bitwise_operators;
+
 namespace ui {
 enum class PalettePreserve : u32 {
     None         = 0,

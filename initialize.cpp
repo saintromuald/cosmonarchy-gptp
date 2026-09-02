@@ -83,7 +83,7 @@
 #include "hooks/recv_commands/train_cmd_receive.h"
 #include "hooks/orders/unit_making/unit_morph.h"
 #include "hooks/orders/unit_making/unit_train.h"
-#include "hooks/utils/utils.h"
+#include "hooks/utils/unit_utils.h"
 #include "hooks/interface/wireframe.h"
 #include "hooks/weapons/weapon_spellhit.h"
 #include "hooks/weapon_effect.h"
@@ -858,7 +858,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     hooks::inject_cmdrecv_cancel_hooks();
     hooks::inject_repair_order_hooks();
     hooks::inject_stats_panel_display_hooks();
-//	hooks::inject_utils_hooks();
     hooks::inject_tyranny_spell_hooks();
     hooks::inject_cmdrecv_build_hooks();
     
@@ -925,7 +924,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
     hooks::inject_stop_hold_position_orders_hooks();
 
-    hooks::inject_utils_hooks();
+    hooks::inject_unit_utils_hooks();
     hooks::inject_select_larva_hooks();
 
     hooks::inject_cmdrecv_siege_tank_hooks();

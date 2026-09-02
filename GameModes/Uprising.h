@@ -1,6 +1,7 @@
 #pragma once
 #include "BW/structures.h"
 #include "CM/cm.h"
+#include "Utils.h"
 
 #include "IGameMode.h"
 

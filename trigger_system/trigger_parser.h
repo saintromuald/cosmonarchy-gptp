@@ -490,4 +490,103 @@ private:
 	std::string_view m_token{};
 };
 
+template <typename T>
+struct BitsetSize_t;
+
+template <size_t N>
+struct BitsetSize_t<std::bitset<N>> : std::integral_constant<size_t, N> {};
+
+template <std::integral T>
+struct BitsetSize_t<T> : std::integral_constant<size_t, 8 * sizeof(T)> {};
+
+template <typename T> requires std::is_enum_v<T>
+struct BitsetSize_t<T> : std::integral_constant<size_t, 8 * sizeof(T)> {};
+
+template <typename T>
+static constexpr size_t BitsetSize = BitsetSize_t<T>::value;
+
+template <typename Bitset>
+class BitsetParser {
+public:
+	BitsetParser(Parser& parser) : m_parser{parser} {}
+
+	template <typename Func>
+	std::optional<Bitset> parse(Func&& callback) {
+		Bitset result{};
+		m_bitset = {};
+		m_mask = false;
+		while (true) {
+			m_negate = m_parser.get_negation();
+			m_marker = m_parser.marker();
+			const auto token = m_parser.get_string(StringType::Identifier);
+			if (!token || token->empty()) {
+				return {};
+			}
+
+			if (token == "*") {
+				set([](u32 i) { return true; });
+			} else {
+				callback(*this, *token);
+			}
+
+			const auto separator = m_parser.get_separator();
+			if (separator == '&') {
+				m_mask = true;
+				continue;
+			}
+			if (separator == '|') {
+				m_mask = false;
+				result |= m_bitset;
+				m_bitset = {};
+				continue;
+			}
+			result |= m_bitset;
+			break;
+		}
+		return result;
+	}
+
+	template <typename Func>
+	void set(Func&& func) {
+		for (u32 i = 0; i < BitsetSize<Bitset>; i++) {
+			bool value = func(i);
+			if (m_negate) {
+				value = !value;
+			}
+			if (value) {
+				if (!m_mask) {
+					if constexpr (std::is_integral_v<Bitset> || std::is_enum_v<Bitset>) {
+						m_bitset = Bitset(u32(m_bitset) | (1 << i));
+					} else {
+						m_bitset[i] = true;
+					}
+				}
+			} else if (m_mask) {
+				if constexpr (std::is_integral_v<Bitset> || std::is_enum_v<Bitset>) {
+					m_bitset = Bitset(u32(m_bitset) & ~(1 << i));
+				} else {
+					m_bitset[i] = false;
+				}
+			}
+		}
+	}
+
+	void unwind_token() {
+		m_parser.unwind(m_marker);
+	}
+
+private:
+	Parser& m_parser;
+	Bitset m_bitset;
+	bool m_mask;
+	bool m_negate;
+	ParserMarker m_marker;
+};
+
+template <typename Bitset, typename Func>
+std::optional<Bitset> Parser::parse_bitset(Func&& callback) {
+	BitsetParser<Bitset> parser{*this};
+	return parser.parse(callback);
+}
+
 } // namespace trigger

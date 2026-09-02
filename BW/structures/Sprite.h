@@ -5,6 +5,7 @@
 #pragma pack(push, 1)
 
 struct Image;
+struct Unit;
 
 // Note: the flag number is chosen according to the value used in << flag operations, that's why it start with 0.
 namespace SpriteFlags
