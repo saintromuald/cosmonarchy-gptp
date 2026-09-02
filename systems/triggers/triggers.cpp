@@ -836,6 +836,14 @@ Registry g_triggers = Registry()
                         }
                     }
                 } break;
+                case OrderId::AttackUnit: {
+                    for (Unit* target_unit : g_unit_search.rect(target.area.box)) {
+                        if (target_unit) {
+                            unit->order_to(order_id, target_unit);
+                            break;
+                        }
+                    }
+                } break;
             }
         }
     })
