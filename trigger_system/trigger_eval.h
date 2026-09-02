@@ -206,12 +206,17 @@ public:
     bool evaluate_comment_actions() {
         bool has_commands = false;
         while (const auto command = m_parser.get_command()) {
-            if (sv_iequals(*command, "condition") || command->starts_with("#")) {
+            if (!has_commands && command->size() >= 1 && isupper((*command)[0])) {
+                // We treat upper case commands as non-crig comments, that way comments like "Kill all revealers" won't throw an error
+                // After we do recognize a command we can throw an error for unknown commands, since they are likely a typo
+                continue;
+            }
+            if (sv_iequals(*command, "condition")) {
                 continue;
             }
             const auto entry = m_registry.get_action(std::string{*command});
             if (!entry) {
-                // Note: We can't always error here, since not all comments are crigs
+                // We can't always error here, since not all comments are crigs
                 if (has_commands) {
                     error("Unknown action: {}", *command);
                 }

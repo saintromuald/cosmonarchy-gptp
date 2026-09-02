@@ -50,6 +50,21 @@ bool Parser::skip_spaces() {
 	return true;
 }
 
+void Parser::skip_all_whitespace() {
+	while (*m_at && is_any_space(*m_at)) {
+		++m_at;
+	}
+}
+
+void Parser::skip_to_next_line() {
+	while (*m_at && !is_newline(*m_at)) {
+		++m_at;
+	}
+	while (*m_at && is_newline(*m_at)) {
+		++m_at;
+	}
+}
+
 bool Parser::skip_non_word_chars() {
 	while (*m_at && !is_word_char(*m_at)) {
 		if (is_newline(*m_at)) {
@@ -173,20 +188,13 @@ std::optional<std::string_view> Parser::get_command() {
 	}
 
 	if (m_at == m_start) {
-		// Skip all whitespace
-        while (*m_at && is_any_space(*m_at)) {
-            ++m_at;
-        }
+		skip_all_whitespace();
 	} else {
-		// Skip to end of line
-		while (*m_at && !is_newline(*m_at)) {
-			++m_at;
-		}
-
-        // Skip newlines
-        while (*m_at && is_newline(*m_at)) {
-            ++m_at;
-        }
+		skip_to_next_line();
+	}
+	while (*m_at == '#') {
+		skip_to_next_line();
+		skip_spaces();
 	}
 
 	return get_word(true);
