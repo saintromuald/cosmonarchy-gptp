@@ -344,7 +344,7 @@ struct Unit : public UnitLayout {
     static Unit* get_unit_from_index(u16 index);
 
     // Returns the index of this unit in the unit table. First unit == index 1.
-    inline u16 get_unit_index() const;
+    u16 get_unit_index() const;
 
     // Returns the ID of the last player to own this unit. This is usually the same as Unit::player, but if the unit belongs to a defeated player,
     // this returns the correct player ID (instead of 11).
