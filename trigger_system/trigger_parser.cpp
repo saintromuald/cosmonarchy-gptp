@@ -8,7 +8,6 @@ using namespace magic_enum::bitwise_operators;
 
 namespace trigger {
 
-
 static bool is_any_space(char c) {
 	return isspace(c);
 }
@@ -41,12 +40,7 @@ std::string enum_name_to_snake_case(std::string_view name) {
 	return result;
 }
 
-void Parser::clear_token() {
-	m_token = {};
-}
-
 bool Parser::skip_spaces() {
-	clear_token();
 	while (*m_at && is_any_space(*m_at)) {
 		if (is_newline(*m_at)) {
 			return false;
@@ -57,7 +51,6 @@ bool Parser::skip_spaces() {
 }
 
 bool Parser::skip_non_word_chars() {
-	clear_token();
 	while (*m_at && !is_word_char(*m_at)) {
 		if (is_newline(*m_at)) {
 			return false;
