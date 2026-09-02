@@ -470,8 +470,9 @@ private:
 	std::optional<fp64> get_time_seconds_raw();
 
 	std::optional<std::string_view> eat_word();
-	bool skip_to_next_line();
 	bool skip_spaces();
+	void skip_all_whitespace();
+	void skip_to_next_line();
 	bool skip_non_word_chars();
 	bool get_negation();
 	char get_separator();
