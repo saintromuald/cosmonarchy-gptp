@@ -575,8 +575,8 @@ namespace hooks {
         user->id = trap_id;
 
         child->text = g_status_screen_info_button_unk[index];
-        if (!(child->flags & BinDlgFlags::Highlighted)) {
-            child->flags |= BinDlgFlags::Highlighted;
+        if (!(child->flags & DialogFlags::UpdateNeeded)) {
+            child->flags |= DialogFlags::UpdateNeeded;
             helper::update_dialog(child);
         }
         return 1;
