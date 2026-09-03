@@ -2888,6 +2888,10 @@ namespace SoundId {
         VicarOrderAggressive04                              = 4287,
 
         VicarAbilityUse01                                   = 4292,
+        
+        HelionWeaponfire01                                  = 4302,
+        HelionWeaponfire02                                  = 4303,
+        HelionWeaponfire03                                  = 4304,
     };
 }
 

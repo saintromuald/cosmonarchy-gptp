@@ -23,25 +23,6 @@ namespace hooks {
 		armor_pen += unit_ext.unit_vectors[UnitVectorManifolds].size();
 		armor_pen += unit_ext.unit_vectors[UnitVectorScepters].size();
 
-		// @TODO: Extend weapon ids and remove this
-		switch (unit->id) {
-			case UnitId::TerranCamazotz:      armor_pen -= 1; break;
-			case UnitId::ProtossRenesair:	  armor_pen += 1; break;
-			case UnitId::ZergZethalor:		  armor_pen -= 3; break;
-			case UnitId::ZergHydrokor:		  armor_pen += 2; break;
-			case UnitId::ZergRozirokor:		  armor_pen -= 3; break;
-			case UnitId::ZergAlzurokor:		  armor_pen += 2; break;
-			case UnitId::AskosiInsurant:      armor_pen += 3; break;
-			case UnitId::AskosiGhostwrit:     armor_pen -= 2; break;
-			case UnitId::AskosiElgird:        armor_pen -= 2; break;
-			case UnitId::AskosiHistrion:      armor_pen += 4; break;
-			case UnitId::AskosiAlacyne:       armor_pen += 2; break;
-			case UnitId::AskosiParaclete:     armor_pen += 1; break;
-			case UnitId::AskosiLimire:	      armor_pen += 2; break;
-			case UnitId::AskosiEndbore:	      armor_pen += 2; break;
-			case UnitId::AskosiTortare:	      armor_pen += 5; break;
-		}
-
 		return armor_pen;
 	}
 
@@ -49,41 +30,6 @@ namespace hooks {
 		Unit* unit = base_unit->is_subunit() ? base_unit->subunit : base_unit;
 		UnitExt& unit_ext = unit->ext();
 		fp32 cooldown{cooldown_param};
-
-		// @TODO: Extend weapon ids and remove this
-		switch (unit->id) {
-			case UnitId::TerranBroadsideTurret:		  cooldown /= 1.06fp; break;
-			case UnitId::TerranArquebus:			  cooldown *= 1.35fp; break;
-			case UnitId::TerranPhoenix:			      cooldown /= 1.50fp; break;
-			case UnitId::ProtossCicatus:		      cooldown /= 1.13fp; break;
-			case UnitId::ProtossVestige:			  cooldown /= 1.38fp; break;
-			case UnitId::ProtossRenesair:		      cooldown *= 1.10fp; break;
-			case UnitId::ProtossSimulacrumAstral:     cooldown /= 1.20fp; break;
-			case UnitId::ProtossGarantis:			  cooldown /= 1.50fp; break;
-			case UnitId::ZergHydrokor:			      cooldown /= 1.27fp; break;
-			case UnitId::ZergZoltorokor:			  cooldown /= 1.50fp; break;
-			case UnitId::ZergAlzurokor:			      cooldown /= 1.23fp; break;
-			case UnitId::AskosiAvatar:				  cooldown *= 3.00fp; break;
-			case UnitId::AskosiInsurant:		      cooldown /= 1.33fp; break;
-			case UnitId::AskosiSilversoul:		      cooldown *= 1.20fp; break;
-			case UnitId::AskosiGhostwrit:		      cooldown /= 1.45fp; break;
-			case UnitId::AskosiPhontis:		          cooldown *= 1.33fp; break;
-			case UnitId::AskosiZonguard: {
-				if (cooldown != 24fp) {
-					cooldown *= 1.56fp;
-				}
-			} break;
-			case UnitId::AskosiElgird:		          cooldown *= 1.10fp; break;
-			case UnitId::AskosiHistrion:	          cooldown /= 1.48fp; break;
-			case UnitId::AskosiAlacyne:		          cooldown *= 1.33fp; break;
-			case UnitId::AskosiIconoclast:		      cooldown /= 1.13fp; break;
-			case UnitId::AskosiParaclete:		      cooldown *= 1.33fp; break;
-			case UnitId::AskosiLimire:				  cooldown *= 1.50fp; break;
-			case UnitId::AskosiEndbore:				  cooldown *= 5.06fp; break;
-			case UnitId::AskosiTortare:				  cooldown *= 1.33fp; break;
-			case UnitId::ForerunnerFerrum:		      cooldown *= 1.33fp; break;
-			case UnitId::ForerunnerChalyb:		      cooldown *= 1.33fp; break;
-		}
 
 		// Stimpack
 		if (unit->stim_timer) {
@@ -238,11 +184,6 @@ namespace hooks {
 			case UnitId::AskosiMimic: {
 				cooldown /= weapons_dat::damage_factor[weapon_id];
 			} break;
-			case UnitId::AskosiZonguard: { // TODO: Extend weapons and remove this
-				if (weapon_id == WeaponId::GrandstandArteDriver) {
-					cooldown = 24;
-				}
-			}
 		}
 		return get_modified_cooldown(unit, cooldown, true);
 	}

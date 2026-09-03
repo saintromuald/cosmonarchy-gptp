@@ -2286,11 +2286,11 @@ namespace hooks {
             case UnitId::AskosiZonguard: {
                 // Zonguard - Forward March
                 if (!unit->ground_weapon_cooldown && !unit->ground_weapon_cooldown && unit->can_attack_transport_checks()) {
-                    if (fire_multiple(unit, WeaponId::GrandstandArteDriver, 1, FilterEnemy, {})) {
+                    if (fire_multiple(unit, WeaponId::ZonguardAgturrikBeaststick, 1, FilterEnemy, {})) {
                         unit->sprite->create_top_overlay(ImageId::DurendalWeaponfireOverlay);
-                        bw::play_sound({SoundId::GrandstandWeaponfire01, SoundId::GrandstandWeaponfire03}, unit->position);
-                        unit->ground_weapon_cooldown = hooks::get_modified_weapon_cooldown(unit, WeaponId::GrandstandArteDriver);
-                        unit->air_weapon_cooldown = hooks::get_modified_weapon_cooldown(unit, WeaponId::GrandstandArteDriver);
+                        bw::play_sound({SoundId::GrandstandWeaponfire01, SoundId::GrandstandWeaponfire03}, unit->position); // TODO: Own weaponfire SFX
+                        unit->ground_weapon_cooldown = hooks::get_modified_weapon_cooldown(unit, WeaponId::ZonguardAgturrikBeaststick);
+                        unit->air_weapon_cooldown = hooks::get_modified_weapon_cooldown(unit, WeaponId::ZonguardAgturrikBeaststick);
                     }
                 }
                 unit->cast_preylock();

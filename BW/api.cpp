@@ -2523,35 +2523,6 @@ GuardAi* create_guard_ai(u32 player, u32 unit_id, v2u16 position) {
 // Returns the special damage multiplier factor for units that don't use the "Damage Factor" property in weapons.dat.
 u8 get_damage_factor_for_tooltip(WeaponId::Enum weapon_id, Unit* unit) {
     switch (weapon_id) {
-        // @TODO: Extend weapon ids and remove these
-        case WeaponId::KethrostalorStaggeredSpores: {
-            return unit->id == UnitId::ZergKethrostalor ? 5 : 1;
-        }
-        case WeaponId::CrematoriumOkliQuadshard: {
-            switch (unit->id) {
-                case UnitId::AskosiAvatar:  return 1;
-                case UnitId::AskosiEndbore: return 8;
-            }
-            return 4;
-        }
-        case WeaponId::PanoptusPlasmaMissiles: {
-            return unit->id == UnitId::ProtossPathlight ? 4 : 2;
-        }
-        case WeaponId::ThaumalogueUtsoCarbine: {
-            return unit->id == UnitId::AskosiSilversoul ? 3 : 1;
-        }
-        case WeaponId::RoveElreScaleshot: {
-            if (unit->id == UnitId::AskosiAlacyne) {
-                return 6;
-            }
-            return 1;
-        }
-        case WeaponId::HelionUskoScrapray: {
-            if (unit->id == UnitId::AskosiLimire) {
-                return 3;
-            }
-            return 1;
-        }
         case WeaponId::HotshotDispatchShotgun:
         case WeaponId::SirenCharybdalRifle: {
             return 3;
@@ -2582,14 +2553,6 @@ u8 get_damage_factor_for_tooltip(WeaponId::Enum weapon_id, Unit* unit) {
         case WeaponId::MissionaryAruoTwinshot:
         case WeaponId::VicarOspoTwinshard: {
             return 2;
-        }
-        case WeaponId::IntendentErsaDriver: {
-            switch (unit->id) {
-                case UnitId::AskosiPhontis:      return 2;
-                case UnitId::AskosiTortare:      return 1;
-                case UnitId::ForerunnerCircitor: return 1;
-            }
-            return 1;
         }
         case WeaponId::StarSovereignInterventionMissiles: {
             return 1;
@@ -4127,24 +4090,6 @@ u32 get_unit_weapon_fire_sound(Unit* unit, WeaponId::Enum weapon_id) {
     switch (unit->id) {
         case UnitId::TerranSavantEntropyGauntlets: return bw::rand_between(SoundId::SavantEntropyFire01, SoundId::SavantEntropyFire05);
         case UnitId::TerranSavantPowerSiphon:      return bw::rand_between(SoundId::SavantSiphonFire01, SoundId::SavantSiphonFire05);
-
-        // @TOOD: Extend weapons and remove these
-        case UnitId::ProtossZealot:                return SoundId::ZealotWeaponhit01;
-        case UnitId::ProtossZealotStarbound:       return SoundId::ZealotStarboundWeaponhit01;
-        case UnitId::ProtossCicatus:               return bw::rand_between(SoundId::CicatusWeaponfire01, SoundId::CicatusWeaponfire03);
-        case UnitId::ProtossEcclesiast:	           return bw::rand_between(SoundId::EcclesiastWeaponfire01, SoundId::EcclesiastWeaponfire04);
-        case UnitId::ProtossEcclesiastKhalendric:  return bw::rand_between(SoundId::EcclesiastKhalendricWeaponfire01, SoundId::EcclesiastKhalendricWeaponfire03);
-        case UnitId::ProtossManifold:              return bw::rand_between(SoundId::ManifoldWeaponfire01, SoundId::ManifoldWeaponfire03);
-        case UnitId::ProtossManifoldStarbound:     return bw::rand_between(SoundId::ManifoldStarboundWeaponfire01, SoundId::ManifoldStarboundWeaponfire04);
-        case UnitId::AskosiAvatar:                 return bw::rand_between(SoundId::AvatarWeaponfire01, SoundId::AvatarWeaponfire03);
-        case UnitId::AskosiGhostwrit:              return bw::rand_between(SoundId::GhostwritWeaponfire01, SoundId::GhostwritWeaponfire03);
-        case UnitId::AskosiIntendent:              return bw::rand_between(SoundId::IntendentWeaponfireA01, SoundId::IntendentWeaponfireA03);
-        case UnitId::AskosiAgonist:                return bw::rand_between(SoundId::AgonistWeaponfire01, SoundId::AgonistWeaponfire03);
-        case UnitId::AskosiPhontis:                return bw::rand_between(SoundId::PhontisWeaponfire01, SoundId::PhontisWeaponfire03);
-        case UnitId::AskosiHistrion:               return bw::rand_between(SoundId::HistrionWeaponfire01, SoundId::HistrionWeaponfire03);
-        case UnitId::AskosiAkreno:                 return bw::rand_between(SoundId::AkrenoWeaponfire01, SoundId::AkrenoWeaponfire03);
-        case UnitId::AskosiCrematorium:            return bw::rand_between(SoundId::CrematoriumWeaponfire01, SoundId::CrematoriumWeaponfire03);
-        case UnitId::AskosiEndbore:                return bw::rand_between(SoundId::EndboreWeaponfire01, SoundId::EndboreWeaponfire04);
     }
     if (!sound_id) {
         sound_id = get_weapon_fire_sound(weapon_id, unit);
@@ -4154,110 +4099,81 @@ u32 get_unit_weapon_fire_sound(Unit* unit, WeaponId::Enum weapon_id) {
 
 u32 get_weapon_fire_sound(WeaponId::Enum weapon_id, Unit* unit) {
     switch (weapon_id) {
-        case WeaponId::MaverickGaussRifle:                  return SoundId::Bullet_TMaFir00_wav;
-        case WeaponId::MaverickFuturistGaussSlugger:        return bw::rand_between(SoundId::MaverickFuturistWeaponfire01, SoundId::MaverickFuturistWeaponfire03);
-        case WeaponId::HotshotDispatchShotgun:              return bw::rand_between(SoundId::HotshotWeaponfire01, SoundId::HotshotWeaponfire02);
-        case WeaponId::CannibalZuluSidekicks:               return bw::rand_between(SoundId::CannibalWeaponfire01, SoundId::CannibalWeaponfire04);
-        case WeaponId::EidolonCoronerRifle:                 return bw::rand_between(SoundId::EidolonWeaponfire01, SoundId::EidolonWeaponfire03);
-        case WeaponId::EidolonNydusRevenantRifle:           return bw::rand_between(SoundId::EidolonNydusWeaponfire01, SoundId::EidolonNydusWeaponfire05);
-        case WeaponId::MadcapDanannAutogun:                 return bw::rand_between(SoundId::MadcapWeaponfire01, SoundId::MadcapWeaponfire05);;
-        case WeaponId::OlympianMountainGun: {
-            // TODO: Extend weapons and remove this. -Pr0nogo
-            if (unit->id == UnitId::AskosiElgird) {
-                return bw::rand_between(SoundId::ElgirdWeaponfire01, SoundId::ElgirdWeaponfire04);
-            }
-            return SoundId::None;
-        }
-        case WeaponId::HeraclesJavelinCannons: {
-            // TODO: Extend weapons and remove this. -Pr0nogo
-            if (unit->id == UnitId::AskosiInsurant) {
-                return bw::rand_between(SoundId::InsurantWeaponfire01, SoundId::InsurantWeaponfire03);
-            }
-            return SoundId::None;
-        }
-        case WeaponId::BlackguardAsoniCarbine:              return bw::rand_between(SoundId::BlackguardWeaponfire01, SoundId::BlackguardWeaponfire04);;
-        case WeaponId::ApostleCharonRifle:                  return bw::rand_between(SoundId::ApostleWeaponfire01, SoundId::ApostleWeaponfire05);;
-        case WeaponId::CyclopsFuturistFlakCannons:          return bw::rand_between(SoundId::CyclopsWeaponfireFuturist01, SoundId::CyclopsWeaponfireFuturist02);
-        case WeaponId::TiangouMoonboundSalvo:               return bw::rand_between(SoundId::TiangouWeaponfire01, SoundId::TiangouWeaponfire05);
-        case WeaponId::ValkyrieHaloRockets:                 return SoundId::Bullet_Tfrshoot_wav;
-        case WeaponId::ValkyrieHecatonLogiRockets:          return bw::rand_between(SoundId::ValkyrieHecatonWeaponfire01, SoundId::ValkyrieHecatonWeaponfire04);
-        case WeaponId::QuadrigaGodhandRockets: {
-            if (unit->id == UnitId::TerranQuadriga) {
-                return SoundId::Bullet_Tfrshoot_wav;
-            }
-            if (unit->id == UnitId::ForerunnerExigo) {
-                return bw::rand_between(SoundId::ExigoWeaponfire01, SoundId::ExigoWeaponfire04);
-            }
-        }
-        case WeaponId::GorgonArtificeBattery: {
-            if (unit->id == UnitId::TerranGorgon) {
-                return bw::rand_between(SoundId::GorgonWeaponfire01, SoundId::GorgonWeaponfire02);
-            }
-            // TODO: Extend weapons and remove this. -Pr0nogo
-            return bw::rand_between(SoundId::FerrumWeaponfire01, SoundId::FerrumWeaponfire03);
-        }
+        case WeaponId::MaverickGaussRifle:                   return SoundId::Bullet_TMaFir00_wav;
+        case WeaponId::MaverickFuturistGaussSlugger:         return bw::rand_between(SoundId::MaverickFuturistWeaponfire01, SoundId::MaverickFuturistWeaponfire03);
+        case WeaponId::HotshotDispatchShotgun:               return bw::rand_between(SoundId::HotshotWeaponfire01, SoundId::HotshotWeaponfire02);
+        case WeaponId::CannibalZuluSidekicks:                return bw::rand_between(SoundId::CannibalWeaponfire01, SoundId::CannibalWeaponfire04);
+        case WeaponId::EidolonCoronerRifle:                  return bw::rand_between(SoundId::EidolonWeaponfire01, SoundId::EidolonWeaponfire03);
+        case WeaponId::EidolonNydusRevenantRifle:            return bw::rand_between(SoundId::EidolonNydusWeaponfire01, SoundId::EidolonNydusWeaponfire05);
+        case WeaponId::MadcapDanannAutogun:                  return bw::rand_between(SoundId::MadcapWeaponfire01, SoundId::MadcapWeaponfire05);;
+        case WeaponId::BlackguardAsoniCarbine:               return bw::rand_between(SoundId::BlackguardWeaponfire01, SoundId::BlackguardWeaponfire04);;
+        case WeaponId::ApostleCharonRifle:                   return bw::rand_between(SoundId::ApostleWeaponfire01, SoundId::ApostleWeaponfire05);;
+        case WeaponId::CyclopsFuturistFlakCannons:           return bw::rand_between(SoundId::CyclopsWeaponfireFuturist01, SoundId::CyclopsWeaponfireFuturist02);
+        case WeaponId::TiangouMoonboundSalvo:                return bw::rand_between(SoundId::TiangouWeaponfire01, SoundId::TiangouWeaponfire05);
+        case WeaponId::ValkyrieHaloRockets:                  return SoundId::Bullet_Tfrshoot_wav;
+        case WeaponId::ValkyrieHecatonLogiRockets:           return bw::rand_between(SoundId::ValkyrieHecatonWeaponfire01, SoundId::ValkyrieHecatonWeaponfire04);
+        case WeaponId::QuadrigaGodhandRockets:               return SoundId::Bullet_Tfrshoot_wav;
+        case WeaponId::GorgonArtificeBattery:                return bw::rand_between(SoundId::GorgonWeaponfire01, SoundId::GorgonWeaponfire02);
 
-        case WeaponId::LegionnairePhaseSpear:	            return SoundId::LegionnaireWeaponfire01;
-        case WeaponId::HierophantPhaseSignifier:	        return bw::rand_between(SoundId::HierophantWeaponfire01, SoundId::HierophantWeaponfire02);
-        case WeaponId::AshguardPhaseCremator:	            return bw::rand_between(SoundId::AshguardWeaponfire01, SoundId::AshguardWeaponfire05);
-        case WeaponId::CharlatanFerventBlaster:	            return bw::rand_between(SoundId::CharlatanWeaponfire01, SoundId::CharlatanWeaponfire03);
-        case WeaponId::OscilliantRotatingRay:	            return bw::rand_between(SoundId::OscilliantWeaponfire01, SoundId::OscilliantWeaponfire05);
-        case WeaponId::UnarAutonomousRay:	                return bw::rand_between(SoundId::UnarWeaponfire01, SoundId::UnarWeaponfire05);
-        case WeaponId::VibranceSensoryOverload:	            return bw::rand_between(SoundId::VibranceWeaponfire01, SoundId::VibranceWeaponfire05);
-        case WeaponId::DemiurgeGalacticWeaver:	            return bw::rand_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03);
-        case WeaponId::AnalogueCylindricalBlaster:	        return bw::rand_between(SoundId::AnalogueWeaponfire01, SoundId::AnalogueWeaponfire03);
-        case WeaponId::AuroraPhotonBlasters:                return SoundId::Bullet_BlastGn2_wav;
-        case WeaponId::ExtatusRepeatingBlaster:             return bw::rand_between(SoundId::ExtatusWeaponfire01, SoundId::ExtatusWeaponfire03);
-        case WeaponId::StarSovereignCelestialCannon: {
-            if (unit->id == UnitId::ProtossStarSovereign) {
-                return bw::rand_between(SoundId::StarSovereignWeaponfire01, SoundId::StarSovereignWeaponfire04);
-            }
-            // TODO: Extend weapons and remove this. -Pr0nogo
-            return bw::rand_between(SoundId::VicereWeaponfire01, SoundId::VicereWeaponfire02);
-        }
+        case WeaponId::ZealotPhaseBlades:                    return SoundId::ZealotWeaponhit01;
+        case WeaponId::ZealotStarboundPhaseBlades:           return SoundId::ZealotStarboundWeaponhit01;
+        case WeaponId::EcclesiastAstralBlaster:              return bw::rand_between(SoundId::EcclesiastWeaponfire01, SoundId::EcclesiastWeaponfire04);
+        case WeaponId::EcclesiastKhalendricAscendingBlaster: return bw::rand_between(SoundId::EcclesiastKhalendricWeaponfire01, SoundId::EcclesiastKhalendricWeaponfire03);
+        case WeaponId::LegionnairePhaseSpear:	             return SoundId::LegionnaireWeaponfire01;
+        case WeaponId::CicatusPhaseClaws:                    return bw::rand_between(SoundId::CicatusWeaponfire01, SoundId::CicatusWeaponfire03);
+        case WeaponId::HierophantPhaseSignifier:	         return bw::rand_between(SoundId::HierophantWeaponfire01, SoundId::HierophantWeaponfire02);
+        case WeaponId::AshguardPhaseCremator:	             return bw::rand_between(SoundId::AshguardWeaponfire01, SoundId::AshguardWeaponfire05);
+        case WeaponId::CharlatanFerventBlaster:	             return bw::rand_between(SoundId::CharlatanWeaponfire01, SoundId::CharlatanWeaponfire03);
+        case WeaponId::ManifoldPhaseBlaster:                 return bw::rand_between(SoundId::ManifoldWeaponfire01, SoundId::ManifoldWeaponfire03);
+        case WeaponId::ManifoldStarboundReactiveBlaster:     return bw::rand_between(SoundId::ManifoldStarboundWeaponfire01, SoundId::ManifoldStarboundWeaponfire04);
+        case WeaponId::OscilliantRotatingRay:	             return bw::rand_between(SoundId::OscilliantWeaponfire01, SoundId::OscilliantWeaponfire05);
+        case WeaponId::UnarAutonomousRay:	                 return bw::rand_between(SoundId::UnarWeaponfire01, SoundId::UnarWeaponfire05);
+        case WeaponId::VibranceSensoryOverload:	             return bw::rand_between(SoundId::VibranceWeaponfire01, SoundId::VibranceWeaponfire05);
+        case WeaponId::DemiurgeGalacticWeaver:	             return bw::rand_between(SoundId::DemiurgeWeaponfire01, SoundId::DemiurgeWeaponfire03);
+        case WeaponId::AnalogueCylindricalBlaster:	         return bw::rand_between(SoundId::AnalogueWeaponfire01, SoundId::AnalogueWeaponfire03);
+        case WeaponId::AuroraPhotonBlasters:                 return SoundId::Bullet_BlastGn2_wav;
+        case WeaponId::ExtatusRepeatingBlaster:              return bw::rand_between(SoundId::ExtatusWeaponfire01, SoundId::ExtatusWeaponfire03);
+        case WeaponId::StarSovereignCelestialCannon:         return bw::rand_between(SoundId::StarSovereignWeaponfire01, SoundId::StarSovereignWeaponfire04);
 
-        case WeaponId::QuaziliskAcridBarbs:                 return bw::rand_between(SoundId::QuaziliskWeaponfire01, SoundId::QuaziliskWeaponfire03);
-        case WeaponId::QuazrokorQuazrokSpray:               return bw::rand_between(SoundId::QuazrokorWeaponfire01, SoundId::QuazrokorWeaponfire01);
-        case WeaponId::HydraliskNeedleSpines:               return SoundId::Bullet_SpoogHit_wav;
-        case WeaponId::HydraliskOrkotiNeedleSpores:         return bw::rand_between(SoundId::HydraliskOrkotiWeaponfire01, SoundId::HydraliskOrkotiWeaponfire03);
-        case WeaponId::KethrostalorStaggeredSpores:         return bw::rand_between(SoundId::KethrostalorWeaponfire01, SoundId::KethrostalorWeaponfire03);
+        case WeaponId::QuaziliskAcridBarbs:                  return bw::rand_between(SoundId::QuaziliskWeaponfire01, SoundId::QuaziliskWeaponfire03);
+        case WeaponId::QuazrokorQuazrokSpray:                return bw::rand_between(SoundId::QuazrokorWeaponfire01, SoundId::QuazrokorWeaponfire01);
+        case WeaponId::ZethalorSpewingSpores:                return bw::rand_between(SoundId::KethrostalorWeaponfire01, SoundId::KethrostalorWeaponfire03); // TODO: Own weaponfire
+        case WeaponId::HydraliskNeedleSpines:                return SoundId::Bullet_SpoogHit_wav;
+        case WeaponId::HydraliskOrkotiNeedleSpores:          return bw::rand_between(SoundId::HydraliskOrkotiWeaponfire01, SoundId::HydraliskOrkotiWeaponfire03);
+        case WeaponId::KethrostalorStaggeredSpores:          return bw::rand_between(SoundId::KethrostalorWeaponfire01, SoundId::KethrostalorWeaponfire03);
 
-        case WeaponId::GrandstandArteDriver:                return bw::rand_between(SoundId::GrandstandWeaponfire01, SoundId::GrandstandWeaponfire03);
-        case WeaponId::PilgrimMiningSaber:                  return bw::rand_between(SoundId::PilgrimWeaponfire01, SoundId::PilgrimWeaponfire04);
-        case WeaponId::ProselyteDispatchPistols:            return bw::rand_between(SoundId::ProselyteWeaponfire01, SoundId::ProselyteWeaponfire04);
-        case WeaponId::MissionaryAruoTwinshot:              return bw::rand_between(SoundId::MissionaryWeaponfire01, SoundId::MissionaryWeaponfire03);
-        case WeaponId::VicarOspoTwinshard:                  return bw::rand_between(SoundId::VicarWeaponfire01, SoundId::VicarWeaponfire03);
-        case WeaponId::AphoristAnsaSunshot:                 return bw::rand_between(SoundId::AphoristWeaponfire01, SoundId::AphoristWeaponfire03);
-        case WeaponId::ThaumalogueUtsoCarbine: {
-            if (unit->id == UnitId::AskosiSilversoul) {
-                return bw::rand_between(SoundId::SilversoulWeaponfire01, SoundId::SilversoulWeaponfire03);
-            }
-            // TODO: Extend weapons and remove this. -Pr0nogo
-            return bw::rand_between(SoundId::ThaumalogueWeaponfire01, SoundId::ThaumalogueWeaponfire03);
-        }
-        case WeaponId::RoveElreScaleshot: {
-            if (unit->id == UnitId::AskosiAlacyne) {
-                return bw::rand_between(SoundId::AlacyneWeaponfire01, SoundId::AlacyneWeaponfire03);
-            }
-            // TODO: Extend weapons and remove this. -Pr0nogo
-            return bw::rand_between(SoundId::RoveWeaponfire01, SoundId::RoveWeaponfire03);
-        }
-        case WeaponId::IntendentErsaDriver: {
-            switch (unit->id) {
-                case UnitId::AskosiPhontis: return bw::rand_between(SoundId::PhontisWeaponfire01, SoundId::PhontisWeaponfire03);
-                case UnitId::AskosiTortare: return bw::rand_between(SoundId::TortareWeaponfire01, SoundId::TortareWeaponfire03);
-            }
-            return bw::rand_between(SoundId::IntendentWeaponfireA01, SoundId::IntendentWeaponfireA03);
-        }
-        case WeaponId::HelionUskoScrapray: {
-            switch (unit->id) {
-                case UnitId::AskosiLimire: return bw::rand_between(SoundId::LimireWeaponfire01, SoundId::LimireWeaponfire03);
-            }
-            return SoundId::None; // TODO: Helion weaponfire SFX
-        }
-        case WeaponId::TiradeIktaDriver:                    return bw::rand_between(SoundId::TiradeWeaponfire01, SoundId::TiradeWeaponfire03);
+        case WeaponId::GrandstandArteDriver:                 return bw::rand_between(SoundId::GrandstandWeaponfire01, SoundId::GrandstandWeaponfire03);
+        case WeaponId::PilgrimMiningSaber:                   return bw::rand_between(SoundId::PilgrimWeaponfire01, SoundId::PilgrimWeaponfire04);
+        case WeaponId::ProselyteDispatchPistols:             return bw::rand_between(SoundId::ProselyteWeaponfire01, SoundId::ProselyteWeaponfire04);
+        case WeaponId::MissionaryAruoTwinshot:               return bw::rand_between(SoundId::MissionaryWeaponfire01, SoundId::MissionaryWeaponfire03);
+        case WeaponId::VicarOspoTwinshard:                   return bw::rand_between(SoundId::VicarWeaponfire01, SoundId::VicarWeaponfire03);
+        case WeaponId::AphoristAnsaSunshot:                  return bw::rand_between(SoundId::AphoristWeaponfire01, SoundId::AphoristWeaponfire03);
+        case WeaponId::ThaumalogueUtsoCarbine:               return bw::rand_between(SoundId::ThaumalogueWeaponfire01, SoundId::ThaumalogueWeaponfire03);
+        case WeaponId::AvatarReformingCarbine:               return bw::rand_between(SoundId::AvatarWeaponfire01, SoundId::AvatarWeaponfire03);
+        case WeaponId::InsurantElxeTwinshot:                 return bw::rand_between(SoundId::InsurantWeaponfire01, SoundId::InsurantWeaponfire03);
+        case WeaponId::SilversoulOlduTripshard:              return bw::rand_between(SoundId::SilversoulWeaponfire01, SoundId::SilversoulWeaponfire03);
+        case WeaponId::GhostwritOndoMoonbeam:                return bw::rand_between(SoundId::GhostwritWeaponfire01, SoundId::GhostwritWeaponfire03);
+        case WeaponId::RoveElreScaleshot:                    return bw::rand_between(SoundId::RoveWeaponfire01, SoundId::RoveWeaponfire03);
+        case WeaponId::IntendentErsaDriver:                  return bw::rand_between(SoundId::IntendentWeaponfireA01, SoundId::IntendentWeaponfireA03);
+        case WeaponId::AgonistOnlaDrivers:                   return bw::rand_between(SoundId::AgonistWeaponfire01, SoundId::AgonistWeaponfire03);
+        case WeaponId::PhontisAlruDriver:                    return bw::rand_between(SoundId::PhontisWeaponfire01, SoundId::PhontisWeaponfire03);
+        case WeaponId::ElgirdArdiTripshot:                   return bw::rand_between(SoundId::ElgirdWeaponfire01, SoundId::ElgirdWeaponfire04);
+        case WeaponId::HistrionEmtoMoonbeam:                 return bw::rand_between(SoundId::HistrionWeaponfire01, SoundId::HistrionWeaponfire03);
+        case WeaponId::AlacyneInqoScaleshot:                 return bw::rand_between(SoundId::AlacyneWeaponfire01, SoundId::AlacyneWeaponfire03);
+        case WeaponId::HelionUskoScrapray:                   return bw::rand_between(SoundId::HelionWeaponfire01, SoundId::HelionWeaponfire03);
+        case WeaponId::TiradeIktaDriver:                     return bw::rand_between(SoundId::TiradeWeaponfire01, SoundId::TiradeWeaponfire03);
+        case WeaponId::AkrenoBioticWingblades:               return bw::rand_between(SoundId::AkrenoWeaponfire01, SoundId::AkrenoWeaponfire03);
+        case WeaponId::CrematoriumOkliQuadshard:             return bw::rand_between(SoundId::CrematoriumWeaponfire01, SoundId::CrematoriumWeaponfire03);
+        case WeaponId::LimireOfraAshray:                     return bw::rand_between(SoundId::LimireWeaponfire01, SoundId::LimireWeaponfire03);
+        case WeaponId::EndboreIrkoOctorshard:                return bw::rand_between(SoundId::EndboreWeaponfire01, SoundId::EndboreWeaponfire04);
+        case WeaponId::TortareKalgolokBeaststick:            return bw::rand_between(SoundId::TortareWeaponfire01, SoundId::TortareWeaponfire03);
 
-        case WeaponId::SmoochieBoyKissingEmoji:             return bw::rand_between(SoundId::SmoochieBoyWeaponfire01, SoundId::SmoochieBoyWeaponfire03);
+        case WeaponId::SmoochieBoyKissingEmoji:              return bw::rand_between(SoundId::SmoochieBoyWeaponfire01, SoundId::SmoochieBoyWeaponfire03);
+        case WeaponId::FerrumSentinelBeam:                   return bw::rand_between(SoundId::FerrumWeaponfire01, SoundId::FerrumWeaponfire03);
+        case WeaponId::ChalybSentinelBeam:                   return bw::rand_between(SoundId::FerrumWeaponfire01, SoundId::FerrumWeaponfire03);
+        case WeaponId::CircitorSentinelBoltbeam:             return bw::rand_between(SoundId::FerrumWeaponfire01, SoundId::FerrumWeaponfire03);
+        case WeaponId::ExigoEnforcerRiftRockets:             return bw::rand_between(SoundId::ExigoWeaponfire01, SoundId::ExigoWeaponfire04);
+        case WeaponId::VicereChampionStormbeam:              return bw::rand_between(SoundId::VicereWeaponfire01, SoundId::VicereWeaponfire02);
     }
     return SoundId::None;
 }
@@ -4274,13 +4190,6 @@ u32 get_weapon_hit_sound(WeaponId::Enum weapon_id, Unit* unit) {
         case WeaponId::PenumbraErebolShockCannon:         return bw::rand_between(SoundId::PenumbraWeaponhit01, SoundId::PenumbraWeaponhit02);
         case WeaponId::ClaymoreHarpoonRailgun:            return SoundId::Bullet_LASRHIT3_wav;
         case WeaponId::WraithBurstLasers:                 return SoundId::Bullet_LASRHIT3_wav;
-        case WeaponId::GorgonArtificeBattery: {
-            if (unit->id == UnitId::TerranGorgon) {
-                return SoundId::None;
-            }
-            // TODO: Extend weapons and remove this. -Pr0nogo
-            return bw::rand_between(SoundId::FerrumWeaponhit01, SoundId::FerrumWeaponhit04);
-        }
         case WeaponId::WyvernJacksonCannon:               return SoundId::Bullet_LASRHIT3_wav;
         case WeaponId::MinotaurAsterionLaserBattery:      return SoundId::Bullet_LASRHIT3_wav;
         case WeaponId::MagnetarNewtonianShockCannon:      return SoundId::Bullet_LASRHIT3_wav;
@@ -4300,6 +4209,7 @@ u32 get_weapon_hit_sound(WeaponId::Enum weapon_id, Unit* unit) {
 
         case WeaponId::RililiskSwarmingSpores:            return SoundId::Bullet_ZLuHit00_wav;
         case WeaponId::SovrokorSovrolClaws:               return bw::rand_between(SoundId::SovrokorWeaponhit01, SoundId::SovrokorWeaponhit03);
+        case WeaponId::ZethalorSpewingSpores:             return bw::rand_between(SoundId::KethrostalorWeaponhit01, SoundId::KethrostalorWeaponhit05); // TODO: Own weaponhit SFX
         case WeaponId::LiiraliskHomingSpore:              return SoundId::Bullet_ZLuHit00_wav;
         case WeaponId::ProtathalorPungentSpores:          return bw::rand_between(SoundId::ProtathalorWeaponhit01, SoundId::ProtathalorWeaponhit04);
         case WeaponId::NathreliskSignalingSpores:         return SoundId::Bullet_ZLuHit00_wav;

@@ -10,6 +10,7 @@
 #include "hooks/interface/weapon_armor_tooltip.h"
 #include "hooks/interface/uifeatures/hotkeys.h"
 #include "hooks/interface/console/console.h"
+#include "DatExtend/datext.h"
 
 #include <ranges>
 
@@ -120,7 +121,7 @@ namespace hooks {
                                 index++;
                             } break;
                             case UnitId::AskosiZonguard: {
-                                helper::stats_weapon_level(dialog, index, WeaponId::GrandstandArteDriver);
+                                helper::stats_weapon_level(dialog, index, WeaponId::ZonguardAgturrikBeaststick);
                                 index++;
                             } break;
                         }
@@ -564,18 +565,18 @@ namespace hooks {
         }
         helper::show_dialog(child);
         helper::disable_dialog(child);
+        u16 trap_id = bw::get_trap_id(unit);
         StatusScreenState* user = child->stat_button_user;
         GrpHead* grp = g_cmdicons_grp;
         child->graphic = get_stat_icon_graphic(unit->mine_carrier.mine_count);
-        user->button_grp = g_cmdicons_grp;
-        user->grp_frame = 13;
+        user->button_grp = DatExt::g_unit_icons;
+        user->grp_frame = trap_id;
         user->type = 3;
-        user->id = 13;
+        user->id = trap_id;
 
-        auto flags = child->flags;
         child->text = g_status_screen_info_button_unk[index];
-        if (!(flags & DialogFlags::UpdateNeeded)) {
-            child->flags = flags | DialogFlags::UpdateNeeded;
+        if (!(child->flags & BinDlgFlags::Highlighted)) {
+            child->flags |= BinDlgFlags::Highlighted;
             helper::update_dialog(child);
         }
         return 1;

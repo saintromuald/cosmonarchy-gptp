@@ -703,13 +703,9 @@ namespace hooks {
                             bw::astral_blessing_proc(unit, unit->player, weapon_id);
                         }
                     } break;
-                    case WeaponId::ManifoldPhaseBlaster: {
-                        if (unit->id == UnitId::ProtossManifoldStarbound) {
-                            // Multi-Attack III
-                            fire_multiple(unit, weapon_id, 3, FilterEnemy, {});
-                        } else {
-                            fire_bullet(unit, weapon_id, weapon_target);
-                        }
+                    case WeaponId::ManifoldStarboundReactiveBlaster: {
+                        // Multi-Attack III
+                        fire_multiple(unit, weapon_id, 3, FilterEnemy, {});
                     } break;
                     case WeaponId::VibranceSensoryOverload: {
                         bool attacked = false;
@@ -754,15 +750,7 @@ namespace hooks {
                     case WeaponId::IzirokorEnergizedBioplasma:
                     case WeaponId::KonviliskSowingSpines: {
                         // Crushing Tide - Tosgrilisk, Izirokor, Konvilisk
-                        if (unit->id == UnitId::BloodsummonThrombocyte) {
-                            Bullet* bullet = fire_bullet(unit, weapon_id, weapon_target);
-                            if (unit->has_coagulation()) {
-                                BulletExt* bullet_ext = get_bullet_ext(bullet);
-                                bullet_ext->heals_allies = true;
-                            }
-                        } else {
-                            fire_multiple(unit, weapon_id, 3, FilterEnemy, {});
-                        }
+                        fire_multiple(unit, weapon_id, 3, FilterEnemy, {});
                     } break;
                     case WeaponId::CherbrathalorVenemousBursts: {
                         // Crushing Tide - Cherbrathalor
@@ -787,6 +775,7 @@ namespace hooks {
                         g_iquare_globals->create_effect(EffectId::VilgolethHeal, 2 * 24, unit->position, 64, SpriteId::CausticDischarge, unit->sprite->elevation - 1, unit->player, unit);
                         fire_bullet(unit, weapon_id, weapon_target);
                     } break;
+                    case WeaponId::ZethalorSpewingSpores:
                     case WeaponId::KethrostalorStaggeredSpores: {
                         Bullet* bullet = fire_bullet(unit, weapon_id, weapon_target);
                         BulletExt* bullet_ext = get_bullet_ext(bullet);
@@ -814,6 +803,13 @@ namespace hooks {
                         //  });
                         } else {
                             fire_bullet(unit, weapon_id, weapon_target);
+                        }
+                    } break;
+                    case WeaponId::ThrombocyteReactiveCells: {
+                        Bullet* bullet = fire_bullet(unit, weapon_id, weapon_target);
+                        if (unit->has_coagulation()) {
+                            BulletExt* bullet_ext = get_bullet_ext(bullet);
+                            bullet_ext->heals_allies = true;
                         }
                     } break;
                     default: {
@@ -1248,6 +1244,7 @@ namespace hooks {
                             SpriteId::GladiusBindingPlasmaOverlay, bullet->sprite ? bullet->sprite->elevation : 0, bullet->player, 0);
                     }
                 } break;
+                case WeaponId::ZethalorSpewingSpores:
                 case WeaponId::KethrostalorStaggeredSpores: {
                     BulletExt* bullet_ext = get_bullet_ext(bullet);
                     Unit* cargo = bullet_ext->cargo;
@@ -1308,10 +1305,6 @@ namespace hooks {
             bool is_binding_plasma = WeaponId::bounces_binding_plasma(static_cast<WeaponId::Enum>(bullet_ext->weapon_id));
             if (is_binding_plasma) {
                 next_bounce = 1;
-            }
-            if (bullet->source_unit && bullet->source_unit->id == UnitId::BloodsummonThrombocyte) {
-                next_bounce = 0;
-                bullet->remaining_bounces = 0;
             }
             bullet->remaining_bounces = next_bounce;
             g_iquare_globals->bounce_bullet = bullet;

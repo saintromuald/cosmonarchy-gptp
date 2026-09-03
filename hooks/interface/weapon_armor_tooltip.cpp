@@ -73,7 +73,7 @@ const char* get_damage_tootlip_string(WeaponId::Enum weapon_id, Unit* unit, u16 
 	bool in_replay_or_witness = g_globals->players[g_local_nation_id].witness_mode || g_is_in_replay;
 
 	// Get game strings
-	const char* entry_name = WeaponId::get_name(unit, weapon_id);
+	const char* entry_name = helper::get_stat_txt_string(weapons_dat::label[weapon_id]);
 	const char* damage_string = g_stat_txt_tbl->get_string32(777); // "Damage:"
 
 	auto& unit_ext = unit->ext();
@@ -612,25 +612,26 @@ namespace hooks {
 	const char* get_special_tooltip_string(u16 icon_unit_id, Unit* unit) {
 		switch (icon_unit_id) {
 			case UnitId::TerranSpiderMine:
+			case UnitId::TerranPietyWard:
 			case UnitId::TerranLobotomyMine:
 			case UnitId::TerranTartarusMine:
 			case UnitId::AskosiEyelet:
 			case UnitId::TerranGoremast: {
 				switch (unit->id) {
-					case UnitId::TerranClericFuturist: return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 318);  // "Piety Wards"
-					case UnitId::TerranVulture:        return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 1363); // "Lobotomy Mines"
-					case UnitId::TerranVultureHecaton: return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 1363); // "Tartarus Mines"
-					case UnitId::TerranVultureUpstart: return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 317);  // "Goremasts"
-					case UnitId::AskosiProselyte:      return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 1070); // "Eyelet"
-					case UnitId::RaynorVulture:        return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 316);  // "Spider Mines"
-					default:                           return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);  // "Mines"
+					case UnitId::TerranClericFuturist: return get_damage_tootlip_string(WeaponId::PietyWards, unit, 318);	  // "Piety Wards"
+					case UnitId::TerranVulture:        return get_damage_tootlip_string(WeaponId::LobotomyMines, unit, 1363); // "Lobotomy Mines"
+					case UnitId::TerranVultureHecaton: return get_damage_tootlip_string(WeaponId::TartarusMines, unit, 1363); // "Tartarus Mines"
+					case UnitId::TerranVultureUpstart: return get_damage_tootlip_string(WeaponId::Goremasts, unit, 317);	  // "Goremasts"
+					case UnitId::AskosiProselyte:      return get_damage_tootlip_string(WeaponId::Eyelets, unit, 1070);		  // "Eyelet"
+					case UnitId::RaynorVulture:        return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 316);	  // "Spider Mines"
+					default:                           return get_damage_tootlip_string(WeaponId::SpiderMines, unit, 794);    // "Mines"
 				}
 			}
 			case UnitId::TerranMorningstar: {
-				return g_stat_txt_tbl->get_string32(793);									// "Missiles"
+				return g_stat_txt_tbl->get_string32(793);	// "Missiles"
 			}
 			case UnitId::ProtossSteward: {
-				return get_damage_tootlip_string(WeaponId::StewardPulseCannon, unit, 791);	// "Stewards"
+				return get_damage_tootlip_string(WeaponId::StewardPulseCannon, unit, 791); // "Stewards"
 			}
 			default: {
 				return ""; // Should never reach here
