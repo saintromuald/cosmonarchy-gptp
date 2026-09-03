@@ -43,6 +43,7 @@ namespace hooks {
 						}
 					} else {
 						if (helper::start_building(unit)) {
+							bw::decloak_passive_proc(unit);
 							Unit* built_unit;
 
 							if (is_gas_cap) {

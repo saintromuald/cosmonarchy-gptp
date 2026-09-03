@@ -203,14 +203,20 @@ namespace hooks {
 
 	// Hooked to reveal Lakizilisks like cloaked units. -Pr0nogo
 	bool unit_is_always_detected(Unit* unit) { // 00491810
-		UnitExt* unit_ext = get_unit_ext(unit);
+		auto& unit_ext = unit->ext();
 		return unit->lockdown_timer
 			|| unit->maelstrom_timer
 			|| unit->irradiate_timer
 			|| unit->ensnare_timer
 			|| unit->stasis_timer
 			|| unit->plague_timer
-			|| unit_ext->timers[TimerDecloakBurrow];
+			|| unit_ext.timers[TimerApollyoidAdhesive]
+			|| unit_ext.timers[TimerSignify]
+			|| unit_ext.timers[TimerHallucinating]
+			|| unit_ext.timers[TimerDecloakBurrow]
+			|| unit_ext.timers[TimerCorrosiveTouch]
+			|| unit_ext.timers[TimerBoomingBlast]
+			|| unit_ext.timers[TimerAshHeap];
 	}
 
 	// Hooked to disallow lifted Terran structures from being detectors. -Pr0nogo

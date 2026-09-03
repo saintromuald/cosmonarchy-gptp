@@ -183,6 +183,7 @@ namespace hooks {
 			unit_ext.values[ValueWyvernLandGrabOn] = 1;
 			unit_ext.values[ValueWyvernLandGrabX] = unit->order_target.pt.x;
 			unit_ext.values[ValueWyvernLandGrabY] = unit->order_target.pt.y;
+			bw::decloak_passive_proc(unit);
 		}
 
 		if (unit->main_order_state == 2) {
@@ -341,6 +342,7 @@ namespace hooks {
 	void orders_defensive_matrix(Unit* caster) { // 004550A0
 		u16 energy_cost;
 		if (helper::spell_order(caster, TechId::DefensiveMatrix, &energy_cost, 8 * 32, 880)) {
+			bw::decloak_passive_proc(caster);
 			caster->spend_energy(energy_cost);
 			helper::create_defensive_matrix(caster->order_target.unit);
 			helper::play_sound_from_unit(SoundId::Terran_VESSEL_TVeDef00_WAV, caster, 1, 0);

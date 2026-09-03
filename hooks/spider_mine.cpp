@@ -138,7 +138,6 @@ namespace hooks {
 		}
 	}
 
-	// Not tested yet. -Pr0nogo
 	void orders_place_mine(Unit* unit) { // 00464FD0
 		if (!unit->mine_carrier.mine_count) {
 			helper::order_return_to_idle(unit);
@@ -164,6 +163,7 @@ namespace hooks {
 					} else {
 						helper::display_last_network_error_for_player(unit->player);
 					}
+					bw::decloak_passive_proc(unit);
 					helper::to_idle(unit);
 				} else if (unit->unit_ai) {
 					if (helper::is_unit_movable(unit)) {

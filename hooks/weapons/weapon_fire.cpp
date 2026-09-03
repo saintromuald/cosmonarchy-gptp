@@ -1734,6 +1734,7 @@ namespace hooks {
                 unit_ext.values[ValueMissileReturnX] = target_pos.x;
                 unit_ext.values[ValueMissileReturnY] = target_pos.y;
                 helper::attack_fly_to_target(bullet, target_pos.x, target_pos.y);
+                bw::decloak_passive_proc(parent);
                 return 1;
             }
         }

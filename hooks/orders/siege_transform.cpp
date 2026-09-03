@@ -118,7 +118,11 @@ namespace hooks {
                     }
                 }
 
+                bw::decloak_passive_proc(unit);
                 bw::transform_unit(unit, unit_id_to_siege_mode((UnitId::Enum)unit->id));
+                if (unit->subunit && unit->subunit->is_subunit()) {
+                    bw::decloak_passive_proc(unit->subunit);
+                }
                 ++unit->main_order_state;
             } // fallthrough
             case 3: {

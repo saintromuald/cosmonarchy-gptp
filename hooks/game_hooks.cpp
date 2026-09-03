@@ -3053,6 +3053,10 @@ namespace hooks {
         }
         // Huge switch statement ends
 
+        if (unit->main_order_id == OrderId::Burrow && !unit->is_burrowed()) {
+            bw::decloak_passive_proc(unit);
+        }
+
         if (unit->id == UnitId::AskosiProselyte) {
             if (unit->mine_carrier.mine_count > 1) {
                 unit->mine_carrier.mine_count = 1;
