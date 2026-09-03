@@ -494,6 +494,7 @@ Location* Parser::get_location() {
 	if (index && *index >= 0 && *index < 256) {
 		return &g_location_table[*index];
 	}
+	m_token = *string;
 	return nullptr;
 }
 
