@@ -77,8 +77,6 @@ b32 __stdcall continue_campaign(b32 victory) {
                     break;
                 }
             }
-        } else { // Replay the same mission on loss
-            target = g_campaign_manager.mission_index;
         }
         if (!target) {
             // Campaign complete (or no further missions unlocked)
