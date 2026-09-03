@@ -144,46 +144,11 @@ namespace WeaponId {
         GoskaLobotomyGrenade				= 32,
         AckmedMickenMelter					= 248,
         GoskaMedusaRifle					= 249,
-        MalkothrokorTunnelingMaw			= 251,
         KerriganC10CanisterRifle            = 253,
         KerriganClaws                       = 254,
-
-        // Factional \\
-            
-        CohortGaussPistols					= 20,
-        AspirantPotentiumCannon				= 69,
-        LuminaryIcarusMissiles				= 131,
-        TarasqueHedonCannon					= 135,
-        TarasqueAcceleratedPlasmid			= 136, // Tarasque mobile weapon
-        SouthpawKnockoutDrivers				= 169,
-        QuadrigaGodhandRockets              = 183,
-        MadrigalHecatonAngeltearMissiles    = 188,
-        TartarusMineApollyoidConflagration  = 190,
-        PietyWardProvidence                 = 201,
-        PhilocHeirloomBatteries				= 203,
-        HotshotDispatchShotgun				= 208,
-        AurielQuarternaryRifle				= 209,
-        AdherentPhaseBlade					= 210,
-        NathreliskSignalingSpores			= 211,
-        AzanthrokorAzanthrokSpew            = 213,
-        CyclopsBrontesPayload				= 217, // Passive explosion
-        CyclopsFuturistFlakCannons			= 218,
-        IziraliskCorrosiveBioplasma			= 221,
-        AshguardPhaseCremator               = 229,
-        LakiziliskZorthosSuccessiveSpines   = 230,
-        QuazrokorQuazrokSpray               = 232,
-        DracadinOrderPhaseDisruptor         = 233,
-        TiangouMoonboundSalvo               = 234,
-        EidolonNydusRevenantRifle           = 235,
-        MaverickFuturistGaussSlugger        = 236,
-        HydraliskOrkotiNeedleSpores         = 237,
-        InzorthrokorInzorReflux             = 238,
-        BlackguardAsoniCarbine              = 240,
-        ArhaunPhlegethonCannon              = 241,
-        CannibalZuluSidekicks               = 243,
-        SovrokorSovrolClaws                 = 250,
-        ValkyrieHecatonLogiRockets          = 252,
-        CutlassCortoRailgun                 = 256,
+        RaynorVultureFragmentationBarrage   = 290,
+        DukeMinotaurAsterionLaserBattery    = 291,
+        StroluumMagnatesMaw                 = 296,
 
         // Terran \\
             
@@ -241,6 +206,38 @@ namespace WeaponId {
         SalamanderAngeltearRockets			 = 216,
         TritonHydriaCannons                  = 245,
         TritonLobotomyWarhead                = 246,
+        LobotomyMines                        = 297,
+
+        // Factional - Terran \\
+            
+        CohortGaussPistols					= 20,
+        AspirantPotentiumCannon				= 69,
+        LuminaryIcarusMissiles				= 131,
+        TarasqueHedonCannon					= 135,
+        TarasqueAcceleratedPlasmid			= 136, // Tarasque mobile weapon
+        SouthpawKnockoutDrivers				= 169,
+        QuadrigaGodhandRockets              = 183,
+        MadrigalHecatonAngeltearMissiles    = 188,
+        TartarusMineApollyoidConflagration  = 190,
+        PietyWardProvidence                 = 201,
+        PhilocHeirloomBatteries				= 203,
+        HotshotDispatchShotgun				= 208,
+        AurielQuarternaryRifle				= 209,
+        CyclopsBrontesPayload				= 217, // Passive explosion
+        CyclopsFuturistFlakCannons			= 218,
+        TiangouMoonboundSalvo               = 234,
+        EidolonNydusRevenantRifle           = 235,
+        MaverickFuturistGaussSlugger        = 236,
+        BlackguardAsoniCarbine              = 240,
+        ArhaunPhlegethonCannon              = 241,
+        CannibalZuluSidekicks               = 243,
+        ValkyrieHecatonLogiRockets          = 252,
+        CutlassCortoRailgun                 = 256,
+        CamazotzHorlainChemthrower          = 272,
+        ArquebusLukankaziRailguns           = 294,
+        PietyWards                          = 298,
+        TartarusMines                       = 299,
+        Goremasts                           = 300,
 
         // Protoss \\
         
@@ -292,6 +289,19 @@ namespace WeaponId {
         ExtatusRepeatingBlaster             = 227,
         UnarAutonomousRay                   = 228,
 
+        // Factional - Protoss \\
+
+        AdherentPhaseBlade					 = 210,
+        AshguardPhaseCremator                = 229,
+        DracadinOrderPhaseDisruptor          = 233,
+        CicatusPhaseClaws                    = 265,
+        ZealotStarboundPhaseBlades           = 266,
+        RenesairRotatingBlaster              = 268,
+        SimulacrumAstralSliceCannon          = 269,
+        EcclesiastKhalendricAscendingBlaster = 293,
+        ManifoldStarboundReactiveBlaster     = 294,
+        VestigeOmenBlade                     = 295,
+
         // Zerg \\
                     
         ZoryusthalethMonstrousMaw			= 28,
@@ -340,6 +350,22 @@ namespace WeaponId {
         ZobrioliskRapidSpinesAir            = 231,
         LiiraliskHomingSpore                = 242,
         KethrostalorStaggeredSpores         = 244,
+        MalkothrokorTunnelingMaw			= 251,
+
+        // Factional - Zerg \\
+
+        NathreliskSignalingSpores			= 211,
+        AzanthrokorAzanthrokSpew            = 213,
+        IziraliskCorrosiveBioplasma			= 221,
+        LakiziliskZorthosSuccessiveSpines   = 230,
+        QuazrokorQuazrokSpray               = 232,
+        HydraliskOrkotiNeedleSpores         = 237,
+        InzorthrokorInzorReflux             = 238,
+        SovrokorSovrolClaws                 = 250,
+        GarvrokorGarvrolClaws               = 270,
+        HydrokorHydrokClaws                 = 273,
+        ZethalorSpewingSpores               = 274,
+        AlzurokorEmbracingMandibles         = 275,
 
         // Askosi \\
 
@@ -364,12 +390,39 @@ namespace WeaponId {
         AphoristAnsaSunshot                 = 226,
         PilgrimMiningSaber                  = 239,
         RapidRendezvous                     = 247, // ability targeting, unused
+        InsurantElxeTwinshot                = 257,
+        GhostwritOndoMoonbeam               = 267,
+        AkrenoBioticWingblades              = 271,
+        ZonguardAzgokBeastblades            = 276,
+        ZonguardAgturrikBeaststick          = 277,
+        AlacyneInqoScaleshot                = 279,
+        PhontisAlruDriver                   = 280,
+        TortareKalgolokBeaststick           = 281,
+        IconoclastOnjiDriver                = 282,
+        ParacleteOgnirriusBeaststick        = 283,
+        SilversoulOlduTripshard             = 284,
+        HistrionEmtoMoonbeam                = 285,
+        AvatarReformingCarbine              = 286,
+        EndboreIrkoOctorshard               = 287,
+        LimireOfraAshray                    = 288,
+        ElgirdArdiTripshot                  = 292,
+
+        // Bloodsummon \\
+
+        NihilistApatheticSermon             = 258,
+        ThrombocyteReactiveCells            = 289,
+        Eyelets                             = 301,
 
         // Misc \\
 
         SmoochieBoyKissingEmoji				= 196,
         NoneNew                             = 255,
+        FerrumSentinelBeam                  = 260,
+        ChalybSentinelBeam                  = 261,
+        CircitorSentinelBoltbeam            = 262,
+        ExigoEnforcerRiftRockets            = 263,
+        VicereChampionStormbeam             = 264,
 
-        Count = 256,
+        Count                               = WeaponsIdLimit,
     };
 }

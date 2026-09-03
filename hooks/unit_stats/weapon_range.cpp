@@ -79,31 +79,6 @@ u8 get_seek_range(Unit* unit, Unit* target) { // seek distance is measured in ti
         }
     }
 
-    // @TODO: Extend weapon ids and remove this
-    switch (unit->id) {
-        case UnitId::TerranCamazotz:              final_range =  3; break;
-        case UnitId::TerranBlackjackGolden:       final_range -= 1; break;
-        case UnitId::TerranBroadside:             final_range -= 2; break;
-        case UnitId::TerranBroadsideTurret:       final_range -= 2; break;
-        case UnitId::TerranArquebus:              final_range -= 1; break;
-        case UnitId::ProtossEcclesiastKhalendric: final_range -= 1; break;
-        case UnitId::ProtossRenesair:             final_range += 1; break;
-        case UnitId::ZergZethalor:                final_range -= 6; break;
-        case UnitId::ZergHydrokor:                final_range  = 3; break;
-        case UnitId::AskosiAvatar:                final_range -= 1; break;
-        case UnitId::AskosiInsurant:              final_range += 3; break;
-        case UnitId::AskosiSilversoul:		      final_range += 2; break;
-        case UnitId::AskosiPhontis:               final_range += 1; break;
-        case UnitId::AskosiElgird:                final_range -= 1; break;
-        case UnitId::AskosiHistrion:              final_range += 1; break;
-        case UnitId::AskosiAlacyne:               final_range += 1; break;
-        case UnitId::AskosiIconoclast:            final_range -= 2; break;
-        case UnitId::AskosiParaclete:             final_range -= 1; break;
-        case UnitId::AskosiLimire:                final_range += 4; break;
-        case UnitId::AskosiTortare:               final_range += 2; break;
-        case UnitId::ForerunnerExigo:             final_range += 3; break;
-    }
-
     return static_cast<u8>(final_range * scale + bonus_amount);
 };
 
@@ -112,38 +87,6 @@ u32 get_base_weapon_range(WeaponId::Enum weapon_id, u16 unit_id) {
     u32 final_range = weapons_dat::max_range[weapon_id];
     if (bw::get_game_kind() == GameKind::DarkAges && weapons_dat::max_range[weapon_id] > 32 && !unit_id_is_trap(unit_id)) {
         final_range -= static_cast<u32>(round(bw::calculate_dark_ages_penalty(weapons_dat::max_range[weapon_id] / 32.0fp))) * 32;
-    }
-    // @TODO: Extend weapons and remove these
-    switch (unit_id) {
-        case UnitId::TerranCamazotz:              final_range -= 3tiles; break;
-        case UnitId::TerranBlackjackGolden:       final_range -= 1tiles; break;
-        case UnitId::TerranBroadside:             final_range -= 2tiles; break;
-        case UnitId::TerranBroadsideTurret:       final_range -= 2tiles; break;
-        case UnitId::TerranArquebus:              final_range -= 1tiles; break;
-        case UnitId::ProtossEcclesiastKhalendric: final_range -= 1tiles; break;
-        case UnitId::ProtossRenesair:             final_range += 1tiles; break;
-        case UnitId::ZergZethalor:                final_range -= 6tiles; break;
-        case UnitId::ZergHydrokor:                final_range -= 4tiles; break;
-        case UnitId::AskosiAvatar:                final_range -= 1tiles; break;
-        case UnitId::AskosiInsurant:              final_range += 3tiles; break;
-        case UnitId::AskosiSilversoul:		      final_range += 2tiles; break;
-        case UnitId::AskosiPhontis:               final_range += 1tiles; break;
-        case UnitId::AskosiZonguard: {
-            if (weapon_id == WeaponId::GrandstandArteDriver) {
-                final_range -= 2tiles;
-            }
-        } break;
-        case UnitId::AskosiElgird:                final_range -= 1tiles; break;
-        case UnitId::AskosiHistrion:              final_range += 1tiles; break;
-        case UnitId::AskosiAlacyne:               final_range += 1tiles; break;
-        case UnitId::AskosiIconoclast:            final_range -= 2tiles; break;
-        case UnitId::AskosiParaclete:             final_range -= 1tiles; break;
-        case UnitId::AskosiLimire:                final_range += 4tiles; break;
-        case UnitId::AskosiTortare:               final_range += 2tiles; break;
-        case UnitId::ForerunnerExigo:             final_range += 3tiles; break;
-    }
-    if (weapon_id == WeaponId::OlympianTitansFist) {
-        final_range = 30;
     }
     return final_range;
 }
@@ -208,37 +151,7 @@ u32 get_max_weapon_range(Unit* unit, WeaponId::Enum weapon_id, Unit* target, boo
     u32 final_range = weapons_dat::max_range[weapon_id];
     if (unit_ext.values[ValueTriggerWeaponRangeBaseSet]) {
         final_range = unit_ext.values[ValueTriggerWeaponRangeBaseAmount];
-    } else {
-        switch (unit->id) {
-            case UnitId::TerranCamazotz:              final_range -= 3tiles; break;
-            case UnitId::TerranBlackjackGolden:       final_range -= 1tiles; break;
-            case UnitId::TerranBroadside:             final_range -= 2tiles; break;
-            case UnitId::TerranBroadsideTurret:       final_range -= 2tiles; break;
-            case UnitId::TerranArquebus:              final_range -= 1tiles; break;
-            case UnitId::ProtossEcclesiastKhalendric: final_range -= 1tiles; break;
-            case UnitId::ProtossRenesair:             final_range += 1tiles; break;
-            case UnitId::ZergZethalor:                final_range -= 6tiles; break;
-            case UnitId::ZergHydrokor:                final_range -= 4tiles; break;
-            case UnitId::AskosiAvatar:                final_range -= 1tiles; break;
-            case UnitId::AskosiInsurant:              final_range += 3tiles; break;
-            case UnitId::AskosiSilversoul:		      final_range += 2tiles; break;
-            case UnitId::AskosiPhontis:               final_range += 1tiles; break;
-            case UnitId::AskosiZonguard: {
-                if (weapon_id == WeaponId::GrandstandArteDriver) {
-                    final_range -= 2tiles;
-                }
-            } break;
-            case UnitId::AskosiElgird:                final_range -= 1tiles; break;
-            case UnitId::AskosiHistrion:              final_range += 1tiles; break;
-            case UnitId::AskosiAlacyne:               final_range += 1tiles; break;
-            case UnitId::AskosiIconoclast:            final_range -= 2tiles; break;
-            case UnitId::AskosiParaclete:             final_range -= 1tiles; break;
-            case UnitId::AskosiLimire:                final_range += 4tiles; break;
-            case UnitId::AskosiTortare:               final_range += 2tiles; break;
-            case UnitId::ForerunnerExigo:             final_range += 3tiles; break;
-        }
     }
-
     return static_cast<u32>(round(final_range * scale) + bonus_amount);
 }
 

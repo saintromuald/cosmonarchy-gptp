@@ -48,8 +48,6 @@ Faction get_random_faction(RaceId::Enum race);
 SoundId::Enum get_racial_error_sfx(RaceId::Enum race);
 
 namespace WeaponId {
-const char* get_name(Unit* unit, WeaponId::Enum weapon_id);
-const char* get_name(UnitId::Enum unit_id, WeaponId::Enum weapon_id);
 } // namespace WeaponId
 
 namespace FlingyId {

@@ -533,147 +533,6 @@ namespace hooks {
         
         if (data.attacker) {
             switch (data.weapon_id) {
-                // @TODO: Extend weapons and remove these
-                case WeaponId::HeraclesJavelinCannons: {
-                    if (data.attacker->id == UnitId::AskosiInsurant) {
-                        data.damage += 1 * 256;
-                    }
-                } break;
-                case WeaponId::PhalanxArcliteCannon: {
-                    if (data.attacker->id == UnitId::TerranBroadside || data.attacker->id == UnitId::TerranBroadsideTurret) {
-                        data.damage -= 5 * 256;
-                    }
-                } break;
-                case WeaponId::GorgonArtificeBattery: {
-                    if (data.attacker->id == UnitId::ForerunnerFerrum || data.attacker->id == UnitId::ForerunnerChalyb) {
-                        data.damage -= 3 * 256;
-                    }
-                } break;
-                case WeaponId::ZealotPhaseBlades: {
-                    if (data.attacker->id == UnitId::ProtossCicatus) {
-                        data.damage -= 3 * 256;
-                    }
-                } break;
-                case WeaponId::PotentateTalismanicWeaver: {
-                    if (data.attacker->id == UnitId::AskosiGhostwrit) {
-                        data.damage -= 20 * 256;
-                    }
-                } break;
-                case WeaponId::VassalPulseBlaster: {
-                    if (data.attacker->id == UnitId::ProtossRenesair) {
-                        data.damage -= 2 * 256;
-                    }
-                } break;
-                case WeaponId::SimulacrumPhaseCannon: {
-                    if (data.attacker->id == UnitId::ProtossSimulacrumAstral) {
-                        data.damage -= 2 * 256;
-                    }
-                } break;
-                case WeaponId::VorvrokorVorvrokClaws: {
-                    if (data.attacker->id == UnitId::ZergGarvrokor) {
-                        data.damage += 1 * 256;
-                    }
-                } break;
-                case WeaponId::NathrokorNathrokClaws: {
-                    if (data.attacker->id == UnitId::AskosiAkreno) {
-                        data.damage += 6 * 256;
-                    }
-                } break;
-                case WeaponId::CikraliskAcidSalvo: {
-                    if (data.attacker->id == UnitId::TerranCamazotz) {
-                        data.damage += 2hp;
-                    }
-                } break;
-                case WeaponId::HydraliskNeedleSpines: {
-                    if (data.attacker->id == UnitId::ZergHydrokor) {
-                        data.damage -= 3hp;
-                    }
-                } break;
-                case WeaponId::KethrostalorStaggeredSpores: {
-                    if (data.attacker->id == UnitId::ZergZethalor) {
-                        data.damage -= 4 * 256;
-                    }
-                } break;
-                case WeaponId::TethzorokorSaberArray: {
-                    if (data.attacker->id == UnitId::ZergAlzurokor) {
-                        data.damage += 6hp;
-                    }
-                } break;
-                case WeaponId::UltrokorKaiserBlades: {
-                    if (data.attacker->id == UnitId::AskosiZonguard) {
-                        data.damage -= 5 * 256;
-                    }
-                    if (data.attacker->id == UnitId::ZergRozirokor) {
-                        data.damage -= 17hp;
-                    }
-                } break;
-                case WeaponId::GrandstandArteDriver: {
-                    if (data.attacker->id == UnitId::AskosiZonguard) {
-                        data.damage -= 3 * 256;
-                    }
-                } break;
-                case WeaponId::RoveElreScaleshot: {
-                    if (data.attacker->id == UnitId::AskosiAlacyne) {
-                        data.damage -= 4 * 256;
-                    }
-                } break;
-                case WeaponId::IntendentErsaDriver: {
-                    if (data.attacker->id == UnitId::AskosiPhontis) {
-                        data.damage -= 2 * 256;
-                    }
-                    if (data.attacker->id == UnitId::AskosiTortare) {
-                        data.damage += 15 * 256;
-                    }
-                } break;
-                case WeaponId::VicarOspoTwinshard: {
-                    if (data.attacker->id == UnitId::AskosiIconoclast) {
-                        data.damage += 1 * 256;
-                    }
-                    if (data.attacker->id == UnitId::AskosiParaclete) {
-                        data.damage += 3 * 256;
-                    }
-                } break;
-                case WeaponId::ThaumalogueUtsoCarbine: {
-                    if (data.attacker->id == UnitId::AskosiSilversoul) {
-                        data.damage -= 1 * 256;
-                    }
-                } break;
-                case WeaponId::AgonistOnlaDrivers: {
-                    if (data.attacker->id == UnitId::AskosiHistrion) {
-                        data.damage -= 2 * 256;
-                    }
-                } break;
-                case WeaponId::CrematoriumOkliQuadshard: {
-                    if (data.attacker->id == UnitId::AskosiAvatar) {
-                        data.damage += 10 * 256;
-                    }
-                    if (data.attacker->id == UnitId::AskosiEndbore) {
-                        data.damage += 4hp;
-                    }
-                } break;
-                case WeaponId::HelionUskoScrapray: {
-                    if (data.attacker->id == UnitId::AskosiLimire) {
-                        data.damage -= 8 * 256;
-                    }
-                } break;
-                case WeaponId::IzirokorEnergizedBioplasma: {
-                    if (data.attacker->id == UnitId::BloodsummonThrombocyte) {
-                        data.damage *= 2;
-                    }
-                } break;
-
-                // Heroes
-                case WeaponId::VultureFragmentationGrenade: {
-                    if (data.attacker->id == UnitId::RaynorVulture) {
-                        data.damage += 10hp;
-                    }
-                } break;
-                case WeaponId::MinotaurAsterionLaserBattery: {
-                    if (data.attacker->id == UnitId::DukeMinotaur) {
-                        data.damage += 10hp;
-                    }
-                } break;
-
                 // Behaviors
                 case WeaponId::CabalistWarpBlades: {
                     if (data.attacker->id == UnitId::ProtossVestige) {
@@ -774,11 +633,9 @@ namespace hooks {
             case WeaponId::CyclopsBrontesPayload: {
                 data.target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
             } break;
-            case WeaponId::CataphractLonginiusCannons: { // TODO: Extend weapons and remove this
-                if (data.attacker && data.attacker->id == UnitId::TerranArquebus) {
-                    target_ext.values[ValueIncineratePlayer] = data.attacking_player_id;
-                    target_ext.timers[TimerIncinerateDamage] = HecatonAuriel::IncinerateTimer;
-                }
+            case WeaponId::ArquebusLukankaziRailguns: {
+                target_ext.values[ValueIncineratePlayer] = data.attacking_player_id;
+                target_ext.timers[TimerIncinerateDamage] = HecatonAuriel::IncinerateTimer;
             } break;
             case WeaponId::WendigoFusionSaw: {
                 target_ext.values[ValueWendigoShatteredWindsStacks]++;
@@ -839,11 +696,10 @@ namespace hooks {
                 target_ext.values[ValueMiasma] = 1;
             } break;
             case WeaponId::PilgrimMiningSaber:
+            case WeaponId::InsurantElxeTwinshot:
             case WeaponId::ScepterOrmaScrapray:
-            case WeaponId::HelionUskoScrapray: {
-                if (data.attacker && data.attacker->id == UnitId::TerranHeracles) {
-                    break;
-                }
+            case WeaponId::HelionUskoScrapray:
+            case WeaponId::IconoclastOnjiDriver: {
                 target_ext.timers[TimerGoldRush] = Askosi::ScrapworldGoldRushTimer;
                 target_ext.values[ValueGoldRushPlayer] = data.attacking_player_id;
             } break;
@@ -1035,20 +891,18 @@ namespace hooks {
                     helper::mind_control_hit(data.attacker, data.target);
                 } break;
                 case WeaponId::VorvrokorVorvrokClaws: {
-                    if (data.attacker->id == UnitId::ZergVorvrokor) {
-                        if (!target_ext.values[ValueVorvalHidebreaker]) {
-                            target_ext.values[ValueVorvalHidebreaker] = 1;
-                            // TODO: Overlay
-                        }
-                        target_ext.timers[TimerHidebreaker] = Zerg::HidebreakerDuration;
+                    if (!target_ext.values[ValueVorvalHidebreaker]) {
+                        target_ext.values[ValueVorvalHidebreaker] = 1;
+                        // TODO: Overlay
                     }
-                    if (data.attacker->id == UnitId::ZergGarvrokor) {
-                        if (!target_ext.values[ValueGarvrolHidebreaker]) {
-                            target_ext.values[ValueGarvrolHidebreaker] = 2;
-                            // TODO: Overlay
-                        }
-                        target_ext.timers[TimerHidebreaker] = Zerg::HidebreakerDuration;
+                    target_ext.timers[TimerHidebreaker] = Zerg::HidebreakerDuration;
+                } break;
+                case WeaponId::GarvrokorGarvrolClaws: {
+                    if (!target_ext.values[ValueGarvrolHidebreaker]) {
+                        target_ext.values[ValueGarvrolHidebreaker] = 2;
+                        // TODO: Overlay
                     }
+                    target_ext.timers[TimerHidebreaker] = Zerg::HidebreakerDuration;
                 } break;
                 case WeaponId::NathrokorVestigialStrike:
                 case WeaponId::NathrokorNathrokClaws: {
@@ -1214,16 +1068,10 @@ namespace hooks {
 
                 switch (data.weapon_id) {
                     case WeaponId::InzorthrokorInzorReflux:
+                    case WeaponId::AlzurokorEmbracingMandibles:
                     case WeaponId::AkistrokorHarryingTalons: {
-                        if (data.attacker->id != UnitId::AskosiObject) { // TODO: Extend weapons.datex and remove this
-                            mark_infesting(data.attacking_player_id, data.target);
-                        }
+                        mark_infesting(data.attacking_player_id, data.target);
                     } break;
-                    case WeaponId::TethzorokorSaberArray: {
-                        if (data.attacker->id == UnitId::ZergAlzurokor) { // TOOD: Extend weapons.datex and remove this
-                            mark_infesting(data.attacking_player_id, data.target);
-                        }
-                    }
                     case WeaponId::SavantDiscoidRailgun: {
                         // Power Siphon
                         if (data.attacker->id == UnitId::TerranSavantPowerSiphon && unit_is_combatant(data.target)) {
@@ -1278,12 +1126,7 @@ namespace hooks {
                         }
                     } break;
                     case WeaponId::HeraclesJavelinCannons: {
-                        if (data.attacker->id == UnitId::AskosiInsurant) { // TODO: Extend weapons.datex and remove this
-                            target_ext.timers[TimerGoldRush] = Askosi::ScrapworldGoldRushTimer;
-                            target_ext.values[ValueGoldRushPlayer] = data.attacking_player_id;
-                        } else {
                             target_ext.timers[TimerKelvinMunitions] = 3secs + 1;
-                        }
                     } break;
                     case WeaponId::ClaymoreHarpoonRailgun:
                     case WeaponId::TritonHydriaCannons: {
@@ -1291,42 +1134,26 @@ namespace hooks {
                     } break;
                     case WeaponId::VicarOspoTwinshard:
                     case WeaponId::ThaumalogueUtsoCarbine:
-                    case WeaponId::HelionUskoScrapray: {
-                        if (data.attacker->id == UnitId::AskosiThaumalogue || data.attacker->id == UnitId::AskosiHelion || data.attacker->id == UnitId::AskosiParaclete) {
-                            break; // TODO: Extend weapons.datex and remove this
-                        }
-                        if (!target_ext.timers[TimerBoomingBlast]) {
-                            target_ext.timers[TimerBoomingBlast] = Askosi::BoomingBlastTimer;
-                            target_ext.values[ValueBoomingBlastPlayer] = data.attacking_player_id;
-                        }
-                        if (data.attacker->id == UnitId::AskosiIconoclast) { // TODO: Extend weapons.datex and remove this
-                            target_ext.timers[TimerGoldRush] = Askosi::ScrapworldGoldRushTimer;
-                            target_ext.values[ValueGoldRushPlayer] = data.attacking_player_id;
-                        }
-                        if (data.attacker->id == UnitId::AskosiLimire) { // TODO: Extend weapons.datex and remove this
-                            target_ext.timers[TimerAshHeap] = Askosi::ScrapworldAshHeapDuration;
-                            target_ext.timers[TimerAshHeapArmorRend] += Askosi::ScrapworldAshHeapDuration;
-                            target_ext.values[ValueAshHeapPlayer] = data.attacking_player_id;
-                        }
+                    case WeaponId::HelionUskoScrapray:
+                    case WeaponId::IconoclastOnjiDriver: {
+                        data.target->apply_booming_blast(data.attacking_player_id);
                     } break;
                     case WeaponId::RoveElreScaleshot:
                     case WeaponId::GrandstandArteDriver:
-                    case WeaponId::IntendentErsaDriver: {
-                        if (data.attacker && (data.attacker->id == UnitId::AskosiZonguard || data.attacker->id == UnitId::AskosiRove || data.attacker->id == UnitId::AskosiTortare)) {
-                            break;
-                        }
+                    case WeaponId::IntendentErsaDriver:
+                    case WeaponId::CircitorSentinelBoltbeam: {
                         if (!target_ext.timers[TimerPowerOverload]) {
                             target_ext.timers[TimerPowerOverload] = Askosi::PowerOverloadTimer * hooks::get_armor_internal(data.target) + 1;
                         }
+                    } break;
+                    case WeaponId::CamazotzHorlainChemthrower: {
+                        bw::heal_proc(data.target, data.attacking_player_id, NydusTrinityCamazotz::OnhitRange, NydusTrinityCamazotz::OnhitHeal);
                     } break;
                     case WeaponId::AspirantPotentiumCannon: {
                         // Aspirant - Criticality
                         target_ext.timers[TimerCriticality] = 2secs + 1;
                     } break;
                     case WeaponId::GorgonArtificeBattery: {
-                        if (data.attacker->id == UnitId::ForerunnerFerrum || data.attacker->id == UnitId::ForerunnerChalyb) {
-                            break;
-                        }
                         // Petrification - Gorgon behavior
                         if (target_ext.values[ValuePetrificationStacks] < 20) {
                             target_ext.values[ValuePetrificationStacks] += 1;
@@ -1378,11 +1205,6 @@ namespace hooks {
                     case WeaponId::GhitorokorGnashingTendrils: {
                         attacker_ext.values[ValueGhitorokorRelentlessAggressionStacks]++;
                         attacker_ext.timers[TimerGhitorokorRelentlessAggression] = 2secs + 1;
-                    } break; {
-                    case WeaponId::CikraliskAcidSalvo:
-                        if (data.attacker->id == UnitId::TerranCamazotz) {
-                            bw::heal_proc(data.target, data.attacking_player_id, NydusTrinityCamazotz::OnhitRange, NydusTrinityCamazotz::OnhitHeal);
-                        }
                     } break;
                     case WeaponId::IziraliskCorrosiveBioplasma: {
                         helper::apply_corrosive_spores(data.target);
@@ -1480,12 +1302,14 @@ namespace hooks {
                         }
                     } break;
                     case WeaponId::CrematoriumOkliQuadshard: {
-                        if (data.attacker->id == UnitId::AskosiEndbore) {
-                            break;
-                        }
-                        target_ext.timers[TimerAshHeap] = Askosi::ScrapworldAshHeapDuration;
-                        target_ext.timers[TimerAshHeapArmorRend] += Askosi::ScrapworldAshHeapDuration;
-                        target_ext.values[ValueAshHeapPlayer] = data.attacking_player_id;
+                        data.target->apply_ash_heap(data.attacking_player_id);
+                    } break;
+                    case WeaponId::LimireOfraAshray: {
+                        data.target->apply_booming_blast(data.attacking_player_id);
+                        data.target->apply_ash_heap(data.attacking_player_id);
+                    } break;
+                    case WeaponId::NihilistApatheticSermon: {
+                        target_ext.timers[TimerWarAtrophySearch] = BloodsummonNihilist::WarAtrophyDuration;
                     } break;
                 }
             }
@@ -1504,15 +1328,9 @@ namespace hooks {
         switch (data.weapon_id) {
             case WeaponId::GhitorokorGnashingTendrils:
             case WeaponId::UltrokorKaiserBlades: {
-                if (data.attacker->id == UnitId::AskosiZonguard) {
-                    break;
-                }
                 hp_factor += 1;
             } break;
             case WeaponId::TethzorokorSaberArray: {
-                if (data.attacker->id == UnitId::ZergAlzurokor) {
-                    break;
-                }
                 hp_factor += 1;
             } break;
             case WeaponId::MortothrokorWickedIncisors: {

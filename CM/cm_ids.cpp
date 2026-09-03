@@ -729,6 +729,7 @@ bool image_id_is_powerup(u32 image_id) {
 ImageId::Enum analogue_image_id_overwrite(WeaponId::Enum weapon_id) {
     switch (weapon_id) {
         case WeaponId::HarakanFlamethrower:				return ImageId::HarakanFlamethrower;
+        case WeaponId::CamazotzHorlainChemthrower:	    return ImageId::CikraliskAttackOverlay;
         case WeaponId::MatadorTwinstrikeFlamethrowers:	return ImageId::HarakanFlamethrower;
         case WeaponId::DurendalAbaddonFlamethrowers:	return ImageId::HarakanFlamethrower;
         case WeaponId::StrigaPhaseSaber:				return ImageId::StrigaAttackOverlay;
@@ -1230,7 +1231,8 @@ bool unit_can_be_ensnared(Unit* unit) {
 }
 
 bool weapon_id_is_line_attack(WeaponId::Enum weapon_id) {
-    return weapon_id == WeaponId::StrigaPhaseSaber
+    return weapon_id == WeaponId::CamazotzHorlainChemthrower
+        || weapon_id == WeaponId::StrigaPhaseSaber
         || weapon_id == WeaponId::PariahIconoclastBlades
         || weapon_id == WeaponId::CikraliskAcidSalvo
         || weapon_id == WeaponId::AzanthrokorAzanthrokSpew
@@ -1648,24 +1650,7 @@ bool can_cast_recall(UnitId::Enum unit_id) {
 
 bool has_manual_weapon_fire_sfx(UnitId::Enum unit_id) {
     return unit_id == UnitId::TerranSavantEntropyGauntlets
-        || unit_id == UnitId::TerranSavantPowerSiphon
-
-        // @TODO: Extend weapons and remove these
-        || unit_id == UnitId::ProtossZealot
-        || unit_id == UnitId::ProtossZealotStarbound
-        || unit_id == UnitId::ProtossEcclesiast
-        || unit_id == UnitId::ProtossEcclesiastKhalendric
-        || unit_id == UnitId::ProtossCicatus
-        || unit_id == UnitId::ProtossManifold
-        || unit_id == UnitId::ProtossManifoldStarbound
-        || unit_id == UnitId::AskosiAvatar
-        || unit_id == UnitId::AskosiGhostwrit
-        || unit_id == UnitId::AskosiAgonist
-        || unit_id == UnitId::AskosiPhontis
-        || unit_id == UnitId::AskosiHistrion
-        || unit_id == UnitId::AskosiAkreno
-        || unit_id == UnitId::AskosiCrematorium
-        || unit_id == UnitId::AskosiEndbore;
+        || unit_id == UnitId::TerranSavantPowerSiphon;
 }
 
 bool is_atg_regression(UnitId::Enum old_unit_id, UnitId::Enum new_unit_id) {

@@ -2398,3 +2398,18 @@ bool Unit::check_neutral_garrison_death() {
     this->set_hitpoints(this->get_max_hp_raw());
     return false;
 }
+
+void Unit::apply_ash_heap(u32 attacking_player) {
+    auto& unit_ext = this->ext();
+    unit_ext.timers[TimerAshHeap] = Askosi::ScrapworldAshHeapDuration;
+    unit_ext.timers[TimerAshHeapArmorRend] += Askosi::ScrapworldAshHeapDuration;
+    unit_ext.values[ValueAshHeapPlayer] = attacking_player;
+}
+
+void Unit::apply_booming_blast(u32 attacking_player) {
+    auto& unit_ext = this->ext();
+    if (!unit_ext.timers[TimerBoomingBlast]) {
+        unit_ext.timers[TimerBoomingBlast] = Askosi::BoomingBlastTimer;
+        unit_ext.values[ValueBoomingBlastPlayer] = attacking_player;
+    }
+}

@@ -44,6 +44,9 @@ enum {
 // TBL for extended unit names
 extern StringTbl* g_unit_names_tbl;
 
+// GRP for extended unit icons
+extern GrpHead* g_unit_icons;
+
 // Used in constReplace -- writes a `size`-byte value of `val*factor+add` to the zero-terminated list of pointers in `ptr`
 typedef struct {
     s32 factor;
