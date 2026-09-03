@@ -888,7 +888,7 @@ void town_add_spending_request(AiTown& town, u32 count, u32 unit_id, u32 priorit
 void military_add_spending_request(u32 player, u32 unit_id, v2u16 position, u32 priority, bool request_base = true);
 void guard_add_spending_request(u32 player, GuardAi* guard_ai, u32 priority, bool request_base = true);
 GuardAi* create_guard_ai(u32 player, u32 unit_id, v2u16 position);
-u8 get_damage_factor_for_tooltip(WeaponId::Enum weapon_id, Unit* unit);
+u8 get_damage_factor_override(WeaponId::Enum weapon_id);
 void delete_ai_script(AiScript* ai_script);
 void delete_town(AiTown* ai_town);
 void delete_fow_sprite(Thingy* thingy);

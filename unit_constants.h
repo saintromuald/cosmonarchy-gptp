@@ -431,6 +431,10 @@ inline constexpr s32 CorrosivePathogenRange = 4tiles;
 
 // ASKOSI \\
 
+namespace AskosiLandlock {
+inline constexpr s32 AmbientSFXDelay = 33;
+}
+
 namespace AskosiChantry {
 inline constexpr s32 SermonSalveRange = 8tiles;
 }
@@ -498,7 +502,7 @@ inline constexpr s32 VitalRemainsHeal = 10 * 256;
 inline constexpr s32 VitalRemainsRange = 5tiles;
 inline constexpr s32 VitalRemainsArmorPenDuration = 4secs;
 
-inline constexpr s32 ScrapworldAshHeapDuration = 2secs + 1;
+inline constexpr s32 ScrapworldAshHeapDuration = 5secs + 1;
 inline constexpr s32 AshbindJumpRange = 5tiles;
 inline constexpr s32 AshbindDebuffRange = 3tiles;
 inline constexpr s32 AshbindAshHeapDuration = 2secs + 1;

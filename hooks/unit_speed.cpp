@@ -246,6 +246,7 @@ namespace hooks {
                 speed *= 0.8fp;
             } break;
             case UnitId::TerranSiren:
+            case UnitId::TerranGoliath:
             case UnitId::TerranPhalanxTankMode:
             case UnitId::ProtossAccantor:
             case UnitId::ProtossIdolKhalendric:
@@ -296,7 +297,6 @@ namespace hooks {
             case UnitId::ZergIzirokor:
             case UnitId::ZergAlzurokor:
             case UnitId::AskosiMissionary:
-            case UnitId::AskosiCardinal:
             case UnitId::AskosiDoronin: {
                 speed *= 1.2fp;
             } break;
@@ -308,7 +308,6 @@ namespace hooks {
             case UnitId::ProtossGolem:
             case UnitId::ProtossSycophant:
             case UnitId::ZergMalkothrokor:
-            case UnitId::ZergZethrokor:
             case UnitId::ZergAxitrilisk:
             case UnitId::AskosiDyad: {
                 speed *= 1.25fp;
@@ -316,7 +315,6 @@ namespace hooks {
             case UnitId::TerranCyprian:
             case UnitId::ProtossSimulacrumKhalendric:
             case UnitId::ZergYblyleth:
-            case UnitId::ZergVorvrokor:
             case UnitId::ZergGarvrokor:
             case UnitId::ZergCikralisk:
             case UnitId::ZergRozirokor:
@@ -324,9 +322,9 @@ namespace hooks {
             case UnitId::ZergLakizilisk:
             case UnitId::ZergLakiziliskZorthos:
             case UnitId::ZergZobriolisk:
-            case UnitId::AskosiProselyte:
             case UnitId::AskosiAvatar:
-            case UnitId::AskosiInsurant: {
+            case UnitId::AskosiInsurant:
+            case UnitId::AskosiIntendent: {
                 speed *= 1.3fp;
             } break;
             case UnitId::TerranHarakanGolden:
@@ -338,7 +336,10 @@ namespace hooks {
             case UnitId::TerranTiangou:
             case UnitId::ProtossZealotStarbound:
             case UnitId::ProtossAmaranth:
-            case UnitId::ZergHydraliskOrkoti: {
+            case UnitId::ZergZethrokor:
+            case UnitId::ZergVorvrokor:
+            case UnitId::ZergHydraliskOrkoti:
+            case UnitId::AskosiProselyte: {
                 speed *= 1.4fp;
             } break;
             case UnitId::TerranTalos:

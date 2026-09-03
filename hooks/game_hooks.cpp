@@ -2664,7 +2664,8 @@ namespace hooks {
             case UnitId::ProtossSyntheticSynod:
             case UnitId::ProtossStargate:
             case UnitId::ProtossArgosy:
-            case UnitId::ProtossMonumentOfSin: {
+            case UnitId::ProtossMonumentOfSin:
+            case UnitId::AskosiLandlock: {
                 if (unit->can_play_training_sfx()) {
                     unit->play_training_sfx();
                 }
@@ -2873,6 +2874,7 @@ namespace hooks {
                         auto& target_ext = target->ext();
                         if (!target_ext.timers[TimerCrushingDelivery]) {
                             target_ext.timers[TimerCrushingDelivery] = 3;
+                            bw::add_unit_overlay(target, ImageId::CrushingDeliveryOverlaySmall + bw::get_overlay_offset(target->id));
                         }
                     }
                 }
@@ -3015,16 +3017,17 @@ namespace hooks {
                     break;
                 }
                 if (unit_ext.values[ValueReassemblyActive]) {
-                    for (Unit* target : g_unit_search.radial_ex(unit, AskosiSilversoul::ImpactDissipationRange, FilterAlly)) {
-                        if (!target->is_completed()) {
+                    for (Unit* ally : g_unit_search.radial_ex(unit, AskosiSilversoul::ImpactDissipationRange, FilterAlly)) {
+                        if (!ally->is_completed()) {
                             continue;
                         }
-                        auto& target_ext = target->ext();
-                        if (!target_ext.timers[TimerImpactDissipation]) {
-                            target_ext.timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
-                            target_ext.values[ValueImpactDissipationBlock] = 1;
+                        auto& ally_ext = ally->ext();
+                        if (!ally_ext.timers[TimerImpactDissipation]) {
+                            ally_ext.timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
+                            ally_ext.values[ValueImpactDissipationBlock] = 1;
+                            bw::add_unit_overlay(ally, ImageId::ImpactDissipationActive);
                         }
-                        target->update_speed();
+                        ally->update_speed();
                     }
                 } else {
                     bool needs_refresh = false;

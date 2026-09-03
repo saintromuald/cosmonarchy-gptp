@@ -1004,7 +1004,7 @@ namespace ImageId {
         MaelstromHit                        = 998,
         None                                = 999,
 
-        // Cosmonarchy BW \\
+        // Cosmonarchy \\
 
         VespeneRidge								= 1002,
 
@@ -1350,6 +1350,11 @@ namespace ImageId {
 
         HydrokorMutate                              = 2446,
         HydraliskMutate                             = 2447,
+
+        ImpactDissipationActive                     = 2459,
+        CrushingDeliveryOverlaySmall                = 2460,
+        CrushingDeliveryOverlayMedium               = 2461,
+        CrushingDeliveryOverlayLarge                = 2462,
 
         // Used for damage overlay crash fix
         FirstMinorDamageOverlay						= 450,

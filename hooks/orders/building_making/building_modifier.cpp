@@ -14,7 +14,7 @@ BuildingModifier advance_building_modifier(Unit* unit, const ProgressBuildOption
 			if (options.is_askosi) {
 				auto askosi_builder_count = unit_ext.unit_vectors[UnitVectorAskosiBuilders].size();
 				if (askosi_builder_count > 1) {
-					fp32 increase = (askosi_builder_count - 1) * 0.20fp;
+					fp32 increase = (askosi_builder_count - 1) * 0.25fp;
 					modifier.factor *= 1fp + increase;
 				}
 				if (builder && builder->id == UnitId::AskosiDyad) {

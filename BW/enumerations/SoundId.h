@@ -2892,6 +2892,8 @@ namespace SoundId {
         HelionWeaponfire01                                  = 4302,
         HelionWeaponfire02                                  = 4303,
         HelionWeaponfire03                                  = 4304,
+        
+        LandlockAmbient01                                   = 4293,
     };
 }
 

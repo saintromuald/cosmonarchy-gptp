@@ -452,7 +452,7 @@ namespace hooks {
         u32 active_player = unit->player;
 
         u32 damage = get_modified_damage(unit, (WeaponId::Enum)weapon_id);
-        u16 damage_value = damage * bw::get_damage_factor_for_tooltip(weapon_id, unit);
+        u16 damage_value = damage * bw::get_damage_factor_override(weapon_id);
         sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d", damage_value);
 
         BinDlg* dialog_var = dialog;
