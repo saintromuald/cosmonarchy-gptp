@@ -611,6 +611,7 @@ namespace hooks {
             data.damage_type = DamageType::Independent;
             bw::create_shield_overlay(data.target, data.direction);
             bw::play_sound({SoundId::AncilePassiveProc01, SoundId::AncilePassiveProc03}, data.target); // TODO: Own audio
+            bw::remove_unit_overlay(data.target, ImageId::ImpactDissipationActive);
         }
     }
 
@@ -755,6 +756,7 @@ namespace hooks {
                     target_ext.timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
                     target_ext.values[ValueImpactDissipationBlock] = 1;
                     data.target->update_speed();
+                    bw::add_unit_overlay(data.target, ImageId::ImpactDissipationActive);
                 }
             } break;
             case UnitId::AskosiThaumalogue: {
@@ -765,6 +767,7 @@ namespace hooks {
                         target_ext.timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
                         target_ext.values[ValueImpactDissipationBlock] = 1;
                         data.target->update_speed();
+                        bw::add_unit_overlay(data.target, ImageId::ImpactDissipationActive);
                     }
                 }
             } break;
@@ -1297,8 +1300,10 @@ namespace hooks {
                     case WeaponId::CardinalInoaTwinaxe: {
                         if (data.attacker->order_signal & 0x20) {
                             data.attacker->order_signal &= ~0x20;
-                            bw::heal_proc(data.attacker, data.attacking_player_id, AskosiCardinal::SustainingSermonRange, AskosiCardinal::SustainingSermonHeal);
-                            data.attacker->heal_hp(AskosiCardinal::SustainingSermonHeal, data.attacker);
+                            if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
+                                bw::heal_proc(data.attacker, data.attacking_player_id, AskosiCardinal::SustainingSermonRange, AskosiCardinal::SustainingSermonHeal);
+                                data.attacker->heal_hp(AskosiCardinal::SustainingSermonHeal, data.attacker);
+                            }
                         }
                     } break;
                     case WeaponId::CrematoriumOkliQuadshard: {

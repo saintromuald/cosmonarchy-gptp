@@ -825,7 +825,13 @@ namespace hooks {
                             continue;
                         }
                         // TODO: audiovisuals
-                        fire_bullet(mimic, weapon_id, weapon_target);
+                        auto factor = bw::get_damage_factor_override(weapon_id);
+                        if (factor == weapons_dat::damage_factor[weapon_id]) {
+                            factor = 1;
+                        }
+                        for (auto firings = 0; firings < factor; firings++) {
+                            fire_bullet(mimic, weapon_id, weapon_target);
+                        }
                         apply_weapon_cooldown(mimic, weapon_id);
                         mimic->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
                     }

@@ -2521,7 +2521,7 @@ GuardAi* create_guard_ai(u32 player, u32 unit_id, v2u16 position) {
 }
 
 // Returns the special damage multiplier factor for units that don't use the "Damage Factor" property in weapons.dat.
-u8 get_damage_factor_for_tooltip(WeaponId::Enum weapon_id, Unit* unit) {
+u8 get_damage_factor_override(WeaponId::Enum weapon_id) {
     switch (weapon_id) {
         case WeaponId::HotshotDispatchShotgun:
         case WeaponId::SirenCharybdalRifle: {

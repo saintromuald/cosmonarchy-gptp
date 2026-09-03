@@ -1771,6 +1771,11 @@ void Unit::play_training_sfx() {
             sound_id = static_cast<SoundId::Enum>(bw::rand_between(SoundId::EggAmbient01, SoundId::EggAmbient04));
             delay = bw::rand_between(ZergEgg::AmbientSFXDelayMin, ZergEgg::AmbientSFXDelayMax);
         } break;
+
+        case UnitId::AskosiLandlock: {
+            sound_id = SoundId::LandlockAmbient01;
+            delay = AskosiLandlock::AmbientSFXDelay;
+        } break;
     }
     unit_ext.timers[TimerAmbientSFX] = delay;
     bw::play_sound(sound_id, this);
@@ -1948,6 +1953,7 @@ void Unit::cast_rematerialize() {
             ally->ext().timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
             ally->ext().values[ValueImpactDissipationBlock] = 1;
             ally->update_speed();
+            bw::add_unit_overlay(ally, ImageId::ImpactDissipationActive);
         }
         try_cast = false;
     }
@@ -1990,6 +1996,7 @@ bool Unit::cast_rapid_rendezvous() {
         bw::teleport_to_unit(this, target, 24, {.check_distance = false}, SpriteId::LegionnaireTeleportEffect);
         unit_ext.timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
         unit_ext.values[ValueImpactDissipationBlock] = 1;
+        bw::add_unit_overlay(this, ImageId::ImpactDissipationActive);
         for (Unit* ally : g_unit_search.radial_ex(target, Askosi::RapidRendezvousBuffRange, FilterAlly | FilterIncludingSelf)) {
             if (ally == this) {
                 continue;
@@ -1997,6 +2004,7 @@ bool Unit::cast_rapid_rendezvous() {
             ally->ext().timers[TimerImpactDissipation] = Askosi::ImpactDissipationDuration;
             ally->ext().values[ValueImpactDissipationBlock] = 1;
             ally->update_speed();
+            bw::add_unit_overlay(ally, ImageId::ImpactDissipationActive);
         }
         try_cast = false;
         return true;

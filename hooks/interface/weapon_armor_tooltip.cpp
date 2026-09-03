@@ -78,7 +78,7 @@ const char* get_damage_tootlip_string(WeaponId::Enum weapon_id, Unit* unit, u16 
 
 	auto& unit_ext = unit->ext();
 
-	u8 damage_factor = bw::get_damage_factor_for_tooltip(weapon_id, unit);
+	u8 damage_factor = bw::get_damage_factor_override(weapon_id);
 	u8 upgrade_level = bw::get_upgrade_level(unit->player, weapons_dat::damage_upgrade[weapon_id]);
 	u8 damage_type = weapons_dat::damage_type[weapon_id];
 	u32 base_damage = get_modified_damage(unit, weapon_id);

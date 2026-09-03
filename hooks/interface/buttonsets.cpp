@@ -4277,11 +4277,16 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::AskosiMissionary:
                                 case UnitId::AskosiAphorist:
                                 case UnitId::AskosiDoronin:
                                 case UnitId::AskosiRove: {
                                     if (current_button->icon_id == IconId::ShoulderedBurden) { // Impact Dissipation
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::AskosiMissionary: {
+                                    if (current_button->icon_id == IconId::ShoulderedBurden // Impact Dissipation
+                                    ||  current_button->icon_id == IconId::WraithBurstLasers) { // Accelerated Speech
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

@@ -160,6 +160,7 @@ namespace hooks {
 						mine->sprite->player = unit->sprite->player;
 						helper::turn_unit(mine, unit->current_direction_1);
 						unit->mine_carrier.mine_count -= 1;
+						bw::inherit_debuffs(unit, mine);
 					} else {
 						helper::display_last_network_error_for_player(unit->player);
 					}
