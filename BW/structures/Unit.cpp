@@ -1673,7 +1673,7 @@ bool Unit::can_proc_autovitality(u32 attacking_player, u32 shield_reduce, u32 da
 
 bool Unit::can_be_passive_cloaked(Unit* source) {
     return this->is_completed() && this != source && !this->is_neutral_accessory() && this->id != UnitId::TerranMorningstar
-        && bw::are_mutual_allies(this->player, source->player) && this->player != 11 && !this->is_frozen();
+        && bw::are_mutual_allies(this->player, source->player) && this->player != 11 && !this->is_frozen() && !this->is_burrowed();
 }
 
 bool Unit::can_transport_air() {

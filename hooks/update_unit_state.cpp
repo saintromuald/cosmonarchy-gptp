@@ -134,9 +134,7 @@ namespace hooks {
 					}
 					Unit* target = unit_ext.units[UnitWyvernTargetLock];
 					if (!target || !wyvern_can_fire_at(unit, target)) {
-						auto targets = g_unit_search.radial_ex(unit, range, FilterEnemy)
-                            .sort_by_distance(unit->position);
-
+						auto targets = g_unit_search.radial_ex(unit, range, FilterEnemy).sort_by_distance(unit->position);
 						for (Unit* it : targets) {
 							if (it == unit) {
 								continue;
@@ -154,11 +152,11 @@ namespace hooks {
 						if (unit_ext.values[ValueWyvernWeaponCharging]) {
 							if (!unit_ext.timers[TimerWyvernWeaponCharge]) {
 								unit_ext.values[ValueWyvernWeaponCharging] = false;
-
 								s32 direction = bw::get_angle(x, y, target->get_x(), target->get_y());
 								bw::play_sound({SoundId::WyvernWeaponfire01, SoundId::WyvernWeaponfire02}, unit);
 								bw::artificial_bullet_from(WeaponId::WyvernJacksonCannon, turret->player, turret, target, target->position);
 								unit_ext.timers[TimerWyvernAttackCooldown] = hooks::get_modified_weapon_cooldown(unit, WeaponId::WyvernJacksonCannon);
+								bw::decloak_passive_proc(unit);
 							}
 						} else {
 							unit_ext.values[ValueWyvernWeaponCharging] = true;

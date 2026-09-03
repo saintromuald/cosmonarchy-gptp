@@ -751,9 +751,7 @@ Registry g_triggers = Registry()
             switch (trigger_behavior) {
                 case TriggerBehavior::CloakProximity: {
                     unit_ext.values[ValueTriggerBehaviorProximityCloak] = enable;
-                    if (enable) {
-                        unit_ext.timers[TimerDecloak] = 2secs + 1;
-                    } else if (!unit_ext.timers[TimerFacadePryingEyesCloak]) {
+                    if (!enable) {
                         bw::decloak_proximity_proc(unit);
                     }
                 } break;
@@ -761,8 +759,6 @@ Registry g_triggers = Registry()
                     unit_ext.values[ValueTriggerBehaviorSteadyShroud] = enable;
                     if (!enable) {
                         bw::decloak_passive_proc(unit);
-                    } else {
-                        unit_ext.timers[TimerDecloak] = 2secs + 1;
                     }
                 } break;
                 case TriggerBehavior::Hallucination: {

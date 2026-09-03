@@ -10,6 +10,7 @@ static void stimpack_proc(Unit* unit) {
         case UnitId::TerranMaverickUpstart: unit_ext.timers[TimerStimpackDelay] = 2;           break;
         default:							unit_ext.timers[TimerStimpackDelay] = 1.5secs + 1; break;
     }
+    bw::decloak_passive_proc(unit);
     bw::play_sound(SoundId::StimpackInject01, unit->position);
     unit->sprite->create_top_overlay(ImageId::MaverickStimpackInject);
 }
