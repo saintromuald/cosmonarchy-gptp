@@ -985,6 +985,12 @@ WeaponOffsets* get_weapon_offsets(WeaponId::Enum weapon_id) {
             offsets.count = 1;
             return &offsets;
         } break;
+        case WeaponId::AtreusDauntlessDisruptorCannon: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueLaunchPos;
+            offsets.count = 1;
+            return &offsets;
+        } break;
         case WeaponId::OptectonSunsplitBeam: {
             static WeaponOffsets offsets{};
             offsets.value_id = ValueOptectonLaunchPos1;
@@ -1149,6 +1155,12 @@ WeaponOffsets* get_weapon_offsets(WeaponId::Enum weapon_id) {
             return &offsets;
         } break;
         case WeaponId::GhostwritOndoMoonbeam: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueLaunchPos;
+            offsets.count = 1;
+            return &offsets;
+        } break;
+        case WeaponId::RoveElreScaleshot: {
             static WeaponOffsets offsets{};
             offsets.value_id = ValueLaunchPos;
             offsets.count = 1;

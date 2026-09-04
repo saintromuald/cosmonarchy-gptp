@@ -3524,7 +3524,8 @@ namespace hooks {
                                 } break;
                                 case UnitId::TerranAnticthon: {
                                     if (current_button->icon_id == IconId::RilirokorToxicSpores // Counter-Proposal
-                                    ||	current_button->icon_id == IconId::ApialSensors) {		// Multi-Attack V
+                                    ||	current_button->icon_id == IconId::ApialSensors 		// Multi-Attack V
+                                    ||  current_button->icon_id == IconId::Reclamation) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
