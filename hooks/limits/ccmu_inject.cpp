@@ -1140,7 +1140,7 @@ namespace hooks {
 		memory_patch(0x0042D4B7, &ccmu_extender.sprite_list_pointers);
 
 		// 0x0042D4C0
-		jump_patch(sub_42D4C0_patch_2D4F2, 0x0042D4F2);// Needed for sprite entries above 8191.
+		jump_patch(sub_42D4C0_patch_2D4F2, 0x0042D4F2); // Needed for sprite entries above 8191.
 
 		// drawAllSprites (0x00498D40)
 		memory_patch(0x00498D67, &ccmu_extender.sprite_list_pointers);
