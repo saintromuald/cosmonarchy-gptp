@@ -450,7 +450,7 @@ namespace hooks {
     // Hooked to add sprite nullcheck - Pr0nogo
     b32 ai_military_should_wait_for_group(Unit* unit) { // 0043AA10
         // New code
-        if (!unit || !AssertSprite(unit->sprite)) {
+        if (!unit || !unit->sprite) {
             return false;
         }
 
@@ -474,7 +474,7 @@ namespace hooks {
         MilitaryAi* military_ai = unit_ai->region->military.first;
         for (; military_ai; military_ai = military_ai->link.prev) {
             Unit* unit_it = (Unit*)military_ai->unit;
-            if (unit_it && AssertSprite(unit_it->sprite) && unit_it != unit) {
+            if (unit_it && unit_it->sprite && unit_it != unit) {
                 u32 distance = helper::get_distance_fast(unit_it->position.x, unit->position.x, unit_it->position.y, unit->position.y);
                 if  (distance <= 384
                 &&   helper::ai_are_on_connected_regions(unit_it, unit)
@@ -733,7 +733,7 @@ namespace hooks {
         AiRegion* region = militaryAi->region;
         Unit* slowest_unit = region->slowest_unit;
         if (!slowest_unit
-        ||  !AssertSprite(slowest_unit->sprite)
+        ||  !slowest_unit->sprite
         || 	 slowest_unit->status & UnitStatus::InTransport
         || 	 slowest_unit == unit
         ||	 region->state == RegionState::Attacking
