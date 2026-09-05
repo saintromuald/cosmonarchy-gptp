@@ -365,7 +365,10 @@ static_assert(sizeof(LightUpButtonAnimation) == 0x1E);
 // -------------------------------------------------------------------------------------
 // Extra Union (0x46) members. This union is generally used for data used in drawing
 // -------------------------------------------------------------------------------------
-typedef u32 __fastcall ListboxRowDraw(Box16* row, s32 mode, s32 flags);
+// Per-row item renderer, invoked once per visible row from
+// listbox_update (mode=2) or combo_draw_dropdown (mode=4).
+// 0x004AD6B0 for reference implementations or checked_listbox_item_renderer
+typedef void __fastcall ListboxRowDraw(Dialog* dlg, u32 row_index, Box16* row_rect, s32 mode, s32 flags);
 struct ListOrComboExtra {
     u8 item_count;              // Read this for current item count
     u8 malloc_size;             // Always 254
@@ -378,7 +381,7 @@ struct ListOrComboExtra {
     u8 clicked_index;           // Set by lbuttondown, consumed by lbuttonup
     u8 _unk5;
     u16 combobox_saved_top;     // Cached location for drawing combobox label when open
-    void* (__fastcall* item_renderer)(Box16* row, int mode, int flags);
+    ListboxRowDraw* item_renderer;
 };
 static_assert(sizeof(ListOrComboExtra) == 16);
 

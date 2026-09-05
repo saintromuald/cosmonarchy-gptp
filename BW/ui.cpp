@@ -120,7 +120,7 @@ void update_dialog_text(BinDlg* dialog, s16 index, const char* text) {
 }
 
 s32 background_id(MenuId::Enum menu_id) {
-    if (menu_id < 27) {
+    if (menu_id < MenuId::OriginalCount) {
         return g_menu_backgrounds[menu_id].background_id;
     } else if (menu_id == MenuId::GlueOptions) {
         return background_id(MenuId::GlueSelConn);
@@ -164,7 +164,7 @@ void bindlg_load_background_pcx(BinDlg* dialog, const char* filename, bool apply
     g_background = dialog->bitmap;
     g_background_palette = g_init_palette;
     auto original_glues = g_gl_glues_mode;
-    g_gl_glues_mode = g_gl_glues_mode > 25 ? MenuId::GlueSelConn : g_gl_glues_mode;
+    g_gl_glues_mode = g_gl_glues_mode >= MenuId::OriginalCount ? MenuId::GlueSelConn : g_gl_glues_mode;
     helper::register_menu_functions(0, dialog, 0, 0);
     g_gl_glues_mode = original_glues;
     if (apply_dynamic_theme) {

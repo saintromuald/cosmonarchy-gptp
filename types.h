@@ -76,3 +76,6 @@ inline consteval u32 operator""mins(unsigned long long minutes) { return static_
 
 inline consteval u32 operator""hp(long double value) { return static_cast<u32>(value * 256); }
 inline consteval u32 operator""hp(unsigned long long value) { return static_cast<u32>(value * 256); }
+
+template <typename... Ts>
+struct Overloaded : Ts... { using Ts::operator()...; };

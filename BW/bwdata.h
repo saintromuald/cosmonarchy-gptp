@@ -1474,6 +1474,36 @@ BW_ARRAY(char, 260, g_version_string, 0x005122c8);
 
 BW_REF(GrpFile*, g_current_cursor, 0x00597394);
 BW_REF(u32, g_modal_stack_counter, 0x006d5eb4);
+BW_REF(u8, g_theme_border_color, 0x006Ceb30);
+BW_REF(u8, g_theme_dialog_bg, 0x006ceb2f);
+// Set per-widget before its draw function is called
+BW_REF(graphics::Bitmap*, g_compositor_active_draw_target, 0x006CF4A8);
+
+// Theme sizing globals, populated by apply_dialog_grp_layout @ 0x00419290 during menu load.
+BW_REF(u16, g_theme_radiobutton_size,          0x006D0520);
+BW_REF(u16, g_theme_checkbox_size,             0x006D0528); // single u16, square icon
+BW_REF(u16, g_theme_hslider_endcap_w,          0x006D04F0);
+BW_REF(u16, g_theme_vslider_width,             0x006D04C4);
+BW_REF(u16, g_theme_hslider_height,            0x006D04E0);
+BW_REF(u16, g_theme_vslider_endcap_h,          0x006D04F4);
+BW_REF(u16, g_theme_vslider_segment_h,         0x006D04C8);
+BW_REF(u16, g_theme_hslider_segment_w,         0x006D04D8);
+BW_REF(u16, g_theme_slider_handle_w,           0x006D04CC);
+BW_REF(u16, g_theme_slider_handle_h,           0x006D04EC);
+BW_REF(u16, g_theme_combobox_default_closed_w, 0x006D0514);
+BW_REF(u16, g_theme_combobox_default_closed_h, 0x006D0500);
+BW_REF(u16, g_theme_combobox_default_border_w, 0x006D0504);
+BW_REF(u16, g_theme_combobox_default_border_h, 0x006D04FC);
+BW_REF(u16, g_theme_combobox_default_open_w,   0x006D04B8);
+BW_REF(u16, g_theme_combobox_default_open_h,   0x006D04BC);
+BW_REF(u16, g_theme_combobox_default_arrow_w,  0x006D04D4);
+BW_REF(u16, g_theme_combobox_alt_closed_w,     0x006D04B4);
+BW_REF(u16, g_theme_combobox_alt_closed_h,     0x006D0510);
+BW_REF(u16, g_theme_combobox_alt_border_w,     0x006D052C);
+BW_REF(u16, g_theme_combobox_alt_border_h,     0x006D04D0);
+BW_REF(u16, g_theme_combobox_alt_open_w,       0x006D04F8);
+BW_REF(u16, g_theme_combobox_alt_open_h,       0x006D04E4);
+BW_REF(u16, g_theme_ui_combobox_alt_arrow_w,   0x006D0508);
 
 BW_REF(void*, g_old_exception_filter, 0x00596B78);
 

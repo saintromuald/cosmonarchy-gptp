@@ -890,7 +890,8 @@ namespace helper {
     //// uifeatures
 
     s32 bwfxn_print_xy(const char* text, s32 x, s32 y);
-    void get_color_handle(TextColor color); // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
+    void get_color_handle(TextColor color);      // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
+    inline void get_color_handle(LobbyTextColor color) { get_color_handle((TextColor)color); };
     void set_font_handle(u32* font);																				// 0041FB30
 
     // For targeted_order
@@ -1646,7 +1647,7 @@ namespace helper {
     void unit_order_move_to_target_reset_order_state(Unit* unit, u8 order_id, Unit* target);				// 00479FA0
     void issue_order_targeting_fow(Unit* unit, u8 order_id, u32 fow_unit_id, u16 pos_x, u16 pos_y);			// 00474FB0
 
-    b32 draw_clamped_dialog_image(BinDlg* dest, u32 veeqtism, u32 pos_x, u32 pos_y, u32 flags);				// 004EF600
+    b32 draw_clamped_dialog_image(Box16* clip, u32 sprite_index, u32 pos_x, u32 pos_y, u32 flags);		    // 004EF600
     u8* bw_draw(u16 x_pos, u32 y_pos, u32 x_clamp, u16 y_clamp);											// 004E1C70
     void dialog_draw_text(void* arg, BinDlg* button, u32 flag1, u32 flag2);									// 004EF870
 
