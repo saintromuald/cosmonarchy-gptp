@@ -328,3 +328,10 @@ struct enum_range<PortraitId::Enum> {
     static constexpr int max = 284;
 };
 }
+
+namespace magic_enum::customize {
+template <>
+constexpr customize_t enum_type_name<PortraitId::Enum>() noexcept {
+    return "PortraitId";
+}
+}

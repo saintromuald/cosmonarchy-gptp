@@ -18,7 +18,7 @@
 #include "hooks/update_unit_sight.h"
 #include "hooks/rally_point.h"
 #include "hooks/interface/uifeatures/hotkeys.h"
-#include "systems/audio_system.h"
+#include "systems/audio/audio_system.h"
 #include "hooks/unit_stats/weapon_range.h"
 
 #define NOMINMAX

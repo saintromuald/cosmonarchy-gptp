@@ -89,12 +89,24 @@
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>YAML_CPP_STATIC_DEFINE;WIN32_LEAN_AND_MEAN;CM_DEBUG;HYDRA;WINDOWS_IGNORE_PACKING_MISMATCH;WIN32;_DEBUG;_WINDOWS;_USRDLL;GPTP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SOL_ALL_SAFETIES_ON;YAML_CPP_STATIC_DEFINE;WIN32_LEAN_AND_MEAN;CM_DEBUG;HYDRA;WINDOWS_IGNORE_PACKING_MISMATCH;WIN32;_DEBUG;_WINDOWS;_USRDLL;GPTP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -137,7 +149,7 @@
       <Optimization>Disabled</Optimization>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>YAML_CPP_STATIC_DEFINE;WIN32_LEAN_AND_MEAN;CM_DEBUG;HYDRA;WINDOWS_IGNORE_PACKING_MISMATCH;WIN32;_WINDOWS;_USRDLL;GPTP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SOL_ALL_SAFETIES_ON;YAML_CPP_STATIC_DEFINE;WIN32_LEAN_AND_MEAN;CM_DEBUG;HYDRA;WINDOWS_IGNORE_PACKING_MISMATCH;WIN32;_WINDOWS;_USRDLL;GPTP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -184,7 +196,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>YAML_CPP_STATIC_DEFINE;WIN32_LEAN_AND_MEAN;HYDRA;WINDOWS_IGNORE_PACKING_MISMATCH;WIN32;NDEBUG;_WINDOWS;_USRDLL;GPTP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SOL_ALL_SAFETIES_ON;YAML_CPP_STATIC_DEFINE;WIN32_LEAN_AND_MEAN;HYDRA;WINDOWS_IGNORE_PACKING_MISMATCH;WIN32;NDEBUG;_WINDOWS;_USRDLL;GPTP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -231,8 +243,6 @@
     <Natvis Include="bw_dialog.natvis" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AIScripter\AICore.cpp" />
-    <ClCompile Include="AIScripter\AIParser.cpp" />
     <ClCompile Include="aise_signal.cpp" />
     <ClCompile Include="ai_layouts.cpp" />
     <ClCompile Include="bullet_extender.cpp" />
@@ -316,20 +326,21 @@
     </ClCompile>
     <ClCompile Include="GameModes\Uprising.cpp" />
     <ClCompile Include="ReplayKraken.cpp" />
-    <ClCompile Include="systems\audio_system.cpp" />
+    <ClCompile Include="systems\scripting\scripting.cpp" />
+    <ClCompile Include="systems\audio\audio_system.cpp" />
     <ClCompile Include="systems\ui\palette_fader.cpp" />
     <ClCompile Include="systems\ui\tooltip.cpp" />
     <ClCompile Include="systems\ui\widgets.cpp" />
-    <ClCompile Include="trigger_system\triggers.cpp" />
-    <ClCompile Include="trigger_system\trigger_system.cpp" />
+    <ClCompile Include="systems\triggers\triggers.cpp" />
+    <ClCompile Include="systems\triggers\trigger_system.cpp" />
     <ClCompile Include="utility\RegConfig.cpp" />
     <ClCompile Include="req_table.cpp" />
     <ClCompile Include="BW\extender\TileHeight_extender.cpp" />
     <ClCompile Include="BW\ExtendSightLimit.cpp" />
     <ClCompile Include="BW\structures.cpp" />
     <ClCompile Include="selection_extender.cpp" />
-    <ClCompile Include="trigger_system\trigger_events.cpp" />
-    <ClCompile Include="trigger_system\trigger_parser.cpp" />
+    <ClCompile Include="systems\triggers\trigger_events.cpp" />
+    <ClCompile Include="systems\triggers\trigger_parser.cpp" />
     <ClCompile Include="threshold.cpp" />
     <ClCompile Include="hooks\aiscript\ai_requests.cpp" />
     <ClCompile Include="hooks\aiscript\ai_requests_inject.cpp" />
@@ -601,12 +612,12 @@
     <ClCompile Include="hooks\unit_stats\weapon_range.cpp" />
     <ClCompile Include="hooks\unit_stats\weapon_range_inject.cpp" />
     <ClCompile Include="AI\spells\yamato_gun.cpp" />
-    <ClCompile Include="trigger_system\trigger_hooks.cpp" />
-    <ClCompile Include="trigger_system\trigger_objectives.cpp" />
-    <ClCompile Include="trigger_system\trigger_recolor.cpp" />
-    <ClCompile Include="trigger_system\trigger_spawn.cpp" />
+    <ClCompile Include="systems\triggers\trigger_hooks.cpp" />
+    <ClCompile Include="systems\triggers\trigger_objectives.cpp" />
+    <ClCompile Include="systems\triggers\trigger_recolor.cpp" />
+    <ClCompile Include="systems\triggers\trigger_spawn.cpp" />
     <ClCompile Include="utility.cpp" />
-    <ClCompile Include="trigger_system\trigger_vars.cpp" />
+    <ClCompile Include="systems\triggers\trigger_vars.cpp" />
     <ClCompile Include="unit_search.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Utils\captivating_claws.cpp" />
@@ -645,8 +656,6 @@
     <ClCompile Include="_vendor\yaml-cpp\src\tag.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AIScripter\AICore.h" />
-    <ClInclude Include="AIScripter\AIParser.h" />
     <ClInclude Include="aise_signal.h" />
     <ClInclude Include="ai_layouts.h" />
     <ClInclude Include="arena.h" />
@@ -665,6 +674,22 @@
     <ClInclude Include="hooks\campaign.h" />
     <ClInclude Include="hooks\interface\mainmenu\glu_options.h" />
     <ClInclude Include="safeunion.h" />
+    <ClInclude Include="systems\scripting\api\ai\ai.h" />
+    <ClInclude Include="systems\scripting\api\ai\attack_wave.h" />
+    <ClInclude Include="systems\scripting\api\ai\defense.h" />
+    <ClInclude Include="systems\scripting\api\ai\module.h" />
+    <ClInclude Include="systems\scripting\api\ai\town.h" />
+    <ClInclude Include="systems\scripting\api\core\control_flow.h" />
+    <ClInclude Include="systems\scripting\api\core\prints.h" />
+    <ClInclude Include="systems\scripting\api\core_fwd.h" />
+    <ClInclude Include="systems\scripting\api\core\spatial.h" />
+    <ClInclude Include="scripting\api\core\point.h" />
+    <ClInclude Include="systems\scripting\api\core\time.h" />
+    <ClInclude Include="systems\scripting\api\script_common.h" />
+    <ClInclude Include="systems\scripting\api\core\module.h" />
+    <ClInclude Include="systems\scripting\api\core\player.h" />
+    <ClInclude Include="systems\scripting\api\script_api.h" />
+    <ClInclude Include="systems\scripting\scripting.h" />
     <ClInclude Include="storm\sfile.h" />
     <ClInclude Include="storm\storm.h" />
     <ClInclude Include="storm\smem.hpp" />
@@ -708,12 +733,12 @@
     <ClInclude Include="include\json.hpp" />
     <ClInclude Include="interpolation.h" />
     <ClInclude Include="hooks/snp.h" />
-    <ClInclude Include="systems\audio_system.h" />
+    <ClInclude Include="systems\audio\audio_system.h" />
     <ClInclude Include="systems\ui\palette_fader.h" />
     <ClInclude Include="systems\ui\tooltip.h" />
     <ClInclude Include="systems\ui\widgets.h" />
-    <ClInclude Include="trigger_system\triggers.h" />
-    <ClInclude Include="trigger_system\trigger_eval.h" />
+    <ClInclude Include="systems\triggers\triggers.h" />
+    <ClInclude Include="systems\triggers\trigger_eval.h" />
     <ClInclude Include="_vendor\magic_enum\magic_enum.hpp" />
     <ClInclude Include="_vendor\magic_enum\magic_enum_all.hpp" />
     <ClInclude Include="_vendor\magic_enum\magic_enum_containers.hpp" />
@@ -749,15 +774,15 @@
     <ClInclude Include="include\yaml-cpp\src\token.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="GameModes\Uprising.h" />
-    <ClInclude Include="trigger_system\table_edit.h" />
+    <ClInclude Include="systems\triggers\table_edit.h" />
     <ClInclude Include="ReplayKraken.h" />
     <ClInclude Include="utility\RegConfig.h" />
     <ClInclude Include="req_table.h" />
     <ClInclude Include="BW\enumerations\PortraitId.h" />
     <ClInclude Include="BW\extender\TileHeight_extender.h" />
     <ClInclude Include="selection_extender.h" />
-    <ClInclude Include="trigger_system\trigger_events.h" />
-    <ClInclude Include="trigger_system\trigger_parser.h" />
+    <ClInclude Include="systems\triggers\trigger_events.h" />
+    <ClInclude Include="systems\triggers\trigger_parser.h" />
     <ClInclude Include="threshold.h" />
     <ClInclude Include="hooks\aiscript\ai_requests.h" />
     <ClInclude Include="hooks\orders\building_making\building_modifier.h" />
@@ -788,14 +813,14 @@
     <ClInclude Include="include\yaml-cpp\node\detail\bool_type.h" />
     <ClInclude Include="player_color.h" />
     <ClInclude Include="BW\stat_txt_spec.h" />
-    <ClInclude Include="trigger_system\trigger_hooks.h" />
+    <ClInclude Include="systems\triggers\trigger_hooks.h" />
     <ClInclude Include="trigger_system\trigger_sound.h" />
-    <ClInclude Include="trigger_system\trigger_objectives.h" />
-    <ClInclude Include="trigger_system\trigger_recolor.h" />
-    <ClInclude Include="trigger_system\trigger_spawn.h" />
-    <ClInclude Include="trigger_system\trigger_system.h" />
+    <ClInclude Include="systems\triggers\trigger_objectives.h" />
+    <ClInclude Include="systems\triggers\trigger_recolor.h" />
+    <ClInclude Include="systems\triggers\trigger_spawn.h" />
+    <ClInclude Include="systems\triggers\trigger_system.h" />
     <ClInclude Include="utility.h" />
-    <ClInclude Include="trigger_system\trigger_vars.h" />
+    <ClInclude Include="systems\triggers\trigger_vars.h" />
     <ClInclude Include="unit_constants.h" />
     <ClInclude Include="unit_search.h" />
     <ClInclude Include="Utils.h" />

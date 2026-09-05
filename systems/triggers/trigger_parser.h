@@ -294,6 +294,11 @@ enum class StringType {
 
 std::string enum_name_to_snake_case(std::string_view name);
 
+struct LuaScript {
+    std::string_view name;
+    std::string_view body;
+};
+
 class Parser {
 public:
 	Parser(const char* at);
@@ -301,11 +306,12 @@ public:
 	void unwind(const ParserMarker& marker);
 
 	bool get_char(char c);
-	std::optional<std::string_view> get_word(bool is_command = false);
+	std::optional<std::string_view> get_word(bool is_command = false, bool allow_hash = false);
 	bool has_next_token();
 	void load_command_pos(u32 position);
 	std::optional<std::string_view> get_command();
-	bool get_keyword(const char* keyword);
+	std::optional<LuaScript> get_lua();
+	bool get_keyword(const char* keyword, bool allow_hash = false);
 	bool eat_prefix(const char* chars);
 	std::optional<std::string_view> get_string(StringType type = StringType::Quotable);
 
@@ -469,11 +475,11 @@ private:
 
 	std::optional<fp64> get_time_seconds_raw();
 
-	std::optional<std::string_view> eat_word();
+	std::optional<std::string_view> eat_word(bool allow_hash = false);
 	bool skip_spaces();
 	void skip_all_whitespace();
 	void skip_to_next_line();
-	bool skip_non_word_chars();
+	bool skip_non_word_chars(bool allow_hash = false);
 	bool get_negation();
 	char get_separator();
 	char get_relative_op();

@@ -1,7 +1,7 @@
 #include "cm_ids.h"
 #include "BW\api.h"
 #include "hooks\weapons\weapon_fire.h"
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 #include "data_ext.h"
 
 bool unit_id_is_geyser_refinery(u16 unit_id) {
@@ -156,6 +156,40 @@ bool unit_id_is_combatant(u32 unit_id) {
     if (u32 subunit_id = units_dat::subunit[unit_id]; subunit_id != UnitId::None) {
         if (units_dat::ground_weapon[subunit_id] != WeaponId::None || units_dat::air_weapon[subunit_id] != WeaponId::None) {
             return true;
+        }
+    }
+    return false;
+}
+
+bool unit_id_can_attack_ground(u32 unit_id) {
+    for (u32 weapon_id : { units_dat::ground_weapon[unit_id], units_dat::air_weapon[unit_id] }) {
+        if (weapon_id != WeaponId::None && weapons_dat::target_flags[weapon_id].ground) {
+            return true;
+        }
+    }
+    u32 subunit_id = units_dat::subunit[unit_id];
+    if (subunit_id != UnitId::None) {
+        for (u32 weapon_id : { units_dat::ground_weapon[subunit_id], units_dat::air_weapon[subunit_id] }) {
+            if (weapon_id != WeaponId::None && weapons_dat::target_flags[weapon_id].ground) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool unit_id_can_attack_air(u32 unit_id) {
+    for (u32 weapon_id : { units_dat::ground_weapon[unit_id], units_dat::air_weapon[unit_id] }) {
+        if (weapon_id != WeaponId::None && weapons_dat::target_flags[weapon_id].air) {
+            return true;
+        }
+    }
+    u32 subunit_id = units_dat::subunit[unit_id];
+    if (subunit_id != UnitId::None) {
+        for (u32 weapon_id : { units_dat::ground_weapon[subunit_id], units_dat::air_weapon[subunit_id] }) {
+            if (weapon_id != WeaponId::None && weapons_dat::target_flags[weapon_id].air) {
+                return true;
+            }
         }
     }
     return false;

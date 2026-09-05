@@ -13,31 +13,37 @@ bool mpq_file_exists(const char* filename) {
     return false;
 }
 
-std::string mpq_load_file(const char* filename) {
+std::optional<std::string> mpq_load_file(const char* filename) {
     HANDLE handle = 0;
     SFileOpenFile(filename, &handle);
     if (!handle) {
-        bw::printf("Error: File %s missing!", filename);
+        bw::println("Error: File {} missing!", filename);
         return {};
     }
 
     u32 high = 0;
     auto size = SFileGetFileSize(handle, &high);
     if (size == -1) {
-        bw::printf("Error: Failed to get size of file %s!", filename);
+        bw::println("Error: Failed to get size of file {}!", filename);
         SFileCloseFile(handle);
         return {};
     }
     if (high) {
-        bw::printf("Error: File %s too big!", filename);
+        bw::println("Error: File {} too big!", filename);
         SFileCloseFile(handle);
         return {};
     }
 
-    std::string file;
+    std::string file(size, 0);
     if (size) {
-        file.resize(size, 0);
-        SFileReadFile(handle, file.data(), file.size(), 0, 0);
+        u32 bytes_read = 0;
+        SFileReadFile(handle, file.data(), file.size(), &bytes_read, 0);
+        if (bytes_read != size) {
+            bw::println("Error: Failed to read file {}!", filename);
+            SFileCloseFile(handle);
+            return {};
+        }
+
         SFileCloseFile(handle);
         return file;
     }

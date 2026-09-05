@@ -4,7 +4,7 @@
 #include <globals.h>
 #include <hooks/limits/sfx_extender.h>
 #include <hooks/orders/building_making/building_modifier.h>
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 
 namespace hooks {
     // The structure is being constructed

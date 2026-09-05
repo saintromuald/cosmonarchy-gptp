@@ -400,3 +400,10 @@ struct enum_range<flingy_id::Enum> {
     static constexpr int max = 567;
 };
 }
+
+namespace magic_enum::customize {
+template <>
+constexpr customize_t enum_type_name<flingy_id::Enum>() noexcept {
+    return "FlingyId";
+}
+}

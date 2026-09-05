@@ -111,7 +111,7 @@
 #include "hooks/aiscript/ai_requests.h"
 #include "BW/ExtendSightLimit.h"
 // #include "hooks/requirements/requirements.h"
-#include "trigger_system/trigger_hooks.h"
+#include "systems/triggers/trigger_hooks.h"
 #include "hooks/loading_hook.h"
 #include "hooks/DatExtend/dat_load.h"
 #include "DatExtend/datext.h"
@@ -121,6 +121,7 @@
 #include "selection_extender.h"
 #include "hooks/update_unit_sight.h"
 #include "utility/RegConfig.h"
+#include "systems/scripting/scripting.h"
 #include "hooks/audiovisuals/image_render.h"
 #include "hooks/interface/minimap.h"
 #include "hooks/game/creategame.h"
@@ -226,6 +227,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     // I am not sure if this is early enough for it work on the current run
     // might require a game restart...                               -Veeq7
     RegConfig::overwrite_reg_config();
+
+    lua::ScriptManager::generate_lsp_annotations();
 
     // In case we need to attach a debugger on launch
     /*

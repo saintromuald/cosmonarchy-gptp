@@ -9,7 +9,7 @@
 #include <Windows.h>
 
 #include "BW/api.h"
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 #include "logger.h"
 
 static constexpr auto UploadAttempts = 3;

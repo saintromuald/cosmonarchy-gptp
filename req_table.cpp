@@ -1,6 +1,6 @@
 #include "req_table.h"
-#include "trigger_system\trigger_system.h"
-#include "hooks\grafting\button_functions.h"
+#include "systems/triggers/trigger_system.h"
+#include "hooks/grafting/button_functions.h"
 
 ReqTableEntry req_table[UnitId::Count];
 static bool req_table_init;

@@ -26,8 +26,8 @@
 #include "tactical_ai.h"
 #include "threshold.h"
 #include "ai_layouts.h"
-#include "trigger_system/trigger_system.h"
-#include "trigger_system/trigger_parser.h"
+#include "systems/triggers/trigger_system.h"
+#include "systems/triggers/trigger_parser.h"
 #include "graphics/Bitmap.h"
 #include "data_ext.h"
 #include "config.h"
@@ -51,9 +51,10 @@
 #include "GameModes/TheTurning.h"
 #include "aise_signal.h"
 #include "Game.h"
-#include "systems/audio_system.h"
+#include "systems/audio/audio_system.h"
 #include "NewGameCommand.h"
 #include "hooks/race_randomization.h"
+#include "../systems/scripting/scripting.h"
 
 #include <random>
 #include <format>
@@ -687,10 +688,12 @@ namespace hooks {
         // Init extended features
         refresh_search_index();
         init_player_data();
+        lua::g_script_manager = std::make_unique<lua::ScriptManager>();
         init_trigger_system();
         g_ai_layouts.init();
         init_custom_ai();
         init_hotkeys();
+        g_game->first_frame();
 
         g_aise_state.cheats_allowed = bw::get_game_kind() != GameKind::Scenario;
 
@@ -830,13 +833,13 @@ namespace hooks {
             return true;
         }
 
-        g_game->first_frame();
         // @ReplayKraken: For now we are not using hype score -Veeq7
 		// g_globals->sample_eco();
         g_graphics.reset_all_graphics();
 
         // Update extended features
         bw::set_ingame_loop_state(true);
+        lua::g_script_manager->tick();
         update_trigger_system(true);
         g_ai_layouts.update();
         update_custom_ai();
@@ -4341,6 +4344,7 @@ namespace hooks {
     }
 
     bool game_end() {
+        lua::g_script_manager.reset();
         AudioSystem::instance().stop_playing_sounds();
         end_threshold();
         g_graphics.reset_stat_res_graphics();

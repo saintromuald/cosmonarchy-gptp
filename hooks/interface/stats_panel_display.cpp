@@ -3,7 +3,7 @@
 #include "BW/api.h"
 #include "BW/stat_txt_spec.h"
 #include "hooks/interface/buttonsets.h"
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 #include "DatExtend/datext.h"
 #include "player_color.h"
 #include "BW/structures/Unit.h"

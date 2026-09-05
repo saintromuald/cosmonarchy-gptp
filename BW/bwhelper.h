@@ -292,6 +292,7 @@ namespace helper {
     // For ai_send_suicide
     bool is_threat(Unit* target, Unit* unit);															// 00476930
     void prepare_suicide(Unit* unit);																	// 0043CD40
+    void ai_attack_add(u32 count, UnitId::Enum unit_id, u32 player);                                    // 00447230
     u32 ai_attack_clear(s32 player);																	// 00439500
     bool ai_attack_manager(s32 player, s32 x, s32 y, s32 bOverrideLastAttack, s32 bFallbackAirOnly);	// 0043ABB0
 
@@ -1171,6 +1172,7 @@ namespace helper {
 
     AiTown* aiscript_start_town(u32 x, u32 y, u32 resarea, u32 player);															// 00434220
     AiTown* aiscript_start_areatown(Box32* area, u32 resarea, u32 player);														// 00434060
+    void ai_update_town_regions(u32 player);																				    // 0045B810
 
     typedef s32 __cdecl VictoryFunc();
     extern VictoryFunc* Victory;

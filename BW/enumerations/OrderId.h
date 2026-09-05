@@ -407,3 +407,10 @@ enum Enum {
     AskosiSalvage               = 184,  // Feedback                 | Askosi unit/structure salvage ability
 };
 }
+
+namespace magic_enum::customize {
+template <>
+constexpr customize_t enum_type_name<OrderId::Enum>() noexcept {
+    return "OrderId";
+}
+}

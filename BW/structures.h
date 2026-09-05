@@ -917,6 +917,9 @@ struct TownReq {
     u16 id;
 };
 
+struct AiTownExt;
+extern AiTownExt& get_town_ext(AiTown* town);
+
 struct AiTown {
     AiTown* prev;				// 0x00
     AiTown* next;				// 0x04
@@ -936,6 +939,8 @@ struct AiTown {
     Unit* mineral;				// 0x2C
     Unit* old_gas_buildings[3];	// 0x30
     TownReq requests[0x64];		// 0x3C
+
+    AiTownExt& ext() { return get_town_ext(this); }
 };
 C_ASSERT(sizeof(AiTown) == 0x1cc);
 
@@ -1002,14 +1007,14 @@ struct AI_Main {
     u8	attack_failed;					/*022E*/
     u8	difficulty;						/*022F*/
     u16 attackers[0x40];				/*0230*/
-    u32 ai_defensebuild_gg[10];			/*02B0*/
-    u32 ai_defensebuild_ag[10];			/*02D8*/
-    u32 ai_defensebuild_ga[10];			/*0300*/
-    u32 ai_defensebuild_aa[10];			/*0328*/
-    u32 ai_defenseuse_gg[10];			/*0350*/
-    u32 ai_defenseuse_ag[10];			/*0378*/
-    u32 ai_defenseuse_ga[10];			/*03A0*/
-    u32 ai_defenseuse_aa[10];			/*03C8*/
+    u16 ai_defensebuild_gg[20];			/*02B0*/
+    u16 ai_defensebuild_ag[20];			/*02D8*/
+    u16 ai_defensebuild_ga[20];			/*0300*/
+    u16 ai_defensebuild_aa[20];			/*0328*/
+    u16 ai_defenseuse_gg[20];			/*0350*/
+    u16 ai_defenseuse_ag[20];			/*0378*/
+    u16 ai_defenseuse_ga[20];			/*03A0*/
+    u16 ai_defenseuse_aa[20];			/*03C8*/
     u8	ai_define_max[UnitsIdLimit];	/*03F0*/
     Unit* main_medic;					/*04D4*/
     Box32 gen_cmd_loc;					/*04D8*/

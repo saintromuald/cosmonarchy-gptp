@@ -9,7 +9,7 @@
 #include "BW\api.h"
 #include "data_ext.h"
 #include "Utils.h"
-#include "systems/audio_system.h"
+#include "systems/audio/audio_system.h"
 #include "effect_field.h"
 
 #include <variant>

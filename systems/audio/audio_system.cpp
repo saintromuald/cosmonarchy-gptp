@@ -101,7 +101,7 @@ void AudioSystem::initialize_direct_sound() {
 }
 
 void AudioSystem::initialize_sound_paths() {
-	std::string file = mpq_load_file("arr\\sounds.txt");
+	std::string file = mpq_load_file("arr\\sounds.txt").value_or("");
 
 	u32 line_count = std::count(file.begin(), file.end(), '\n');
 	// Add one more for the last line if file doesn't end with newline
@@ -238,8 +238,8 @@ bool AudioSystem::load_ds_buffer(SoundMainBuffer* sound) {
 		return false;
 	}
 
-	std::string file = mpq_load_file(sound->path);
-	if (file.empty()) {
+	auto file = mpq_load_file(sound->path);
+	if (!file) {
 		bw::printf("Error: File %s missing!", sound->path);
 		return false;
 	}
@@ -248,8 +248,8 @@ bool AudioSystem::load_ds_buffer(SoundMainBuffer* sound) {
 	size_t size = 0;
 	s8* data = nullptr;
 
-	u8* at = (u8*)file.data();
-	void* end = file.data() + file.size();
+	u8* at = (u8*)file->data();
+	void* end = file->data() + file->size();
 	while (at < end) {
 		u32* type = (u32*)at;
 		switch (*type) {

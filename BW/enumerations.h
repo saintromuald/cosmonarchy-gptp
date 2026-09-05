@@ -265,6 +265,13 @@ enum Enum : u8 {
 };
 }
 
+namespace magic_enum::customize {
+template <>
+constexpr customize_t enum_type_name<RaceId::Enum>() noexcept {
+    return "RaceId";
+}
+}
+
 enum class PlayableRaceId {
     Zerg,
     Terran,
@@ -338,6 +345,13 @@ enum Enum {
     HumanDefeated      = 10, // Or left the game
     ComputerDefeated   = 11, // Or left the game
 };
+}
+
+namespace magic_enum::customize {
+template <>
+constexpr customize_t enum_type_name<PlayerType::Enum>() noexcept {
+    return "PlayerType";
+}
 }
 
 // Based on BWAPI; for use with units_dat::base_property[]

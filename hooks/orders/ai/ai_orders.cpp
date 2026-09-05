@@ -7,7 +7,7 @@
 #include "globals.h"
 #include "custom_ai.h"
 #include "hooks/harvest.h"
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 
 static s32 compare_gas_buildings(const void* a, const void* b) {
     Unit* ua = *(Unit**)a;
@@ -16,8 +16,8 @@ static s32 compare_gas_buildings(const void* a, const void* b) {
 }
 
 void sort_gas_buildings(AiTown* town) {
-    AiTownExt* town_ext = get_town_ext(town);
-    qsort(town_ext->gas_buildings, town_ext->gas_buildings_count, sizeof(Unit*), compare_gas_buildings);
+    auto& town_ext = get_town_ext(town);
+    qsort(town_ext.gas_buildings, town_ext.gas_buildings_count, sizeof(Unit*), compare_gas_buildings);
 }
 
 namespace hooks {
@@ -865,34 +865,34 @@ namespace hooks {
         }
         */
 
-        AiTownExt* town_ext = get_town_ext(town);
+        auto& town_ext = get_town_ext(town);
         u32 counter = 0;
-        for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
-            Unit* gas_building = town_ext->gas_buildings[i];
+        for (u32 i = 0; i < town_ext.gas_buildings_count; ++i) {
+            Unit* gas_building = town_ext.gas_buildings[i];
             if (ai_get_vespene_type(gas_building, town->player, for_harvesting) == gas_state && get_gas_tier(gas_building) == 4) {
                 if (index == ++counter) {
                     return gas_building;
                 }
             }
         }
-        for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
-            Unit* gas_building = town_ext->gas_buildings[i];
+        for (u32 i = 0; i < town_ext.gas_buildings_count; ++i) {
+            Unit* gas_building = town_ext.gas_buildings[i];
             if (ai_get_vespene_type(gas_building, town->player, for_harvesting) == gas_state && get_gas_tier(gas_building) == 3) {
                 if (index == ++counter) {
                     return gas_building;
                 }
             }
         }
-        for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
-            Unit* gas_building = town_ext->gas_buildings[i];
+        for (u32 i = 0; i < town_ext.gas_buildings_count; ++i) {
+            Unit* gas_building = town_ext.gas_buildings[i];
             if (ai_get_vespene_type(gas_building, town->player, for_harvesting) == gas_state && get_gas_tier(gas_building) == 2) {
                 if (index == ++counter) {
                     return gas_building;
                 }
             }
         }
-        for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
-            Unit* gas_building = town_ext->gas_buildings[i];
+        for (u32 i = 0; i < town_ext.gas_buildings_count; ++i) {
+            Unit* gas_building = town_ext.gas_buildings[i];
             if (ai_get_vespene_type(gas_building, town->player, for_harvesting) == gas_state && get_gas_tier(gas_building) == 1) {
                 if (index == ++counter) {
                     return gas_building;
@@ -939,9 +939,9 @@ namespace hooks {
         u32 best_score = 0;
         u32 best_distance = UINT_MAX;
         Unit* best_gas_refinery = 0;
-        AiTownExt* town_ext = get_town_ext(ai_town);
-        for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
-            Unit* unit = town_ext->gas_buildings[i];
+        auto& town_ext = get_town_ext(ai_town);
+        for (u32 i = 0; i < town_ext.gas_buildings_count; ++i) {
+            Unit* unit = town_ext.gas_buildings[i];
             if (!(unit->status & UnitStatus::Completed)) {
                 continue;
             }
@@ -1062,15 +1062,15 @@ namespace hooks {
 
     // Hooked to improve AI gas harvesting. -Pr0nogo
     Unit* get_resource_area_gas(u32 resarea_id, AiTown* town) { // based on 00444460
-        AiTownExt* town_ext = get_town_ext(town);
-        town_ext->gas_buildings_count = 0;
+        auto& town_ext = get_town_ext(town);
+        town_ext.gas_buildings_count = 0;
 
         ResourceArea* resarea = &g_base_array[resarea_id];
         for (Unit* unit = *g_first_visible_unit; unit; unit = unit->link.next) {
             if (unit->sprite && unit->main_order_id && units_dat::base_property[unit->id] & UnitProperty::ResourceContainer) {
                 if (!unit_id_is_minerals(unit->id) && unit->building.resource.resarea == resarea_id) {
-                    if (town_ext->gas_buildings_count < GasBuildingsCap) {
-                        town_ext->gas_buildings[town_ext->gas_buildings_count++] = unit;
+                    if (town_ext.gas_buildings_count < GasBuildingsCap) {
+                        town_ext.gas_buildings[town_ext.gas_buildings_count++] = unit;
                     }
                 }
             }
@@ -1104,14 +1104,14 @@ namespace hooks {
                 }
             }
 
-            AiTownExt* town_ext = get_town_ext(town);
+            auto& town_ext = get_town_ext(town);
             u32 resarea = town->resarea;
             if (town->resource_units_not_set) {
                 town->resource_units_not_set = 0;
                 get_resource_area_gas(resarea, town);
                 sort_gas_buildings(town);
-                for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
-                    helper::ai_make_guard(town->player, town_ext->gas_buildings[i]);
+                for (u32 i = 0; i < town_ext.gas_buildings_count; ++i) {
+                    helper::ai_make_guard(town->player, town_ext.gas_buildings[i]);
                 }
             }
             if (!town->mineral) {
@@ -1179,8 +1179,8 @@ namespace hooks {
 
             // New limit
             u32 max_gas_worker_count = 0;
-            for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
-                Unit* gas = town_ext->gas_buildings[i];
+            for (u32 i = 0; i < town_ext.gas_buildings_count; ++i) {
+                Unit* gas = town_ext.gas_buildings[i];
                 if (gas->status & UnitStatus::Completed) {
                     max_gas_worker_count += 3;
                 }
@@ -2557,13 +2557,13 @@ namespace hooks {
         if (units_dat::base_property[unit->id] & UnitProperty::ResourceContainer) {
             for (u32 player = 0; player < PlayerLimit; ++player) {
                 for (town = g_ai_town_list[player].first; town; town = town->prev) {
-                    AiTownExt* town_ext = get_town_ext(town);
+                    auto& town_ext = get_town_ext(town);
                     if (town->mineral == unit) {
                         town->mineral = 0;
                     }
-                    for (u32 i = 0; i < town_ext->gas_buildings_count; ++i) {
-                        if (town_ext->gas_buildings[i] == unit) {
-                            town_ext->gas_buildings[i] = town_ext->gas_buildings[--town_ext->gas_buildings_count];
+                    for (u32 i = 0; i < town_ext.gas_buildings_count; ++i) {
+                        if (town_ext.gas_buildings[i] == unit) {
+                            town_ext.gas_buildings[i] = town_ext.gas_buildings[--town_ext.gas_buildings_count];
                         }
                     }
                     if (town->resarea) {

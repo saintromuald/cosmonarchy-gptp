@@ -1,7 +1,7 @@
 #include "cm_utils.h"
 #include "BW\api.h"
 #include "DatExtend/datext.h"
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 #include "hooks/limits/sfx_extender.h"
 #include "ai_layouts.h"
 #include "BW\stat_txt_spec.h"

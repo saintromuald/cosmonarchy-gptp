@@ -221,8 +221,8 @@ namespace hooks {
 					if (!town->inited) {
 						town->inited = 1;
 						town->mineral = 0;
-						AiTownExt* town_ext = get_town_ext(town);
-						town_ext->gas_buildings_count = 0;
+						auto& town_ext = get_town_ext(town);
+						town_ext.gas_buildings_count = 0;
 
 						if (layouts_town.worker_maynard) {
 							layouts_town.worker_maynard--;
@@ -303,8 +303,8 @@ namespace hooks {
 				if (!town->inited) {
 					town->inited = 1;
 					town->mineral = 0;
-					AiTownExt* town_ext = get_town_ext(town);
-					town_ext->gas_buildings_count = 0;
+					auto& town_ext = get_town_ext(town);
+					town_ext.gas_buildings_count = 0;
 				}
 
 				bool is_valid_town_hall = false;
@@ -338,9 +338,9 @@ namespace hooks {
 				} else {
 					u32 refinery_id = helper::get_default_refinery_type(unit->player);
 					if (unit->id == refinery_id || unit->id == UnitId::ResourceVespeneRidge	|| unit->id == UnitId::ResourceVespeneGeyser) {
-						AiTownExt* town_ext = get_town_ext(town);
-						if (town_ext->gas_buildings_count < GasBuildingsCap) {
-							town_ext->gas_buildings[town_ext->gas_buildings_count++] = unit;
+						auto& town_ext = get_town_ext(town);
+						if (town_ext.gas_buildings_count < GasBuildingsCap) {
+							town_ext.gas_buildings[town_ext.gas_buildings_count++] = unit;
 							sort_gas_buildings(town);
 						}
 						if (town->resarea) {

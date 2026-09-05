@@ -12,6 +12,8 @@ b32 unit_id_is_tech_tier_structure(u32 unit_id);
 bool unit_id_is_transport(u32 unit_id);
 bool unit_id_is_race(u32 unit_id, u32 race);
 bool unit_id_is_combatant(u32 unit_id);
+bool unit_id_can_attack_ground(u32 unit_id);
+bool unit_id_can_attack_air(u32 unit_id);
 bool unit_id_is_protoss_warp_factory(u32 unit_id);
 bool unit_id_has_flash_shielding(u32 unit_id);
 bool unit_id_has_shield_regeneration(u32 unit_id);

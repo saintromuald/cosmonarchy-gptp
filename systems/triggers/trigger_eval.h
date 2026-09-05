@@ -3,6 +3,7 @@
 #include "trigger_system.h"
 #include "trigger_spawn.h"
 #include "trigger_vars.h"
+#include "../scripting/scripting.h"
 
 #include <tuple>
 #include <functional>
@@ -204,6 +205,11 @@ public:
     }
 
     bool evaluate_comment_actions() {
+        if (auto script = m_parser.get_lua()) {
+            lua::g_script_manager->load_script_string(std::string{script->name}, script->body, m_player);
+            return true;
+        }
+
         bool has_commands = false;
         while (const auto command = m_parser.get_command()) {
             if (!has_commands && command->size() >= 1 && isupper((*command)[0])) {

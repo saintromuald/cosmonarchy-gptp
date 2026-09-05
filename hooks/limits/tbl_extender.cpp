@@ -53,7 +53,7 @@ void __cdecl load_stat_txt() { // 004C3A20
     if (!mpq_file_exists(RezStatTxt)) {
         load_stat_txt_error("File {} not found", RezStatTxt);
     }
-    std::istringstream stream{mpq_load_file(RezStatTxt)};
+    std::istringstream stream{mpq_load_file(RezStatTxt).value_or("")};
 
     size_t data_size = 0;
     std::vector<std::string> lines;

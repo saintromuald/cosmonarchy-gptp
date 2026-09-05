@@ -2906,3 +2906,10 @@ struct enum_range<SoundId::Enum> {
     static constexpr int max = 4196;
 };
 }
+
+namespace magic_enum::customize {
+template <>
+constexpr customize_t enum_type_name<SoundId::Enum>() noexcept {
+    return "SoundId";
+}
+}

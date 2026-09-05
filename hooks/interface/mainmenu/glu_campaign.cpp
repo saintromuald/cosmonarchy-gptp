@@ -6,7 +6,7 @@
 #include "systems/ui/widgets.h"
 #include "systems/ui/tooltip.h"
 #include "systems/ui/palette_fader.h"
-#include "trigger_system/trigger_vars.h"
+#include "systems/triggers/trigger_vars.h"
 
 #include <algorithm>
 #include <format>

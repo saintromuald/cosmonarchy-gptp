@@ -1,6 +1,6 @@
 #include "building_modifier.h"
 #include <globals.h>
-#include "trigger_system\trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 
 namespace cm {
 BuildingModifier advance_building_modifier(Unit* unit, const ProgressBuildOptions& options) {

@@ -1,7 +1,7 @@
 #include "harvest.h"
 #include "../BW/api.h"
 
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 
 namespace bw {
 bool harvester_is_active(Unit* unit, Unit* target) {

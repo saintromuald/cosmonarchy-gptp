@@ -1,5 +1,5 @@
 #include "triggers.h"
-#include "systems/audio_system.h"
+#include "systems/audio/audio_system.h"
 #include "trigger_parser.h"
 #include "trigger_recolor.h"
 #include "trigger_objectives.h"
@@ -14,6 +14,7 @@
 #include "aise_signal.h"
 #include "CampaignManager.h"
 #include <limits>
+#include "../scripting/scripting.h"
 
 namespace trigger {
 
@@ -1191,6 +1192,11 @@ Registry g_triggers = Registry()
             unit->silent_remove();
             bw::create_unit_in_game(unit_id, player, pos.x, pos.y, nullptr, had_ai);
         }
+    })
+    .add_action("run_lua_script", [](Context& ctx, std::string path) {
+        std::ranges::replace(path, '.', '/');
+        path = "lua/" + path + ".lua";
+        lua::g_script_manager->load_script_mpq(path.c_str(), ctx.player());
     });
 
 } // namespace trigger

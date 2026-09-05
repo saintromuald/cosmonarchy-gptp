@@ -1373,3 +1373,10 @@ struct enum_range<ImageId::Enum> {
     static constexpr int max = 2304;
 };
 }
+
+namespace magic_enum::customize {
+template <>
+constexpr customize_t enum_type_name<ImageId::Enum>() noexcept {
+    return "ImageId";
+}
+}

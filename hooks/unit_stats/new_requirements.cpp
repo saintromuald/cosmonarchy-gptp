@@ -1,7 +1,7 @@
 #include "new_requirements.h"
 #include <hook_tools.h>
 #include "hooks/rally_point.h"
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 
 namespace hooks {
     enum {
