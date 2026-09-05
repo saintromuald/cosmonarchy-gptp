@@ -1,6 +1,7 @@
 #include "custom_glues.h"
 #include "hooks/snp.h"
 #include "glu_campaign.h"
+#include "glu_options.h"
 
 static void update_window() {
     if (!g_main_window) return;
@@ -116,7 +117,8 @@ void glu_main_switch() {
             glu_provider_select(true);
         } break;
         case MenuId::GlueOptions: {
-            glu_options();
+            GluOptions dialog{};
+            dialog.load();
         } break;
         case MenuId::GluCampaignList: {
             GluCampaignList dialog{};

@@ -318,6 +318,7 @@
     <ClCompile Include="ReplayKraken.cpp" />
     <ClCompile Include="systems\audio_system.cpp" />
     <ClCompile Include="systems\ui\palette_fader.cpp" />
+    <ClCompile Include="systems\ui\tooltip.cpp" />
     <ClCompile Include="systems\ui\widgets.cpp" />
     <ClCompile Include="trigger_system\triggers.cpp" />
     <ClCompile Include="trigger_system\trigger_system.cpp" />
@@ -662,6 +663,7 @@
     <ClInclude Include="CampaignManager.h" />
     <ClInclude Include="effect_field.h" />
     <ClInclude Include="hooks\campaign.h" />
+    <ClInclude Include="hooks\interface\mainmenu\glu_options.h" />
     <ClInclude Include="safeunion.h" />
     <ClInclude Include="storm\sfile.h" />
     <ClInclude Include="storm\storm.h" />
@@ -705,10 +707,10 @@
     <ClInclude Include="hooks\update_unit_sight.h" />
     <ClInclude Include="include\json.hpp" />
     <ClInclude Include="interpolation.h" />
-    <ClInclude Include="main_menu.h" />
     <ClInclude Include="hooks/snp.h" />
     <ClInclude Include="systems\audio_system.h" />
     <ClInclude Include="systems\ui\palette_fader.h" />
+    <ClInclude Include="systems\ui\tooltip.h" />
     <ClInclude Include="systems\ui\widgets.h" />
     <ClInclude Include="trigger_system\triggers.h" />
     <ClInclude Include="trigger_system\trigger_eval.h" />

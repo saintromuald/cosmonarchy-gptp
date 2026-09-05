@@ -4,30 +4,35 @@
 #include "BW/ui.h"
 #include "CampaignManager.h"
 #include "systems/ui/widgets.h"
+#include "systems/ui/tooltip.h"
 #include "systems/ui/palette_fader.h"
 #include "trigger_system/trigger_vars.h"
 
 #include <algorithm>
 #include <format>
-#include <fstream>
-#include <memory>
 #include <optional>
 #include <string>
-#include <string_view>
-#include <sstream>
 
-GluCampaignList::GluCampaignList() 
+constexpr size_t MaxComboboxEntries = 20;
+
+GluCampaignList::GluCampaignList()
     : ui::Menu("", ui::PalettePreserve::FontShade | ui::PalettePreserve::WidgetColors) {
+    const char hotkey_color = static_cast<char>(LobbyTextColor::YellowGreen);
+    const char revert_color = static_cast<char>(LobbyTextColor::Revert);
 
     image(DialogBounds::from_ltrb(472, 356, 639, 446), "glue\\dynamic\\pCancel.pcx")->translucent();
     image(DialogBounds::from_ltrb(436, 336, 639, 406), "glue\\dynamic\\pOk.pcx")->translucent();
-    m_cancel_button = lightup_button(DialogBounds::from_ltrb(477, 419, 608, 440), "c\x04" "C\x01" "ancel")->enable_hotkey()->set_cancel();
-    m_ok_button = lightup_button(DialogBounds::from_ltrb(441, 383, 592, 404), "o\x04" "O\x01" "k")->enable_hotkey()->set_default()->disable();
-    
+    m_cancel_button = lightup_button(DialogBounds::from_ltrb(477, 419, 608, 440),
+        std::format("{}C{}ancel", hotkey_color, revert_color))->enable_hotkey('c')->set_cancel();
+    m_ok_button = lightup_button(DialogBounds::from_ltrb(441, 383, 592, 404),
+        std::format("{}O{}k", hotkey_color, revert_color))->enable_hotkey('o')->set_default()->disable();
+
     image(DialogBounds::from_xywh(0, 336, 236, 71), "glue\\dynamic\\left_upper_button.pcx")->translucent();
     image(DialogBounds::from_xywh(0, 356, 200, 91), "glue\\dynamic\\left_lower_button.pcx")->translucent();
-    m_replay_button = lightup_button(DialogBounds::from_ltrb(20, 419, 200, 440), "rWatch \x04" "R\x01" "eplay")->enable_hotkey();
-    m_custom_button = lightup_button(DialogBounds::from_ltrb(40, 383, 240, 404), "uPlay C\x04" "u\x01" "stom")->enable_hotkey();
+    m_replay_button = lightup_button(DialogBounds::from_ltrb(20, 419, 200, 440),
+        std::format("Watch {}R{}eplay", hotkey_color, revert_color))->enable_hotkey('r');
+    m_custom_button = lightup_button(DialogBounds::from_ltrb(40, 383, 240, 404),
+        std::format("Play C{}u{}stom", hotkey_color, revert_color))->enable_hotkey('u');
 
     image(DialogBounds::from_ltrb(0, 0, 240, 333), "glue\\dynamic\\pjoin_reverse.pcx")->translucent();
     label(DialogBounds::from_ltrb(35, 60, 230, 90), "Official Campaigns")->fontsize(ui::FontSize::Large16x);
@@ -52,7 +57,7 @@ void GluCampaignList::load_campaign_by_index(u16 index) {
         m_ok_button->disable();
         m_author->set_text("");
         m_mission_count->set_text("");
-        m_title->set_text("\6" "Error loading campaign");
+        m_title->set_text(std::format("{}Error loading campaign", static_cast<char>(LobbyTextColor::White)));
         return;
     }
 
@@ -75,7 +80,7 @@ void GluCampaignList::load_campaign_by_index(u16 index) {
 
     const auto completed = std::ranges::count_if(selected->missions,
         [&](const auto& mission) { return selected->is_mission_completed(mission); });
-    auto mission_count = std::format("{}{}/{} missions completed", static_cast<char>(3), completed, selected->missions.size());
+    auto mission_count = std::format("{}{}/{} missions completed", static_cast<char>(LobbyTextColor::Green), completed, selected->missions.size());
     m_mission_count->set_text(mission_count);
 
     std::string background = selected->background && !selected->background->empty()
@@ -114,10 +119,12 @@ void GluCampaignList::on_init() {
         } else {
             load_campaign_by_index(0);
         }
-    })->on_selection([&](ui::Widget& self, u16 index) {
+    })->on_selection([&](ui::Widget&, u16 index) {
         load_campaign_by_index(index);
     });
-    if (!g_music_playing) helper::dialog_music_fade(MusicId_Title);
+    if (!g_music_playing) {
+        helper::dialog_music_fade(MusicId_Title);
+    }
 
     if (g_campaign_manager.has_transition_error()) {
         ui::modal_ok(g_campaign_manager.take_transition_error());
@@ -153,15 +160,19 @@ GluCampaignDetails::GluCampaignDetails()
     : ui::Menu(ui::BackgroundState::instance().current().empty()
         ? initial_background()
         : ui::BackgroundState::instance().current()) {
+    const auto hotkey_color = static_cast<char>(LobbyTextColor::YellowGreen);
+    const auto revert_color = static_cast<char>(LobbyTextColor::Revert);
 
     image(DialogBounds::from_ltrb(472, 356, 639, 446), "glue\\dynamic\\pCancel.pcx")->translucent();
     image(DialogBounds::from_ltrb(436, 336, 639, 406), "glue\\dynamic\\pOk.pcx")->translucent();
-    m_cancel_button = lightup_button(DialogBounds::from_ltrb(477, 419, 608, 440), "c\x04" "C\x01" "ancel")->enable_hotkey()->set_cancel();
-    m_ok_button = lightup_button(DialogBounds::from_ltrb(441, 383, 592, 404), "o\x04" "O\x01" "k")->enable_hotkey()->set_default();
+    m_cancel_button = lightup_button(DialogBounds::from_ltrb(477, 419, 608, 440),
+        std::format("{}C{}ancel", hotkey_color, revert_color))->enable_hotkey('c')->set_cancel();
+    m_ok_button = lightup_button(DialogBounds::from_ltrb(441, 383, 592, 404),
+        std::format("{}O{}k", hotkey_color, revert_color))->enable_hotkey('o')->set_default();
 
     m_title = label(DialogBounds::from_ltrb(35, 50, 335, 75), "")->fontsize(ui::FontSize::Large16x);
     m_subtitle = label(DialogBounds::from_ltrb(50, 75, 350, 100), "")->fontsize(ui::FontSize::Medium14);
-    
+
     m_description_box = group();
     m_description_box->image(DialogBounds::from_ltrb(400, 0, 639, 332), "glue\\dynamic\\pjoin.pcx")->translucent();
     m_description = m_description_box->label(DialogBounds::from_ltrb(415, 65, 600, 305), "");
@@ -169,7 +180,9 @@ GluCampaignDetails::GluCampaignDetails()
     auto select_type = campaigns::MissionSelectType::ComboBox;
     if (const auto selected = g_campaign_manager.selected_campaign(); selected) {
         select_type = selected->mission_select_type.get();
-        if (selected->missions.size() > 20) select_type = campaigns::MissionSelectType::ListBox;
+        if (selected->missions.size() > MaxComboboxEntries) {
+            select_type = campaigns::MissionSelectType::ListBox;
+        }
     }
 
     if (select_type == campaigns::MissionSelectType::ComboBox) {
@@ -181,9 +194,11 @@ GluCampaignDetails::GluCampaignDetails()
         label(DialogBounds::from_xywh(35, 312, 240, 20), "Mission Select")->fontsize(ui::FontSize::Medium14);
         m_combobox = listbox(DialogBounds::from_xywh(35, 340, 230, 100));
     }
-    
-    m_reset_button = lightup_button(DialogBounds::from_ltrb(25, 450, 180, 479), "r\x04" "R\x01" "eset Progress")
-        ->enable_hotkey()->fontsize(ui::FontSize::Medium14);
+
+    m_reset_button = lightup_button(DialogBounds::from_ltrb(25, 450, 180, 479),
+        std::format("{}R{}eset Progress", hotkey_color, revert_color))
+        ->enable_hotkey('r')->fontsize(ui::FontSize::Medium14)
+        ->tooltip("Reset all progress for this campaign");
 }
 
 void GluCampaignDetails::on_init() {
@@ -209,7 +224,7 @@ void GluCampaignDetails::on_init() {
             ui::modal_ok(g_campaign_manager.take_transition_error());
         }
     });
-    m_combobox->on_selection([&](ui::Widget& self, u16 index) {
+    m_combobox->on_selection([&](ui::Widget&, u16 index) {
         g_campaign_manager.mission_index = index;
         const auto selected = g_campaign_manager.selected_campaign();
         const auto& mission = selected->missions[index];
@@ -238,7 +253,7 @@ void GluCampaignDetails::on_init() {
             change_background(initial_background());
         }
     });
-    m_reset_button->on_activate([](ui::Widget& self) -> ui::ActivateResult {
+    m_reset_button->on_activate([](ui::Widget&) -> ui::ActivateResult {
         if (!ui::modal_ok_cancel("Are you sure? This will permanently reset this campaign's progress")) return ui::ActivateResult::ConsumeActivation;
         auto* campaign = g_campaign_manager.selected_campaign();
         if (campaign) {
@@ -255,7 +270,9 @@ void GluCampaignDetails::on_exit(u32 last_control) {
         auto map_path = *campaign->directory / selected->filename;
         auto& game_runner = GameRunner::instance();
         auto result = game_runner.create_singleplayer_game(map_path, GameType::Scenario, 1);
-        if (result != GameRunner::Result::Success) g_gl_glues_mode = MenuId::GluCampaignList;
+        if (result != GameRunner::Result::Success) {
+            g_gl_glues_mode = MenuId::GluCampaignList;
+        }
     } else if (last_control == m_cancel_button->index()) {
         g_gl_glues_mode = MenuId::GluCampaignList;
     }

@@ -13202,7 +13202,7 @@ namespace helper {
         }
     }
 
-    b32 draw_clamped_dialog_image(BinDlg* dest, u32 veeqtism, u32 pos_x, u32 pos_y, u32 flags) {
+    b32 draw_clamped_dialog_image(Box16* clip, u32 sprite_index, u32 pos_x, u32 pos_y, u32 flags) {
         const u32 func_address = 0x004EF600;
         static b32 result;
         __asm {
@@ -13210,8 +13210,8 @@ namespace helper {
             PUSH flags
             PUSH pos_y
             PUSH pos_x
-            PUSH veeqtism
-            MOV ESI, dest
+            PUSH sprite_index
+            MOV ESI, clip
             CALL func_address
             MOV result, EAX
             POPAD

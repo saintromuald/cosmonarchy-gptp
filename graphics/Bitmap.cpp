@@ -11,6 +11,10 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
+// Defined in glucustom.h. Using extern because this is a low-level graphics file that shouldn't pull in random headers
+// TODO: Move this to a more appropriate location -Jesse
+extern u8 g_tfontgame_image_data[]; 
+
 namespace graphics
 {
 
@@ -292,7 +296,7 @@ namespace graphics
 						if (color.is_ingame_color) {
 							this->data[offset] = get_player_color_index(color.color, mask_index);
 						} else {
-							this->data[offset] = gbFontColors[color.color][mask_index];
+							this->data[offset] = g_tfontgame_image_data[color.color * 8 + mask_index];
 						}
 					}
 				}

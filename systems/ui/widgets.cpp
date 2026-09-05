@@ -1,6 +1,8 @@
 #include "widgets.h"
 #include "BW/bwhelper.h"
+#include "systems/audio_system.h"
 #include "systems/ui/palette_fader.h"
+#include "systems/ui/tooltip.h"
 
 #include <algorithm>
 #include <ranges>
@@ -40,8 +42,18 @@ static constexpr DialogFlags::Enum FontSizes
     | DialogFlags::LargerFontSize16
     | DialogFlags::LargestFontSize16x;
 
-static constexpr u16 OptionButtonHeight = 20; // Todo: Read this from g_theme_radiobutton_size instead
 static constexpr size_t TextInputBufferSize = 256;
+
+static constexpr u16 DefaultRadioButtonHeight = 20;
+static constexpr u16 RadioButtonRowSpacing = 8;
+
+// Checked-listbox row state. flags_array first 4 bits is used by font style but the rest is unused
+static constexpr u8 CheckedRowFlagBit = 1 << 4;
+// Sprite indices in the theme UI GRP. From generic_checkbox_update @ 0x004efa80:
+static constexpr u8 CheckboxSpriteUnchecked = 0x0C;
+static constexpr u8 CheckboxSpriteChecked = 0x0E;
+
+static constexpr u8 CheckedListboxRowPadding = 3;
 
 static Widget& set_flag(Widget& widget, DialogFlags::Enum flag, bool value) {
     bw::Dialog* dialog = widget.dialog();
@@ -122,6 +134,59 @@ static u32 __fastcall widget_event_forward(bw::Dialog* dialog, DialogEvent* even
     return widget->handle_event(event);
 }
 
+// -------------------------------------
+// Tooltip helpers
+// -------------------------------------
+static TooltipController* tooltip_controller_for(Widget& widget) {
+    Group* group = widget.parent();
+    if (!group) return nullptr;
+    return group->root()->tooltip_controller();
+}
+
+// For routing mousewheel scroll events to hovered listbox
+static Widget* find_scrollable_under_mouse(Group& group) {
+    for (auto const& member : group.members()) {
+        Widget* result = std::visit(Overloaded{
+            [](const std::unique_ptr<Widget>& owned) -> Widget* {
+                Widget& widget = *owned;
+                const auto* dialog = widget.dialog();
+                if (dialog->type == DialogControlType::ListBox
+                    && (dialog->flags & DialogFlags::Visible)
+                    && widget.screen_bounds().contains_mouse()) {
+                    return &widget;
+                }
+                return nullptr;
+            },
+            [](const std::unique_ptr<Group>& owned) -> Widget* {
+                return find_scrollable_under_mouse(*owned);
+            },
+        }, member);
+        if (result) return result;
+    }
+    return nullptr;
+}
+
+static u8 listbox_row_at_mouse_y(const bw::Dialog& dialog, s16 mouse_y) {
+    if (dialog.type != DialogControlType::ListBox && dialog.type != DialogControlType::ComboBox) {
+        return 0xFF;
+    }
+
+    const auto* extra = dialog.extra<bw::ListOrComboExtra>();
+    if (!extra || extra->element_height == 0) return 0xFF;
+    
+    const s16 top = dialog.bounds.top();
+    if (mouse_y < top) return 0xFF;
+    
+    const u16 offset_within = static_cast<u16>(mouse_y - top);
+    const u16 visible_row = static_cast<u16>(offset_within / extra->element_height);
+    if (visible_row >= extra->visible_row_count) return 0xFF;
+    
+    const u16 absolute = static_cast<u16>(extra->selection_index_2 + visible_row);
+    if (absolute >= extra->item_count) return 0xFF;
+    
+    return static_cast<u8>(absolute);
+}
+
 // --------------------------------
 // Widget builders
 // --------------------------------
@@ -176,9 +241,15 @@ Widget* Widget::fontsize(FontSize size) {
     return this;
 }
 
-Widget* Widget::enable_hotkey() {
-    if (m_text.empty()) return this;
-    m_text[0] = static_cast<char>(std::tolower(m_text[0]));
+Widget* Widget::enable_hotkey(std::optional<char> hotkey) {
+    // BW interprets the first character of the text buffer as the hotkey when the flag is set
+    if (hotkey) {
+        m_text.insert(m_text.begin(), static_cast<char>(std::tolower(static_cast<unsigned char>(*hotkey))));
+        *m_dialog.text<const char*>() = m_text.c_str();
+    } else {
+        if (m_text.empty()) return this;
+        m_text[0] = static_cast<char>(std::tolower(static_cast<unsigned char>(m_text[0])));
+    }
     set_flag(*this, DialogFlags::HasHotkey, true);
     return this;
 }
@@ -193,13 +264,30 @@ Widget* Widget::transparent(bool value) {
     return this;
 }
 
+// Listbox spawns a scrollbar sibling dialog on init
+static bw::Dialog* listbox_scrollbar(bw::Dialog& dialog) {
+    if (dialog.type != DialogControlType::ListBox && dialog.type != DialogControlType::ComboBox) {
+        return nullptr;
+    }
+    return dialog.data<bw::ListOrComboData>()->scrollbar;
+}
+
 Widget* Widget::hide() {
     set_flag(*this, DialogFlags::Visible, false);
+    if (auto* scrollbar = listbox_scrollbar(m_dialog)) {
+        scrollbar->flags &= ~DialogFlags::Visible;
+    }
+    invalidate_parent();
     return this;
 }
 
 Widget* Widget::show() {
     set_flag(*this, DialogFlags::Visible, true);
+    if (auto* scrollbar = listbox_scrollbar(m_dialog)) {
+        scrollbar->flags |= DialogFlags::Visible | DialogFlags::UpdateNeeded;
+        helper::update_dialog(scrollbar->to_bindlg());
+    }
+    invalidate();
     return this;
 }
 
@@ -261,27 +349,76 @@ Widget* Widget::on_nondlg_event(std::move_only_function<ActivateResult(Widget&, 
     return this;
 }
 
+Widget* Widget::on_check_toggle(std::move_only_function<void(Widget&, u8, bool)> callback) {
+    m_callbacks.on_check_toggle = std::move(callback);
+    return this;
+}
+
+Widget* Widget::on_row_hover(std::move_only_function<void(Widget&, u8)> callback) {
+    assert(m_dialog.type == DialogControlType::ListBox
+        || m_dialog.type == DialogControlType::ComboBox);
+    m_callbacks.on_row_hover = std::move(callback);
+    return this;
+}
+
+// --------------------------------
+// Tooltips
+// --------------------------------
+Widget* Widget::tooltip(std::string text) {
+    m_tooltip = std::make_unique<Tooltip>(std::move(text));
+    return this;
+}
+
+Widget* Widget::tooltip(Tooltip tooltip) {
+    m_tooltip = std::make_unique<Tooltip>(std::move(tooltip));
+    return this;
+}
+
+Widget* Widget::tooltip_delay_ms(u16 ms) {
+    m_tooltip_delay_ms = ms;
+    return this;
+}
+
+Widget* Widget::tooltip_placement(Placement placement) {
+    m_tooltip_placement = placement;
+    return this;
+}
+
+Widget* Widget::tooltip_hide_on_click(bool value) {
+    m_tooltip_hides_on_click = value;
+    return this;
+}
+
+Widget* Widget::row_padding(u8 extra_pixels) {
+    assert(m_dialog.type == DialogControlType::ListBox
+        || m_dialog.type == DialogControlType::ComboBox);
+    m_row_padding = extra_pixels;
+    return this;
+}
+
+const Tooltip* Widget::tooltip_content() const {
+    return m_tooltip.get();
+}
+
 // --------------------------------
 // Widget non-builder methods
 // --------------------------------
 void Widget::set_text(std::string text) {
     assert(m_dialog.type != DialogControlType::DialogBoxDC
-        || m_dialog.type != DialogControlType::Image
-        || m_dialog.type != DialogControlType::HorizontalScrollBar
-        || m_dialog.type != DialogControlType::VerticalScrollBar
-        || m_dialog.type != DialogControlType::TextInput
-        || m_dialog.type != DialogControlType::ListBox
-        || m_dialog.type != DialogControlType::ComboBox);
-    
-    m_text = text;
+        && m_dialog.type != DialogControlType::Image
+        && m_dialog.type != DialogControlType::HorizontalScrollBar
+        && m_dialog.type != DialogControlType::VerticalScrollBar
+        && m_dialog.type != DialogControlType::ListBox
+        && m_dialog.type != DialogControlType::ComboBox);
 
     if (m_dialog.type == DialogControlType::TextInput) {
         // TextInput has an allocated char[256]
-        auto text_array = m_dialog.text<std::array<char, 256>*>();
+        auto text_array = m_dialog.text<std::array<char, TextInputBufferSize>*>();
         safe_copy(**text_array, text);
         return;
     }
-    
+
+    m_text = std::move(text);
     *m_dialog.text<const char*>() = m_text.c_str();
     helper::update_dialog(m_dialog.to_bindlg());
 }
@@ -311,16 +448,96 @@ u8 Widget::selected_index() const {
     return 0;
 }
 
+void Widget::select_row(u8 index) {
+    assert(m_dialog.type == DialogControlType::ListBox
+        || m_dialog.type == DialogControlType::ComboBox);
+    auto* extra = m_dialog.extra<bw::ListOrComboExtra>();
+    if (index >= extra->item_count) return;
+    extra->selection_index = static_cast<s8>(index);
+    invalidate();
+}
+
+void Widget::clear_selection() {
+    assert(m_dialog.type == DialogControlType::ListBox
+        || m_dialog.type == DialogControlType::ComboBox);
+    m_dialog.extra<bw::ListOrComboExtra>()->selection_index = -1;
+    invalidate();
+}
+
 std::string_view Widget::list_string(u8 index) {
-    if (index > m_strings.size()) return {};
+    if (index >= m_strings.size()) return {};
     return m_strings[index];
 }
 
 u8 Widget::count() const {
-    assert(m_dialog.type == DialogControlType::ListBox
-        || m_dialog.type == DialogControlType::ComboBox
-        || !"count called on unsupported control type");
+    assert((m_dialog.type == DialogControlType::ListBox
+        || m_dialog.type == DialogControlType::ComboBox)
+        && "count called on unsupported control type");
     return m_dialog.extra<bw::ListOrComboExtra>()->item_count;
+}
+
+void Widget::set_checked(u8 index, bool checked) {
+    assert(m_dialog.type == DialogControlType::ListBox
+        || m_dialog.type == DialogControlType::ComboBox);
+    auto* data = m_dialog.data<bw::ListOrComboData>();
+    auto* extra = m_dialog.extra<bw::ListOrComboExtra>();
+    if (!data->flags_array || index >= extra->item_count) return;
+    if (checked) data->flags_array[index] |=  CheckedRowFlagBit;
+    else         data->flags_array[index] &= ~CheckedRowFlagBit;
+    invalidate();
+}
+
+bool Widget::is_checked(u8 index) const {
+    assert(m_dialog.type == DialogControlType::ListBox
+        || m_dialog.type == DialogControlType::ComboBox);
+    const auto* data = m_dialog.data<bw::ListOrComboData>();
+    const auto* extra = m_dialog.extra<bw::ListOrComboExtra>();
+    if (!data->flags_array || index >= extra->item_count) return false;
+    return (data->flags_array[index] & CheckedRowFlagBit) != 0;
+}
+
+static void set_all_checked(bw::Dialog& dialog, bool checked) {
+    auto* data = dialog.data<bw::ListOrComboData>();
+    auto* extra = dialog.extra<bw::ListOrComboExtra>();
+    if (!data->flags_array) return;
+    for (u8 i = 0; i < extra->item_count; ++i) {
+        if (checked) data->flags_array[i] |=  CheckedRowFlagBit;
+        else         data->flags_array[i] &= ~CheckedRowFlagBit;
+    }
+    static_cast<Widget*>(dialog.user)->invalidate();
+}
+
+void Widget::select_all() {
+    assert(m_dialog.type == DialogControlType::ListBox
+        || m_dialog.type == DialogControlType::ComboBox);
+    set_all_checked(m_dialog, true);
+}
+
+void Widget::deselect_all() {
+    assert(m_dialog.type == DialogControlType::ListBox
+        || m_dialog.type == DialogControlType::ComboBox);
+    set_all_checked(m_dialog, false);
+}
+
+void Widget::scroll_by(s32 rows) {
+    if (m_dialog.type != DialogControlType::ListBox
+        && m_dialog.type != DialogControlType::ComboBox) return;
+    auto* extra = m_dialog.extra<bw::ListOrComboExtra>();
+    if (!extra || extra->visible_row_count >= extra->item_count) return;
+
+    const s32 max_top = static_cast<s32>(extra->item_count - extra->visible_row_count);
+    const s32 current_top = extra->selection_index_2;
+    const s32 new_top = std::clamp<s32>(current_top + rows, 0, max_top);
+    if (new_top == current_top) return;
+
+    extra->selection_index_2 = static_cast<u8>(new_top);
+    // Keep scrollbar handle in sync when present
+    if (auto* scrollbar = m_dialog.data<bw::ListOrComboData>()->scrollbar) {
+        scrollbar->data<bw::SliderData>()->current = static_cast<u16>(new_top);
+        scrollbar->flags |= DialogFlags::UpdateNeeded;
+        helper::update_dialog(scrollbar->to_bindlg());
+    }
+    invalidate();
 }
 
 void Widget::select(bool value) {
@@ -328,10 +545,7 @@ void Widget::select(bool value) {
         case DialogControlType::CheckBox: {
             auto data = m_dialog.data<bw::SelectionButtonData>();
             data->selected = value;
-            if (!(m_dialog.flags & DialogFlags::UpdateNeeded)) {
-                m_dialog.flags |= DialogFlags::UpdateNeeded;
-                helper::update_dialog(m_dialog.to_bindlg());
-            }
+            invalidate();
         } break;
         case DialogControlType::OptionButton: {
             // Toggle off all other option buttons in the same group
@@ -345,16 +559,12 @@ void Widget::select(bool value) {
                     if (sibling_dialog->type != DialogControlType::OptionButton) continue;
                     auto data = sibling_dialog->data<bw::SelectionButtonData>();
                     data->selected = false;
-                    if (!(sibling_dialog->flags & DialogFlags::UpdateNeeded)) {
-                        sibling_dialog->flags |= DialogFlags::UpdateNeeded;
-                        helper::update_dialog(sibling_dialog->to_bindlg());
-                    }
+                    sibling_widget->invalidate();
                 }
             }
             auto data = m_dialog.data<bw::SelectionButtonData>();
             data->selected = true;
-            m_dialog.flags |= DialogFlags::UpdateNeeded;
-            helper::update_dialog(m_dialog.to_bindlg());
+            invalidate();
         } break;
     }
 }
@@ -378,8 +588,61 @@ u32 Widget::handle_event(DialogEvent* event) {
             case DialogUserType_SetSelectionIndex: {
                 if (m_callbacks.on_selection) m_callbacks.on_selection(*this, event->param);
             } break;
+            case DialogUserType_MouseEnter: {
+                if (auto* controller = tooltip_controller_for(*this)) controller->on_mouse_enter(this);
+            } break;
+            case DialogUserType_AcceptFocus: {
+                // Dispatched when the mouse leaves the widget
+                if (auto* controller = tooltip_controller_for(*this)) controller->on_mouse_leave(this);
+                m_last_hovered_row = 0xFF;
+            } break;
+            case DialogUserType_MouseOver: {
+                // Fires each frame while the cursor is over this widget
+                // (from dialog_process_hit_detection @ 0x00418340)
+                // Used for row-hover detection on listbox / combobox variants.
+                if (m_callbacks.on_row_hover
+                    && (m_dialog.type == DialogControlType::ListBox
+                        || m_dialog.type == DialogControlType::ComboBox))
+                {
+                    const u8 row = listbox_row_at_mouse_y(m_dialog, event->current.y);
+                    if (row != m_last_hovered_row) {
+                        m_last_hovered_row = row;
+                        if (row != 0xFF) m_callbacks.on_row_hover(*this, row);
+                    }
+                }
+                // Reposition mouse-tracked tooltip so it follows the cursor.
+                if (auto* controller = tooltip_controller_for(*this)) controller->on_mouse_over(this);
+            } break;
         }
     } else {
+        // Non-Dialog events.
+        switch (event->number_order) {
+            case DialogEventType_Idle: {
+                // Top-dialog receives idle roughly every 100ms. Drive tooltip delay from it.
+                if (m_dialog.type == DialogControlType::DialogBoxDC) {
+                    if (auto* controller = tooltip_controller_for(*this)) controller->tick(GetTickCount());
+                }
+            } break;
+            case DialogEventType_LButtonDown:
+            case DialogEventType_RButtonDown:
+            case DialogEventType_MButtonDown: {
+                if (m_tooltip_hides_on_click) {
+                    if (auto* controller = tooltip_controller_for(*this)) controller->hide();
+                }
+            } break;
+            case DialogEventType_MWheelUp:
+            case DialogEventType_MWheelDown: {
+                // Wheel events land on the top dialog; route to whatever
+                // listbox is under the cursor. Doesn't fire in windowed mode.
+                if (m_dialog.type == DialogControlType::DialogBoxDC && m_group) {
+                    if (auto* target = find_scrollable_under_mouse(*m_group)) {
+                        const s32 delta = (event->number_order == DialogEventType_MWheelUp) ? -1 : 1;
+                        target->scroll_by(delta);
+                    }
+                }
+            } break;
+        }
+
         if (m_callbacks.on_nondlg_event) {
             if (m_callbacks.on_nondlg_event(*this, event) == ActivateResult::ConsumeActivation) {
                 return 1;
@@ -392,7 +655,28 @@ u32 Widget::handle_event(DialogEvent* event) {
     if (m_dialog.type == DialogControlType::OptionButton) return option_button_handle_event(*this, event);
     if (m_dialog.type == DialogControlType::Image) return helper::generic_common_interact(m_dialog.to_bindlg(), event);
 
-    return default_interaction_function(m_dialog, event);
+    const u32 result = default_interaction_function(m_dialog, event);
+
+    // Post-default hook: bump listbox row height by m_row_padding once vanilla
+    // listbox_init has set element_height from the font. Also shrinks
+    // visible_row_count so we don't spill past the widget's visible area.
+    if (m_row_padding > 0
+        && event->number_order == DialogEventType_Dialog
+        && event->user == DialogUserType_InitChildren
+        && (m_dialog.type == DialogControlType::ListBox
+            || m_dialog.type == DialogControlType::ComboBox)){
+        auto* extra = m_dialog.extra<bw::ListOrComboExtra>();
+        const u16 old_h = extra->element_height;
+        const u16 new_h = old_h + m_row_padding;
+        if (old_h > 0 && new_h <= 0xFF) {
+            // Total_h is the exact visible height clamped by listbox_init.
+            const u16 total_h = static_cast<u16>(extra->visible_row_count) * old_h;
+            extra->element_height    = static_cast<u8>(new_h);
+            extra->visible_row_count = static_cast<u8>(total_h / new_h);
+        }
+    }
+
+    return result;
 }
 
 Widget::Widget(DialogBounds bounds, DialogControlType type, u16 index)
@@ -404,6 +688,41 @@ Widget::Widget(DialogBounds bounds, DialogControlType type, u16 index)
         .interaction_function = &widget_event_forward,
         .draw_function = helper::g_default_dialog_draw_functions[std::to_underlying(type)]
     } {}
+
+DialogBounds Widget::screen_bounds() const {
+    const auto* parent = m_dialog.parent;
+    if (!parent) return m_dialog.bounds;
+    return m_dialog.bounds.offset(parent->bounds.left(), parent->bounds.top());
+}
+
+v2s16 Widget::screen_top_left() const {
+    const auto bounds = screen_bounds();
+    return v2s16{bounds.left(), bounds.top()};
+}
+
+void Widget::set_screen_bounds(DialogBounds area) {
+    const auto* parent = m_dialog.parent;
+    m_dialog.bounds = parent
+        ? area.offset(static_cast<s16>(-parent->bounds.left()),
+                      static_cast<s16>(-parent->bounds.top()))
+        : area;
+}
+
+void Widget::invalidate() {
+    if (!(m_dialog.flags & DialogFlags::UpdateNeeded)) {
+        m_dialog.flags |= DialogFlags::UpdateNeeded;
+        helper::update_dialog(m_dialog.to_bindlg());
+    }
+}
+
+void Widget::invalidate_parent() {
+    auto* parent = m_dialog.parent;
+    if (!parent) return;
+    if (!(parent->flags & DialogFlags::UpdateNeeded)) {
+        parent->flags |= DialogFlags::UpdateNeeded;
+        helper::update_dialog(parent->to_bindlg());
+    }
+}
 
 // --------------------------------
 // Group widget factories
@@ -450,7 +769,7 @@ Widget* Group::checkbox(DialogBounds bounds, std::string text, bool initial_valu
 }
 
 Widget* Group::image(DialogBounds bounds, std::string path) {
-    auto owned = make(bounds, DialogControlType::Image, next_index());
+    auto owned = make(bounds, DialogControlType::Image, ui::SkipHitTestIndex);
     Widget* widget = owned.get();
     widget->m_text = std::move(path);
     *widget->m_dialog.text<const char*>() = widget->m_text.c_str();
@@ -489,7 +808,7 @@ Widget* Group::textinput(DialogBounds bounds) {
 }
 
 Widget* Group::label(DialogBounds bounds, std::string text) {
-    auto owned = make(bounds, DialogControlType::LabelLeftAlign, next_index());
+    auto owned = make(bounds, DialogControlType::LabelLeftAlign, SkipHitTestIndex);
     Widget* widget = owned.get();
     widget->m_text = std::move(text);
     *widget->m_dialog.text<const char*>() = widget->m_text.c_str();
@@ -510,6 +829,144 @@ Widget* Group::listbox(DialogBounds bounds) {
     return widget;
 }
 
+// --------------------------------
+// Checked Listbox
+// --------------------------------
+
+// Per-row renderer: row_rect is in SCREEN coords (see listbox_update @ 0x0041B950).
+static void __fastcall checked_listbox_item_renderer(
+    bw::Dialog* dialog, u32 row_index, Box16* row_rect, s32 mode, s32 flags) {
+    const auto* data  = dialog->data<bw::ListOrComboData>();
+    const auto* extra = dialog->extra<bw::ListOrComboExtra>();
+    const u8 row = static_cast<u8>(row_index);
+    if (row >= extra->item_count) return;
+
+    const bool checked = data->flags_array && (data->flags_array[row] & CheckedRowFlagBit);
+    const char* label = data->strings_array ? data->strings_array[row] : nullptr;
+
+    const s16 checkbox_size = g_theme_checkbox_size ? static_cast<s16>(g_theme_checkbox_size) : s16{10};
+    const s16 row_h = static_cast<s16>((row_rect->bottom - row_rect->top) + 1);
+    const s16 checkbox_x = static_cast<s16>(row_rect->left + 2);
+    const s16 checkbox_y = static_cast<s16>(row_rect->top + (row_h - checkbox_size) / 2);
+
+    const u8 sprite = checked ? CheckboxSpriteChecked : CheckboxSpriteUnchecked;
+    helper::draw_clamped_dialog_image(row_rect, sprite, checkbox_x, checkbox_y, 0x2000);
+
+    if (label) {
+        helper::get_color_handle(LobbyTextColor::Green);
+        const s16 text_x = static_cast<s16>(checkbox_x + checkbox_size + 4);
+        helper::bw_print_xy(label, text_x, row_rect->top);
+    }
+
+    // Outline the highlighted row (set by a body click; drives move up/down).
+    // helper::draw_box fills a rect, so draw four 1px edges to make a border.
+    if (static_cast<s8>(row) == extra->selection_index) {
+        const s16 x = row_rect->left;
+        const s16 y = row_rect->top;
+        s16 w = static_cast<s16>((row_rect->right - row_rect->left) + 1);
+        // Rows span the full width; keep the border clear of the scrollbar when present.
+        if (data->scrollbar && (data->scrollbar->flags & DialogFlags::Visible))
+            w -= static_cast<s16>(g_theme_vslider_width);
+        *g_draw_color_index = g_palette_index_reference[12];
+        helper::draw_box(x, y, w, 1);                                    // top
+        helper::draw_box(x, y, 1, row_h);                               // left
+        helper::draw_box(static_cast<s16>(x + w - 1), y, 1, row_h);     // right
+        helper::draw_box(x, static_cast<s16>(y + row_h - 1), w, 1);     // bottom
+    }
+}
+
+static bool checked_listbox_toggle_clicked_row(bw::Dialog* dialog, bool commit_selection) {
+    auto* data  = dialog->data<bw::ListOrComboData>();
+    auto* extra = dialog->extra<bw::ListOrComboExtra>();
+    const u8 clicked = extra->clicked_index;
+    if (!data->flags_array || clicked >= extra->item_count) return false;
+
+    data->flags_array[clicked] ^= CheckedRowFlagBit;
+    const bool now = (data->flags_array[clicked] & CheckedRowFlagBit) != 0;
+
+    if (commit_selection) {
+        extra->selection_index = static_cast<s8>(clicked);
+    }
+
+    auto* widget = static_cast<Widget*>(dialog->user);
+    widget->invalidate();
+    if (widget->callbacks().on_check_toggle) {
+        widget->callbacks().on_check_toggle(*widget, clicked, now);
+    }
+    return true;
+}
+
+static bool checked_listbox_select_clicked_row(bw::Dialog* dialog) {
+    auto* extra = dialog->extra<bw::ListOrComboExtra>();
+    const u8 clicked = extra->clicked_index;
+    if (clicked >= extra->item_count) return false;
+
+    extra->selection_index = static_cast<s8>(clicked);
+
+    auto* widget = static_cast<Widget*>(dialog->user);
+    widget->invalidate();
+    if (widget->callbacks().on_selection) {
+        widget->callbacks().on_selection(*widget, clicked);
+    }
+    return true;
+}
+
+static u32 __fastcall checked_listbox_event_forward(bw::Dialog* dialog, DialogEvent* event) {
+    assert(dialog->user && "checked_listbox_event_forward called without a user pointer");
+
+    if (event->number_order == DialogEventType_Dialog
+        && event->user == DialogUserType_InitChildren){
+        const u32 result = widget_event_forward(dialog, event);
+        dialog->extra<bw::ListOrComboExtra>()->item_renderer = &checked_listbox_item_renderer;
+        return result;
+    }
+
+    if (event->number_order == DialogEventType_LButtonUp) {
+        // Split the click: the checkbox glyph toggles membership; the row body
+        // highlights it (for move up/down). Run BW's default handler first so it
+        // clears its click/drag-scroll tracking -- otherwise the listbox keeps
+        // scroll-following the mouse after a click -- then apply our result.
+        auto* extra = dialog->extra<bw::ListOrComboExtra>();
+        const s16 checkbox_size = g_theme_checkbox_size
+            ? static_cast<s16>(g_theme_checkbox_size) : s16{10};
+        const s16 checkbox_left  = static_cast<s16>(dialog->bounds.left() + 2);
+        const s16 checkbox_right = static_cast<s16>(checkbox_left + checkbox_size);
+        const bool on_checkbox = event->current.x >= checkbox_left && event->current.x <= checkbox_right;
+
+        const u8 clicked = extra->clicked_index;         // default handler may consume this
+        const s8 prev_selection = extra->selection_index;
+        const u32 result = widget_event_forward(dialog, event);
+        extra->clicked_index = clicked;                  // restore for the helpers below
+        if (on_checkbox) {
+            extra->selection_index = prev_selection;     // a checkbox click must not move the highlight
+            if (checked_listbox_toggle_clicked_row(dialog, false)) {
+                AudioSystem::instance().play_sound(SoundId::glue_mouseover_wav,
+                    PlaySoundSettings{.force_globally = true});
+            }
+        } else {
+            checked_listbox_select_clicked_row(dialog);
+        }
+        return result;
+    }
+
+    if (event->number_order == DialogEventType_LButtonDouble) {
+        // BW listbox handler treats doubleclick as activating the default
+        // control, which we don't want. Swallow it (single clicks already handle
+        // toggling) and just keep the clicked row highlighted.
+        checked_listbox_select_clicked_row(dialog);
+        return 1;
+    }
+
+    return widget_event_forward(dialog, event);
+}
+
+Widget* Group::checked_listbox(DialogBounds bounds) {
+    Widget* widget = listbox(bounds);
+    widget->m_dialog.interaction_function = &checked_listbox_event_forward;
+    widget->m_row_padding = CheckedListboxRowPadding;
+    return widget;
+}
+
 Widget* Group::combobox(DialogBounds bounds) {
     auto owned = make(bounds, DialogControlType::ComboBox, next_index());
     Widget* widget = owned.get();
@@ -525,32 +982,38 @@ Widget* Group::combobox(DialogBounds bounds) {
 // --------------------------------
 Group* Group::group() {
     auto owned = std::unique_ptr<Group>(new Group(m_root, this));
-    Group* g = owned.get();
+    Group* group = owned.get();
     m_members.emplace_back(std::move(owned));
-    return g;
+    return group;
 }
 
-Group* Group::radio_group(DialogBounds bounds, std::initializer_list<std::string_view> options,
-    u8 initial_selection, bool button_on_right) {
-    assert(options.size() && "Provide at least one option string");
+Group* Group::radio_group(DialogBounds bounds, std::span<const std::string_view> options,
+    u8 initial_selection, Align alignment) {
+    assert(!options.empty() && "Provide at least one option string");
+    assert(alignment != Align::Center && "Center alignment is not available for radio buttons");
 
     auto owned_group = std::unique_ptr<Group>(new Group(m_root, this));
     Group* group = owned_group.get();
     m_members.emplace_back(std::move(owned_group));
 
+    // g_theme_radiobutton_size is 0 until the theme GRP is parsed at menu load;
+    // fall back so buttons don't stack when built in a Menu constructor.
+    const u16 row_height = g_theme_radiobutton_size ? g_theme_radiobutton_size : DefaultRadioButtonHeight;
+    // Pitch = button height + configurable gap; adjust RadioButtonRowSpacing to taste.
+    const u16 row_pitch = static_cast<u16>(row_height + RadioButtonRowSpacing);
     auto current_bounds = bounds;
-    current_bounds.set_xywh(current_bounds.x(), current_bounds.y(), current_bounds.w(), OptionButtonHeight);
-    for (auto& option : options) {
+    current_bounds.set_xywh(current_bounds.x(), current_bounds.y(), current_bounds.w(), row_height);
+    for (auto&& option : options) {
         auto owned = make(current_bounds, DialogControlType::OptionButton, next_index());
         Widget* widget = owned.get();
-        widget->m_text = option;
+        widget->m_text.assign(option);
         *widget->m_dialog.text<const char*>() = widget->m_text.c_str();
         widget->m_dialog.flags = defaults::OptionButton;
-        if (button_on_right) widget->m_dialog.flags |= DialogFlags::ReverseDialogDirection;
+        if (alignment == Align::Right) widget->m_dialog.flags |= DialogFlags::ReverseDialogDirection;
         widget->m_group = group;
         connect_child(widget);
         group->m_members.emplace_back(std::move(owned));
-        current_bounds.offset(0, OptionButtonHeight);
+        current_bounds = current_bounds.offset(0, row_pitch);   // offset() is const, returns a new value
     }
 
     if (initial_selection >= options.size()) initial_selection = 0;
@@ -565,6 +1028,31 @@ Group* Group::radio_group(DialogBounds bounds, std::initializer_list<std::string
         ++seen;
     }
     return group;
+}
+
+Group* Group::on_radio_selection(std::move_only_function<void(u8)> callback) {
+    // These radio buttons signal a pick via Activate (click) -> widget.select();
+    // they don't emit SetSelectionIndex, so hook on_activate rather than
+    // on_selection. The single user handler is shared across every button
+    // through one refcounted wrapper rather than duplicated.
+    auto handler = std::make_shared<std::move_only_function<void(u8)>>(std::move(callback));
+
+    u8 index = 0;
+    for (auto& member : m_members) {
+        auto* owned = std::get_if<std::unique_ptr<Widget>>(&member);
+        if (!owned) continue;
+        Widget* widget = owned->get();
+        if (widget->dialog()->type != DialogControlType::OptionButton) continue;
+
+        widget->on_activate([handler, index](Widget&) -> ActivateResult {
+            if (*handler) (*handler)(index);
+            // Continue so option_button_handle_event still runs select(),
+            // which updates this button's (and its siblings') visual state.
+            return ActivateResult::ContinueWithDefault;
+        });
+        ++index;
+    }
+    return this;
 }
 
 // --------------------------------
@@ -584,25 +1072,25 @@ static void each_widget(Group& group, auto&& fn) {
 }
 
 Group* Group::horizontal_align(Align alignment) {
-    each_widget(*this, [&](Widget& w) { w.horizontal_align(alignment); });
+    each_widget(*this, [&](Widget& widget) { widget.horizontal_align(alignment); });
     return this;
 }
 Group* Group::fontsize(FontSize size) {
-    each_widget(*this, [&](Widget& w) { w.fontsize(size); });
+    each_widget(*this, [&](Widget& widget) { widget.fontsize(size); });
     return this;
 }
 Group* Group::translucent(bool value) {
-    each_widget(*this, [&](Widget& w) { w.translucent(value); });
+    each_widget(*this, [&](Widget& widget) { widget.translucent(value); });
     return this;
 }
 Group* Group::transparent(bool value) {
-    each_widget(*this, [&](Widget& w) { w.transparent(value); });
+    each_widget(*this, [&](Widget& widget) { widget.transparent(value); });
     return this;
 }
-Group* Group::hide() { each_widget(*this, [](Widget& w) { w.hide(); }); return this; }
-Group* Group::show() { each_widget(*this, [](Widget& w) { w.show(); }); return this; }
-Group* Group::disable() { each_widget(*this, [](Widget& w) { w.disable(); }); return this; }
-Group* Group::enable() { each_widget(*this, [](Widget& w) { w.enable(); }); return this; }
+Group* Group::hide() { each_widget(*this, [](Widget& widget) { widget.hide(); }); return this; }
+Group* Group::show() { each_widget(*this, [](Widget& widget) { widget.show(); }); return this; }
+Group* Group::disable() { each_widget(*this, [](Widget& widget) { widget.disable(); }); return this; }
+Group* Group::enable() { each_widget(*this, [](Widget& widget) { widget.enable(); }); return this; }
 
 // --------------------------------
 // Group linked list wiring
@@ -685,6 +1173,26 @@ void Group::connect_child(Widget* child) {
     }
 }
 
+void Group::attach_external_widget(Widget* widget) {
+    assert(widget && "attach_external_widget requires a non-null widget");
+    widget->m_group = this;
+
+    bw::Dialog* dialog = widget->dialog();
+    bw::Dialog* root_dialog = m_root->m_main->dialog();
+    dialog->parent = root_dialog;
+
+    auto* head_slot = root_dialog->child<bw::Dialog*>();
+    if (!*head_slot) {
+        *head_slot = dialog;
+        dialog->next = nullptr;
+        return;
+    }
+    bw::Dialog* cursor = *head_slot;
+    while (cursor->next) cursor = cursor->next;
+    cursor->next = dialog;
+    dialog->next = nullptr;
+}
+
 // --------------------------------
 // Menu
 // --------------------------------
@@ -702,10 +1210,10 @@ const Palette& BackgroundState::default_palette() {
 
 Menu::Menu(std::string background, PalettePreserve instant_colors)
     : Group(), m_instant_colors(instant_colors) {
-    m_main = make(DialogBounds::from_xywh(0, 0, 640, 480), DialogControlType::DialogBoxDC, 0);
+    m_main = make(DialogBounds::from_xywh(0, 0, ScreenWidth, ScreenHeight), DialogControlType::DialogBoxDC, 0);
     m_main->m_text = std::move(background);
-    m_main->dialog()->data<bw::MenuData>()->backup_surface.width = 640;
-    m_main->dialog()->data<bw::MenuData>()->backup_surface.height = 480;
+    m_main->dialog()->data<bw::MenuData>()->backup_surface.width = ScreenWidth;
+    m_main->dialog()->data<bw::MenuData>()->backup_surface.height = ScreenHeight;
     m_main->dialog()->flags = defaults::Dialog;
     m_main->m_group = this;
 }
@@ -722,11 +1230,9 @@ u32 Menu::load() {
 void Menu::on_top_dialog_init_children(Widget& top) {
     auto dialog = top.dialog();
     if (top.text().empty()) {
-        constexpr u16 w = 640;
-        constexpr u16 h = 480;
-        dialog->bitmap.width = w;
-        dialog->bitmap.height = h;
-        dialog->bitmap.buffer = static_cast<u8*>(SMemAlloc(w * h));
+        dialog->bitmap.width = ScreenWidth;
+        dialog->bitmap.height = ScreenHeight;
+        dialog->bitmap.buffer = static_cast<u8*>(SMemAlloc(ScreenWidth * ScreenHeight));
         g_init_palette = Palette{};
         copy_preserved_indices(g_init_palette,
             BackgroundState::instance().default_palette(), m_instant_colors);
@@ -739,7 +1245,7 @@ void Menu::on_top_dialog_init_children(Widget& top) {
     BackgroundState::instance().set_current(top.text());
 
     auto original_glues = g_gl_glues_mode;
-    g_gl_glues_mode = g_gl_glues_mode > 25 ? MenuId::GlueSelConn : g_gl_glues_mode;
+    g_gl_glues_mode = g_gl_glues_mode >= MenuId::OriginalCount ? MenuId::GlueSelConn : g_gl_glues_mode;
     helper::register_menu_functions(0, dialog->to_bindlg(), 0, 0);
     g_gl_glues_mode = original_glues;
 
@@ -754,15 +1260,12 @@ void Menu::on_top_dialog_create(Widget& top) {
         g_dialog_fade_info.mouse_x, g_dialog_fade_info.pointer_width - 1);
 
     *game_palette = *init_palette;
-    if (!(dialog->flags & DialogFlags::UpdateNeeded)) {
-        dialog->flags |= DialogFlags::UpdateNeeded;
-        helper::update_dialog(dialog->to_bindlg());
-    }
+    top.invalidate();
     helper::glu_update_palette(3);
     // Set to -1 so a subsequent vanilla menu re-loads its background.
     g_glue_background_id = -1;
     helper::set_callback_timer(dialog->to_bindlg(), 0x2e, 100,
-        (TimerCallback)helper::show_queued_network_error);
+        reinterpret_cast<TimerCallback>(helper::show_queued_network_error));
 }
 
 // --------------------------------
@@ -772,16 +1275,16 @@ Modal::Modal(std::string background) : Group() {
     Bitmap popup_bitmap{};
     load_bitmap(background.c_str(), popup_bitmap, nullptr, SFileScope::DiskAndMpq, false);
 
-    const s16 w = popup_bitmap.width ? static_cast<s16>(popup_bitmap.width) : s16{640};
-    const s16 h = popup_bitmap.height ? static_cast<s16>(popup_bitmap.height) : s16{480};
-    const s16 x = static_cast<s16>((640 - w) / 2);
-    const s16 y = static_cast<s16>((480 - h) / 2);
+    const s16 w = popup_bitmap.width ? static_cast<s16>(popup_bitmap.width) : static_cast<s16>(ScreenWidth);
+    const s16 h = popup_bitmap.height ? static_cast<s16>(popup_bitmap.height) : static_cast<s16>(ScreenHeight);
+    const s16 x = static_cast<s16>((ScreenWidth - w) / 2);
+    const s16 y = static_cast<s16>((ScreenHeight - h) / 2);
 
     m_main = make(DialogBounds::from_xywh(x, y, w, h), DialogControlType::DialogBoxDC, 0);
     m_main->m_text = std::move(background);
     m_main->dialog()->bitmap = popup_bitmap;
-    m_main->dialog()->data<bw::MenuData>()->backup_surface.width = 640;
-    m_main->dialog()->data<bw::MenuData>()->backup_surface.height = 480;
+    m_main->dialog()->data<bw::MenuData>()->backup_surface.width = ScreenWidth;
+    m_main->dialog()->data<bw::MenuData>()->backup_surface.height = ScreenHeight;
     m_main->dialog()->flags = defaults::Dialog | DialogFlags::ApplyTranslucency;
     m_main->m_group = this;
 }
@@ -797,17 +1300,13 @@ u32 Modal::load() {
 void Modal::on_top_dialog_init_children(Widget& top) {
     auto dialog = top.dialog();
     auto original_glues = g_gl_glues_mode;
-    g_gl_glues_mode = g_gl_glues_mode > 25 ? MenuId::GlueSelConn : g_gl_glues_mode;
+    g_gl_glues_mode = g_gl_glues_mode >= MenuId::OriginalCount ? MenuId::GlueSelConn : g_gl_glues_mode;
     helper::register_menu_functions(0, dialog->to_bindlg(), 0, 0);
     g_gl_glues_mode = original_glues;
 }
 
 void Modal::on_top_dialog_create(Widget& top) {
-    auto dialog = top.dialog();
-    if (!(dialog->flags & DialogFlags::UpdateNeeded)) {
-        dialog->flags |= DialogFlags::UpdateNeeded;
-        helper::update_dialog(dialog->to_bindlg());
-    }
+    top.invalidate();
 }
 
 void Modal::on_top_dialog_destroy(Widget& top) {
@@ -902,14 +1401,14 @@ bool modal_string_prompt(std::string_view prompt, std::string& value) {
     StringPromptModal modal{std::string{prompt}, "glue\\dynamic\\pEPopup.pcx"};
 
     if (!value.empty()) {
-        modal.m_textinput->on_create([initial = value](Widget& w) mutable {
-            w.set_text(std::move(initial));
+        modal.m_textinput->on_create([initial = value](Widget& widget) mutable {
+            widget.set_text(std::move(initial));
         });
     }
 
     std::string captured;
-    modal.m_textinput->on_destroy([&captured](Widget& w) {
-        auto* buffer = *w.dialog()->text<std::array<char, 256>*>();
+    modal.m_textinput->on_destroy([&captured](Widget& widget) {
+        auto* buffer = *widget.dialog()->text<std::array<char, TextInputBufferSize>*>();
         if (buffer) captured = buffer->data();
     });
 

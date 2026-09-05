@@ -85,9 +85,6 @@ bool corpse_flag_match(Thingy* target, Thingy* center = nullptr, u32 flags = 0, 
 bool is_point_in_rect(v2u16 point, Box32 rect);
 bool is_rect_in_rect(Box32 inner, Box32 outer);
 
-template <typename... Ts>
-struct Overloaded : Ts... { using Ts::operator()...; };
-
 inline mem::Arena g_search_arena;
 
 constexpr size_t EntryArrayDefaultReserve = 8;

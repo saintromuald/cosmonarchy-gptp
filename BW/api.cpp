@@ -3798,13 +3798,6 @@ u32 get_advisor_sound_from_message_id(u32 player, u32 message_id) {
     return SoundId::None;
 }
 
-bool has_custom_advisor(u32 player) {
-    if (player != g_local_nation_id) {
-        return false;
-    }
-    return g_globals->current_advisor != Advisor::Default;
-}
-
 const v2 perimeter[] = {
     {64, -258}, {64, -252}, {198, -198}, {250, -66}, {258, -66},
     {258, 66}, {250, 66}, {198, 198}, {64, 252}, {64, 258},

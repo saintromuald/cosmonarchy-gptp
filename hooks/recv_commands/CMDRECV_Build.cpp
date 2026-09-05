@@ -162,20 +162,14 @@ namespace hooks {
 				return true;
 			} else {
 				if (notify) {
-					u32 sound_id = g_console_index + 150;
-					if (bw::has_custom_advisor(player)) {
-						sound_id = bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoVespene);
-					}
+					auto sound_id = bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoVespene);
 					helper::display_error_message_id_with_sfx(player, 851, sound_id);
 				}
 				return false;
 			}
 		}
 		if (notify) {
-			u32 sound_id = g_console_index + 147;
-			if (bw::has_custom_advisor(player)) {
-				sound_id = bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoMinerals);
-			}
+			auto sound_id = bw::get_advisor_sound_from_event_type(player, AdvisorEvent_NoMinerals);
 			helper::display_error_message_id_with_sfx(player, 850, sound_id);
 		}
 		return false;

@@ -1628,12 +1628,13 @@ enum Enum : u32{
     GlueGamemode = 23,
     GlueGamemode2 = 24,
     GlueGeneric = 25,
+    OriginalCount = 26,
     // Extended Menu
-    GlueJoinCrownlink = 26,
-    GlueProviderSelectCrownlink = 27,
-    GlueOptions = 28,
-    GluCampaignList = 29,
-    GluCampaignDetails = 30,
+    GlueJoinCrownlink = 27,
+    GlueProviderSelectCrownlink = 28,
+    GlueOptions = 29,
+    GluCampaignList = 30,
+    GluCampaignDetails = 31,
 };
 }
 

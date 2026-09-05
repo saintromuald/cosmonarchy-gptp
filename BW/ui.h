@@ -17,6 +17,8 @@
 #include <vector>
 
 constexpr u32 TFontCopyCount = 48;  // 6 font styles * 8 shades
+constexpr u16 ScreenWidth = 640;
+constexpr u16 ScreenHeight = 480;
 
 // Loads an 8-bit PCX or BMP (auto-detected) into `bitmap`
 // Allocs using SMemAlloc so either capture buffer in smem::ptr or ensure it's otherwise freed
