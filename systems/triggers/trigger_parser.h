@@ -64,20 +64,25 @@ struct Area {
 	}
 };
 
-using PlayerBitset = std::bitset<FullPlayerLimit>;
-using UnitIdBitset = std::bitset<UnitId::Count>;
-using WeaponIdBitset = std::bitset<WeaponId::Count>;
-using FlingyIdBitset = std::bitset<flingy_id::Count>;
+struct PlayerBitset : std::bitset<FullPlayerLimit> { static constexpr size_t Size = FullPlayerLimit; using std::bitset<FullPlayerLimit>::bitset; };
+struct UnitIdBitset : std::bitset<UnitId::Count> { static constexpr size_t Size = UnitId::Count; using std::bitset<UnitId::Count>::bitset; };
+struct WeaponIdBitset : std::bitset<WeaponId::Count> { static constexpr size_t Size = WeaponId::Count; using std::bitset<WeaponId::Count>::bitset; };
+struct FlingyIdBitset : std::bitset<flingy_id::Count> { static constexpr size_t Size = flingy_id::Count; using std::bitset<flingy_id::Count>::bitset; };
 
-template <typename I, size_t N, size_t MAX = N>
-struct IterateBitset {
-    const std::bitset<N>& bitset;
+template <typename Bitset, typename I, size_t N, size_t MAX = N>
+struct IterateBitsetImpl {
+    const Bitset& bitset;
 
     struct Iterator {
-        const std::bitset<N>& bitset;
+        const Bitset& bitset;
 		size_t index{};
 
-		Iterator(const std::bitset<N>& bitset, size_t index) : bitset{bitset}, index{index} { if (!bitset[index]) { ++*this; } }
+		Iterator(const Bitset& bitset, size_t index) : bitset{bitset}, index{index} {
+			if (!bitset[index]) {
+				++*this;
+			}
+		}
+
 		I operator*() const { return I(index); }
 		Iterator& operator++() {
 			while (++index < MAX) {
@@ -96,10 +101,13 @@ struct IterateBitset {
 	Iterator end() { return Iterator{bitset, MAX}; }
 };
 
-using IteratePlayerBitsetPlayable = IterateBitset<int, FullPlayerLimit, PlayerLimit>;
-using IteratePlayerBitsetAll      = IterateBitset<int, FullPlayerLimit>;
-using IterateUnitIdBitset         = IterateBitset<UnitId::Enum, UnitId::Count>;
-using IterateWeaponIdBitset       = IterateBitset<WeaponId::Enum, WeaponId::Count>;
+using IteratePlayerBitsetPlayable = IterateBitsetImpl<PlayerBitset, int, FullPlayerLimit, PlayerLimit>;
+using IteratePlayerBitsetAll      = IterateBitsetImpl<PlayerBitset, int, FullPlayerLimit>;
+using IterateUnitIdBitset         = IterateBitsetImpl<UnitIdBitset, UnitId::Enum, UnitId::Count>;
+using IterateWeaponIdBitset       = IterateBitsetImpl<WeaponIdBitset, WeaponId::Enum, WeaponId::Count>;
+
+template <typename I, size_t N, size_t MAX = N>
+using IterateBitset = IterateBitsetImpl<std::bitset<N>, I, N, MAX>;
 
 enum QuotaType {
 	QuotaType_Greater,
@@ -502,6 +510,9 @@ struct BitsetSize_t;
 template <size_t N>
 struct BitsetSize_t<std::bitset<N>> : std::integral_constant<size_t, N> {};
 
+template <typename T> requires requires { T::Size; }
+struct BitsetSize_t<T> : std::integral_constant<size_t, T::Size> {};
+
 template <std::integral T>
 struct BitsetSize_t<T> : std::integral_constant<size_t, 8 * sizeof(T)> {};
 
@@ -556,24 +567,24 @@ public:
 	void set(Func&& func) {
 		for (u32 i = 0; i < BitsetSize<Bitset>; i++) {
 			bool value = func(i);
-			if (m_negate) {
-				value = !value;
-			}
-			if (value) {
-				if (!m_mask) {
-					if constexpr (std::is_integral_v<Bitset> || std::is_enum_v<Bitset>) {
-						m_bitset = Bitset(u32(m_bitset) | (1 << i));
-					} else {
-						m_bitset[i] = true;
-					}
-				}
-			} else if (m_mask) {
-				if constexpr (std::is_integral_v<Bitset> || std::is_enum_v<Bitset>) {
-					m_bitset = Bitset(u32(m_bitset) & ~(1 << i));
-				} else {
-					m_bitset[i] = false;
-				}
-			}
+            if (m_negate) {
+                value = !value;
+            }
+            if (value) {
+                if (!m_mask) {
+                    if constexpr (std::is_integral_v<Bitset> || std::is_enum_v<Bitset>) {
+                        m_bitset = Bitset(u32(m_bitset) | (1 << i));
+                    } else {
+                        m_bitset[i] = true;
+                    }
+                }
+            } else if (m_mask) {
+                if constexpr (std::is_integral_v<Bitset> || std::is_enum_v<Bitset>) {
+                    m_bitset = Bitset(u32(m_bitset) & ~(1 << i));
+                } else {
+                    m_bitset[i] = false;
+                }
+            }
 		}
 	}
 
