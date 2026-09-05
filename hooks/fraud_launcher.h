@@ -9,7 +9,7 @@
 #include <iostream>
 #include <atomic>
 
-#include <json.hpp>
+#include <nlohmann/json.hpp>
 using Json = nlohmann::json;
 
 class FraudLauncherClient {

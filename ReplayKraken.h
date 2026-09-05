@@ -3,9 +3,9 @@
 #include <vector>
 #include <fstream>
 
-#include <uuid.h>
+#include <stduuid/uuid.h>
 #include <httplib.h>
-#include <json.hpp>
+#include <nlohmann/json.hpp>
 
 using Json = nlohmann::json;
 

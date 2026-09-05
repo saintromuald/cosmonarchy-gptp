@@ -3,7 +3,7 @@
 #include "hooks/race_randomization.h"
 #include "config.h"
 #include "storm/smem.hpp"
-#include "trigger_system/trigger_system.h" // For Advisor
+#include "systems/triggers/trigger_system.h" // For Advisor
 
 #include <array>
 

@@ -3,7 +3,7 @@
 #include <map>
 #include <unordered_map>
 
-#include "json.hpp"
+#include "nlohmann/json.hpp"
 using Json = nlohmann::json;
 
 enum TriggerVarType {
