@@ -25,19 +25,19 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -94,12 +94,16 @@
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgUseMD>false</VcpkgUseMD>
+    <VcpkgConfiguration>Debug</VcpkgConfiguration>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">
     <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgUseMD>false</VcpkgUseMD>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgUseMD>false</VcpkgUseMD>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -241,6 +245,9 @@
   <ItemGroup>
     <None Include="storm\storm.def" />
     <Natvis Include="bw_dialog.natvis" />
+    <None Include="vcpkg-configuration.json" />
+    <None Include="vcpkg.json" />
+    <None Include="vcpkg.readme" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="aise_signal.cpp" />
@@ -621,39 +628,6 @@
     <ClCompile Include="unit_search.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Utils\captivating_claws.cpp" />
-    <ClCompile Include="_vendor\reflect-cpp\src\reflectcpp.cpp" />
-    <ClCompile Include="_vendor\reflect-cpp\src\reflectcpp_yaml.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\binary.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\contrib\graphbuilder.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\contrib\graphbuilderadapter.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\convert.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\depthguard.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\directives.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\emit.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\emitfromevents.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\emitter.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\emitterstate.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\emitterutils.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\exceptions.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\exp.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\memory.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\node.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\nodebuilder.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\nodeevents.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\node_data.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\null.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\ostream_wrapper.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\parse.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\parser.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\regex_yaml.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\scanner.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\scanscalar.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\scantag.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\scantoken.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\simplekey.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\singledocparser.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\stream.cpp" />
-    <ClCompile Include="_vendor\yaml-cpp\src\tag.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aise_signal.h" />
@@ -739,15 +713,6 @@
     <ClInclude Include="systems\ui\widgets.h" />
     <ClInclude Include="systems\triggers\triggers.h" />
     <ClInclude Include="systems\triggers\trigger_eval.h" />
-    <ClInclude Include="_vendor\magic_enum\magic_enum.hpp" />
-    <ClInclude Include="_vendor\magic_enum\magic_enum_all.hpp" />
-    <ClInclude Include="_vendor\magic_enum\magic_enum_containers.hpp" />
-    <ClInclude Include="_vendor\magic_enum\magic_enum_flags.hpp" />
-    <ClInclude Include="_vendor\magic_enum\magic_enum_format.hpp" />
-    <ClInclude Include="_vendor\magic_enum\magic_enum_fuse.hpp" />
-    <ClInclude Include="_vendor\magic_enum\magic_enum_iostream.hpp" />
-    <ClInclude Include="_vendor\magic_enum\magic_enum_switch.hpp" />
-    <ClInclude Include="_vendor\magic_enum\magic_enum_utility.hpp" />
     <ClInclude Include="include\yaml-cpp\depthguard.h" />
     <ClInclude Include="include\yaml-cpp\noexcept.h" />
     <ClInclude Include="include\yaml-cpp\src\collectionstack.h" />
@@ -953,28 +918,6 @@
     <ClInclude Include="hooks\weapons\weapon_fire.h" />
     <ClInclude Include="hooks\unit_stats\weapon_range.h" />
     <ClInclude Include="BW\enumerations\WeaponId.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\collectionstack.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\contrib\graphbuilderadapter.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\directives.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\emitterstate.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\emitterutils.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\exp.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\indentation.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\nodebuilder.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\nodeevents.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\ptr_vector.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\regeximpl.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\regex_yaml.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\scanner.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\scanscalar.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\scantag.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\setting.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\singledocparser.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\stream.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\streamcharsource.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\stringsource.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\tag.h" />
-    <ClInclude Include="_vendor\yaml-cpp\src\token.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

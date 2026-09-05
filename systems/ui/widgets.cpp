@@ -1,6 +1,6 @@
 #include "widgets.h"
 #include "BW/bwhelper.h"
-#include "systems/audio_system.h"
+#include "systems/audio/audio_system.h"
 #include "systems/ui/palette_fader.h"
 #include "systems/ui/tooltip.h"
 

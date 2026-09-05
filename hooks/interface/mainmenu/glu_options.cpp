@@ -6,7 +6,7 @@
 #include "storm/smem.hpp"
 #include "storm/storm.h"
 #include "config.h"
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 #include "systems/ui/tooltip.h"
 
 #include <algorithm>

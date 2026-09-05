@@ -7,7 +7,7 @@
 #include <fpm/fixed.hpp>
 #include <fpm/math.hpp>
 #include <fpm/ios.hpp>
-#include <boost/int128.hpp>
+#include <boost/int128/int128.hpp>
 #include <boost/int128/limits.hpp>
 
 //Based on http://msdn.microsoft.com/en-us/library/windows/desktop/ms679289.aspx

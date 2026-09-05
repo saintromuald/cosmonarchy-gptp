@@ -391,7 +391,7 @@ const char* fraud_names[] = {
 	"\x10\RimTechCombot",
 	"\x1E\Africanized Crowkenyan",
 	"\x16Ultralisks",
-	"\x1F\N Thrower",
+	"\x1FN Thrower",
 
 	// == RANDOM ==
 	"\x07\LightenedRealities",
