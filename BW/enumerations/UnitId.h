@@ -837,3 +837,10 @@ struct enum_range<UnitId::Enum> {
     static constexpr int max = 499;
 };
 }
+
+namespace magic_enum::customize {
+template <>
+constexpr customize_t enum_type_name<UnitId::Enum>() noexcept {
+    return "UnitId";
+}
+}

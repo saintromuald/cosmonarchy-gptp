@@ -4,7 +4,7 @@
 #include "ai_layouts.h"
 #include "threshold.h"
 #include "hooks/game_hooks.h"
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 #include "Game.h"
 
 namespace hooks {

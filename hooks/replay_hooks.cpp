@@ -3,7 +3,7 @@
 #include <BW/api.h>
 #include <ReplayKraken.h>
 #include <config.h>
-#include <trigger_system\trigger_system.h>
+#include <systems/triggers/trigger_system.h>
 #include <player_color.h>
 #include "../hook_tools.h"
 #include <future>

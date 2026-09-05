@@ -7,7 +7,7 @@
 #include "hooks/weapons/weapon_damage.h"
 #include "hooks/unit_stats/armor_bonus.h"
 #include <algorithm>
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 
 #define ENABLE_KITE_DEBUG_MESSAGES 0
 

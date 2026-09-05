@@ -675,6 +675,7 @@ struct ThingyExt {
 
 #define GasBuildingsCap 16
 struct AiTownExt {
+    u32 generation;
     u32 gas_buildings_count;
     Unit* gas_buildings[GasBuildingsCap];
 };
@@ -704,7 +705,7 @@ void reset_image_ext(Image* image); // TODO: call on new image creation!!!
 ThingyExt* get_thingy_ext(Thingy* thingy);
 void reset_thingy_ext(Thingy* thingy); // TODO: call on new thingy creation!!!
 
-AiTownExt* get_town_ext(AiTown* town);
+AiTownExt& get_town_ext(AiTown* town);
 void reset_town_ext(AiTown* town); // TODO: call on new town creation!!!
 
 bool can_place_on_creep_tile(TileExt* tile_ext, u32 player);

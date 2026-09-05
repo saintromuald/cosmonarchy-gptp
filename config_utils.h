@@ -5,7 +5,7 @@
 
 #include <yaml-cpp/yaml.h>
 
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers//trigger_system.h"
 
 inline std::string to_lower_snake_case(const std::string& str) {
 	std::string result;

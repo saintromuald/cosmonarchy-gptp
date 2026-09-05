@@ -7,7 +7,7 @@
 #include "hooks/interface/mainmenu/glucustom.h" // For g_tfontgame_image_data
 #include "player_color.h"
 #include "hooks/interface/console/console.h"
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 #include "config.h"
 #include "hooks/interface/uifeatures/ui_features.h"
 

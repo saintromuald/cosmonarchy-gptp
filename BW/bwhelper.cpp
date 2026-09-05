@@ -7319,6 +7319,18 @@ namespace helper {
         }
     }
 
+    void ai_attack_add(u32 count, UnitId::Enum unit_id, u32 player) {
+        const u32 func_address = 0x00447230;
+        __asm {
+            PUSHAD
+            MOV EAX, count
+            MOVZX EDI, unit_id
+            MOV ECX, player
+            CALL func_address
+            POPAD
+        }
+    }
+
     u32 ai_attack_clear(s32 player) {
         const u32 func_address = 0x00439500;
         static u32 result;
@@ -8856,6 +8868,16 @@ namespace helper {
         return result;
     }
 
+    void ai_update_town_regions(u32 player) {
+        const u32 func_address = 0x0045B810;
+        __asm {
+            PUSHAD
+            MOV EBX, player
+            CALL func_address
+            POPAD
+        }
+    }
+
     VictoryFunc* Victory = (VictoryFunc*)0x4C5310;
 
     void display_text_message(char* text, u32 color, u32 ticks, b32 from_trigger) {
@@ -9113,7 +9135,7 @@ namespace helper {
         }
     }
 
-    void ai_build(u32 unit_id, b32 only_if_needed, u32 count, AiTown* town, u32 priority) { // 004323D0
+    void ai_build(u32 unit_id, b32 only_if_needed, u32 count, AiTown* town, u32 priority) {
         const u32 func_address = 0x004323D0;
         __asm {
             PUSHAD

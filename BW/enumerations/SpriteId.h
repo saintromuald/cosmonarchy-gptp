@@ -988,3 +988,10 @@ struct enum_range<SpriteId::Enum> {
     static constexpr int max = 1117;
 };
 }
+
+namespace magic_enum::customize {
+template <>
+constexpr customize_t enum_type_name<SpriteId::Enum>() noexcept {
+    return "SpriteId";
+}
+}

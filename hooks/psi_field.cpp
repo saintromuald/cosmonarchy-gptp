@@ -1,7 +1,7 @@
 #include "psi_field.h"
 #include "../BW/bwdata.h"
 #include "BW/api.h"
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 
 namespace hooks {
     // Actual state check for whether a unit can generate a psi field.

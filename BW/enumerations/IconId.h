@@ -587,3 +587,10 @@ struct enum_range<IconId::Enum> {
     static constexpr int max = 896;
 };
 }
+
+namespace magic_enum::customize {
+template <>
+constexpr customize_t enum_type_name<IconId::Enum>() noexcept {
+    return "IconId";
+}
+}

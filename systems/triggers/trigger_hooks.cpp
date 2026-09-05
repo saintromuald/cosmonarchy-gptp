@@ -1,6 +1,6 @@
 #include "trigger_hooks.h"
 #include "trigger_system.h"
-#include "systems/audio_system.h"
+#include "systems/audio/audio_system.h"
 #include "hook_tools.h"
 #include "hooks/limits/sfx_extender.h"
 #include "storm/storm.h"

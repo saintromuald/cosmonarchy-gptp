@@ -5,7 +5,7 @@
 #include "BW/bwdata.h"
 #include "BW/api.h"
 #include "config.h"
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 
 // Commented patches are intended for functions that have been hooked in CMBW; edit hooks to reflect changes.
 

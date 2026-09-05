@@ -23,7 +23,7 @@ using namespace magic_enum::bitwise_operators;
 #include "CM/cm.h"
 #include "utility.h"
 #include "interpolation.h"
-#include "systems/audio_system.h"
+#include "systems/audio/audio_system.h"
 
 // Text colors
 #define BWTC_RESET		"\002"

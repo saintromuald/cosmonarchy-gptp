@@ -5,10 +5,10 @@
 #include <algorithm>
 #include <Windows.h>
 #include "config.h"
-#include "trigger_system/trigger_objectives.h"
+#include "systems/triggers/trigger_objectives.h"
 #include "hooks/audiovisuals/sfxhooks.h"
 #include "hooks/game_hooks.h"
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 #include "hooks/interface/minimap.h"
 #include "Game.h"
 #include "hooks/interface/weapon_armor_tooltip.h"

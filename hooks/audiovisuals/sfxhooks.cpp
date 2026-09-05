@@ -4,7 +4,7 @@
 #include <BW/bwdata.h>
 #include <hooks/byte_operations_utils.h>
 #include <hooks/limits/sfx_extender.h>
-#include "systems/audio_system.h"
+#include "systems/audio/audio_system.h"
 
 namespace hooks {
     // Hooked to allow more unit ids to have "annoyed" lines.

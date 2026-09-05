@@ -20,8 +20,8 @@ static bool is_newline(char c) {
 	return c == '\r' || c == '\n';
 }
 
-static bool is_word_char(char c) {
-	return isalnum(c) || c == '.' || c == '_' || c == '*';
+static bool is_word_char(char c, bool allow_hash = false) {
+	return isalnum(c) || c == '.' || c == '_' || c == '*' || (allow_hash && c == '#');
 }
 
 std::string enum_name_to_snake_case(std::string_view name) {
@@ -65,8 +65,8 @@ void Parser::skip_to_next_line() {
 	}
 }
 
-bool Parser::skip_non_word_chars() {
-	while (*m_at && !is_word_char(*m_at)) {
+bool Parser::skip_non_word_chars(bool allow_hash) {
+	while (*m_at && !is_word_char(*m_at, allow_hash)) {
 		if (is_newline(*m_at)) {
 			return false;
 		}
@@ -111,7 +111,10 @@ Parser::Parser(const char* at) : m_start(at), m_at(at) {
 }
 
 ParserMarker Parser::marker() {
-	return {m_at, m_token};
+	return {
+        .at = m_at,
+        .token = m_token,
+	};
 }
 
 void Parser::unwind(const ParserMarker& marker) {
@@ -143,9 +146,9 @@ void Parser::expand_token() {
 	m_at++;
 }
 
-std::optional<std::string_view> Parser::eat_word() {
+std::optional<std::string_view> Parser::eat_word(bool allow_hash) {
 	start_token();
-	while (is_word_char(*m_at)) {
+	while (is_word_char(*m_at, allow_hash)) {
 		expand_token();
 	}
 	if (m_token.empty()) {
@@ -154,15 +157,15 @@ std::optional<std::string_view> Parser::eat_word() {
 	return m_token;
 }
 
-std::optional<std::string_view> Parser::get_word(bool is_command) {
-	if (!skip_non_word_chars()) {
+std::optional<std::string_view> Parser::get_word(bool is_command, bool allow_hash) {
+	if (!skip_non_word_chars(allow_hash)) {
 		return {};
 	}
 
 	if (is_command) {
 		m_command_start_pos = m_at - m_start;
 	}
-	return eat_word();
+	return eat_word(allow_hash);
 }
 
 
@@ -200,10 +203,37 @@ std::optional<std::string_view> Parser::get_command() {
 	return get_word(true);
 }
 
-bool Parser::get_keyword(const char* keyword) {
+std::optional<LuaScript> Parser::get_lua() {
+    if (!get_keyword("#lua", true)) {
+        return {};
+    }
+
+	LuaScript script;
+
+    while (*m_at && is_any_space(*m_at)) {
+        ++m_at;
+    }
+	start_token();
+    while (*m_at && !is_newline(*m_at)) {
+        expand_token();
+    }
+    script.name = m_token;
+
+    while (*m_at && is_newline(*m_at)) {
+        ++m_at;
+    }
+    start_token();
+    while (*m_at) {
+        expand_token();
+    }
+    script.body = m_token;
+
+	return script;
+}
+
+bool Parser::get_keyword(const char* keyword, bool allow_hash) {
 	const auto marker = this->marker();
-	const auto word = get_word();
-	if (word == keyword) {
+	if (get_word(false, allow_hash) == keyword) {
 		return true;
 	}
 	unwind(marker);

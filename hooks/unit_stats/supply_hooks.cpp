@@ -5,7 +5,7 @@
 #include <windows.h>
 #include <globals.h>
 #include <map>
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 #include "config.h"
 #include "player_color.h"
 #include "hooks/interface/uifeatures/ui_features.h"

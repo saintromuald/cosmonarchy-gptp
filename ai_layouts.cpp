@@ -3,7 +3,7 @@
 #include "hooks/orders/ai/ai_orders.h"
 #include "hooks/harvest.h"
 #include "data_ext.h"
-#include "trigger_system/trigger_parser.h"
+#include "systems/triggers/trigger_parser.h"
 
 static bool update_townhall_marker(AiPlaceholder& placeholder, u32 player, u32 townhall_index);
 static u32 ai_mining_base_count(u32 player);

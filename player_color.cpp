@@ -1,5 +1,5 @@
 #include "player_color.h"
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 #include "color_palette.h"
 #include "storm/storm.h"
 

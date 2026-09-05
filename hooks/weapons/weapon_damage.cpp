@@ -12,12 +12,12 @@
 #include "hooks/limits/sfx_extender.h"
 #include "DatExtend/datext.h"
 #include "weapon_fire.h"
-#include "trigger_system\trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 #include "hooks/unit_stats/armor_bonus.h"
 #include "hooks/unit_destructor_special.h"
 #include "GameModes/IGameMode.h"
 
-#include "BW\UnitFinder.h"
+#include "BW/UnitFinder.h"
 
 Bullet* weapon_damage_current_bullet;
 

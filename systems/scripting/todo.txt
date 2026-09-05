@@ -1,0 +1,68 @@
+AI:
+- is_campaign on/off
+- transports on/off
+- check_transports
+- default_build on/off
+- max_force
+- guard_all
+- help_iftrouble
+- capt_expand
+- guard_resources
+- define_max
+- Ability to inspect current attack (at least if it's active)
+- Ability to check if we are under attack and where
+
+Town:
+- train/wait_train
+- wait_force
+- new_guard
+- build_at
+- max_build
+- max_workers
+- Ability to create town without resarea (to investigate)
+- Ability to assign units to town arbitrarily
+- Ability to inspect/modify requests
+- Ability to create direct spending requests
+
+Attack Wave:
+- to
+- timeout
+- wait_finishattack - I am not sure what this does, I thought attack_do does that
+
+Attack Composer:
+- neat way to compose attack units using a weighted list of units and a total force value 
+
+Send Suicide:
+- might need a special kind of api so it's more customizable than send all units
+
+Group map:
+- check if ground map
+
+Placeholder API:
+- some way to interact with placeholders
+
+Bank API:
+- some bank api - ideally better than crigs
+
+Player:
+- Alliances / vision
+- Switch rescue (change player type)
+- Check resource avaialable / write to them
+
+In the later future:
+- AI Placeholder API integration
+- Port other triggers and crigs (as API equivalents)
+	- Read kills/deaths/combat
+- Units (with custom values)
+- Unit Search
+- Orders
+- Bullets
+- Sprites
+- Thingies
+- Sounds
+- Effect Fields
+- Reveal area
+- Creep interactions
+- Protoss Power interactions
+- Enable/Disable nydus placement AI and maybe some extra custom functions
+

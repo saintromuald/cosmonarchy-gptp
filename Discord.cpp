@@ -3,8 +3,8 @@
 #define NOMINMAX
 #include <Windows.h>
 
-#include <BW\api.h>
-#include <trigger_system\trigger_system.h>
+#include <BW/api.h>
+#include <systems/triggers/trigger_system.h>
 
 #define DiscordClientId 972072419013558326
 

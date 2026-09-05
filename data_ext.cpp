@@ -231,16 +231,17 @@ void reset_thingy_ext(Thingy* thingy) {
 	*thingy_ext = {};
 }
 
-AiTownExt* get_town_ext(AiTown* town) {
+AiTownExt& get_town_ext(AiTown* town) {
 	s32 player = town->player;
 	s32 index = town - g_ai_town_list[player].array->towns;
 	assert(town && player >= 0 && player < PlayerLimit && index >= 0 && index < AiTownCap);
-	return &g_ext->ai_towns[player][index];
+	return g_ext->ai_towns[player][index];
 }
 
 void reset_town_ext(AiTown* town) {
-	AiTownExt* town_ext = get_town_ext(town);
-	*town_ext = {};
+	auto& town_ext = get_town_ext(town);
+	auto gen = town_ext.generation;
+	town_ext = {.generation = gen + 1};
 }
 
 bool can_place_on_creep_tile(TileExt* tile_ext, u32 player) {

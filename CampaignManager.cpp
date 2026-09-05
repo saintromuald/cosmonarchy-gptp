@@ -2,7 +2,7 @@
 
 #include "BW/api.h"
 #include "config.h"
-#include "trigger_system/trigger_vars.h"
+#include "systems/triggers/trigger_vars.h"
 
 #include <algorithm>
 #include <cctype>

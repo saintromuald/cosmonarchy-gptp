@@ -6,8 +6,8 @@
 #include "hooks\limits\ccmu.h"
 #include "hooks\weapons\weapon_damage.h"
 #include "hooks\load_unload_proc.h"
-#include "trigger_system/trigger_events.h"
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_events.h"
+#include "systems/triggers/trigger_system.h"
 #include <DatExtend/datext.h>
 #include "hooks/unit_stats/armor_bonus.h"
 #include "hooks/target_related.h"

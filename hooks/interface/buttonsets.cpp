@@ -4,7 +4,7 @@
 #include "hooks/game_hooks.h"
 #include "hooks/grafting/button_functions.h"
 #include "config.h"
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 #include "req_table.h"
 #include "Game.h"
 

@@ -426,3 +426,10 @@ namespace WeaponId {
         Count                               = WeaponsIdLimit,
     };
 }
+
+namespace magic_enum::customize {
+template <>
+constexpr customize_t enum_type_name<WeaponId::Enum>() noexcept {
+    return "WeaponId";
+}
+}

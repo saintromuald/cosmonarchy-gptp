@@ -4,7 +4,7 @@
 #include "hooks/weapons/weapon_spellhit.h"
 #include "hooks/weapons/weapon_damage.h"
 #include "globals.h"
-#include "trigger_system/trigger_system.h"
+#include "systems/triggers/trigger_system.h"
 #include "weapons/weapon_damage.h"
 	
 namespace hooks {
