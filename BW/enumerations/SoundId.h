@@ -2925,6 +2925,16 @@ namespace SoundId {
         CardinalOrderAggressive02                           = 4360,
         CardinalOrderAggressive03                           = 4361,
         CardinalOrderAggressive04                           = 4362,
+
+        BloodsummonStructurePlacement                       = 4373,
+        IntendentReady01                                    = 4374,
+        IntendentReady02                                    = 4375,
+        IntendentReady03                                    = 4376,
+
+        IntendentOrderAggressive01                          = 4385,
+        IntendentOrderAggressive02                          = 4386,
+        IntendentOrderAggressive03                          = 4387,
+        IntendentOrderAggressive04                          = 4388,
     };
 }
 

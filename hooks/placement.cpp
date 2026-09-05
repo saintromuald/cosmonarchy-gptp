@@ -525,10 +525,13 @@ namespace hooks {
         }
         auto sound_id = SoundId::Misc_TBldgPlc_wav; // default
         switch (Unit::get_race(unit_id)) {
-            case RaceId::Terran:  sound_id = SoundId::Misc_TBldgPlc_wav;        break;
-            case RaceId::Protoss: sound_id = SoundId::Misc_PBldgPlc_wav;        break;
-            case RaceId::Zerg:    sound_id = SoundId::Misc_ZBldgPlc_wav_1;      break;
-            case RaceId::Askosi:  sound_id = SoundId::AskosiStructurePlacement; break;
+            case RaceId::Terran:          sound_id = SoundId::Misc_TBldgPlc_wav;             break;
+            case RaceId::Protoss:         sound_id = SoundId::Misc_PBldgPlc_wav;             break;
+            case RaceId::Zerg:            sound_id = SoundId::Misc_ZBldgPlc_wav_1;           break;
+            case RaceId::Askosi:          sound_id = SoundId::AskosiStructurePlacement;      break;
+            case RaceId::Bloodsummon:     sound_id = SoundId::BloodsummonStructurePlacement; break;
+
+            case RaceId::Mini_Forerunner: sound_id = SoundId::Misc_PBldgPlc_wav;             break;
         }
         auto volume = sfx_dat::volume[sound_id];
         u8 max_volume = 99;

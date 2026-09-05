@@ -2207,6 +2207,9 @@ SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {
         case UnitId::AskosiRove: {
             ready_sound = helper::get_random_unit_response(SoundId::RoveReady01, SoundId::RoveReady03);
         } break;
+        case UnitId::AskosiIntendent: {
+            ready_sound = helper::get_random_unit_response(SoundId::IntendentReady01, SoundId::IntendentReady03);
+        } break;
         case UnitId::AskosiHelion: {
             ready_sound = helper::get_random_unit_response(SoundId::HelionReady01, SoundId::HelionReady03);
         } break;
