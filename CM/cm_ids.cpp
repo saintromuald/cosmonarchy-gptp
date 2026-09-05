@@ -953,6 +953,12 @@ WeaponOffsets* get_weapon_offsets(WeaponId::Enum weapon_id) {
             offsets.use_special_overlay = true;
             return &offsets;
         } break;
+        case WeaponId::WatchdogLongboltMissile: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueLaunchPos;
+            offsets.count = 6;
+            return &offsets;
+        } break;
         case WeaponId::SentinelCerberusRailgun: {
             static WeaponOffsets offsets{};
             offsets.value_id = ValueSentinelLaunchPos;
