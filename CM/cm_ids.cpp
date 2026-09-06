@@ -651,8 +651,11 @@ bool weapon_id_cleaves(WeaponId::Enum weapon_id) {
 
 u32 weapon_id_intercepts(WeaponId::Enum weapon_id) {
     switch (weapon_id) {
+        case WeaponId::CataphractLonginiusCannons:
+        case WeaponId::ArquebusLukankaziRailguns:
         case WeaponId::OptectonSunsplitBeam:
-        case WeaponId::AccantorPlasmaShell: {
+        case WeaponId::AccantorPlasmaShell:
+        case WeaponId::RoveElreScaleshot: {
             return InterceptType_GroundOnly;
         }
         case WeaponId::EmpyreanPlasmaBarrage: {
@@ -660,8 +663,7 @@ u32 weapon_id_intercepts(WeaponId::Enum weapon_id) {
         }
         case WeaponId::HotshotDispatchShotgun:
         case WeaponId::SirenCharybdalRifle:
-        case WeaponId::CataphractLonginiusCannons:
-        case WeaponId::ArquebusLukankaziRailguns:
+        case WeaponId::AutocratEminenceRifle:
         case WeaponId::EngramKhaydarinPlasmaLaser:
         case WeaponId::CharlatanFerventBlaster:
         case WeaponId::IdolPrismaticBlaster:
@@ -773,6 +775,7 @@ bool image_id_is_powerup(u32 image_id) {
 ImageId::Enum analogue_image_id_overwrite(WeaponId::Enum weapon_id) {
     switch (weapon_id) {
         case WeaponId::HarakanFlamethrower:				return ImageId::HarakanFlamethrower;
+        case WeaponId::HarakanGoldenPlasmathrower:    	return ImageId::HarakanGoldenFlamethrower;
         case WeaponId::CamazotzHorlainChemthrower:	    return ImageId::CikraliskAttackOverlay;
         case WeaponId::MatadorTwinstrikeFlamethrowers:	return ImageId::HarakanFlamethrower;
         case WeaponId::DurendalAbaddonFlamethrowers:	return ImageId::HarakanFlamethrower;
@@ -1244,6 +1247,7 @@ bool unit_id_can_repair(u32 unit_id) {
 
 bool weapon_id_is_flamethrower(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::HarakanFlamethrower
+        || weapon_id == WeaponId::HarakanGoldenPlasmathrower
         || weapon_id == WeaponId::MatadorTwinstrikeFlamethrowers
         || weapon_id == WeaponId::DurendalAbaddonFlamethrowers
         || weapon_id == WeaponId::AckmedMickenMelter;
@@ -2307,7 +2311,6 @@ bool has_impact_dissipation(UnitId::Enum unit_id) {
         || unit_id == UnitId::AskosiThaumalogue
         || unit_id == UnitId::AskosiDoronin
         || unit_id == UnitId::AskosiInsurant
-        || unit_id == UnitId::AskosiRove
         || unit_id == UnitId::AskosiAgonist
         || unit_id == UnitId::AskosiEmissary
         || unit_id == UnitId::AskosiAkreno;

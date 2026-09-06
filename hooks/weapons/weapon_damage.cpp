@@ -742,9 +742,10 @@ namespace hooks {
                     incubate(data.target, 1, UnitId::ZergSkryrokor, data.target->player);
                 }
             } break;
+            case UnitId::ZergAgrileth:
             case UnitId::ZergVilgorokor:
             case UnitId::ZergAzanthrokor: {
-                if (data.damage > 0 && !bw::is_under_carapace_swarm(data.target) && !target_ext.timers[TimerReconstitutionDelay]) {
+                if (!bw::is_allied_to(data.target->player, data.attacking_player_id) && data.damage > 0 && !bw::is_under_carapace_swarm(data.target) && !target_ext.timers[TimerReconstitutionDelay]) {
                     target_ext.timers[TimerReconstitutionDelay] = 2secs + 1;
                     helper::play_sound_from_unit(SoundId::Zerg_Ultra_ZUlRor00_WAV, data.target, 1, 0);
                 }
@@ -753,7 +754,6 @@ namespace hooks {
             case UnitId::AskosiAphorist:
             case UnitId::AskosiDoronin:
             case UnitId::AskosiInsurant:
-            case UnitId::AskosiRove:
             case UnitId::AskosiAgonist:
             case UnitId::AskosiEmissary:
             case UnitId::AskosiAkreno: {
@@ -1044,9 +1044,6 @@ namespace hooks {
                 case WeaponId::SalamanderAngeltearRockets:
                 case WeaponId::AckmedMickenMelter:
                 case WeaponId::YamatoGun: {
-                    if (data.attacker->id == UnitId::TerranHarakanGolden) {
-                        break;
-                    }
                     if (target_ext.values[ValueApollyoidAdhesiveStacks] < ApollyoidAdhesive::StackCap) {
                         target_ext.values[ValueApollyoidAdhesiveStacks]++;
                     }
@@ -1146,11 +1143,22 @@ namespace hooks {
                         data.target->apply_booming_blast(data.attacking_player_id);
                     } break;
                     case WeaponId::GrandstandArteDriver:
-                    case WeaponId::AlacyneInqoScaleshot:
+                    case WeaponId::RoveElreScaleshot:
                     case WeaponId::IntendentErsaDriver:
+                    case WeaponId::PhontisAlruDriver:
+                    case WeaponId::AlacyneInqoScaleshot:
                     case WeaponId::CircitorSentinelBoltbeam: {
-                        if (!target_ext.timers[TimerPowerOverload]) {
-                            target_ext.timers[TimerPowerOverload] = Askosi::PowerOverloadTimer * hooks::get_armor_internal(data.target) + 1;
+                        if (target_ext.timers[TimerPowerOverloadDebuff]) {
+                            attacker_ext.timers[TimerPowerOverloadBuff] = Askosi::PowerOverloadTimer;
+                            target_ext.timers[TimerPowerOverloadDebuff] = Askosi::PowerOverloadTimer;
+                        }
+                        if (hooks::get_armor_internal(data.target) > 0) {
+                            attacker_ext.timers[TimerPowerOverloadBuff] = Askosi::PowerOverloadTimer;
+                            target_ext.timers[TimerPowerOverloadDebuff] = Askosi::PowerOverloadTimer;
+                            if (attacker_ext.values[ValuePowerOverloadBuffStacks] < Askosi::PowerOverloadCap) {
+                                attacker_ext.values[ValuePowerOverloadBuffStacks]++;
+                                target_ext.values[ValuePowerOverloadDebuffStacks]++;
+                            }
                         }
                     } break;
                     case WeaponId::CamazotzHorlainChemthrower: {

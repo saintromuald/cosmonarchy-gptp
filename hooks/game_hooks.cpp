@@ -1534,6 +1534,8 @@ namespace hooks {
                     if (unit->main_order_id == OrderId::MorphUnit && queued_id != UnitId::None && !UnitId::is_zerg_worker(static_cast<UnitId::Enum>(queued_id))) {
                         unit->build_queue[unit->build_queue_slot] = UnitId::ZergAgrileth;
                     }
+                } else if (unit_ext.timers[TimerReconstitutionDelay] == 1) {
+                    hooks::carapace_swarm_hit_internal(unit->position.x, unit->position.y, unit->player, UnitId::Spell_CarapaceSwarmSmall);
                 }
             } break;
             case UnitId::ZergEvigrilisk: {
@@ -3080,13 +3082,17 @@ namespace hooks {
             }
         }
 
-        if (unit_ext.timers[TimerPowerOverload]) {
+
+        if (unit_ext.timers[TimerPowerOverloadBuff]) {
             // TODO: Overlay
-            if (unit_ext.timers[TimerPowerOverload] % 24 == 1) {
-                unit->damage_with_custom(5 * 256, 0, unit_ext.units[UnitPowerOverloadSource]);
-                // TODO: Own audiovisuals
-                unit->sprite->create_top_overlay(ImageId::ArchitectWeaponChannel);
-                bw::play_sound({SoundId::AskosiDeploy01, SoundId::AskosiDeploy03}, unit->position);
+            if (unit_ext.timers[TimerPowerOverloadBuff] == 1) {
+                unit_ext.values[ValuePowerOverloadBuffStacks] = 0;
+            }
+        }
+        if (unit_ext.timers[TimerPowerOverloadDebuff]) {
+            // TODO: Overlay
+            if (unit_ext.timers[TimerPowerOverloadDebuff] == 1) {
+                unit_ext.values[ValuePowerOverloadDebuffStacks] = 0;
             }
         }
 

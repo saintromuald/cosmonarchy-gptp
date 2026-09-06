@@ -49,6 +49,7 @@ namespace hooks {
 		if (unit_ext.timers[TimerMechanicalRage] > 1) {
 			armor_modifier += 10;
 		}
+		armor_modifier += unit_ext.values[ValuePowerOverloadBuffStacks];
 		return armor_modifier;
 	}
 
@@ -73,6 +74,7 @@ namespace hooks {
 		armor -= unit_ext.timers[TimerDiscordantChorus] > 1;
 		armor -= unit_ext.timers[TimerIncinerateArmor] > 1;
 		armor -= unit_ext.values[ValueAshHeap];
+		armor -= unit_ext.values[ValuePowerOverloadDebuffStacks];
 
 		if (armor < 0) {
 			armor = 0;

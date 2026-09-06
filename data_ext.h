@@ -275,6 +275,8 @@ enum ExtValueId {
     ValueGladiusOrderBindingPlasmaStacks,
     ValueGladiusOrderBindingPlasmaPlayer,
     ValueLaunchPos,
+    ValuePowerOverloadBuffStacks,
+    ValuePowerOverloadDebuffStacks,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,
@@ -461,7 +463,8 @@ enum ExtTimerId {
     TimerAskosiPowerBreach,
     TimerSegmentedExpansion,
     TimerNaniteFieldLockout,
-    TimerPowerOverload,
+    TimerPowerOverloadBuff,
+    TimerPowerOverloadDebuff,
     TimerAshHeapArmorRend,
     TimerAshHeap,
     TimerRetaliationAssembly,
@@ -522,7 +525,6 @@ enum ExtUnitId {
     UnitHijackTarget,
     UnitHiveOrgan,
     UnitHiveTissue,
-    UnitPowerOverloadSource,
     UnitPuppeteerTarget,
 
     UnitCount,

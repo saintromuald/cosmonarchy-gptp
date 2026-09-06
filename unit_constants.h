@@ -45,6 +45,10 @@ namespace TerranOgun {
 inline constexpr s32 NaniteDronesRange = 4tiles;
 }
 
+namespace UpstartMaverick {
+inline constexpr s32 StimpackMinimumHP = 5hp;
+}
+
 namespace NydusTrinityCamazotz {
 inline constexpr s32 OnhitHeal = 3hp;
 inline constexpr s32 OnhitRange = 2tiles;
@@ -188,7 +192,7 @@ namespace Terran {
 inline constexpr s32 BurnDownDamage = 1.875hp / 1secs;
 inline constexpr s32 ControlledDemolitionTimer = 10secs + 1;
 inline constexpr s32 SublimeShepherdRange = 6tiles;
-inline constexpr s32 StimpackMinimumHP = 5 * 256;
+inline constexpr s32 StimpackMinimumHP = 10hp;
 }
 
 // PROTOSS \\
@@ -491,6 +495,7 @@ inline constexpr s32 ScrapworldGoldRushTimer = 2secs;
 
 inline constexpr s32 BoomingBlastTimer = 2secs + 1;
 inline constexpr s32 PowerOverloadTimer = 1secs;
+inline constexpr s32 PowerOverloadCap = 4;
 
 inline constexpr s32 MimicryRange = 5tiles;
 
