@@ -117,9 +117,11 @@ ParserMarker Parser::marker() {
 	};
 }
 
-void Parser::unwind(const ParserMarker& marker) {
+ParserMarker Parser::unwind(const ParserMarker& marker) {
+    const auto current_marker = this->marker();
 	m_at = marker.at;
 	m_token = marker.token;
+	return current_marker;
 }
 
 bool Parser::get_char(char c) {

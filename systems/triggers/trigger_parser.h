@@ -311,7 +311,7 @@ class Parser {
 public:
 	Parser(const char* at);
 	ParserMarker marker();
-	void unwind(const ParserMarker& marker);
+	ParserMarker unwind(const ParserMarker& marker);
 
 	bool get_char(char c);
 	std::optional<std::string_view> get_word(bool is_command = false, bool allow_hash = false);
