@@ -488,6 +488,9 @@ namespace UnitId {
         AskosiLekrot                                        = 596,
         AskosiHearthshard                                   = 597,
 
+    // Askosi-Unit-Factional
+        AskosiScralia                                       = 615,
+
     // Bloodsummon-Unit
         BloodsummonThrombocyte                              = 617,
         BloodsummonAcqui                                    = 625,
@@ -816,6 +819,7 @@ namespace UnitId {
         // Temporary until all factions are implemented for all races!
         Buttons_FactionSelectProtoss						= 404,
         Buttons_FactionSelectZerg							= 405,
+        Buttons_FactionSelectAskosi                         = 632,
 
         Buttons_BasicAskosiFacilities                       = 440,
         Buttons_AdvancedAskosiFacilities                    = 441,
