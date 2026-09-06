@@ -4348,13 +4348,13 @@ namespace hooks {
 
         init_omnipresence();
 
-        gptp::g_logger << "Started a match!\n";
         g_game_was_init = false;
         hotkeys.game_started = true;
 
         for (auto* logger : gptp::g_loggers) {
             logger->log_game_start();
         }
+        gptp::g_logger << "Started a match!\n";
 
         return true;
     }

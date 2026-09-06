@@ -3,6 +3,7 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 #include <vector>
 #include <fstream>
 #include <sstream>
@@ -37,6 +38,7 @@ public:
 
 	inline const char* name() const { return m_name; }
 	inline std::string buffered_string() const { return m_game_buffer.str(); }
+	inline std::string_view buffered_view() const { return m_game_buffer.view(); }
 
 private:
 	bool try_open_log_file();
