@@ -272,6 +272,9 @@ enum ExtValueId {
     ValueImpactDissipationBlock,
     ValueAtreusBindingPlasmaStacks,
     ValueAtreusBindingPlasmaPlayer,
+    ValueGladiusOrderBindingPlasmaStacks,
+    ValueGladiusOrderBindingPlasmaPlayer,
+    ValueLaunchPos,
 
     ValueAI_WorkerChosenForExpansion,
     ValueAI_WorkerChosenX,
@@ -475,6 +478,7 @@ enum ExtTimerId {
     TimerAtreusBindingPlasma,
     TimerForlornHaste,
     TimerZapOverlay,
+    TimerGladiusOrderBindingPlasma,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,

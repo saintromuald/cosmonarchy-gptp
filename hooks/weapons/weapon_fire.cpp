@@ -1251,6 +1251,12 @@ namespace hooks {
                             SpriteId::GladiusBindingPlasmaOverlay, bullet->sprite ? bullet->sprite->elevation : 0, bullet->player, 0);
                     }
                 } break;
+                case WeaponId::GladiusOrderPlasmaFlurry: {
+                    if (!bullet->attack_target.unit) {
+                        g_iquare_globals->create_effect(EffectId::GladiusOrderBindingPlasma, Protoss::BindingPlasmaTimer, bullet->position, Protoss::BindingPlasmaRadius,
+                            SpriteId::GladiusBindingPlasmaOverlay, bullet->sprite ? bullet->sprite->elevation : 0, bullet->player, 0);
+                    }
+                } break;
                 case WeaponId::ZethalorSpewingSpores:
                 case WeaponId::KethrostalorStaggeredSpores: {
                     BulletExt* bullet_ext = get_bullet_ext(bullet);

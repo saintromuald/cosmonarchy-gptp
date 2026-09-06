@@ -33,6 +33,7 @@ enum class EffectId {
     SevenstepMindMatter,
     OscilliantBindingPlasma,
     GladiusBindingPlasma,
+    GladiusOrderBindingPlasma,
     MiasmaPlagueField,
     DivineDisciplineField,
     ScrapworldImplosion,

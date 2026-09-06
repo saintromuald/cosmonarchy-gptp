@@ -776,18 +776,25 @@ namespace hooks {
                     if (faction != Faction::ProtossOrderOfTheSacredSaber) {
                         return true;
                     }
-                } break;
+                    return false;
+                }
                 case UnitId::ProtossExtatus: {
                     if (faction == Faction::ProtossOrderOfTheSacredSaber) {
                         return true;
                     }
-                } break;
+                    return false;
+                }
                 case UnitId::ProtossPanoptus:
                 case UnitId::ProtossLanifect:
-                case UnitId::ProtossGladius:
                 case UnitId::ProtossExemplar: {
                     return true;
-                } break;
+                }
+                case UnitId::ProtossGladius: {
+                    return faction != Faction::ProtossOrderOfTheSacredSaber;
+                }
+                case UnitId::ProtossGladiusOrder: {
+                    return faction == Faction::ProtossOrderOfTheSacredSaber;
+                }
             }
         }
         if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossArgosy)) {
@@ -2804,9 +2811,20 @@ namespace hooks {
                     }
                     case UnitId::ProtossPanoptus:
                     case UnitId::ProtossLanifect:
-                    case UnitId::ProtossGladius:
                     case UnitId::ProtossExemplar: {
                         return TECH_ACTIVE;
+                    }
+                    case UnitId::ProtossGladius: {
+                        if (faction != Faction::ProtossOrderOfTheSacredSaber) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::ProtossGladiusOrder: {
+                        if (faction == Faction::ProtossOrderOfTheSacredSaber) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
                     }
                     return TECH_HIDDEN;
                 }

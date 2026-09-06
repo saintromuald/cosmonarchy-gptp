@@ -2797,8 +2797,10 @@ namespace hooks {
                     unit->building.resource.is_mining = 0;
                 }
             } break;
+            case UnitId::ProtossAtreus:
             case UnitId::ProtossOscilliant:
-            case UnitId::ProtossGladius: {
+            case UnitId::ProtossGladius:
+            case UnitId::ProtossGladiusOrder: {
                 if (unit_ext.timers[TimerBindingPlasmaChargeOverlay]) {
                     if (!unit->get_overlay(ImageId::GladiusCharge)) {
                         bw::add_unit_overlay(unit, ImageId::GladiusCharge);
@@ -3237,6 +3239,19 @@ namespace hooks {
             });
         } else {
             unit_ext.values[ValueGladiusBindingPlasmaStacks] = 0;
+        }
+
+        // Gladius Order - Binding Plasma
+        if (unit_ext.timers[TimerGladiusOrderBindingPlasma]) {
+            bw::binding_plasma_tick(unit_ext.values[ValueGladiusOrderBindingPlasmaPlayer], unit, UnitId::ProtossGladiusOrder, {
+                .timer_id = ExtTimerId::TimerGladiusOrderBindingPlasma,
+                .stack_value_id = ExtValueId::ValueGladiusOrderBindingPlasmaStacks,
+                .player_value_id = ExtValueId::ValueGladiusOrderBindingPlasmaPlayer,
+                .weapon_id = WeaponId::GladiusOrderPlasmaFlurry,
+                .sound = {SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03}
+            });
+        } else {
+            unit_ext.values[ValueGladiusOrderBindingPlasmaStacks] = 0;
         }
 
         bw::set_unit_overlay(unit, {ImageId::Avenge_Small, ImageId::Avenge_XLarge}, unit_ext.timers[TimerAvenge] >= 1 || unit_ext.timers[TimerVengefulMarch] >= 1, {.play_death = true});
@@ -4246,7 +4261,8 @@ namespace hooks {
                         image_id = ImageId::SantaHatXLarge17;
                         offset_y = units_dat::unit_bounds[unit->id].top / 2 + 17;
                     } break;
-                    case UnitId::ProtossGladius: {
+                    case UnitId::ProtossGladius:
+                    case UnitId::ProtossGladiusOrder: {
                         image_id = ImageId::SantaHatLarge;
                         offset_y = units_dat::unit_bounds[unit->id].top / 2;
                     } break;

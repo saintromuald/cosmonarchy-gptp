@@ -302,6 +302,7 @@ namespace WeaponId {
         EcclesiastKhalendricAscendingBlaster = 293,
         ManifoldStarboundReactiveBlaster     = 294,
         VestigeOmenBlade                     = 295,
+        GladiusOrderPlasmaFlurry             = 304,
 
         // Zerg \\
                     

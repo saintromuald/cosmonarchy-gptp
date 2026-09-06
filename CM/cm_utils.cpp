@@ -497,6 +497,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
                 case UnitId::ProtossLegionnaire: return UnitId::ProtossAdherent;
                 case UnitId::ProtossVassal:      return UnitId::ProtossRenesair;
                 case UnitId::ProtossAurora:      return UnitId::ProtossExtatus;
+                case UnitId::ProtossGladius:     return UnitId::ProtossGladiusOrder;
             }
         } break;
         case Faction::ProtossStarbound: {
