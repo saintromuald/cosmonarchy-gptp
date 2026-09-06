@@ -1134,9 +1134,8 @@ namespace hooks {
                             }
                         }
                     } break;
-                    case WeaponId::HeraclesJavelinCannons: {
-                            target_ext.timers[TimerKelvinMunitions] = 3secs + 1;
-                    } break;
+                    case WeaponId::HeraclesJavelinCannons:
+                    case WeaponId::ShamanUpstartSupportScalpelCannon:
                     case WeaponId::ClaymoreHarpoonRailgun:
                     case WeaponId::TritonHydriaCannons: {
                         target_ext.timers[TimerKelvinMunitions] = 3secs + 1;

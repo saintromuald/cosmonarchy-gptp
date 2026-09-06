@@ -689,3 +689,10 @@ void proc_signify(Unit* target, u32 attacking_player) {
 	target_ext.values[ValueSignifyPlayer] = attacking_player;
 	bw::update_signify_status(target, &target_ext);
 }
+
+void proc_nanite_field_heal(Unit* shaman, u32 heal, Unit* target) {
+	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
+		bw::add_unit_overlay(target, ImageId::ShamanNaniteField);
+	}
+	target->heal_hp(heal * 1hp, shaman);
+}

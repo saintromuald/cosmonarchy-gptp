@@ -115,6 +115,7 @@ void unit_on_death_behaviors(Unit* unit) {
     switch (unit->id) {
         case UnitId::TerranEidolon:
         case UnitId::TerranEidolonNydus:
+        case UnitId::TerranMorrigan:
         case UnitId::TerranSeraph: {
             if (unit->building.nuke_missile) {
                 (unit->building.nuke_missile)->sprite->play_iscript_animation(IscriptAnimation::Death, true);

@@ -1127,7 +1127,16 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::TerranShamanSupportMode: {
-                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction == Faction::TerranUpstart) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranVestry)) {
+                                            current_button_state = Button_State::Disabled;
+                                        } else {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::TerranShamanUpstartSupport: {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranUpstart) {
                                             current_button_state = Button_State::Invisible;
                                         } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranVestry)) {
                                             current_button_state = Button_State::Disabled;
@@ -1136,7 +1145,7 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::TerranEidolon: {
-                                        if (faction != Faction::TerranNydusTrinity) {
+                                        if (faction != Faction::TerranNydusTrinity && faction != Faction::TerranUpstart) {
                                             if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
                                                 current_button_state = Button_State::Invisible;
                                             } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranCovenant)) {
@@ -1148,6 +1157,17 @@ namespace hooks {
                                     } break;
                                     case UnitId::TerranEidolonNydus: {
                                         if (faction == Faction::TerranNydusTrinity) {
+                                            if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranCovenant)) {
+                                                current_button_state = Button_State::Disabled;
+                                            } else {
+                                                current_button_state = Button_State::Enabled;
+                                            }
+                                        }
+                                    } break;
+                                    case UnitId::TerranMorrigan: {
+                                        if (faction == Faction::TerranUpstart) {
                                             if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
                                                 current_button_state = Button_State::Invisible;
                                             } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranCovenant)) {
@@ -3288,9 +3308,19 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::TerranShamanUpstartAdrenaline: {
+                                    if (current_button->icon_id == IconId::Restoration) { // Adrenaline Field
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::TerranEidolonNydus: {
                                     if (current_button->icon_id == IconId::SensorArray       // Proximity Cloak
                                     ||  current_button->icon_id == IconId::MoebiusReactor) { // Adrenal Implant
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::TerranMorrigan: {
+                                    if (current_button->icon_id == IconId::SensorArray) { // Dampening Field
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -3313,6 +3343,7 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::TerranShamanUpstartSupport:
                                 case UnitId::TerranHeracles:
                                 case UnitId::TerranTriton: {
                                     if (current_button->icon_id == IconId::KelvinMunitions) {

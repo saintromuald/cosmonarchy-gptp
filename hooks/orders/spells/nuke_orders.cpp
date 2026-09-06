@@ -112,13 +112,14 @@ namespace hooks {
 					u32 action_sound = SoundId::None;
 					switch (unit->id) {
 						case UnitId::TerranEidolon:
-						case UnitId::TerranEidolonNydus: {
+						case UnitId::TerranEidolonNydus:
+						case UnitId::TerranMorrigan: {
 							action_sound = SoundId::Terran_GHOST_TGhPss00_wav;
 						} break;
 					}
 
 					if (action_sound) {
-						if (bw::play_sound(SoundId::Terran_GHOST_TGhPss00_wav, unit)) {
+						if (bw::play_sound(action_sound, unit)) {
 							helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[action_sound] + 1000 * (sfx_dat::sound_data[action_sound].duration_ms / 1000), 0, action_sound);
 						}
 					}

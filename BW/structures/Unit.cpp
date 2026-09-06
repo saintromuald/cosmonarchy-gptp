@@ -14,6 +14,7 @@
 #include "data_ext.h"
 #include "BW/stat_txt_spec.h"
 #include "hooks\weapons\weapon_cooldown.h"
+#include "hooks\stim_packs.h"
 
 UnitRef::UnitRef(Unit* unit) : index{unit->get_unit_index()}, unique_id{unit->unique_id} {}
 
@@ -2428,5 +2429,46 @@ void Unit::apply_booming_blast(u32 attacking_player) {
     if (!unit_ext.timers[TimerBoomingBlast]) {
         unit_ext.timers[TimerBoomingBlast] = Askosi::BoomingBlastTimer;
         unit_ext.values[ValueBoomingBlastPlayer] = attacking_player;
+    }
+}
+
+void Unit::proc_nanite_field() { // Maybe search_nanite_field? -Pr0nogo
+    auto& unit_ext = this->ext();
+    if (this->is_frozen() || this->is_in_transport() || unit_ext.values[ValueDisablePassive]) {
+        return;
+    }
+    u32 timer = unit_ext.timers[TimerNaniteField];
+    if (timer) {
+        return;
+    }
+    unit_ext.timers[TimerNaniteField] = 1secs;
+    bw::add_unit_overlay(this, ImageId::RestorationHit_Small + bw::get_overlay_offset(this->id));
+
+    u32 range = this->id == UnitId::TerranShamanVisionaryMode ? Shaman::NaniteFieldVisionaryRange : Shaman::NaniteFieldSupportRange;
+    for (Unit* target : g_unit_search.radial(this->position, range).add_units_from_connected_transport(this).filter(this, FilterAlly | FilterNoBuilding)) {
+        auto& target_ext = target->ext();
+        if (!target_ext.timers[TimerNaniteFieldLockout]) {
+            target_ext.timers[TimerNaniteFieldLockout] = Shaman::NaniteFieldDuration;
+            proc_nanite_field_heal(this, Shaman::NaniteFieldHealAmount, target);
+        }
+    }
+}
+
+void Unit::proc_adrenaline_field() {
+    auto& unit_ext = this->ext();
+    if (this->is_frozen() || this->is_in_transport() || unit_ext.values[ValueDisablePassive]) {
+        return;
+    }
+    u32 timer = unit_ext.timers[TimerNaniteField];
+    if (timer) {
+        return;
+    }
+    unit_ext.timers[TimerNaniteField] = 10secs;
+    bw::add_unit_overlay(this, ImageId::RestorationHit_Small + bw::get_overlay_offset(this->id));
+
+    for (Unit* target : g_unit_search.radial(this->position, Shaman::NaniteFieldSupportRange).filter(this, FilterAlly | FilterNoBuilding)) {
+        if (target->hitpoints > Terran::StimpackMinimumHP && target->stim_timer == 0 && target->ext().timers[TimerStimpackDelay] <= 1) {
+            proc_stimpack_internal(target);
+        }
     }
 }

@@ -472,6 +472,8 @@ struct Unit : public UnitLayout {
     bool check_neutral_garrison_death();
     void apply_ash_heap(u32 attacking_player);
     void apply_booming_blast(u32 attacking_player);
+    void proc_nanite_field();
+    void proc_adrenaline_field();
 };
 
 C_ASSERT(sizeof(Flingy) == 76);

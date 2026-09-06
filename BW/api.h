@@ -801,6 +801,7 @@ bool is_damage_cloakable(Unit* unit);
 bool is_damage_decloakable(Unit* unit);
 bool is_attack_cloakable(Unit* unit);
 bool is_attack_decloakable(Unit* unit);
+bool is_proximity_cloakable(Unit* unit);
 bool is_proximity_decloakable(Unit* unit);
 bool unit_can_nuke(Unit* unit);
 UnitId::Enum get_trap_id(Unit* unit);

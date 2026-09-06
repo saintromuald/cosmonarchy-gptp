@@ -34,7 +34,8 @@ namespace hooks {
             if (unit->player == g_local_nation_id && !g_is_in_replay) {
                 u32 action_sound = SoundId::None;
                 switch (unit->id) {
-                    case UnitId::TerranShamanVisionaryMode: {
+                    case UnitId::TerranShamanVisionaryMode:
+                    case UnitId::TerranShamanUpstartAdrenaline: {
                         action_sound = SoundId::ShamanSupport01;
                     } break;
                     case UnitId::TerranSavantPowerSiphon: {
@@ -94,7 +95,8 @@ namespace hooks {
                 if (unit->player == g_local_nation_id && !g_is_in_replay) {
                     u32 action_sound = 0;
                     switch (unit->id) {
-                        case UnitId::TerranShamanSupportMode: {
+                        case UnitId::TerranShamanSupportMode:
+                        case UnitId::TerranShamanUpstartSupport: {
                             action_sound = bw::rand_between_local(SoundId::ShamanVisionary01, SoundId::ShamanVisionary02);
                         } break;
                         case UnitId::TerranSavantEntropyGauntlets: {

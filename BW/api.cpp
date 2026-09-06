@@ -1118,6 +1118,7 @@ static bool can_use_cliff_advantage(Unit* unit, WeaponId::Enum weapon_id) {
     switch (unit->id) {
         case UnitId::TerranHarakan:
         case UnitId::TerranHarakanGolden:
+        case UnitId::TerranCamazotz:
         case UnitId::TerranNuriel:
         case UnitId::TerranStriga:
         case UnitId::TerranMatadorTankMode:
@@ -1276,7 +1277,7 @@ bool is_passive_decloakable(Unit* unit) {
     if (unit->is_burrowed() || unit_id_has_proximity_cloak(unit->id)) {
         return false;
     }
-    if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak && !UnitId::has_damage_cloak((UnitId::Enum)unit->id)) {
+    if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak && !UnitId::has_damage_cloak((UnitId::Enum)unit->id) && !UnitId::has_attack_cloak((UnitId::Enum)unit->id)) {
         return true;
     }
     auto& unit_ext = unit->ext();
@@ -1306,6 +1307,7 @@ bool is_damage_decloakable(Unit* unit) {
     if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak && UnitId::has_damage_cloak((UnitId::Enum)unit->id)) {
         return true;
     }
+    return false;
 }
 
 bool is_attack_cloakable(Unit* unit) {
@@ -1322,12 +1324,21 @@ bool is_attack_decloakable(Unit* unit) {
     if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak && UnitId::has_attack_cloak((UnitId::Enum)unit->id)) {
         return true;
     }
+    return false;
 }
 
-bool is_proximity_decloakable(Unit* unit) {
+bool is_proximity_cloakable(Unit* unit) {
     if (unit->is_burrowed()) {
         return false;
     }
+    auto& unit_ext = unit->ext();
+    if (unit_ext.values[ValueTriggerBehaviorProximityCloak] || unit_ext.timers[TimerFacadePryingEyesCloak]) {
+        return true;
+    }
+    return false;
+}
+
+bool is_proximity_decloakable(Unit* unit) {
     if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak && unit_id_has_proximity_cloak(unit->id)) {
         return true;
     }
@@ -1342,6 +1353,7 @@ bool is_proximity_decloakable(Unit* unit) {
 bool unit_can_nuke(Unit* unit) {
     return unit->id == UnitId::TerranEidolon
         || unit->id == UnitId::TerranEidolonNydus
+        || unit->id == UnitId::TerranMorrigan
         || unit->id == UnitId::TerranSeraph;
 }
 
@@ -3925,14 +3937,14 @@ u32 get_cloak_sound_id(Unit* unit) {
     if (unit->status & UnitStatus::CloakingForFree && !unit_id_has_proximity_cloak(unit->id)) {
         return SoundId::Terran_PHOENIX_TPhClo00_WAV;
     }
-    if (is_proximity_decloakable(unit)) {
-        return SoundId::CloakTerranOff;
+    if (is_proximity_cloakable(unit)) {
+        return SoundId::CloakTerranOn;
     }
-    if (is_damage_decloakable(unit)) {
-        return bw::rand_between(SoundId::CloakDamageOff01, SoundId::CloakDamageOff02);
+    if (is_damage_cloakable(unit)) {
+        return bw::rand_between(SoundId::CloakDamageOn01, SoundId::CloakDamageOn03);
     }
-    if (is_attack_decloakable(unit)) {
-        return SoundId::CloakAttackOff;
+    if (is_attack_cloakable(unit)) {
+        return SoundId::CloakAttackOn;
     }
     switch (unit->get_race()) {
         case RaceId::Terran:  return SoundId::CloakTerranOn;
@@ -3946,6 +3958,15 @@ u32 get_cloak_sound_id(Unit* unit) {
 u32 get_decloak_sound_id(Unit* unit) {
     if (unit->status & UnitStatus::CloakingForFree && !unit_id_has_proximity_cloak(unit->id)) {
         return SoundId::Terran_PHOENIX_TPhClo01_WAV;
+    }
+    if (is_proximity_decloakable(unit)) {
+        return SoundId::CloakTerranOff;
+    }
+    if (is_damage_decloakable(unit)) {
+        return bw::rand_between(SoundId::CloakDamageOff01, SoundId::CloakDamageOff02);
+    }
+    if (is_attack_decloakable(unit)) {
+        return SoundId::CloakAttackOff;
     }
     switch (unit->get_race()) {
         case RaceId::Terran:  return SoundId::CloakTerranOff;
