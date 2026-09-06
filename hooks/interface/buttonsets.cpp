@@ -1038,7 +1038,7 @@ namespace hooks {
                             case UnitId::TerranStockade: {
                                 switch (current_button->requirement_var) {
                                     case UnitId::TerranMaverick: {
-                                        if (faction != Faction::TerranHecatonCoalition && faction != Faction::TerranFuturistFederation && faction != Faction::TerranUpstart) {
+                                        if (faction != Faction::TerranHecatonCoalition && faction != Faction::TerranFuturistFederation && faction != Faction::TerranGoldenRepublic && faction != Faction::TerranUpstart) {
                                             if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
                                                 current_button_state = Button_State::Invisible;
                                             } else {
@@ -1048,6 +1048,15 @@ namespace hooks {
                                     } break;
                                     case UnitId::TerranMaverickFuturist: {
                                         if (faction == Faction::TerranFuturistFederation) {
+                                            if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
+                                                current_button_state = Button_State::Invisible;
+                                            } else {
+                                                current_button_state = Button_State::Enabled;
+                                            }
+                                        }
+                                    } break;
+                                    case UnitId::TerranMaverickGolden: {
+                                        if (faction == Faction::TerranGoldenRepublic) {
                                             if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
                                                 current_button_state = Button_State::Invisible;
                                             } else {

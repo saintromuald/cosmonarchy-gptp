@@ -461,6 +461,7 @@ bool unit_id_is_factional(u16 unit_id) {
         || unit_id == UnitId::TerranLuminary
         || unit_id == UnitId::TerranAuriel
         || unit_id == UnitId::TerranCyclopsFuturist
+        || unit_id == UnitId::TerranMaverickGolden
         || unit_id == UnitId::TerranHarakanGolden
         || unit_id == UnitId::TerranPietyWard
         || unit_id == UnitId::TerranClericFuturist

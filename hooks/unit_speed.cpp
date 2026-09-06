@@ -263,6 +263,7 @@ namespace hooks {
             case UnitId::AskosiPilgrim:
             case UnitId::BloodsummonAcqui:
             case UnitId::TerranMaverick:
+            case UnitId::TerranMaverickGolden:
             case UnitId::TerranMaverickUpstart:
             case UnitId::TerranHotshot:
             case UnitId::TerranCleric:

@@ -457,6 +457,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         } break;
         case Faction::TerranGoldenRepublic: {
             switch (unit_id) {
+                case UnitId::TerranMaverick:  return UnitId::TerranMaverickGolden;
                 case UnitId::TerranHarakan:   return UnitId::TerranHarakanGolden;
                 case UnitId::TerranGoliath:   return UnitId::TerranAspirant;
                 case UnitId::TerranBlackjack: return UnitId::TerranBlackjackGolden;
