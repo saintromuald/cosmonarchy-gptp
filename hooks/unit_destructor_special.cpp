@@ -390,11 +390,13 @@ void unit_on_death_behaviors(Unit* unit) {
         unit_ext.values[ValueNoCorpse] = true;
         Unit* attacker = unit_ext.units[UnitPlagueSource];
         u32 attacking_player = attacker ? attacker->player : 11;
-        if (unit_ext.values[ValueMiasma]) {
-            g_iquare_globals->create_effect(EffectId::MiasmaPlagueField, 2secs, { (u16)unit->position.x, (u16)unit->position.y }, 1.5tiles, SpriteId::PlagueField, 5, attacking_player, attacker);
-        } else {
-            g_iquare_globals->create_effect(EffectId::IsthrathalethPlagueField, 5secs, { (u16)unit->position.x, (u16)unit->position.y }, 1.5tiles, SpriteId::PlagueField, 5, attacking_player, attacker);
+        if (!unit_ext.values[ValueMiasma]) {
+            g_iquare_globals->create_effect(EffectId::IsthrathalethPlagueField, 5secs, {(u16)unit->position.x, (u16)unit->position.y}, 1.5tiles, SpriteId::PlagueField, 5, attacking_player, attacker);
         }
+    }
+
+    if (unit_ext.timers[TimerAshHeap]) {
+        unit_ext.values[ValueNoCorpse];
     }
 
     // Binding Plasma - proc on death

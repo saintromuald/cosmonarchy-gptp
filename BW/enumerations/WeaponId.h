@@ -241,6 +241,7 @@ namespace WeaponId {
         MaverickGoldenPhaseRifle            = 303,
         MorriganEpitaphGrenadeLauncher      = 305,
         ShamanUpstartSupportScalpelCannon   = 306,
+        HarakanGoldenPlasmathrower          = 308,
 
         // Protoss \\
         

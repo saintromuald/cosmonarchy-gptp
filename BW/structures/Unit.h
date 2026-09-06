@@ -474,6 +474,7 @@ struct Unit : public UnitLayout {
     void apply_booming_blast(u32 attacking_player);
     void proc_nanite_field();
     void proc_adrenaline_field();
+    s32 get_stimpack_hp_cost();
 };
 
 C_ASSERT(sizeof(Flingy) == 76);

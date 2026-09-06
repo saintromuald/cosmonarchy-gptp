@@ -2560,7 +2560,8 @@ GuardAi* create_guard_ai(u32 player, u32 unit_id, v2u16 position) {
 u8 get_damage_factor_override(WeaponId::Enum weapon_id) {
     switch (weapon_id) {
         case WeaponId::HotshotDispatchShotgun:
-        case WeaponId::SirenCharybdalRifle: {
+        case WeaponId::SirenCharybdalRifle:
+        case WeaponId::RoveElreScaleshot: {
             return 3;
         }
         case WeaponId::CannibalZuluSidekicks:

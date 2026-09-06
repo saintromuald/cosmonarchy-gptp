@@ -1355,6 +1355,8 @@ namespace ImageId {
         CrushingDeliveryOverlaySmall                = 2460,
         CrushingDeliveryOverlayMedium               = 2461,
         CrushingDeliveryOverlayLarge                = 2462,
+        
+        HarakanGoldenFlamethrower                   = 2487,
 
         // Used for damage overlay crash fix
         FirstMinorDamageOverlay						= 450,

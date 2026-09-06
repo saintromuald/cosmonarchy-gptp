@@ -72,6 +72,7 @@ namespace hooks {
 
         u8 count_nexuses = 0;
         u8 count_ministries = 0;
+        u8 count_terran_worker_sources = 0;
 
         u16 active_button_set_id;
         u16 selected_button_set_id;
@@ -120,6 +121,10 @@ namespace hooks {
                 switch (selected->id) {
                     case UnitId::TerranMinistry: {
                         count_ministries++;
+                        count_terran_worker_sources++;
+                    } break;
+                    case UnitId::TerranTreasury: {
+                        count_terran_worker_sources++;
                     } break;
                     case UnitId::ProtossNexus: {
                         count_nexuses++;
@@ -177,6 +182,8 @@ namespace hooks {
             } else if (count_burrowables) {
                 g_current_buttonset_id = UnitId::Buttons_GroupBurrower;
             } else if (count_ministries == g_client_selection_count) {
+                g_current_buttonset_id = UnitId::TerranMinistry;
+            } else if (count_terran_worker_sources == g_client_selection_count) {
                 g_current_buttonset_id = UnitId::TerranMinistry;
             } else if (count_nexuses == g_client_selection_count) {
                 g_current_buttonset_id = UnitId::ProtossNexus;
@@ -3970,7 +3977,12 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-                                case UnitId::ZergAgrileth:
+                                case UnitId::ZergAgrileth: {
+                                    if (current_button->icon_id == IconId::VentralSacs // Plethoral Gestation
+                                    ||  current_button->icon_id == IconId::Reconstitution) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
                                 case UnitId::ZergGosvileth: {
                                     if (current_button->icon_id == IconId::VentralSacs) { // Plethoral Gestation
                                         current_button_state = Button_State::Enabled;
@@ -4384,8 +4396,7 @@ namespace hooks {
                                     }
                                 } break;
                                 case UnitId::AskosiAphorist:
-                                case UnitId::AskosiDoronin:
-                                case UnitId::AskosiRove: {
+                                case UnitId::AskosiDoronin: {
                                     if (current_button->icon_id == IconId::ShoulderedBurden) { // Impact Dissipation
                                         current_button_state = Button_State::Enabled;
                                     }
@@ -4435,6 +4446,13 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::AskosiRove: {
+                                    if (current_button->icon_id == IconId::ProlongedArms
+                                    ||  current_button->icon_id == IconId::OffsetCone
+                                    ||  current_button->icon_id == IconId::Mimicry) { // Power Overload
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                }
                                 case UnitId::AskosiObject: {
                                     if (current_button->icon_id == IconId::ShoulderedBurden
                                      || current_button->icon_id == IconId::WyxharAssembly) {

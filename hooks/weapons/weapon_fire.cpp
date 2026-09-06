@@ -629,7 +629,8 @@ namespace hooks {
                         }
                         fire_bullet(unit, weapon_id, weapon_target);
                     } break;
-                    case WeaponId::HotshotDispatchShotgun: {
+                    case WeaponId::HotshotDispatchShotgun:
+                    case WeaponId::RoveElreScaleshot: {
                         // Offset: Cone
                         fire_shotgun(unit, weapon_id, 1, 10, 10, ShotgunScatterStyle::Flipping);
                     } break;

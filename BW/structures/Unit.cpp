@@ -2467,8 +2467,15 @@ void Unit::proc_adrenaline_field() {
     bw::add_unit_overlay(this, ImageId::RestorationHit_Small + bw::get_overlay_offset(this->id));
 
     for (Unit* target : g_unit_search.radial(this->position, Shaman::NaniteFieldSupportRange).filter(this, FilterAlly | FilterNoBuilding)) {
-        if (target->hitpoints > Terran::StimpackMinimumHP && target->stim_timer == 0 && target->ext().timers[TimerStimpackDelay] <= 1) {
+        if (target->hitpoints > target->get_stimpack_hp_cost() && target->stim_timer == 0 && target->ext().timers[TimerStimpackDelay] <= 1) {
             proc_stimpack_internal(target);
         }
     }
+}
+
+s32 Unit::get_stimpack_hp_cost() {
+    switch (this->id) {
+        case UnitId::TerranMaverickUpstart: return UpstartMaverick::StimpackMinimumHP;
+    }
+    return Terran::StimpackMinimumHP;
 }
