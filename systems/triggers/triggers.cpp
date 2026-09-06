@@ -862,6 +862,9 @@ Registry g_triggers = Registry()
             helper::turn_unit(unit, direction);
         }
     })
+    .add_action("set_ally_alert_blacklist", [](PlayablePlayer player, PlayerBitset blacklist_players) {
+        g_globals->players[player].ally_alert_blacklist = blacklist_players;
+    })
     .add_action("set_nydus_link", [](Designator designator_entry, Designator designator_exit, b32 enable) {
         const auto entry = designator_entry.search().first();
         const auto exit  = designator_exit.search().first();
