@@ -444,7 +444,7 @@ ui::Group* GluOptions::make_misc_tab() {
     options_label(tab, cursor, "Race Advisors");
 
     static constexpr Advisor AdvisorMatrixExclude[] = {
-        Advisor::Default, Advisor::Goku, Advisor::Bloodsummon,
+        Advisor::Default, Advisor::Goku,
     };
     static constexpr MatrixColumn RaceColumns[] = {
         {"T", RaceFlags::Terran},

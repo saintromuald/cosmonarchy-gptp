@@ -2,11 +2,10 @@
 #include "globals.h"
 #include <cassert>
 #include "hooks/orders/unit_making/unit_train.h"
-#include "stopwatch/Stopwatch.h"
-#include "logger.h"
 #include "BW/bwdata.h"
 #include "hooks/unit_stats/max_energy.h"
 #include <array>
+#include <chrono>
 
 namespace hooks {
 
@@ -164,40 +163,39 @@ bool can_attack_target_end_chunk(Unit* source, u32 target_flags) {
 }
 
 s32 game_loop() { // 004D94B0 - hooked for lag testing - Pr0nogo
-    bool v0;
-    win32::Stopwatch sw;
-    sw.Start();
-    f64 aiLoop, unitLoop, imageThingyLoop, tileLoop;
+    auto stopwatch = std::chrono::steady_clock::now();
+    auto timer_lap = [&stopwatch]() {
+        auto delta = stopwatch - std::chrono::steady_clock::now();
+        stopwatch = std::chrono::steady_clock::now();
+        return delta;
+    };
 
     bw::set_ingame_loop_state(1);
     helper::initialize_randomizer_info();
     helper::ai_loop();
-    aiLoop = sw.ElapsedMilliseconds();
-    sw.Stop();
+    auto ailoop = timer_lap();
 
     if (!g_vision_update_count) {
         *g_vision_update_count = 100;
     }
-    v0 = *g_vision_update_count == 1;
+    auto v0 = *g_vision_update_count == 1;
     *g_vision_update_count -= 1;
     *g_vision_updated = v0;
-    sw.Start();
+
     if (v0) {
         helper::update_active_tile_info();
         helper::remove_fow_cheat();
     }
-    sw.Stop();
-    tileLoop = sw.ElapsedMilliseconds();
-    sw.Start();
+    auto tileLoop = timer_lap();
+
     helper::update_units();
-    sw.Stop();
-    sw.Start();
-    unitLoop = sw.ElapsedMilliseconds();
+    auto unitLoop = timer_lap();
+
     helper::image_drawing_bullet_drawing();
     helper::update_images();
     helper::update_thingies();
-    sw.Stop();
-    imageThingyLoop = sw.ElapsedMilliseconds();
+    auto imageThingyLoop = timer_lap();
+
     //	GPTP::logger << "aiLoop: " << aiLoop << ", unitLoop: " << unitLoop << ", " << "tile loop: " << tileLoop << ", thingy/bullet/imageLoop: " << imageThingyLoop << '\n';
     return bw::set_ingame_loop_state(0);
 }
