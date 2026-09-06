@@ -59,13 +59,6 @@
 #include <random>
 #include <format>
 
-void nanite_field_proc(Unit* shaman, u32 heal, Unit* target) {
-    if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
-        bw::add_unit_overlay(target, ImageId::ShamanNaniteField);
-    }
-    target->heal_hp(heal * 256, shaman);
-}
-
 namespace hooks {
     static bool g_game_was_init;
 
@@ -1195,7 +1188,7 @@ namespace hooks {
             } break;
         }
 
-        if (UnitId::has_damage_cloak((UnitId::Enum)unit->id)) {
+        if (UnitId::has_damage_cloak((UnitId::Enum)unit->id) || UnitId::has_attack_cloak((UnitId::Enum)unit->id)) {
             bw::decloak_proc(unit, 0);
         }
 
@@ -1935,23 +1928,10 @@ namespace hooks {
             case UnitId::TerranShamanSupportMode:
             case UnitId::TerranShamanVisionaryMode: {
                 // Shaman - Nanite Field
-                if (unit->is_frozen() || unit->is_in_transport() || unit_ext.values[ValueDisablePassive]) {
-                    break;
-                }
-                u32 timer = unit_ext.timers[TimerNaniteField];
-                if (!timer) {
-                    unit_ext.timers[TimerNaniteField] = 24;
-                    bw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id));
-
-                    u32 range = unit->id == UnitId::TerranShamanVisionaryMode ? Shaman::NaniteFieldVisionaryRange : Shaman::NaniteFieldSupportRange;
-                    for (Unit* target : g_unit_search.radial(unit->position, range).add_units_from_connected_transport(unit).filter(unit, FilterAlly | FilterNoBuilding)) {
-                        auto& target_ext = target->ext();
-                        if (!target_ext.timers[TimerNaniteFieldLockout]) {
-                            target_ext.timers[TimerNaniteFieldLockout] = Shaman::NaniteFieldDuration;
-                            nanite_field_proc(unit, Shaman::NaniteFieldHealAmount, target);
-                        }
-                    }
-                }
+                unit->proc_nanite_field();
+            } break;
+            case UnitId::TerranShamanUpstartAdrenaline: {
+                unit->proc_adrenaline_field();
             } break;
             case UnitId::TerranOgunSmithyMode: {
                 // Shaman - Nanite Field
@@ -3897,7 +3877,8 @@ namespace hooks {
         }
 
         // Damage cloaking - decloak after 2 seconds of no damage taken
-        if (bw::is_damage_cloakable(unit) && unit_ext.timers[TimerDecloak] == 0 && unit->status & UnitStatus::Cloaked) {
+        // Attack cloaking - decloak after 2 seconds of not attacking
+        if ((bw::is_damage_cloakable(unit) || bw::is_attack_cloakable(unit)) && unit_ext.timers[TimerDecloak] == 0 && unit->status & UnitStatus::Cloaked) {
             bw::decloak_proc(unit, 0);
         }
 

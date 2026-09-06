@@ -2,12 +2,12 @@
 #include "../BW/api.h"
 #include "BW/stat_txt_spec.h"
 
-static void stimpack_proc(Unit* unit) {
+void proc_stimpack_internal(Unit* unit) {
     auto& unit_ext = unit->ext();
     unit->damage_hp(Terran::StimpackMinimumHP, 0, -1, true);
     switch (unit->id) {
         case UnitId::TerranMaverick:		unit_ext.timers[TimerStimpackDelay] = 1.5secs + 1; break;
-        case UnitId::TerranMaverickUpstart: unit_ext.timers[TimerStimpackDelay] = 2;           break;
+        case UnitId::TerranMaverickUpstart: unit_ext.timers[TimerStimpackDelay] = 2;		   break; // instant
         default:							unit_ext.timers[TimerStimpackDelay] = 1.5secs + 1; break;
     }
     bw::decloak_passive_proc(unit);
@@ -41,7 +41,7 @@ namespace hooks {
     void use_stimpack_ai(Unit* unit) { // 004554A0
         auto& unit_ext = unit->ext();
         if (unit->hitpoints > Terran::StimpackMinimumHP && unit->stim_timer == 0 && unit_ext.timers[TimerStimpackDelay] <= 1) {
-            stimpack_proc(unit);
+            proc_stimpack_internal(unit);
         }
     }
 
@@ -54,7 +54,7 @@ namespace hooks {
         while (unit) {
             auto& unit_ext = unit->ext();
             if (unit->can_use_tech(TechId::Stimpacks, *g_active_nation_id) == 1 && unit->hitpoints > Terran::StimpackMinimumHP && unit_ext.timers[TimerStimpackDelay] <= 1) {
-                stimpack_proc(unit);
+                proc_stimpack_internal(unit);
             }
             unit = get_active_player_next_selection();
         }

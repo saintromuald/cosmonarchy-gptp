@@ -840,6 +840,14 @@ namespace hooks {
                 if (unit_ext.timers[TimerRejoinderOfService]) {
                     // TODO: Audiovisuals
                 }
+
+                // Initiate on-attack cloak
+                if (bw::is_attack_cloakable(unit)) {
+                    if (!(unit->status & UnitStatus::Cloaked)) {
+                        helper::begin_cloak(unit, SoundId::CloakAttackOn);
+                    }
+                    unit_ext.timers[TimerDecloak] = 2secs + 1;
+                }
             }
         }
     }

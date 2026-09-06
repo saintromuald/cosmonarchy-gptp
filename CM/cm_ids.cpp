@@ -377,6 +377,7 @@ UnitId::Enum unit_id_to_siege_mode(UnitId::Enum unit_id) {
     switch (unit_id) {
         case UnitId::TerranSavantEntropyGauntlets:       return UnitId::TerranSavantPowerSiphon;
         case UnitId::TerranShamanSupportMode:            return UnitId::TerranShamanVisionaryMode;
+        case UnitId::TerranShamanUpstartSupport:         return UnitId::TerranShamanUpstartAdrenaline;
         case UnitId::TerranMatadorTankMode:              return UnitId::TerranMatadorCinderMode;
         case UnitId::TerranPhalanxTankMode:              return UnitId::TerranPhalanxSiegeMode;
         case UnitId::TerranMadrigalImperiosoMode:        return UnitId::TerranMadrigalFuriaMode;
@@ -395,6 +396,7 @@ UnitId::Enum unit_id_to_tank_mode(UnitId::Enum unit_id) {
     switch (unit_id) {
         case UnitId::TerranSavantPowerSiphon:        return UnitId::TerranSavantEntropyGauntlets;
         case UnitId::TerranShamanVisionaryMode:      return UnitId::TerranShamanSupportMode;
+        case UnitId::TerranShamanUpstartAdrenaline:  return UnitId::TerranShamanUpstartSupport;
         case UnitId::TerranMatadorCinderMode:        return UnitId::TerranMatadorTankMode;
         case UnitId::TerranPhalanxSiegeMode:         return UnitId::TerranPhalanxTankMode;
         case UnitId::TerranMadrigalFuriaMode:        return UnitId::TerranMadrigalImperiosoMode;
@@ -475,6 +477,7 @@ bool unit_id_is_factional(u16 unit_id) {
         || unit_id == UnitId::TerranBlackguard
         || unit_id == UnitId::TerranArhaun
         || unit_id == UnitId::TerranMaverickUpstart
+        || unit_id == UnitId::TerranMorrigan
         || unit_id == UnitId::TerranVultureUpstart
         || unit_id == UnitId::TerranBroadside
         || unit_id == UnitId::TerranCutlass
@@ -1770,7 +1773,8 @@ SpriteId::Enum get_corpse_sprite_id(UnitId::Enum unit_id) {
         case UnitId::TerranShamanSupportMode:            return SpriteId::Corpse_Shaman;
         case UnitId::TerranShamanVisionaryMode:          return SpriteId::Corpse_Shaman;
         case UnitId::TerranEidolon:                      return SpriteId::Corpse_Eidolon;
-        case UnitId::TerranEidolonNydus:                 return SpriteId::Corpse_Eidolon;
+        case UnitId::TerranEidolonNydus:                 return SpriteId::Corpse_EidolonNydus;
+        case UnitId::TerranMorrigan:                     return SpriteId::Corpse_Morrigan;
         case UnitId::TerranSavantEntropyGauntlets:       return SpriteId::Corpse_Savant;
         case UnitId::TerranSavantPowerSiphon:            return SpriteId::Corpse_Savant;
         case UnitId::TerranApostle:                      return SpriteId::Corpse_Apostle;
@@ -2006,7 +2010,8 @@ SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {
         case UnitId::TerranCannibal: {
             ready_sound = helper::get_random_unit_response(SoundId::CannibalReady01, SoundId::CannibalReady03);
         } break;
-        case UnitId::TerranShamanSupportMode: {
+        case UnitId::TerranShamanSupportMode:
+        case UnitId::TerranShamanUpstartSupport: {
             ready_sound = helper::get_random_unit_response(SoundId::ShamanReady01, SoundId::ShamanReady03);
         } break;
         case UnitId::TerranSavantEntropyGauntlets:
@@ -2323,6 +2328,10 @@ bool has_damage_cloak(UnitId::Enum unit_id) {
 
 bool has_forlorn_haste(UnitId::Enum unit_id) {
     return unit_id == UnitId::BloodsummonAcqui;
+}
+
+bool has_attack_cloak(UnitId::Enum unit_id) {
+    return unit_id == UnitId::TerranMorrigan;
 }
 } // namespace UnitId
 

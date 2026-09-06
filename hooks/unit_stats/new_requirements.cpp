@@ -244,17 +244,33 @@ namespace hooks {
                     }
                 } break;
                 case UnitId::TerranShamanSupportMode: {
+                    if (faction == Faction::TerranUpstart) {
+                        return false;
+                    }
+                    if (player_has_completed_addon_unit_id(player_id, UnitId::TerranVestry)) {
+                        return true;
+                    }
+                } break;
+                case UnitId::TerranShamanUpstartSupport: {
+                    if (faction != Faction::TerranUpstart) {
+                        return false;
+                    }
                     if (player_has_completed_addon_unit_id(player_id, UnitId::TerranVestry)) {
                         return true;
                     }
                 } break;
                 case UnitId::TerranEidolon: {
-                    if (player_has_completed_addon_unit_id(player_id, UnitId::TerranCovenant) && faction != Faction::TerranNydusTrinity) {
+                    if (player_has_completed_addon_unit_id(player_id, UnitId::TerranCovenant) && faction != Faction::TerranNydusTrinity && faction != Faction::TerranUpstart) {
                         return true;
                     }
                 } break;
                 case UnitId::TerranEidolonNydus: {
                     if (player_has_completed_addon_unit_id(player_id, UnitId::TerranCovenant) && faction == Faction::TerranNydusTrinity) {
+                        return true;
+                    }
+                } break;
+                case UnitId::TerranMorrigan: {
+                    if (player_has_completed_addon_unit_id(player_id, UnitId::TerranCovenant) && faction == Faction::TerranUpstart) {
                         return true;
                     }
                 } break;
@@ -1926,7 +1942,16 @@ namespace hooks {
                         return TECH_HIDDEN;
                     }
                     case UnitId::TerranShamanSupportMode: {
-                        if (in_air) {
+                        if (in_air || faction == Faction::TerranUpstart) {
+                            return TECH_HIDDEN;
+                        }
+                        if (player_has_completed_addon_unit_id(player_id, UnitId::TerranVestry)) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::TerranShamanUpstartSupport: {
+                        if (in_air || faction != Faction::TerranUpstart) {
                             return TECH_HIDDEN;
                         }
                         if (player_has_completed_addon_unit_id(player_id, UnitId::TerranVestry)) {
@@ -1935,7 +1960,7 @@ namespace hooks {
                         return TECH_HIDDEN;
                     }
                     case UnitId::TerranEidolon: {
-                        if (faction != Faction::TerranNydusTrinity) {
+                        if (faction != Faction::TerranNydusTrinity && faction != Faction::TerranUpstart) {
                             if (in_air) {
                                 return TECH_HIDDEN;
                             }
@@ -1947,6 +1972,17 @@ namespace hooks {
                     }
                     case UnitId::TerranEidolonNydus: {
                         if (faction == Faction::TerranNydusTrinity) {
+                            if (in_air) {
+                                return TECH_HIDDEN;
+                            }
+                            if (player_has_completed_addon_unit_id(player_id, UnitId::TerranCovenant)) {
+                                return TECH_ACTIVE;
+                            }
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::TerranMorrigan: {
+                        if (faction == Faction::TerranUpstart) {
                             if (in_air) {
                                 return TECH_HIDDEN;
                             }

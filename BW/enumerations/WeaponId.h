@@ -239,6 +239,8 @@ namespace WeaponId {
         TartarusMines                       = 299,
         Goremasts                           = 300,
         MaverickGoldenPhaseRifle            = 303,
+        MorriganEpitaphGrenadeLauncher      = 305,
+        ShamanUpstartSupportScalpelCannon   = 306,
 
         // Protoss \\
         
@@ -300,9 +302,10 @@ namespace WeaponId {
         RenesairRotatingBlaster              = 268,
         SimulacrumAstralSliceCannon          = 269,
         EcclesiastKhalendricAscendingBlaster = 293,
-        ManifoldStarboundReactiveBlaster     = 294,
         VestigeOmenBlade                     = 295,
         GladiusOrderPlasmaFlurry             = 304,
+
+        ManifoldStarboundReactiveBlaster     = 307,
 
         // Zerg \\
                     

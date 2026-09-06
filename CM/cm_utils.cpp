@@ -475,12 +475,14 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         } break;
         case Faction::TerranUpstart: {
             switch (unit_id) {
-                case UnitId::TerranMaverick:        return UnitId::TerranMaverickUpstart;
-                case UnitId::TerranCyprian:         return UnitId::TerranCannibal;
-                case UnitId::TerranVulture:         return UnitId::TerranVultureUpstart;
-                case UnitId::TerranGoliath:         return UnitId::TerranSouthpaw;
-                case UnitId::TerranPhalanxTankMode: return UnitId::TerranBroadside;
-                case UnitId::TerranAncile:          return UnitId::TerranWendigo;
+                case UnitId::TerranMaverick:          return UnitId::TerranMaverickUpstart;
+                case UnitId::TerranCyprian:           return UnitId::TerranCannibal;
+                case UnitId::TerranShamanSupportMode: return UnitId::TerranShamanUpstartSupport;
+                case UnitId::TerranEidolon:           return UnitId::TerranMorrigan;
+                case UnitId::TerranVulture:           return UnitId::TerranVultureUpstart;
+                case UnitId::TerranGoliath:           return UnitId::TerranSouthpaw;
+                case UnitId::TerranPhalanxTankMode:   return UnitId::TerranBroadside;
+                case UnitId::TerranAncile:            return UnitId::TerranWendigo;
             }
         } break;
         case Faction::ProtossKhalendricKnights: {

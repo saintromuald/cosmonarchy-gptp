@@ -286,6 +286,7 @@ namespace hooks {
                 speed *= 1.15fp;
             } break;
             case UnitId::TerranMaverickFuturist:
+            case UnitId::TerranMorrigan:
             case UnitId::TerranMadcap:
             case UnitId::TerranOlympian:
             case UnitId::TerranSevenstep:
