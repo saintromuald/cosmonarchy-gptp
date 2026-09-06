@@ -161,7 +161,7 @@ namespace hooks {
                     }
                 }
             }
-        } else if (bw::are_mutual_allies(local_player, unit->player) && !g_globals->players->ally_alert_blacklist[unit->player]) {
+        } else if (bw::are_mutual_allies(local_player, unit->player) && !g_globals->players[local_player].ally_alert_blacklist[unit->player]) {
             unit->last_event_color = g_palette_index_reference[20];
             unit->last_event_timer = 20;
             if (!g_globals->alert.own_cooldown && !g_globals->alert.ally_cooldown) {
