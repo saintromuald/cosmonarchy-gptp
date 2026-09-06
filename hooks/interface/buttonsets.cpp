@@ -2034,9 +2034,18 @@ namespace hooks {
                                     } break;
                                     case UnitId::ProtossLanifect:
                                     case UnitId::ProtossPanoptus:
-                                    case UnitId::ProtossExemplar:
-                                    case UnitId::ProtossGladius: {
+                                    case UnitId::ProtossExemplar: {
                                         current_button_state = Button_State::Enabled;
+                                    } break;
+                                    case UnitId::ProtossGladius: {
+                                        if (faction != Faction::ProtossOrderOfTheSacredSaber) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
+                                    } break;
+                                    case UnitId::ProtossGladiusOrder: {
+                                        if (faction == Faction::ProtossOrderOfTheSacredSaber) {
+                                            current_button_state = Button_State::Enabled;
+                                        }
                                     } break;
                                 }
                             } break;
@@ -3198,6 +3207,11 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::RaynorVulture: {
+                                    if (current_button->icon_id == IconId::SpiderMine) { // Fabrication
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
 
                                 // FACTIONAL \\
 
@@ -3855,6 +3869,12 @@ namespace hooks {
                                 } break;
                                 case UnitId::ProtossGladius: {
                                     if (current_button->icon_id == IconId::DracadinPhaseDisruptor) { // Binding Plasma
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::ProtossGladiusOrder: {
+                                    if (current_button->icon_id == IconId::DracadinPhaseDisruptor // Binding Plasma
+                                    ||  current_button->icon_id == IconId::RechargeShields) {     // Triumphant Rise
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

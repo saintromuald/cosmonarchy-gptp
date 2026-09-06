@@ -409,6 +409,10 @@ void unit_on_death_behaviors(Unit* unit) {
         g_iquare_globals->create_effect(EffectId::GladiusBindingPlasma, unit_ext.timers[TimerGladiusBindingPlasma], unit->position, Protoss::BindingPlasmaRadius,
             SpriteId::GladiusBindingPlasmaOverlay, unit->sprite->elevation, unit_ext.values[ValueGladiusBindingPlasmaPlayer], 0, {.intervals = unit_ext.values[ValueGladiusBindingPlasmaStacks]});
     }
+    if (unit_ext.timers[TimerGladiusOrderBindingPlasma]) {
+        g_iquare_globals->create_effect(EffectId::GladiusBindingPlasma, unit_ext.timers[TimerGladiusOrderBindingPlasma], unit->position, Protoss::BindingPlasmaRadius,
+            SpriteId::GladiusBindingPlasmaOverlay, unit->sprite->elevation, unit_ext.values[ValueGladiusOrderBindingPlasmaPlayer], 0, {.intervals = unit_ext.values[ValueGladiusOrderBindingPlasmaStacks]});
+    }
 
     // Banter
     if (unit_ext.values[ValueSignifyStacks] >= 5) {

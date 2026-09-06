@@ -293,6 +293,7 @@ namespace UnitId {
         ProtossSimulacrumKhalendric                         = 621,
         ProtossIdolKhalendric                               = 622,
         ProtossVestige                                      = 623,
+        ProtossGladiusOrder                                 = 628,
 
     // Protoss-Building
         ProtossAutomatonRegister							= 158,		// Unused Protoss 1

@@ -219,6 +219,7 @@ bool unit_id_is_protoss_warp_factory(u32 unit_id) {
 
 bool unit_id_has_flash_shielding(u32 unit_id) {
     return unit_id != UnitId::ProtossVagrantShade
+        && unit_id != UnitId::TerranMaverickGolden
         && unit_id != UnitId::TerranHarakanGolden
         && unit_id != UnitId::TerranAspirant
         && unit_id != UnitId::TerranBlackjackGolden
@@ -226,7 +227,8 @@ bool unit_id_has_flash_shielding(u32 unit_id) {
 }
 
 bool unit_id_has_shield_regeneration(u32 unit_id) {
-    return unit_id == UnitId::TerranHarakanGolden
+    return unit_id == UnitId::TerranMaverickGolden
+        || unit_id == UnitId::TerranHarakanGolden
         || unit_id == UnitId::TerranAspirant
         || unit_id == UnitId::TerranBlackjackGolden
         || unit_id == UnitId::TerranLuminary;
@@ -480,6 +482,7 @@ bool unit_id_is_factional(u16 unit_id) {
         || unit_id == UnitId::ProtossPrudence
         || unit_id == UnitId::ProtossAdherent
         || unit_id == UnitId::ProtossExtatus
+        || unit_id == UnitId::ProtossGladiusOrder
         || unit_id == UnitId::ProtossZealotStarbound
         || unit_id == UnitId::ProtossEcclesiastKhalendric
         || unit_id == UnitId::ProtossCicatus
@@ -2335,7 +2338,8 @@ bool weapon_splits(WeaponId::Enum weapon_id) {
 bool bounces_binding_plasma(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::AtreusDauntlessDisruptorCannon
         || weapon_id == WeaponId::OscilliantRotatingRay
-        || weapon_id == WeaponId::GladiusPlasmaFlurry;
+        || weapon_id == WeaponId::GladiusPlasmaFlurry
+        || weapon_id == WeaponId::GladiusOrderPlasmaFlurry;
 }
 
 bool can_attack_target(WeaponId::Enum weapon_id, Unit* target) {

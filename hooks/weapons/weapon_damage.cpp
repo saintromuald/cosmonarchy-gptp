@@ -588,7 +588,7 @@ namespace hooks {
 
         // Hallucinating targets - fire a phantom strike
         if (data.attacker && weapon_id_can_proc_onhits(data.weapon_id) && target_ext.timers[TimerHallucinating] >= 1 && !bw::is_allied_to(data.attacker->player, data.target->player)) {
-            if (weapon_damage_current_bullet && data.weapon_id != WeaponId::GladiusPlasmaFlurry && data.weapon_id != WeaponId::PaladinCrusaderMissiles) {
+            if (weapon_damage_current_bullet && WeaponId::bounces_binding_plasma(data.weapon_id) && data.weapon_id != WeaponId::PaladinCrusaderMissiles) {
                 BulletExt* current_bullet_ext = get_bullet_ext(weapon_damage_current_bullet);
                 if (!current_bullet_ext->is_phantom) {
                     data.attacker->sprite->create_overlay(ImageId::PhantomStrikeProc);
@@ -644,8 +644,7 @@ namespace hooks {
             } break;
             case WeaponId::AtreusDauntlessDisruptorCannon: {
                 if (target_ext.timers[TimerAtreusBindingPlasma]) {
-                    const auto source_player = target_ext.values[ValueAtreusBindingPlasmaPlayer];
-                    if (bw::is_allied_to(data.attacking_player_id, source_player)) {
+                    if (bw::is_allied_to(data.attacking_player_id, target_ext.values[ValueAtreusBindingPlasmaPlayer])) {
                         target_ext.values[ValueAtreusBindingPlasmaStacks]++;
                     }
                 } else {
@@ -656,8 +655,7 @@ namespace hooks {
             } break;
             case WeaponId::OscilliantRotatingRay: {
                 if (target_ext.timers[TimerOscilliantBindingPlasma]) {
-                    u32 source_player = target_ext.values[ValueOscilliantBindingPlasmaPlayer];
-                    if (bw::is_allied_to(data.attacking_player_id, source_player)) {
+                    if (bw::is_allied_to(data.attacking_player_id, target_ext.values[ValueOscilliantBindingPlasmaPlayer])) {
                         target_ext.values[ValueOscilliantBindingPlasmaStacks]++;
                     }
                 } else {
@@ -668,14 +666,24 @@ namespace hooks {
             } break;
             case WeaponId::GladiusPlasmaFlurry: {
                 if (target_ext.timers[TimerGladiusBindingPlasma]) {
-                    u32 source_player = target_ext.values[ValueGladiusBindingPlasmaPlayer];
-                    if (bw::is_allied_to(data.attacking_player_id, source_player)) {
+                    if (bw::is_allied_to(data.attacking_player_id, target_ext.values[ValueGladiusBindingPlasmaPlayer])) {
                         target_ext.values[ValueGladiusBindingPlasmaStacks]++;
                     }
                 } else {
                     target_ext.timers[TimerGladiusBindingPlasma] = Protoss::BindingPlasmaTimer;
                     target_ext.values[ValueGladiusBindingPlasmaPlayer] = data.attacking_player_id;
                     target_ext.values[ValueGladiusBindingPlasmaStacks] = 1;
+                }
+            } break;
+            case WeaponId::GladiusOrderPlasmaFlurry: {
+                if (target_ext.timers[TimerGladiusOrderBindingPlasma]) {
+                    if (bw::is_allied_to(data.attacking_player_id, target_ext.values[ValueGladiusOrderBindingPlasmaPlayer])) {
+                        target_ext.values[ValueGladiusOrderBindingPlasmaStacks]++;
+                    }
+                } else {
+                    target_ext.timers[TimerGladiusOrderBindingPlasma] = Protoss::BindingPlasmaTimer;
+                    target_ext.values[ValueGladiusOrderBindingPlasmaPlayer] = data.attacking_player_id;
+                    target_ext.values[ValueGladiusOrderBindingPlasmaStacks] = 1;
                 }
             } break;
             case WeaponId::PariahIconoclastBlades: {
@@ -1175,7 +1183,8 @@ namespace hooks {
                         }
                     } break;
                     case WeaponId::HeraldStellarTorch:
-                    case WeaponId::ArchonPsionicShockwave: {
+                    case WeaponId::ArchonPsionicShockwave:
+                    case WeaponId::GladiusOrderPlasmaFlurry: {
                         if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
                             // TODO: Audiovisuals
                             target_ext.timers[TimerTriumphantRiseDebuff] = 1.5secs;
