@@ -402,7 +402,7 @@ static void tick_effect(EffectField& effect) {
                 }
 
                 Unit* source = sources.first();
-                const auto targets = bw::binding_plasma_find_targets(effect.position, nullptr, effect.player, effect.intervals);
+                const auto targets = bw::binding_plasma_find_targets(effect.position, nullptr, effect.player, effect.intervals, WeaponId::AtreusDauntlessDisruptorCannon);
                 if (targets.empty()) {
                     effect.destroy();
                     break;
@@ -432,7 +432,7 @@ static void tick_effect(EffectField& effect) {
                 }
 
                 Unit* source = sources.first();
-                const auto targets = bw::binding_plasma_find_targets(effect.position, nullptr, effect.player, effect.intervals);
+                const auto targets = bw::binding_plasma_find_targets(effect.position, nullptr, effect.player, effect.intervals, WeaponId::OscilliantRotatingRay);
                 if (targets.empty()) {
                     effect.destroy();
                     break;
@@ -462,7 +462,7 @@ static void tick_effect(EffectField& effect) {
                 }
 
                 Unit* source = sources.first();
-                const auto targets = bw::binding_plasma_find_targets(effect.position, nullptr, effect.player, effect.intervals);
+                const auto targets = bw::binding_plasma_find_targets(effect.position, nullptr, effect.player, effect.intervals, WeaponId::GladiusPlasmaFlurry);
                 if (targets.empty()) {
                     effect.destroy();
                     break;
@@ -470,6 +470,36 @@ static void tick_effect(EffectField& effect) {
                 assert(targets.size() <= effect.intervals);
                 for (Unit* target : targets) {
                     bw::artificial_bullet_from(WeaponId::GladiusPlasmaFlurry, effect.player, source, target, target->position, effect.position);
+                    bw::play_sound({SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03}, effect.position);
+                    effect.intervals--;
+                }
+            } break;
+            case EffectId::GladiusOrderBindingPlasma: {
+                if (effect.current_time) {
+                    break;
+                }
+
+                EntryArray sources = g_unit_search
+                    .radial(effect.position, Protoss::BindingPlasmaSearchRadius)
+                    .filter(nullptr, 0, {UnitId::ProtossGladiusOrder})
+                    .filter_by([&effect](Unit* unit) {
+                        return bw::is_allied_to(unit->player, effect.player);
+                    })
+                    .sort_by_distance(effect.position);
+                if (!sources.count()) {
+                    effect.destroy();
+                    break;
+                }
+
+                Unit* source = sources.first();
+                const auto targets = bw::binding_plasma_find_targets(effect.position, nullptr, effect.player, effect.intervals, WeaponId::GladiusPlasmaFlurry);
+                if (targets.empty()) {
+                    effect.destroy();
+                    break;
+                }
+                assert(targets.size() <= effect.intervals);
+                for (Unit* target : targets) {
+                    bw::artificial_bullet_from(WeaponId::GladiusOrderPlasmaFlurry, effect.player, source, target, target->position, effect.position);
                     bw::play_sound({SoundId::GladiusBindingPlasmaProc01, SoundId::GladiusBindingPlasmaProc03}, effect.position);
                     effect.intervals--;
                 }

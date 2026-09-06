@@ -2421,7 +2421,7 @@ void prepare_building_area(v2u16 pos, u32 unit_id, Unit* builder) {
         if (unit_id_is_trap(unit->id)) {
             unit->bwfunc_remove();
         }
-        if (unit->id == UnitId::TerranCleric && unit->status & UnitStatus::AttackMove) {
+        if (unit_id_has_cleric_heal(unit->id) && unit->status & UnitStatus::AttackMove) {
             helper::order_return_to_idle(unit);
         }
         // Fix AI workers getting stuck
@@ -2650,14 +2650,20 @@ void delete_fow_sprite(Thingy* thingy) {
     }
 }
 
-std::vector<Unit*> binding_plasma_find_targets(v2u16 position, Unit* reference, u32 player, u32 stacks) {
+std::vector<Unit*> binding_plasma_find_targets(v2u16 position, Unit* reference, u32 player, u32 stacks, WeaponId::Enum weapon_id) {
     EntryArray targets = g_unit_search.radial(position, Protoss::BindingPlasmaRadius)
         .filter(reference, FilterNotSelf | FilterNotSubunit)
-        .filter_by([player](Unit* target) {
+        .filter_by([player, weapon_id](Unit* target) {
             if (bw::is_allied_to(player, target->player)) {
                 return false;
             }
             if (!target->is_visible_to(player)) {
+                return false;
+            }
+            if (!(weapons_dat::target_flags[weapon_id].air) && target->is_in_air()) {
+                return false;
+            }
+            if (!(weapons_dat::target_flags[weapon_id].ground) && !target->is_in_air()) {
                 return false;
             }
             return true;
@@ -2680,7 +2686,7 @@ std::vector<Unit*> binding_plasma_find_targets(v2u16 position, Unit* reference, 
 bool binding_plasma_proc(Unit* victim, UnitId::Enum source_unit_id, const BindingPlasmaOptions& options) {
     auto& victim_ext = victim->ext();
     u32 player = victim_ext.values[options.player_value_id];
-    const auto targets = binding_plasma_find_targets(victim->position, victim, player, victim_ext.values[options.stack_value_id]);
+    const auto targets = binding_plasma_find_targets(victim->position, victim, player, victim_ext.values[options.stack_value_id], options.weapon_id);
     if (targets.empty()) {
         victim_ext.timers[options.timer_id] = 0;
         victim_ext.values[options.stack_value_id] = 0;

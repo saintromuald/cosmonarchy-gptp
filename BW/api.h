@@ -893,7 +893,7 @@ void delete_ai_script(AiScript* ai_script);
 void delete_town(AiTown* ai_town);
 void delete_fow_sprite(Thingy* thingy);
 
-std::vector<Unit*> binding_plasma_find_targets(v2u16 position, Unit* reference, u32 player, u32 stacks);
+std::vector<Unit*> binding_plasma_find_targets(v2u16 position, Unit* reference, u32 player, u32 stacks, WeaponId::Enum weapon_id);
 bool binding_plasma_proc(Unit* victim, UnitId::Enum source_unit_id, const BindingPlasmaOptions& options);
 void binding_plasma_tick(u32 player, Unit* unit, UnitId::Enum source_unit_id, const BindingPlasmaOptions& options);
 
