@@ -712,7 +712,7 @@ Registry g_triggers = Registry()
             g_globals->current_advisor = get_advisor_type_from_config(u32(to_race_id(race)));
         }
     })
-    .add_action("set_player_color", [](PlayablePlayer player, PlayerColor player_color) {
+    .add_action("set_player_color", [](PlayerOrNeutral player, PlayerColor player_color) {
         set_player_color(player, player_color);
     })
     .add_action("set_ai_auto_burrow", [](Designator designator, s32 enable) {

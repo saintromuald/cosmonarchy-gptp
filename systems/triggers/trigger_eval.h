@@ -425,11 +425,12 @@ struct Parameter<std::optional<T>> {
 template <typename T> requires std::is_enum_v<T>
 struct Parameter<T> {
     static T get(Context& ctx) {
+        const auto old_marker = ctx.parser().marker();
         const auto value = Parameter<std::optional<T>>::get(ctx);
         if (!value) {
-            auto marker = ctx.parser().marker();
-            auto string = ctx.parser().get_string(StringType::QuotesDeprecated);
-            ctx.parser().unwind(marker);
+            const auto new_marker = ctx.parser().unwind(old_marker);
+            const auto string = ctx.parser().get_string(StringType::QuotesDeprecated);
+            ctx.parser().unwind(new_marker);
 
             ctx.error_once("Invalid enum: {}", string.value_or(""));
         }
@@ -569,12 +570,13 @@ struct Parameter<std::optional<PlayerId<AllowNeutral>>> {
 template <bool AllowNeutral>
 struct Parameter<PlayerId<AllowNeutral>> {
     static PlayerId<AllowNeutral> get(Context& ctx) {
-        auto player = ctx.parser().get_player<AllowNeutral>();
+        const auto old_marker = ctx.parser().marker();
+        const auto player = ctx.parser().get_player<AllowNeutral>();
         if (!player) {
-            auto marker = ctx.parser().marker();
-            bool is_var = ctx.parser().get_char('$');
-            auto token = ctx.parser().get_word();
-            ctx.parser().unwind(marker);
+            const auto new_marker = ctx.parser().unwind(old_marker);
+            const auto is_var = ctx.parser().get_char('$');
+            const auto token = ctx.parser().get_word();
+            ctx.parser().unwind(new_marker);
 
             ctx.error_once("Invalid player: {}{}", is_var ? "$" : "", token.value_or(""));
         }
