@@ -968,6 +968,11 @@ namespace SpriteId {
         Corpse_Alzurokor                = 1180,
         Corpse_Hydrokor                 = 1181,
 
+        Corpse_EidolonNydus             = 1184,
+        Corpse_Morrigan                 = 1185,
+
+        Corpse_MaverickGolden           = 1187,
+
         Corpse_ZergBuildingSmall	    = 186,
         Corpse_ZergBuildingLarge	    = 187,
 

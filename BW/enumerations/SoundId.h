@@ -2894,6 +2894,13 @@ namespace SoundId {
         HelionWeaponfire03                                  = 4304,
         
         LandlockAmbient01                                   = 4293,
+
+        MaverickGoldenWeaponfire01                          = 4331,
+        MaverickGoldenWeaponfire02                          = 4332,
+        MaverickGoldenWeaponfire03                          = 4333,
+        MaverickGoldenWeaponfire04                          = 4334,
+        MaverickGoldenWeaponfire05                          = 4335,
+        MaverickGoldenWeaponfire06                          = 4336,
     };
 }
 

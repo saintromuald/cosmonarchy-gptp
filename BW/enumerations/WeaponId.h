@@ -238,6 +238,7 @@ namespace WeaponId {
         PietyWards                          = 298,
         TartarusMines                       = 299,
         Goremasts                           = 300,
+        MaverickGoldenPhaseRifle            = 303,
 
         // Protoss \\
         

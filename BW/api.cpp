@@ -1452,9 +1452,11 @@ bool unit_id_is_available_without_an_addon(u16 id) {
         || id == UnitId::TerranPhiloc
         || id == UnitId::TerranQuadriga
 
+        || id == UnitId::TerranMaverickGolden
         || id == UnitId::TerranHarakanGolden
         || id == UnitId::TerranAspirant
 
+        || id == UnitId::TerranCamazotz
         || id == UnitId::TerranCohort
 
         || id == UnitId::TerranMaverickUpstart
@@ -4104,6 +4106,7 @@ u32 get_weapon_fire_sound(WeaponId::Enum weapon_id, Unit* unit) {
     switch (weapon_id) {
         case WeaponId::MaverickGaussRifle:                   return SoundId::Bullet_TMaFir00_wav;
         case WeaponId::MaverickFuturistGaussSlugger:         return bw::rand_between(SoundId::MaverickFuturistWeaponfire01, SoundId::MaverickFuturistWeaponfire03);
+        case WeaponId::MaverickGoldenPhaseRifle:             return bw::rand_between(SoundId::MaverickGoldenWeaponfire01, SoundId::MaverickGoldenWeaponfire06);
         case WeaponId::HotshotDispatchShotgun:               return bw::rand_between(SoundId::HotshotWeaponfire01, SoundId::HotshotWeaponfire02);
         case WeaponId::CannibalZuluSidekicks:                return bw::rand_between(SoundId::CannibalWeaponfire01, SoundId::CannibalWeaponfire04);
         case WeaponId::EidolonCoronerRifle:                  return bw::rand_between(SoundId::EidolonWeaponfire01, SoundId::EidolonWeaponfire03);

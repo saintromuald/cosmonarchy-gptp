@@ -179,7 +179,7 @@ namespace hooks {
                     return true;
                 } break;
                 case UnitId::TerranMaverick: {
-                    if (faction != Faction::TerranHecatonCoalition && faction != Faction::TerranFuturistFederation && faction != Faction::TerranUpstart) {
+                    if (faction != Faction::TerranHecatonCoalition && faction != Faction::TerranFuturistFederation && faction != Faction::TerranGoldenRepublic && faction != Faction::TerranUpstart) {
                         return true;
                     }
                 } break;
@@ -190,6 +190,11 @@ namespace hooks {
                 } break;
                 case UnitId::TerranMaverickFuturist: {
                     if (faction == Faction::TerranFuturistFederation) {
+                        return true;
+                    }
+                } break;
+                case UnitId::TerranMaverickGolden: {
+                    if (faction == Faction::TerranGoldenRepublic) {
                         return true;
                     }
                 } break;
@@ -1833,7 +1838,7 @@ namespace hooks {
                         return TECH_ACTIVE;
                     }
                     case UnitId::TerranMaverick: {
-                        if (faction != Faction::TerranHecatonCoalition && faction != Faction::TerranFuturistFederation && faction != Faction::TerranUpstart) {
+                        if (faction != Faction::TerranHecatonCoalition && faction != Faction::TerranFuturistFederation && faction != Faction::TerranGoldenRepublic && faction != Faction::TerranUpstart) {
                             if (in_air || is_adding_on) {
                                 return TECH_HIDDEN;
                             }
@@ -1852,6 +1857,15 @@ namespace hooks {
                     }
                     case UnitId::TerranMaverickFuturist: {
                         if (faction == Faction::TerranFuturistFederation) {
+                            if (in_air || is_adding_on) {
+                                return TECH_HIDDEN;
+                            }
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::TerranMaverickGolden: {
+                        if (faction == Faction::TerranGoldenRepublic) {
                             if (in_air || is_adding_on) {
                                 return TECH_HIDDEN;
                             }
