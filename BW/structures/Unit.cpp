@@ -1776,6 +1776,14 @@ void Unit::play_training_sfx() {
             sound_id = SoundId::LandlockAmbient01;
             delay = AskosiLandlock::AmbientSFXDelay;
         } break;
+        case UnitId::AskosiFunction: {
+            sound_id = SoundId::FunctionAmbient01;
+            delay = AskosiFunction::AmbientSFXDelay;
+        } break;
+        case UnitId::AskosiCosmoscope: {
+            sound_id = SoundId::CosmoscopeAmbient01;
+            delay = AskosiCosmoscope::AmbientSFXDelay;
+        } break;
     }
     unit_ext.timers[TimerAmbientSFX] = delay;
     bw::play_sound(sound_id, this);
@@ -2103,6 +2111,7 @@ void Unit::cast_remote_hijack() {
         bw::decloak_passive_proc(this);
         this->spend_energy(energy_cost);
         fire_bullet(this, WeaponId::RemoteHijack, this->order_target);
+        bw::play_sound(SoundId::ParacleteCast01, this->position);
         this->order_to_idle();
         try_cast = false;
     }

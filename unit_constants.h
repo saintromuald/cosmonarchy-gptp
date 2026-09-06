@@ -435,6 +435,14 @@ namespace AskosiLandlock {
 inline constexpr s32 AmbientSFXDelay = 33;
 }
 
+namespace AskosiFunction {
+inline constexpr s32 AmbientSFXDelay = 57;
+}
+
+namespace AskosiCosmoscope {
+inline constexpr s32 AmbientSFXDelay = 51;
+}
+
 namespace AskosiChantry {
 inline constexpr s32 SermonSalveRange = 8tiles;
 }

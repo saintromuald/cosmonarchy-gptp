@@ -2888,19 +2888,43 @@ namespace SoundId {
         VicarOrderAggressive04                              = 4287,
 
         VicarAbilityUse01                                   = 4292,
+        LandlockAmbient01                                   = 4293,
         
         HelionWeaponfire01                                  = 4302,
         HelionWeaponfire02                                  = 4303,
         HelionWeaponfire03                                  = 4304,
         
-        LandlockAmbient01                                   = 4293,
+        ParacleteWeaponfire01                               = 4318,
+        ParacleteWeaponfire02                               = 4319,
+        ParacleteWeaponfire03                               = 4320,
+        ParacleteCast01                                     = 4321,
+        FunctionAmbient01                                   = 4322,
+        CosmoscopeAmbient01                                 = 4323,
 
+        ErrorAskosi                                         = 4330,
         MaverickGoldenWeaponfire01                          = 4331,
         MaverickGoldenWeaponfire02                          = 4332,
         MaverickGoldenWeaponfire03                          = 4333,
         MaverickGoldenWeaponfire04                          = 4334,
         MaverickGoldenWeaponfire05                          = 4335,
         MaverickGoldenWeaponfire06                          = 4336,
+        CloakAttackOn                                       = 4337,
+        CloakAttackOff                                      = 4338,
+        CloakDamageOn01                                     = 4339,
+        CloakDamageOn02                                     = 4340,
+        CloakDamageOn03                                     = 4341,
+        CloakDamageOff01                                    = 4342,
+        CloakDamageOff02                                    = 4343,
+        AskosiStructurePlacement                            = 4344,
+
+        CardinalReady01                                     = 4348,
+        CardinalReady02                                     = 4349,
+        CardinalReady03                                     = 4350,
+
+        CardinalOrderAggressive01                           = 4359,
+        CardinalOrderAggressive02                           = 4360,
+        CardinalOrderAggressive03                           = 4361,
+        CardinalOrderAggressive04                           = 4362,
     };
 }
 

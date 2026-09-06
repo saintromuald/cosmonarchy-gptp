@@ -334,18 +334,6 @@ namespace hooks {
         g_placing_player = active_unit->player;
     }
 
-    // Not enabled.
-    // Hooked to add support for custom races. -Pr0nogo
-    void play_building_placement_sound(Unit* unit) { // 0048F630
-        if (!(g_is_in_replay) && unit->player == g_local_nation_id) {
-            u8 race = unit->get_race();
-            u32 sound_id = race + 141;
-            if (helper::play_sound_from_unit(sound_id, unit, 1, 99)) {
-                helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
-            }
-        }
-    }
-
     // Hooked to improve functionality, and later add handling for new races. -Pr0nogo
     void set_worker_error(Unit* unit, u32 error_string) { // 0048F7B0
         if (!(g_is_in_replay) && unit->player == g_local_nation_id) {
@@ -528,5 +516,32 @@ namespace hooks {
             return (s32)Placeability::Valid;
         }
         return (s32)Placeability::InvalidExplored;
+    }
+    
+    // Hooked to support placement sounds for new races. -Pr0nogo
+    void play_building_placement_sound(u16 unit_id) { // 0048EFF0
+        if (!(g_options_list->sfx)) {
+            return;
+        }
+        auto sound_id = SoundId::Misc_TBldgPlc_wav; // default
+        switch (Unit::get_race(unit_id)) {
+            case RaceId::Terran:  sound_id = SoundId::Misc_TBldgPlc_wav;        break;
+            case RaceId::Protoss: sound_id = SoundId::Misc_PBldgPlc_wav;        break;
+            case RaceId::Zerg:    sound_id = SoundId::Misc_ZBldgPlc_wav_1;      break;
+            case RaceId::Askosi:  sound_id = SoundId::AskosiStructurePlacement; break;
+        }
+        auto volume = sfx_dat::volume[sound_id];
+        u8 max_volume = 99;
+        if (volume >= 99) {
+            if (volume >= 0) {
+                max_volume = sfx_dat::volume[sound_id];
+            } else {
+                max_volume = 0;
+            }
+        }
+        if (g_use_quiet_sounds) {
+            max_volume /= 5;
+        }
+        helper::play_transmission_from_location(sound_id, max_volume, 0, 0);
     }
 }

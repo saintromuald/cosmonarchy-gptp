@@ -795,7 +795,7 @@ namespace hooks {
         // Initiate damage cloak
         if (bw::is_damage_cloakable(data.target)) {
             if (!(data.target->status & UnitStatus::Cloaked)) {
-                helper::begin_cloak(data.target, SoundId::CloakAskosiOn); // TODO: Bloodsummon cloak SFX
+                helper::begin_cloak(data.target, bw::rand_between(SoundId::CloakDamageOn01, SoundId::CloakDamageOn03)); // TODO: Bloodsummon cloak SFX
             }
             target_ext.timers[TimerDecloak] = 2secs + 1;
         }

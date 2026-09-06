@@ -2679,7 +2679,9 @@ namespace hooks {
             case UnitId::ProtossStargate:
             case UnitId::ProtossArgosy:
             case UnitId::ProtossMonumentOfSin:
-            case UnitId::AskosiLandlock: {
+            case UnitId::AskosiLandlock:
+            case UnitId::AskosiFunction:
+            case UnitId::AskosiCosmoscope: {
                 if (unit->can_play_training_sfx()) {
                     unit->play_training_sfx();
                 }
