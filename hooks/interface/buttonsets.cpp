@@ -482,7 +482,7 @@ namespace hooks {
                             helper::queue_game_command((u8*)&command, sizeof(command));
                         } break;
                         case RaceId::Zerg: {
-                            command.faction = Faction::ZergOrkotiTendril;
+                            command.faction = Faction::ZergGoszirithTendril;
                             helper::queue_game_command((u8*)&command, sizeof(command));
                         } break;
                     //  case RaceId::Askosi: {
@@ -502,7 +502,7 @@ namespace hooks {
                             helper::queue_game_command((u8*)&command, sizeof(command));
                         } break;
                         case RaceId::Zerg: {
-                            command.faction = Faction::ZergGoszirithTendril;
+                            command.faction = Faction::ZergOrkotiTendril;
                             helper::queue_game_command((u8*)&command, sizeof(command));
                         } break;
                     //  case RaceId::Askosi: {
