@@ -366,6 +366,7 @@ namespace WeaponId {
         HydrokorHydrokClaws                 = 273,
         ZethalorSpewingSpores               = 274,
         AlzurokorEmbracingMandibles         = 275,
+        RozirokorBladedAppendage            = 278,
 
         // Askosi \\
 

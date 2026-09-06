@@ -688,6 +688,15 @@ namespace hooks {
                 while (current_button_state == Button_State::Invisible && (buttons_count < current_buttonset->buttons_in_set)) {
                     current_button_state = helper::req_check((u32)current_button->requirement_func, current_button->requirement_var, g_local_nation_id, unit);
                     // Fight that lardcode, tony!
+                    if (current_button->action_func == (ActFunc*)ButtonActions::Attack) {
+                        switch (buttonset_id) {
+                            case UnitId::TerranCleric:
+                            case UnitId::TerranClericFuturist: {
+                                current_button_state = Button_State::Enabled;
+                            } break;
+                        }
+                    }
+
                     if (current_button->action_func == (ActFunc*)ButtonActions::Change_Displayed_Buttons) {
                         switch (buttonset_id) {
                             case UnitId::Buttons_FactionSelect:
@@ -1298,7 +1307,7 @@ namespace hooks {
                                             if (bw::unit_queue_full(unit) || is_adding_on || in_air) {
                                                 current_button_state = Button_State::Invisible;
                                             } else if (!player_has_completed_addon_unit_id(unit->player, UnitId::TerranScrapyard)) {
-                                                current_button_state = Button_State::Invisible;
+                                                current_button_state = Button_State::Disabled;
                                             } else {
                                                 current_button_state = Button_State::Enabled;
                                             }

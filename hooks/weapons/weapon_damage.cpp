@@ -1337,6 +1337,7 @@ namespace hooks {
         }
         switch (data.weapon_id) {
             case WeaponId::GhitorokorGnashingTendrils:
+            case WeaponId::RozirokorBladedAppendage:
             case WeaponId::UltrokorKaiserBlades: {
                 hp_factor += 1;
             } break;

@@ -1209,28 +1209,30 @@ bool unit_id_is_zerg_egg(u32 unit_id) {
 
 u32 get_mutate_image_id(u32 unit_id) {
     switch (unit_id) {
-        case UnitId::ZergYblyleth:		return ImageId::EvigriliskMutate;
-        case UnitId::ZergQuazilisk:		return ImageId::QuaziliskMutate;
-        case UnitId::ZergQuazrokor:		return ImageId::QuaziliskMutate;
-        case UnitId::ZergNathrokor:		return ImageId::NathrokorMutate;
-        case UnitId::ZergCikralisk:		return ImageId::CikraliskMutate;
-        case UnitId::ZergProtathalor:	return ImageId::ProtathalorMutate;
-        case UnitId::ZergHydralisk:		return ImageId::HydraliskMutate;
-        case UnitId::ZergHydrokor:		return ImageId::HydrokorMutate;
-        case UnitId::ZergIzirokor:		return ImageId::IzirokorMutate;
-        case UnitId::ZergRozirokor:		return ImageId::RozirokorMutate;
-        case UnitId::ZergIziralisk:		return ImageId::IziraliskMutate;
-        case UnitId::ZergSkithrokor:	return ImageId::SkithrokorMutate;
-        case UnitId::ZergKagralisk:		return ImageId::KagraliskMutate;
-        case UnitId::ZergEvigrilisk:	return ImageId::EvigriliskMutate;
-        case UnitId::ZergAlmaksalisk:	return ImageId::AlmaksaliskMutate;
-        case UnitId::ZergZoryusthaleth:	return ImageId::ZoryusthalethMutate;
-        case UnitId::ZergInzorthrokor:	return ImageId::InzorthrokorMutate;
-        case UnitId::ZergLakizilisk:	return ImageId::LakiziliskMutate;
-        case UnitId::ZergGorgrokor:		return ImageId::GorgrokorMutate;
-        case UnitId::ZergAzanthrokor:	return ImageId::AzanthrokorMutate;
-        case UnitId::ZergVilgorokor:	return ImageId::VilgorokorMutate;
-        case UnitId::ZergGeszithalor:	return ImageId::GeszithalorMutate;
+        case UnitId::ZergYblyleth:		  return ImageId::EvigriliskMutate;
+        case UnitId::ZergZethrokor:		  return ImageId::ZethrokorMutate;
+        case UnitId::ZergSovrokor:		  return ImageId::SovrokorMutate;
+        case UnitId::ZergQuazilisk:		  return ImageId::QuaziliskMutate;
+        case UnitId::ZergQuazrokor:		  return ImageId::QuaziliskMutate;
+        case UnitId::ZergNathrokor:		  return ImageId::NathrokorMutate;
+        case UnitId::ZergCikralisk:		  return ImageId::CikraliskMutate;
+        case UnitId::ZergProtathalor:	  return ImageId::ProtathalorMutate;
+        case UnitId::ZergHydralisk:		  return ImageId::HydraliskMutate;
+        case UnitId::ZergHydrokor:		  return ImageId::HydrokorMutate;
+        case UnitId::ZergHydraliskOrkoti: return ImageId::HydraliskOrkotiMutate;
+        case UnitId::ZergIzirokor:		  return ImageId::IzirokorMutate;
+        case UnitId::ZergRozirokor:		  return ImageId::RozirokorMutate;
+        case UnitId::ZergIziralisk:		  return ImageId::IziraliskMutate;
+        case UnitId::ZergSkithrokor:	  return ImageId::SkithrokorMutate;
+        case UnitId::ZergKagralisk:		  return ImageId::KagraliskMutate;
+        case UnitId::ZergEvigrilisk:	  return ImageId::EvigriliskMutate;
+        case UnitId::ZergAlmaksalisk:	  return ImageId::AlmaksaliskMutate;
+        case UnitId::ZergGeszithalor:	  return ImageId::GeszithalorMutate;
+        case UnitId::ZergZoryusthaleth:	  return ImageId::ZoryusthalethMutate;
+        case UnitId::ZergInzorthrokor:	  return ImageId::InzorthrokorMutate;
+        case UnitId::ZergLakizilisk:	  return ImageId::LakiziliskMutate;
+        case UnitId::ZergGorgrokor:	      return ImageId::GorgrokorMutate;
+        case UnitId::ZergVilgorokor:	  return ImageId::VilgorokorMutate;
     }
     return ImageId::None;
 }
@@ -1692,8 +1694,8 @@ bool has_manual_weapon_fire_sfx(UnitId::Enum unit_id) {
 }
 
 bool is_atg_regression(UnitId::Enum old_unit_id, UnitId::Enum new_unit_id) {
-    return units_dat::base_property[old_unit_id] & UnitProperty::Flyer
-       && !units_dat::base_property[new_unit_id] & UnitProperty::Flyer;
+    return  units_dat::base_property[old_unit_id] & UnitProperty::Flyer
+       && !(units_dat::base_property[new_unit_id] & UnitProperty::Flyer);
 }
 
 u32 get_overlay_offset(UnitId::Enum unit_id) {
