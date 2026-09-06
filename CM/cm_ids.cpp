@@ -2166,6 +2166,9 @@ SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {
         case UnitId::AskosiMissionary: {
             ready_sound = helper::get_random_unit_response(SoundId::MissionaryReady01, SoundId::MissionaryReady03);
         } break;
+        case UnitId::AskosiCardinal: {
+            ready_sound = helper::get_random_unit_response(SoundId::CardinalReady01, SoundId::CardinalReady03);
+        } break;
         case UnitId::AskosiVicar: {
             ready_sound = helper::get_random_unit_response(SoundId::VicarReady01, SoundId::VicarReady03);
         } break;

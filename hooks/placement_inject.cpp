@@ -262,19 +262,6 @@ namespace
         }
     }
 
-    void __declspec(naked) play_building_placement_sound_wrapper() { // 0048F630
-        static Unit* unit;
-        __asm {
-            MOV unit, EAX
-            PUSHAD
-        }
-        hooks::play_building_placement_sound(unit);
-        __asm {
-            POPAD
-            RETN
-        }
-    }
-
     void __declspec(naked) set_worker_error_wrapper() { // 0048F7B0
         static Unit* unit;
         static u32 error_string;
@@ -393,6 +380,19 @@ namespace
             RETN 0x10
         }
     }
+
+    void __declspec(naked) play_building_placement_sound_wrapper() { // 0048F630
+        static u16 unit_id;
+        __asm {
+            MOV unit_id, AX
+            PUSHAD
+        }
+        hooks::play_building_placement_sound(unit_id);
+        __asm {
+            POPAD
+            RETN
+        }
+    }
     
     // Patches \\
 
@@ -456,13 +456,14 @@ void inject_placement_hooks() {
     jump_patch(place_building_proc_wrapper,								0x0048E6E0, 0);
     jump_patch(unit_id_is_refinery_wrapper,								0x0047AFE0, 1);
     jump_patch(issue_place_building_order_wrapper,						0x0048E730, 8);
-//	jump_patch(play_building_placement_sound_wrapper,					                0x0048F630, 3); // Fine, but unnecessary at the moment.
     jump_patch(set_worker_error_wrapper,								    0x0048F7B0, 1);
     jump_patch(play_worker_error_sound_wrapper,							0x0048F6C0, 1);
     jump_patch(get_placement_restrictions_from_sprite_id,				    0x00487B00, 1);
     jump_patch(place_building_message_wrapper,							0x0048D930, 4);
 //	jump_patch(input_place_building_click_notify_wrapper,				                0x0048E4E0, 0); // Not working yet...
     jump_patch(vespene_geyser_placebox_wrapper,				            0x00473DB0, 1);
+    
+    jump_patch(play_building_placement_sound_wrapper,				        0x0048EFF0, 4);
 
     // DF - Fix Treasury being unable to claim addons
 //	jump_patch(TTBaseUnitType_patch_6E1A6,								                0x0046E1A6, 3); //TTBaseUnitType (0x0046E170)

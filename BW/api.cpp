@@ -1302,6 +1302,28 @@ bool is_damage_cloakable(Unit* unit) {
     return false;
 }
 
+bool is_damage_decloakable(Unit* unit) {
+    if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak && UnitId::has_damage_cloak((UnitId::Enum)unit->id)) {
+        return true;
+    }
+}
+
+bool is_attack_cloakable(Unit* unit) {
+    if (unit->is_burrowed() || unit_id_has_proximity_cloak(unit->id)) {
+        return false;
+    }
+    if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak && UnitId::has_attack_cloak((UnitId::Enum)unit->id)) {
+        return true;
+    }
+    return false;
+}
+
+bool is_attack_decloakable(Unit* unit) {
+    if (units_dat::base_property[unit->id] & UnitProperty::PermanentCloak && UnitId::has_attack_cloak((UnitId::Enum)unit->id)) {
+        return true;
+    }
+}
+
 bool is_proximity_decloakable(Unit* unit) {
     if (unit->is_burrowed()) {
         return false;
@@ -3903,6 +3925,15 @@ u32 get_cloak_sound_id(Unit* unit) {
     if (unit->status & UnitStatus::CloakingForFree && !unit_id_has_proximity_cloak(unit->id)) {
         return SoundId::Terran_PHOENIX_TPhClo00_WAV;
     }
+    if (is_proximity_decloakable(unit)) {
+        return SoundId::CloakTerranOff;
+    }
+    if (is_damage_decloakable(unit)) {
+        return bw::rand_between(SoundId::CloakDamageOff01, SoundId::CloakDamageOff02);
+    }
+    if (is_attack_decloakable(unit)) {
+        return SoundId::CloakAttackOff;
+    }
     switch (unit->get_race()) {
         case RaceId::Terran:  return SoundId::CloakTerranOn;
         case RaceId::Protoss: return SoundId::Terran_PHOENIX_TPhClo00_WAV;
@@ -4169,6 +4200,7 @@ u32 get_weapon_fire_sound(WeaponId::Enum weapon_id, Unit* unit) {
         case WeaponId::HelionUskoScrapray:                   return bw::rand_between(SoundId::HelionWeaponfire01, SoundId::HelionWeaponfire03);
         case WeaponId::TiradeIktaDriver:                     return bw::rand_between(SoundId::TiradeWeaponfire01, SoundId::TiradeWeaponfire03);
         case WeaponId::AkrenoBioticWingblades:               return bw::rand_between(SoundId::AkrenoWeaponfire01, SoundId::AkrenoWeaponfire03);
+        case WeaponId::ParacleteOgnirriusBeaststick:         return bw::rand_between(SoundId::ParacleteWeaponfire01, SoundId::ParacleteWeaponfire03);
         case WeaponId::CrematoriumOkliQuadshard:             return bw::rand_between(SoundId::CrematoriumWeaponfire01, SoundId::CrematoriumWeaponfire03);
         case WeaponId::LimireOfraAshray:                     return bw::rand_between(SoundId::LimireWeaponfire01, SoundId::LimireWeaponfire03);
         case WeaponId::EndboreIrkoOctorshard:                return bw::rand_between(SoundId::EndboreWeaponfire01, SoundId::EndboreWeaponfire04);
