@@ -651,7 +651,8 @@ namespace hooks {
                         // Southpaw - Offset: Linear
                         fire_line(unit, weapon_id, 3, 24, 1, 0);
                     } break;
-                    case WeaponId::CataphractLonginiusCannons: {
+                    case WeaponId::CataphractLonginiusCannons:
+                    case WeaponId::ArquebusLukankaziRailguns: {
                         // Cataphract - Offset: Linear
                         fire_parallel(unit, weapon_id,  6, 4);
                         fire_parallel(unit, weapon_id, 30, 0);
@@ -821,7 +822,7 @@ namespace hooks {
                 if (unit_ext.timers[TimerMimicryCheck]) {
                     for (Unit* mimic : g_unit_search.radial(unit->position, Askosi::MimicryRange).filter(unit, FilterAlly, {UnitId::AskosiMimic, UnitId::AskosiEgocent})) {
                         auto mimic_ext = mimic->ext();
-                        if (mimic->ground_weapon_cooldown) {
+                        if (mimic->ground_weapon_cooldown || !weapon_id_is_standard_weapon(weapon_id)) {
                             continue;
                         }
                         // TODO: audiovisuals

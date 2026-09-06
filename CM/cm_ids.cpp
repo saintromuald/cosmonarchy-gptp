@@ -654,6 +654,7 @@ u32 weapon_id_intercepts(WeaponId::Enum weapon_id) {
         case WeaponId::HotshotDispatchShotgun:
         case WeaponId::SirenCharybdalRifle:
         case WeaponId::CataphractLonginiusCannons:
+        case WeaponId::ArquebusLukankaziRailguns:
         case WeaponId::EngramKhaydarinPlasmaLaser:
         case WeaponId::CharlatanFerventBlaster:
         case WeaponId::IdolPrismaticBlaster:
@@ -864,6 +865,12 @@ WeaponOffsets* get_weapon_offsets(WeaponId::Enum weapon_id) {
             return &offsets;
         } break;
         case WeaponId::CataphractLonginiusCannons: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueCataphractLaunchPos;
+            offsets.count = 4;
+            return &offsets;
+        } break;
+        case WeaponId::ArquebusLukankaziRailguns: {
             static WeaponOffsets offsets{};
             offsets.value_id = ValueCataphractLaunchPos;
             offsets.count = 4;
@@ -1113,16 +1120,52 @@ WeaponOffsets* get_weapon_offsets(WeaponId::Enum weapon_id) {
             offsets.count = 2;
             return &offsets;
         } break;
+        case WeaponId::AphoristAnsaSunshot: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueLaunchPos;
+            offsets.count = 4;
+            return &offsets;
+        } break;
+        case WeaponId::SilversoulOlduTripshard: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueLaunchPos;
+            offsets.count = 3;
+            return &offsets;
+        } break;
+        case WeaponId::GhostwritOndoMoonbeam: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueLaunchPos;
+            offsets.count = 1;
+            return &offsets;
+        } break;
         case WeaponId::IntendentErsaDriver: {
             static WeaponOffsets offsets{};
             offsets.value_id = ValueIntendentLaunchPos;
             offsets.count = 1;
             return &offsets;
         } break;
+        case WeaponId::PhontisAlruDriver: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueLaunchPos;
+            offsets.count = 2;
+            return &offsets;
+        } break;
         case WeaponId::HelionUskoScrapray: {
             static WeaponOffsets offsets{};
             offsets.value_id = ValueHelionLaunchPos;
             offsets.count = 1;
+            return &offsets;
+        } break;
+        case WeaponId::IconoclastOnjiDriver: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueLaunchPos;
+            offsets.count = 2;
+            return &offsets;
+        } break;
+        case WeaponId::CrematoriumOkliQuadshard: {
+            static WeaponOffsets offsets{};
+            offsets.value_id = ValueLaunchPos;
+            offsets.count = 4;
             return &offsets;
         } break;
     }
@@ -2305,6 +2348,6 @@ bool can_attack_target(WeaponId::Enum weapon_id, Unit* target) {
 }
 
 bool bounces_power_breach(WeaponId::Enum weapon_id) {
-    return weapon_id == WeaponId::IntendentErsaDriver || weapon_id == WeaponId::CrematoriumOkliQuadshard;
+    return weapon_id == WeaponId::IntendentErsaDriver;
 }
 } // namespace WeaponId

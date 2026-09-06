@@ -40,7 +40,8 @@ namespace hooks {
 				case UnitId::AskosiThaumalogue:
 				case UnitId::AskosiObject:
 				case UnitId::AskosiScepter:
-				case UnitId::AskosiPetract: {
+				case UnitId::AskosiPetract:
+				case UnitId::AskosiTortare: {
 					armor_modifier += 2;
 				} break;
 			}

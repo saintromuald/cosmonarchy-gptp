@@ -429,7 +429,9 @@ namespace hooks {
                     case UnitId::TerranOgunSmithyMode: {
                         g_graphics.draw_circle(source.x, source.y, TerranOgun::NaniteDronesRange, graphics::GREEN, graphics::ON_MAP);
                     } break;
-                    case UnitId::TerranShamanSupportMode: {
+                    case UnitId::TerranShamanSupportMode:
+                    case UnitId::TerranShamanUpstartSupport:
+                    case UnitId::TerranShamanUpstartAdrenaline: {
                         g_graphics.draw_circle(source.x, source.y, Shaman::NaniteFieldSupportRange, graphics::GREEN, graphics::ON_MAP);
                     } break;
                     case UnitId::TerranShamanVisionaryMode: {
@@ -1574,6 +1576,9 @@ namespace hooks {
                 if (!unit_ext.timers[TimerCorpseConsumptionDelay] && unit_ext.values[ValueCohortServileVigor]) {
                     u32 radius = 1 * 32;
                     for (Thingy* corpse : g_corpse_search.radial(unit->position, radius)) {
+                        if (unit_id_is_broodspawn(corpse->unit_id)) {
+                            break;
+                        }
                         unit_ext.values[ValueCohortServileVigor] = 0;
 
                         bw::create_and_init_thingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);

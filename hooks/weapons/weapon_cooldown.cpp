@@ -181,7 +181,8 @@ namespace hooks {
 	u32 get_modified_weapon_cooldown(Unit* unit, WeaponId::Enum weapon_id) {
 		auto cooldown = weapons_dat::cooldown[weapon_id];
 		switch (unit->id) {
-			case UnitId::AskosiMimic: {
+			case UnitId::AskosiMimic:
+			case UnitId::AskosiEgocent: {
 				cooldown /= weapons_dat::damage_factor[weapon_id];
 			} break;
 		}
