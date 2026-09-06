@@ -406,7 +406,7 @@ namespace hooks {
                             buttonset_id = UnitId::Buttons_FactionSelectZerg;
                         } break;
                         case RaceId::Askosi: {
-                            // TODO: Add Askosi case
+                            buttonset_id = UnitId::Buttons_FactionSelectAskosi;
                         } break;
                     }
                 } else if (buttonset_id == UnitId::Buttons_FactionSelect) {
@@ -438,6 +438,10 @@ namespace hooks {
                             command.faction = Faction::ZergAtaltrethTendril;
                             helper::queue_game_command((u8*)&command, sizeof(command));
                         } break;
+                        case RaceId::Askosi: {
+                            command.faction = Faction::AskosiInoaScattergard;
+                            helper::queue_game_command((u8*)&command, sizeof(command));
+                        } break;
                     }
                     cm_player.faction_was_set = true;
                 } else if (buttonset_id == UnitId::Buttons_FactionSelect2) {
@@ -452,6 +456,10 @@ namespace hooks {
                         } break;
                         case RaceId::Zerg: {
                             command.faction = Faction::ZergImicrenTendril;
+                            helper::queue_game_command((u8*)&command, sizeof(command));
+                        } break;
+                        case RaceId::Askosi: {
+                            command.faction = Faction::AskosiSonsOfAsh;
                             helper::queue_game_command((u8*)&command, sizeof(command));
                         } break;
                     }
@@ -470,6 +478,10 @@ namespace hooks {
                             command.faction = Faction::ZergOrkotiTendril;
                             helper::queue_game_command((u8*)&command, sizeof(command));
                         } break;
+                    //  case RaceId::Askosi: {
+                    //      command.faction = Faction::AskosiFaction3;
+                    //      helper::queue_game_command((u8*)&command, sizeof(command));
+                    //  } break;
                     }
                     cm_player.faction_was_set = true;
                 } else if (buttonset_id == UnitId::Buttons_FactionSelect4) {
@@ -486,6 +498,10 @@ namespace hooks {
                             command.faction = Faction::ZergGoszirithTendril;
                             helper::queue_game_command((u8*)&command, sizeof(command));
                         } break;
+                    //  case RaceId::Askosi: {
+                    //      command.faction = Faction::AskosiFaction4;
+                    //      helper::queue_game_command((u8*)&command, sizeof(command));
+                    //  } break;
                     }
                     cm_player.faction_was_set = true;
                 } else if (buttonset_id == UnitId::Buttons_FactionSelect5) {
@@ -502,6 +518,10 @@ namespace hooks {
                             command.faction = Faction::ZergZorthosTendril;
                             helper::queue_game_command((u8*)&command, sizeof(command));
                         } break;
+                    //  case RaceId::Askosi: {
+                    //      command.faction = Faction::AskosiFaction5;
+                    //      helper::queue_game_command((u8*)&command, sizeof(command));
+                    //  } break;
                     }
                     cm_player.faction_was_set = true;
                 } else if (buttonset_id == UnitId::Buttons_FactionSelect6) {
@@ -511,13 +531,17 @@ namespace hooks {
                             helper::queue_game_command((u8*)&command, sizeof(command));
                         } break;
                     //	case RaceId::Protoss: {
-                    //		command.faction = Faction::Protoss6;
+                    //		command.faction = Faction::ProtossFaction6;
                     //		helper::queue_game_command((u8*)&command, sizeof(command));
                     //	} break;
                     //	case RaceId::Zerg: {
-                    //		command.faction = Faction::Zerg6;
+                    //		command.faction = Faction::ZergFaction6;
                     //		helper::queue_game_command((u8*)&command, sizeof(command));
                     //	} break;
+                    //  case RaceId::Askosi: {
+                    //      command.faction = Faction::AskosiFaction6;
+                    //      helper::queue_game_command((u8*)&command, sizeof(command));
+                    //  } break;
                     }
                     cm_player.faction_was_set = true;
                 }
@@ -669,6 +693,7 @@ namespace hooks {
                             case UnitId::Buttons_FactionSelect:
                             case UnitId::Buttons_FactionSelectProtoss:
                             case UnitId::Buttons_FactionSelectZerg:
+                            case UnitId::Buttons_FactionSelectAskosi:
                             case UnitId::ZergLarva:
                             case UnitId::ZergOcsalLarva: {
                                 current_button_state = Button_State::Enabled;
@@ -1639,6 +1664,7 @@ namespace hooks {
                             } break;
                             case UnitId::TerranTreasury: {
                                 switch (current_button->requirement_var) {
+                                    case UnitId::TerranMason:
                                     case UnitId::TerranTalos:
                                     case UnitId::TerranOgunWorkerMode: {
                                         if (unit->is_grounded_building() && !is_adding_on) {
@@ -2869,7 +2895,18 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::AskosiIntendent: {
-                                        if (player_has_completed_unit_id(unit->player, UnitId::AskosiGauntlet)) {
+                                        if (faction == Faction::AskosiSonsOfAsh) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else if (player_has_completed_unit_id(unit->player, UnitId::AskosiGauntlet)) {
+                                            current_button_state = Button_State::Enabled;
+                                        } else {
+                                            current_button_state = Button_State::Disabled;
+                                        }
+                                    } break;
+                                    case UnitId::AskosiScralia: {
+                                        if (faction != Faction::AskosiSonsOfAsh) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else if (player_has_completed_unit_id(unit->player, UnitId::AskosiGauntlet)) {
                                             current_button_state = Button_State::Enabled;
                                         } else {
                                             current_button_state = Button_State::Disabled;
@@ -4414,6 +4451,7 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
+                                case UnitId::AskosiScralia:
                                 case UnitId::AskosiLimire: {
                                     if (current_button->icon_id == IconId::KelvinMunitions          // Booming Blast
                                     ||  current_button->icon_id == IconId::DestinationScrapworld) { // Scrapworld: Ash Heap

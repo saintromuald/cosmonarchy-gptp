@@ -543,6 +543,11 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
             //  case UnitId::ZergLakizilisk: return UnitId::ZergLakiziliskZorthos;
             }
         } break;
+        case Faction::AskosiSonsOfAsh: {
+            switch (unit_id) {
+                case UnitId::AskosiIntendent: return UnitId::AskosiScralia;
+            }
+        } break;
     }
     return unit_id;
 }
@@ -710,12 +715,14 @@ void randomize_faction(u32 player_id) {
     switch (faction) {
         case Faction::TerranHecatonCoalition:
         case Faction::ProtossOrderOfTheSacredSaber:
-        case Faction::ZergImicrenTendril: {
+        case Faction::ZergImicrenTendril:
+        case Faction::AskosiInoaScattergard: {
             faction_value = 1;
         } break;
         case Faction::TerranFuturistFederation:
         case Faction::ProtossKhalendricKnights:
-        case Faction::ZergGoszirithTendril: {
+        case Faction::ZergGoszirithTendril:
+        case Faction::AskosiSonsOfAsh: {
             faction_value = 2;
         } break;
         case Faction::TerranGoldenRepublic:
@@ -740,6 +747,7 @@ Faction get_random_faction(RaceId::Enum race) {
         case RaceId::Terran:  return bw::rand_between(Faction::TerranOrionImperium, Faction::TerranUpstart);
         case RaceId::Protoss: return bw::rand_between(Faction::ProtossDivinePrimacy, Faction::ProtossAstralOmen);
         case RaceId::Zerg:    return bw::rand_between(Faction::ZergAtaltrethTendril, Faction::ZergZorthosTendril);
+        case RaceId::Askosi:  return bw::rand_between(Faction::AskosiInoaScattergard, Faction::AskosiSonsOfAsh);
     }
     return Faction::None;
 }

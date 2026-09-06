@@ -503,7 +503,9 @@ bool unit_id_is_factional(u16 unit_id) {
         || unit_id == UnitId::ZergQuazrokor
         || unit_id == UnitId::ZergLakiziliskZorthos
         || unit_id == UnitId::ZergHydraliskOrkoti
-        || unit_id == UnitId::ZergAzanthrokor;
+        || unit_id == UnitId::ZergAzanthrokor
+        
+        || unit_id == UnitId::AskosiScralia;
 }
 
 bool unit_id_uses_xlarge_overlays(u16 unit_id) {
@@ -1519,13 +1521,15 @@ bool unit_id_is_burrowed_attacker(u32 unit_id) {
 bool buttonset_id_is_faction_selection(u32 buttonset_id) {
     return buttonset_id == UnitId::Buttons_FactionSelect
         || buttonset_id == UnitId::Buttons_FactionSelectProtoss
-        || buttonset_id == UnitId::Buttons_FactionSelectZerg;
+        || buttonset_id == UnitId::Buttons_FactionSelectZerg
+        || buttonset_id == UnitId::Buttons_FactionSelectAskosi;
 }
 
 bool portrait_id_is_default_advisor(u32 portrait_id) {
     return portrait_id == PortraitId::AdvisorOrionImperium
         || portrait_id == PortraitId::ProtossAdvisor
-        || portrait_id == PortraitId::AdvisorZerg;
+        || portrait_id == PortraitId::AdvisorZerg
+        || portrait_id == PortraitId::AdvisorInoa;
 }
 
 u32 get_player_portrait_id_override(u32 portrait_id, u32 player) {
@@ -1886,6 +1890,8 @@ bool is_askosi(UnitId::Enum unit_id) {
         || unit_id == UnitId::AskosiEndbore
         || unit_id == UnitId::AskosiTortare
         || unit_id == UnitId::AskosiCybrene
+
+        || unit_id == UnitId::AskosiScralia
 
         || unit_id == UnitId::AskosiLandlock
         || unit_id == UnitId::AskosiArch

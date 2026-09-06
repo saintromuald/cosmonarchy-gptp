@@ -1066,11 +1066,14 @@ namespace hooks {
             }
         }
 
-        if (g_elapsed_time_frames == 24 * 60) {
+        if (g_elapsed_time_frames == 60secs) {
             // Randomize faction if not set
             if (bw::get_game_kind() == GameKind::FactionWars) {
                 for (s32 i = 0; i < PlayerLimit; i++) {
                     if (g_player_table[i].type == PlayerType::Computer) {
+                        continue;
+                    }
+                    if (bw::player_is_witness(i) || !bw::player_is_active(i)) {
                         continue;
                     }
                     randomize_faction(i);
@@ -4922,62 +4925,36 @@ namespace hooks {
                                 switch (g_player_table[player].race) {
                                     case RaceId::Terran: {
                                         switch (faction) {
-                                            case Faction::TerranOrionImperium: {
-                                                bw::printf("\t%s (P%u) has chosen the Orion Imperium.", player_name, player + 1, TextColor::White);
-                                            } break;
-                                            case Faction::TerranHecatonCoalition: {
-                                                bw::printf("\t%s (P%u) has chosen the Hecaton Coalition.", player_name, player + 1, TextColor::White);
-                                            } break;
-                                            case Faction::TerranFuturistFederation: {
-                                                bw::printf("\t%s (P%u) has chosen the Futurist Federation.", player_name, player + 1, TextColor::White);
-                                            } break;
-                                            case Faction::TerranGoldenRepublic: {
-                                                bw::printf("\t%s (P%u) has chosen the Golden Republic.", player_name, player + 1, TextColor::White);
-                                            } break;
-                                            case Faction::TerranNydusTrinity: {
-                                                bw::printf("\t%s (P%u) has chosen the Nydus Trinity.", player_name, player + 1, TextColor::White);
-                                            } break;
-                                            case Faction::TerranUpstart: {
-                                                bw::printf("\t%s (P%u) has chosen the Terran Upstarts.", player_name, player + 1, TextColor::White);
-                                            } break;
+                                            case Faction::TerranOrionImperium: bw::println(TextColor::Yellow3, "\t{} (P{}){} has chosen the {}Orion Imperium{}.", player_name, player + 1, TextColor::White, TextColor::Yellow3, TextColor::White);           break;
+                                            case Faction::TerranHecatonCoalition: bw::println(TextColor::Yellow3, "\t{} (P{}){} has chosen the {}Hecaton Coalition{}.", player_name, player + 1, TextColor::White, TextColor::Yellow3, TextColor::White);     break;
+                                            case Faction::TerranFuturistFederation: bw::println(TextColor::Yellow3, "\t{} (P{}){} has chosen the {}Futurist Federation{}.", player_name, player + 1, TextColor::White, TextColor::Yellow3, TextColor::White); break;
+                                            case Faction::TerranGoldenRepublic: bw::println(TextColor::Yellow3, "\t{} (P{}){} has chosen the {}Golden Republic{}.", player_name, player + 1, TextColor::White, TextColor::Yellow3, TextColor::White);         break;
+                                            case Faction::TerranNydusTrinity: bw::println(TextColor::Yellow3, "\t{} (P{}){} has chosen the {}Nydus Trinity{}.", player_name, player + 1, TextColor::White, TextColor::Yellow3, TextColor::White);             break;
+                                            case Faction::TerranUpstart: bw::println(TextColor::Yellow3, "\t{} (P{}){} has chosen the {}Upstarts{}.", player_name, player + 1, TextColor::White, TextColor::Yellow3, TextColor::White);                       break;
                                         }
                                     } break;
                                     case RaceId::Protoss: {
                                         switch (faction) {
-                                            case Faction::ProtossDivinePrimacy: {
-                                                bw::printf("\t%s (P%u) has chosen the Divine Primacy.", player_name, player + 1, TextColor::White);
-                                            } break;
-                                            case Faction::ProtossKhalendricKnights: {
-                                                bw::printf("\t%s (P%u) has chosen the Khalendric Knights.", player_name, player + 1, TextColor::White);
-                                            } break;
-                                            case Faction::ProtossOrderOfTheSacredSaber: {
-                                                bw::printf("\t%s (P%u) has chosen the Order of the Sacred Saber.", player_name, player + 1, TextColor::White);
-                                            } break;
-                                            case Faction::ProtossStarbound: {
-                                                bw::printf("\t%s (P%u) has chosen the Starbound.", player_name, player + 1, TextColor::White);
-                                            } break;
-                                            case Faction::ProtossAstralOmen: {
-                                                bw::printf("\t%s (P%u) has chosen the Astral Omen.", player_name, player + 1, TextColor::White);
-                                            } break;
+                                            case Faction::ProtossDivinePrimacy: bw::println(TextColor::Yellow3, "\t{} (P{}){} has chosen the {}Divine Primacy{}.", player_name, player + 1, TextColor::White, TextColor::Yellow3, TextColor::White);                    break;
+                                            case Faction::ProtossKhalendricKnights: bw::println(TextColor::Yellow3, "\t{} (P{}){} has chosen the {}Khalendric Knights{}.", player_name, player + 1, TextColor::White, TextColor::Yellow3, TextColor::White);            break;
+                                            case Faction::ProtossOrderOfTheSacredSaber: bw::println(TextColor::Yellow3, "\t{} (P{}){} has chosen the {}Order of the Sacred Saber{}.", player_name, player + 1, TextColor::White, TextColor::Yellow3, TextColor::White); break;
+                                            case Faction::ProtossStarbound:  bw::println(TextColor::Yellow3, "\t{} (P{}){} has chosen the {}Starbound{}.", player_name, player + 1, TextColor::White, TextColor::Yellow3, TextColor::White);                            break;
+                                            case Faction::ProtossAstralOmen: bw::println(TextColor::Yellow3, "\t{} (P{}){} has chosen the {}Astral Omen{}.", player_name, player + 1, TextColor::White, TextColor::Yellow3, TextColor::White);                          break;
                                         }
                                     } break;
                                     case RaceId::Zerg: {
                                         switch (faction) {
-                                            case Faction::ZergAtaltrethTendril: {
-                                                bw::printf("\t%s (P%u) has chosen the Ataltreth Tendril.", player_name, player + 1, TextColor::White);
-                                            } break;
-                                            case Faction::ZergImicrenTendril: {
-                                                bw::printf("\t%s (P%u) has chosen the Imicren Tendril.", player_name, player + 1, TextColor::White);
-                                            } break;
-                                            case Faction::ZergOrkotiTendril: {
-                                                bw::printf("\t%s (P%u) has chosen the Orkoti Tendril.", player_name, player + 1, TextColor::White);
-                                            } break;
-                                            case Faction::ZergGoszirithTendril: {
-                                                bw::printf("\t%s (P%u) has chosen the Goszirith Tendril.", player_name, player + 1, TextColor::White);
-                                            } break;
-                                            case Faction::ZergZorthosTendril: {
-                                                bw::printf("\t%s (P%u) has chosen the Zorthos Tendril.", player_name, player + 1, TextColor::White);
-                                            } break;
+                                            case Faction::ZergAtaltrethTendril: bw::println(TextColor::Yellow3, "\t{} (P{}){} has chosen the {}Ataltreth Tendril{}.", player_name, player + 1, TextColor::White, TextColor::Yellow3, TextColor::White); break;
+                                            case Faction::ZergImicrenTendril:   bw::println(TextColor::Yellow3, "\t{} (P{}){} has chosen the {}Imicren Tendril{}.", player_name, player + 1, TextColor::White, TextColor::Yellow3, TextColor::White);   break;
+                                            case Faction::ZergOrkotiTendril:    bw::println(TextColor::Yellow3, "\t{} (P{}){} has chosen the {}Orkoti Tendril{}.", player_name, player + 1, TextColor::White, TextColor::Yellow3, TextColor::White);    break;
+                                            case Faction::ZergGoszirithTendril: bw::println(TextColor::Yellow3, "\t{} (P{}){} has chosen the {}Goszirith Tendril{}.", player_name, player + 1, TextColor::White, TextColor::Yellow3, TextColor::White); break;
+                                            case Faction::ZergZorthosTendril:   bw::println(TextColor::Yellow3, "\t{} (P{}){} has chosen the {}Zorthos Tendril{}.", player_name, player + 1, TextColor::White, TextColor::Yellow3, TextColor::White);   break;
+                                        }
+                                    } break;
+                                    case RaceId::Askosi: {
+                                        switch (faction) {
+                                            case Faction::AskosiInoaScattergard: bw::println(TextColor::Yellow3, "\t{} (P{}){} has chosen the {}Inoa Scatterguard{}.", player_name, player + 1, TextColor::White, TextColor::Yellow3, TextColor::White); break;
+                                            case Faction::AskosiSonsOfAsh:       bw::println(TextColor::Yellow3, "\t{} (P{}){} has chosen the {}Sons of Ash{}.", player_name, player + 1, TextColor::White, TextColor::Yellow3, TextColor::White);       break;
                                         }
                                     } break;
                                 }

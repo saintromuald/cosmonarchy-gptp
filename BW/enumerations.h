@@ -1722,13 +1722,16 @@ enum class Faction : u8 {
     ZergOrkotiTendril,
     ZergZorthosTendril,
 
+    AskosiInoaScattergard,
+    AskosiSonsOfAsh,
+
     Count,
 };
 
 enum TriggerFlags : u32 {
     // Others currently unknown. -Pr0nogo
     AlwaysDisplay          = 0x0000004,
-};
+}
 
 enum OptionsFlags : u32 {
     UnitSpeech              = 0x0000001,

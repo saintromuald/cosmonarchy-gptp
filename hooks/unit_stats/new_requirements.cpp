@@ -149,6 +149,7 @@ namespace hooks {
         }
         if (ignore_creator || (player_has_completed_unit_id(player_id, UnitId::TerranTreasury) && player_has_completed_addon_unit_id(player_id, UnitId::TerranQuarry))) {
             switch (unit_id) {
+                case UnitId::TerranMason:
                 case UnitId::TerranTalos:
                 case UnitId::TerranOgunWorkerMode: {
                     return true;
@@ -1438,7 +1439,16 @@ namespace hooks {
                     return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiCipher);
                 }
                 case UnitId::AskosiIntendent: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
+                    if (faction != Faction::AskosiSonsOfAsh) {
+                        return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
+                    }
+                    return false;
+                }
+                case UnitId::AskosiScralia: {
+                    if (faction == Faction::AskosiSonsOfAsh) {
+                        return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
+                    }
+                    return false;
                 }
             }
         }
@@ -1792,8 +1802,9 @@ namespace hooks {
             } break;
             case UnitId::TerranTreasury: {
                 switch (unit_id) {
-                    case UnitId::TerranTalos: {
-                    case UnitId::TerranOgunWorkerMode:
+                    case UnitId::TerranMason:
+                    case UnitId::TerranTalos:
+                    case UnitId::TerranOgunWorkerMode: {
                         if (in_air) {
                             return TECH_HIDDEN;
                         }
@@ -3829,6 +3840,18 @@ namespace hooks {
                         return TECH_LOCKED;
                     }
                     case UnitId::AskosiIntendent: {
+                        if (faction == Faction::AskosiSonsOfAsh) {
+                            return TECH_HIDDEN;
+                        }
+                        if (player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet)) {
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_LOCKED;
+                    }
+                    case UnitId::AskosiScralia: {
+                        if (faction != Faction::AskosiSonsOfAsh) {
+                            return TECH_HIDDEN;
+                        }
                         if (player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet)) {
                             return TECH_ACTIVE;
                         }

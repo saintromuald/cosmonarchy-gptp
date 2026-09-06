@@ -1313,6 +1313,14 @@ namespace hooks {
                         data.target->apply_booming_blast(data.attacking_player_id);
                         data.target->apply_ash_heap(data.attacking_player_id);
                     } break;
+                    case WeaponId::NihilistApatheticSermon: {
+                        target_ext.timers[TimerWarAtrophySearch] = BloodsummonNihilist::WarAtrophyDuration;
+                    } break;
+                    case WeaponId::ScraliaAlkoAshgun:
+                    case WeaponId::LimireOfraAshray: {
+                        data.target->apply_booming_blast(data.attacking_player_id);
+                        data.target->apply_ash_heap(data.attacking_player_id);
+                    } break;
                 }
             }
         }

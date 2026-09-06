@@ -413,6 +413,18 @@ namespace WeaponId {
         ThrombocyteReactiveCells            = 289,
         Eyelets                             = 301,
 
+        // Askosi factions \\
+
+        ScraliaAlkoAshgun                   = 302,
+
+        // Forerunner \\
+
+        FerrumSentinelBeam                  = 260,
+        ChalybSentinelBeam                  = 261,
+        CircitorSentinelBoltbeam            = 262,
+        ExigoEnforcerRiftRockets            = 263,
+        VicereChampionStormbeam             = 264,
+
         // Misc \\
 
         SmoochieBoyKissingEmoji				= 196,
