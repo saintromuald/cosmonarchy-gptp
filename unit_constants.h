@@ -85,7 +85,7 @@ inline constexpr u32 ReviveHealTimer = 10secs;
 inline constexpr u32 FieldEnergyCost = 25 * 256;
 }
 
-namespace HecatonAuriel {
+namespace Hecaton {
 inline constexpr s32 IncinerateTimer = 2secs + 1;
 }
 

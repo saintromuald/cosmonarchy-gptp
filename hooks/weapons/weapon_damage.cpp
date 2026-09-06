@@ -627,16 +627,13 @@ namespace hooks {
         switch (data.weapon_id) {
             case WeaponId::AurielQuarternaryRifle:
             case WeaponId::ArhaunPhlegethonCannon:
-            case WeaponId::ValkyrieHecatonLogiRockets: {
+            case WeaponId::ValkyrieHecatonLogiRockets:
+            case WeaponId::ArquebusLukankaziRailguns: {
                 target_ext.values[ValueIncineratePlayer] = data.attacking_player_id;
-                target_ext.timers[TimerIncinerateDamage] = HecatonAuriel::IncinerateTimer;
+                target_ext.timers[TimerIncinerateDamage] = Hecaton::IncinerateTimer;
             } break;
             case WeaponId::CyclopsBrontesPayload: {
                 data.target->sprite->create_top_overlay(ImageId::CyclopsFragmentaryExplosion);
-            } break;
-            case WeaponId::ArquebusLukankaziRailguns: {
-                target_ext.values[ValueIncineratePlayer] = data.attacking_player_id;
-                target_ext.timers[TimerIncinerateDamage] = HecatonAuriel::IncinerateTimer;
             } break;
             case WeaponId::WendigoFusionSaw: {
                 target_ext.values[ValueWendigoShatteredWindsStacks]++;
@@ -1000,7 +997,8 @@ namespace hooks {
                         target_ext.timers[TimerZarcavrokorSecondaryFire] = weapons_dat::cooldown[WeaponId::ZergBonesofReflection] - 1;
                     }
                 } break;
-                case UnitId::AskosiPhontis: {
+                case UnitId::AskosiPhontis:
+                case UnitId::AskosiCybrene: {
                     // Warring Winds
                     if (data.target != data.attacker && !bw::are_mutual_allies(data.target->player, data.attacking_player_id) && !target_ext.timers[TimerWarringWindsCooldown]) {
                         target_ext.timers[TimerWarringWindsCooldown] = Askosi::WarringWindsCooldown;
@@ -1136,13 +1134,12 @@ namespace hooks {
                         target_ext.timers[TimerKelvinMunitions] = 3secs + 1;
                     } break;
                     case WeaponId::VicarOspoTwinshard:
-                    case WeaponId::ThaumalogueUtsoCarbine:
-                    case WeaponId::HelionUskoScrapray:
+                    case WeaponId::SilversoulOlduTripshard:
                     case WeaponId::IconoclastOnjiDriver: {
                         data.target->apply_booming_blast(data.attacking_player_id);
                     } break;
-                    case WeaponId::RoveElreScaleshot:
                     case WeaponId::GrandstandArteDriver:
+                    case WeaponId::AlacyneInqoScaleshot:
                     case WeaponId::IntendentErsaDriver:
                     case WeaponId::CircitorSentinelBoltbeam: {
                         if (!target_ext.timers[TimerPowerOverload]) {
@@ -1306,6 +1303,7 @@ namespace hooks {
                             }
                         }
                     } break;
+                    case WeaponId::AvatarReformingCarbine:
                     case WeaponId::CrematoriumOkliQuadshard: {
                         data.target->apply_ash_heap(data.attacking_player_id);
                     } break;

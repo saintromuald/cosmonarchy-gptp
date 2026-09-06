@@ -2551,7 +2551,11 @@ u8 get_damage_factor_override(WeaponId::Enum weapon_id) {
         case WeaponId::AlmaksaliskPiercingSpines:
         case WeaponId::KeskathalorScreamingVenom:
         case WeaponId::MissionaryAruoTwinshot:
-        case WeaponId::VicarOspoTwinshard: {
+        case WeaponId::VicarOspoTwinshard:
+        case WeaponId::PhontisAlruDriver:
+        case WeaponId::AkrenoBioticWingblades:
+        case WeaponId::IconoclastOnjiDriver:
+        case WeaponId::ParacleteOgnirriusBeaststick: {
             return 2;
         }
         case WeaponId::StarSovereignInterventionMissiles: {
@@ -4184,6 +4188,7 @@ u32 get_weapon_hit_sound(WeaponId::Enum weapon_id, Unit* unit) {
         case WeaponId::AutocratEminenceRifle:             return SoundId::Bullet_LASRHIT3_wav;
         case WeaponId::RamessesPharoahCannons:            return SoundId::RamessesWeaponhit01;
         case WeaponId::CataphractLonginiusCannons:        return bw::rand_between(SoundId::CataphractWeaponhit01, SoundId::CataphractWeaponhit03);
+        case WeaponId::ArquebusLukankaziRailguns:         return bw::rand_between(SoundId::CataphractWeaponhit01, SoundId::CataphractWeaponhit03);
         case WeaponId::GoskaLobotomyGrenade:              return SoundId::TritonAbilityHit01;
         case WeaponId::TritonLobotomyWarhead:             return SoundId::TritonAbilityHit01;
         case WeaponId::PenumbraErebolShockCannon:         return bw::rand_between(SoundId::PenumbraWeaponhit01, SoundId::PenumbraWeaponhit02);
