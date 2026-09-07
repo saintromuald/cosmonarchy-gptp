@@ -1,9 +1,4 @@
 AI:
-- is_campaign on/off
-- transports on/off
-- check_transports
-- default_build on/off
-- max_force
 - guard_all
 - help_iftrouble
 - capt_expand
@@ -28,9 +23,6 @@ Attack Wave:
 - to
 - timeout
 - wait_finishattack - I am not sure what this does, I thought attack_do does that
-
-Attack Composer:
-- neat way to compose attack units using a weighted list of units and a total force value 
 
 Send Suicide:
 - might need a special kind of api so it's more customizable than send all units

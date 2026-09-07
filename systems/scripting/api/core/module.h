@@ -2,6 +2,7 @@
 #include "../script_common.h"
 #include "../../../../BW/enumerations.h"
 #include "control_flow.h"
+#include "vars.h"
 #include "prints.h"
 #include "time.h"
 #include "spatial.h"
@@ -21,9 +22,12 @@ using Module = ScriptModule<
     PortraitId::Enum,
     PlayerType::Enum,
     RaceId::Enum,
+    Faction,
     TextColor,
 
     ControlFlow,
+    PlayerVars,
+    Vars,
     Prints,
     Time,
 

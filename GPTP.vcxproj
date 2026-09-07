@@ -654,6 +654,7 @@
     <ClInclude Include="systems\scripting\api\ai\module.h" />
     <ClInclude Include="systems\scripting\api\ai\town.h" />
     <ClInclude Include="systems\scripting\api\core\control_flow.h" />
+    <ClInclude Include="systems\scripting\api\core\vars.h" />
     <ClInclude Include="systems\scripting\api\core\prints.h" />
     <ClInclude Include="systems\scripting\api\core_fwd.h" />
     <ClInclude Include="systems\scripting\api\core\spatial.h" />

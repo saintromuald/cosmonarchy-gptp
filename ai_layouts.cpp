@@ -412,10 +412,10 @@ bool AiLayouts::can_build_placeholder(AiTown& town, AiPlaceholder& placeholder) 
 
     // Check tech availability
     u32 base_unit_id = find_equivalent_root_merge(unit_id);
-    if (!hooks::create_unit_id_allowed(base_unit_id, town.player, false)) {
+    if (!hooks::create_unit_id_allowed(base_unit_id, town.player, CheckCreator::None)) {
         return false;
     }
-    if (unit_id != base_unit_id && !hooks::create_unit_id_allowed(unit_id, town.player, true)) {
+    if (unit_id != base_unit_id && !hooks::create_unit_id_allowed(unit_id, town.player, CheckCreator::All)) {
         return false;
     }
 
@@ -490,7 +490,7 @@ void AiLayouts::sort_layouts(PlayerLayouts& layouts) {
 static bool update_townhall_marker(AiPlaceholder& placeholder, u32 player, u32 townhall_index) {
     switch (g_player_table[player].race) {
         case RaceId::Terran: {
-            if (townhall_index && hooks::create_unit_id_allowed(UnitId::TerranTreasury, player, true)) {
+            if (townhall_index && hooks::create_unit_id_allowed(UnitId::TerranTreasury, player, CheckCreator::All)) {
                 placeholder.unit_id = UnitId::TerranTreasury;
             } else {
                 placeholder.unit_id = UnitId::TerranMinistry;

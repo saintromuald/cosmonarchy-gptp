@@ -9,7 +9,15 @@ namespace lua::api::ai {
 
 class AI {
 public:
-    explicit AI(u8 player) : m_player{player} {}
+    explicit AI(u8 player) : m_player{player} {
+        // TODO: Only call this once per player per game
+        //       Also store main town position in the same singleton space -Veeq7
+        g_aiscript_controller[m_player].ai_flags.is_use_map_settings = false;
+        g_aiscript_controller[m_player].default_min = 0;
+        g_aiscript_controller[m_player].ai_flags.is_default_build_off = true;
+        g_aiscript_controller[m_player].ai_flags.is_transports_off = false;
+        g_aiscript_controller[m_player].ai_max_force = 0;
+    }
 
     static void install(ScriptManager& manager, sol::state& lua) {
         lua.new_usertype<AI>("AI",
@@ -22,6 +30,28 @@ public:
                     }
                     return AI{player};
                 }
+            ),
+
+            "player", sol::property([](const AI& self) { return core::Player{self.m_player}; }),
+            "campaign_mode", sol::property(
+                [](const AI& self) { return g_aiscript_controller[self.m_player].ai_flags.is_use_map_settings; },
+                [](AI& self, bool value) { g_aiscript_controller[self.m_player].ai_flags.is_use_map_settings = value; }
+            ),
+            "default_min", sol::property(
+                [](const AI& self) { return g_aiscript_controller[self.m_player].default_min; },
+                [](AI& self, u8 value) { g_aiscript_controller[self.m_player].default_min = value; }
+            ),
+            "default_build", sol::property(
+                [](const AI& self) { return !g_aiscript_controller[self.m_player].ai_flags.is_default_build_off; },
+                [](AI& self, bool value) { g_aiscript_controller[self.m_player].ai_flags.is_default_build_off = !value; }
+            ),
+            "use_transports", sol::property(
+                [](const AI& self) { return !g_aiscript_controller[self.m_player].ai_flags.is_transports_off; },
+                [](AI& self, bool value) { g_aiscript_controller[self.m_player].ai_flags.is_transports_off = !value; }
+            ),
+            "max_force", sol::property(
+                [](const AI& self) { return g_aiscript_controller[self.m_player].ai_max_force; },
+                [](AI& self, u8 value) { g_aiscript_controller[self.m_player].ai_max_force = value; }
             ),
 
             "start_town", &AI::start_town,
@@ -38,7 +68,13 @@ public:
 ---@class AI
 ---@overload fun(): AI
 ---@overload fun(player: integer): AI
----@field defense Defense Defense settings. Read-only.
+---@field player Player Computer player. Read-only.
+---@field campaign_mode boolean Whether the AI is in campaign mode. Defaults to false.
+---@field default_min integer Minimum number of workers to keep. Defaults to 0.
+---@field default_build boolean Whether the AI builds units automatically. Defaults to false.
+---@field use_transports boolean Whether the AI uses transports. Defaults to true.
+---@field max_force integer Maximum number of units the AI can control in a region. Defaults to 0 (no limit).
+---@field defense Defense Defense settings.
 AI = {}
 
 ---Starts an AI town.
@@ -62,9 +98,35 @@ function AI:start_area_town(area, resarea) end
 function AI:expand(cap) end
 
 ---Creates a new attack wave.
+---
+---Without `budget`, the counts passed to `AttackWave:add()` are treated as exact unit counts.
+---
+---With `budget`, those counts are treated as relative composition weights instead.
+---The total budget is distributed between unit types according to their weights and
+---combined mineral and gas costs, then converted into whole unit counts.
+---
+---`bias` controls how strongly unit cost influences the budget allocated to each unit type.
+---Unit cost still affects the final unit count because more expensive units consume more
+---of the allocated budget per unit.
+---
+---Useful reference points:
+--- - `-0.5` strongly amplifies the preference for cheaper units.
+--- - `-0.25` amplifies the preference for cheaper units.
+--- - `0` gives equal budget shares to equally weighted unit types.
+--- - `0.25` shifts more budget toward expensive units, reducing the cheap-unit advantage.
+--- - `0.5` balances budget and unit cost, favoring cheaper units without letting them
+---   dominate as strongly. This is the default.
+--- - `0.75` shifts the composition further toward expensive units and closer to the
+---   requested weight ratios.
+--- - `1` fully compensates for unit cost, so weights approximately represent unit-count ratios.
+--- - `1.25` favors more expensive units beyond their cost compensation.
+--- - `1.5` strongly favors more expensive units.
+---
+---@param budget? integer Approximate combined mineral and gas cost of the wave.
+---@param bias? number Exponential unit-cost bias used with `budget`. Defaults to 0.5.
 ---@return AttackWave wave New attack wave.
 ---@nodiscard
-function AI:new_attack() end
+function AI:new_attack(budget, bias) end
 )lua";
     }
 
@@ -83,7 +145,7 @@ function AI:new_attack() end
         helper::ai_update_town_regions(m_player);
         if (!m_main_town_pos) m_main_town_pos = *pos;
 
-        return Town{town};
+        return Town{town, m_player};
     }
 
     Town start_area_town(Area area, std::optional<u32> resarea) {
@@ -96,7 +158,7 @@ function AI:new_attack() end
         g_aiscript_controller[m_player].ai_flags.is_town_started = true;
         helper::ai_update_town_regions(m_player);
 
-        return Town{town};
+        return Town{town, m_player};
     }
 
     Town expand(std::optional<u32> cap) {
@@ -104,15 +166,17 @@ function AI:new_attack() end
             // TODO: we probably should call the region updates from allies watch
             return start_town({}, resarea);
         }
-        return {};
+        return Town{m_player};
     }
 
     Defense defense() const {
         return Defense{m_player};
     }
 
-    AttackWave new_attack() const {
-        return AttackWave{m_player, m_main_town_pos};
+    AttackWave new_attack(std::optional<f32> budget, std::optional<f32> bias) const { // TODO: use fixed point in lua -Veeq7
+        return AttackWave{m_player, m_main_town_pos,
+            budget.transform([](f32 b) { return fp32{b}; }),
+            bias.transform([](f32 b) { return fp32{b}; })};
     }
 
 private:

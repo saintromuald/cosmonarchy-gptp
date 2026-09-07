@@ -80,6 +80,12 @@ public:
                 return result.get<bool>();
             });
         });
+        lua.set_function("run_script", [&manager](const char* path) {
+            std::string path_str = path;
+            std::ranges::replace(path_str, '.', '/');
+            path_str = "lua/" + path_str + ".lua";
+            manager.load_script_mpq(path_str.c_str(), manager.current_script().player);
+        });
     }
 
     static const char* lsp_annotations() {
