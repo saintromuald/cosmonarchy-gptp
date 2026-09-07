@@ -8,6 +8,7 @@
 // Hook header files
 #include "hooks/game_hooks.h"
 #include "hooks/replay_hooks.h"
+#include "ReplayKraken.h"
 #include "graphics/draw_hook.h"
 #include "config.h"
 #include "hooks/maxhp.h"
@@ -967,6 +968,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 }
 
 BOOL WINAPI Plugin::TerminatePlugin() {
+    g_replay_kraken.shutdown();
     remove_win_key_hook();
 
     return true;

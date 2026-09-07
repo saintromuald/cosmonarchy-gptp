@@ -468,7 +468,6 @@ namespace hooks {
             succeeded = false;
             if (g_hash_list[hash_struct_index].hash_type == 1) {
                 if (!g_globals->desync_state.type_1) {
-                    g_globals->had_desync = true;
                     snprintf(buffer, sizeof(buffer), "Invalid Hash, type 1! Your player id is: %u", g_local_nation_id);
                     bw::print(buffer, TextColor::Red);
                     snprintf(buffer, sizeof(buffer), "Critical frame: %u\nLocal Type: %u | Remote Type: %u\nLocal Hash: 0x%X | Remote Hash: 0x%X\nLocal nation id: %u | Active visions: %u | Explored visions: %u\nLast random number: %u",

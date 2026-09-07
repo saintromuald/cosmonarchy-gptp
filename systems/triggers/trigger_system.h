@@ -186,12 +186,21 @@ struct TriggerButton {
 };
 
 struct DesyncState {
-    bool type_1;
-    bool type_2;
-    bool type_3;
-    bool type_4;
-    bool warning_player_flag;
-    bool warning_hash_struct;
+    bool type_1 = false;
+    bool type_2 = false;
+    bool type_3 = false;
+    bool type_4 = false;
+    bool warning_player_flag = false;
+    bool warning_hash_struct = false;
+
+    bool had_desync() const {
+        return type_1
+            || type_2
+            || type_3
+            || type_4
+            || warning_player_flag
+            || warning_hash_struct;
+    }
 };
 
 using EcoMeasurements = std::array<f32, PlayerLimit>;
@@ -211,7 +220,6 @@ struct Globals {
     }
 
     DesyncState desync_state;
-    bool had_desync = false;
     bool forbid_replay_auto_upload = false;
     bool disable_transmission_waits = false;
     std::unordered_map<TriggerAction*, TriggerExt> trigger_exts;

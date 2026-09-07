@@ -7,7 +7,9 @@
 namespace gptp {
 
 void GameLogger::log_game_start() {
+    m_game_buffer.str({});
     m_game_buffer.clear();
+    m_last_updated_frame = -1;
     time_t current_time = 0;
     time(&current_time);
 	if (try_open_log_file()) {
