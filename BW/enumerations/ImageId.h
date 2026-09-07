@@ -1351,6 +1351,11 @@ namespace ImageId {
         HydrokorMutate                              = 2446,
         HydraliskMutate                             = 2447,
 
+        SovrokorMutate                              = 2453,
+        ZethrokorMutate                             = 2454,
+
+        HydraliskOrkotiMutate                       = 2456,
+
         ImpactDissipationActive                     = 2459,
         CrushingDeliveryOverlaySmall                = 2460,
         CrushingDeliveryOverlayMedium               = 2461,

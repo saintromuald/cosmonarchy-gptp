@@ -436,11 +436,6 @@ namespace WeaponId {
 
         SmoochieBoyKissingEmoji				= 196,
         NoneNew                             = 255,
-        FerrumSentinelBeam                  = 260,
-        ChalybSentinelBeam                  = 261,
-        CircitorSentinelBoltbeam            = 262,
-        ExigoEnforcerRiftRockets            = 263,
-        VicereChampionStormbeam             = 264,
 
         Count                               = WeaponsIdLimit,
     };
