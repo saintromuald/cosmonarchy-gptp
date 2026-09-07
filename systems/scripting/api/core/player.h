@@ -1,5 +1,7 @@
 #pragma once
 #include "../script_common.h"
+#include "../../../triggers/trigger_system.h"
+#include "../../../../hooks/unit_stats/new_requirements.h"
 
 namespace lua::api::core {
 
@@ -27,10 +29,24 @@ public:
 
             "id", sol::property([](const Player& self) { return self.m_player+1; }),
             "race", sol::property(&Player::race),
+            "faction", sol::property([](const Player& self) { return g_globals->players[self.m_player].faction; }),
             "type", sol::property(&Player::type),
             "force", sol::property(&Player::force),
             "name", sol::property(&Player::name),
-            "unit_count", &Player::unit_count
+
+            "minerals", sol::property([](const Player& self) { return g_game_minerals[self.m_player]; },
+                [](const Player& self, u32 value) {
+                    g_total_minerals[self.m_player] += value - g_game_minerals[self.m_player];
+                    g_game_minerals[self.m_player] = value;
+                }),
+            "gas", sol::property([](const Player& self) { return g_game_vespene[self.m_player]; },
+                [](const Player& self, u32 value) {
+                    g_total_vespene[self.m_player] += value - g_game_vespene[self.m_player];
+                    g_game_vespene[self.m_player] = value;
+                }),
+
+            "unit_count", &Player::unit_count,
+            "can_make", &Player::can_make
         );
     }
 
@@ -45,6 +61,8 @@ public:
 ---@field type PlayerType Player type. Read-only.
 ---@field force integer Player force. Read-only.
 ---@field name string Player name. Read-only.
+---@field minerals integer Player minerals.
+---@field gas integer Player gas.
 Player = {}
 
 ---Returns the number of units of a given type owned by this player.
@@ -53,12 +71,18 @@ Player = {}
 ---@return integer count Unit count.
 ---@nodiscard
 function Player:unit_count(unit_id, completed) end
+
+---Returns whether this player can make a given unit type.
+---@param unit_id UnitId Unit type to check.
+---@return boolean can_make Whether the player can make the unit type.
+---@nodiscard
+function Player:can_make(unit_id) end
 )lua";
     }
 
     std::string to_string() const {
-        return std::format("Player({}, race={}, type={}, force={}, name={})",
-            m_player+1, magic_enum::enum_name(race()), magic_enum::enum_name(type()), force(), name());
+        return std::format("Player({}, race={}, faction={}, type={}, force={}, name={})",
+            m_player+1, magic_enum::enum_name(race()), magic_enum::enum_name(g_globals->players[m_player].faction), magic_enum::enum_name(type()), force(), name());
     }
 
     RaceId::Enum race() const {
@@ -82,6 +106,11 @@ function Player:unit_count(unit_id, completed) end
         return completed.value_or(true)
             ? ::Player::number_of_completed_units_of_id(m_player, unit_id)
             : ::Player::number_of_units_of_id(m_player, unit_id);
+    }
+
+    bool can_make(UnitId::Enum unit_id) const {
+        assert_unit_id(unit_id);
+        return hooks::create_unit_id_allowed(unit_id, m_player, CheckCreator::Factories);
     }
 
 private:

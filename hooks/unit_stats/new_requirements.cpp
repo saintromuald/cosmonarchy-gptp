@@ -38,7 +38,7 @@ namespace hooks {
         return Player::number_of_gestated_units_of_id(player_id, unit_id);
     }
 
-    s32 create_unit_id_allowed(u16 unit_id, s32 player_id, bool ignore_creator) {
+    s32 create_unit_id_allowed(u16 unit_id, s32 player_id, CheckCreator check_creator) {
         *g_last_internal_error = InternalErrors::UnknownError0;
         if (unit_id == UnitId::None) {
             return false;
@@ -84,7 +84,9 @@ namespace hooks {
 
         // TERRAN
         // @Todo: Consider making AI check for landed structures as a safety, e.g. player_has_completed_landed_unit_id(player_id, UnitId::TerranMinistry)
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMason) || player_has_completed_unit_id(player_id, UnitId::TerranTalos)
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::TerranMason)
+            || player_has_completed_unit_id(player_id, UnitId::TerranTalos)
             || player_has_completed_unit_id(player_id, UnitId::TerranOgunWorkerMode)) {
             switch (unit_id) {
                 case UnitId::TerranMinistry:
@@ -123,7 +125,8 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMinistry)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::TerranMinistry)) {
             switch (unit_id) {
                 case UnitId::TerranMason:
                 case UnitId::TerranLodestone:
@@ -133,21 +136,24 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranParthenon)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::TerranParthenon)) {
             switch (unit_id) {
                 case UnitId::TerranArmistice: {
                     return true;
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranAnvil)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::TerranAnvil)) {
             switch (unit_id) {
                 case UnitId::TerranMorningstar: {
                     return true;
                 } break;
             }
         }
-        if (ignore_creator || (player_has_completed_unit_id(player_id, UnitId::TerranTreasury) && player_has_completed_addon_unit_id(player_id, UnitId::TerranQuarry))) {
+        if (check_creator <= CheckCreator::None
+            || (player_has_completed_unit_id(player_id, UnitId::TerranTreasury) && player_has_completed_addon_unit_id(player_id, UnitId::TerranQuarry))) {
             switch (unit_id) {
                 case UnitId::TerranMason:
                 case UnitId::TerranTalos:
@@ -156,7 +162,8 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMinistry) || player_has_completed_unit_id(player_id, UnitId::TerranTreasury)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::TerranMinistry) || player_has_completed_unit_id(player_id, UnitId::TerranTreasury)) {
             switch (unit_id) {
                 case UnitId::TerranLodestone:
                 case UnitId::TerranQuarry:
@@ -165,14 +172,16 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranAtlas)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::TerranAtlas)) {
             switch (unit_id) {
                 case UnitId::TerranFountainhead: {
                     return true;
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranStockade)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::TerranStockade)) {
             switch (unit_id) {
                 case UnitId::TerranVestry:
                 case UnitId::TerranCovenant: {
@@ -281,7 +290,8 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranCaptaincy)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::TerranCaptaincy)) {
             switch (unit_id) {
                 case UnitId::TerranMadcap: {
                     if (faction != Faction::TerranFuturistFederation) {
@@ -322,7 +332,8 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranApothecary)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::TerranApothecary)) {
             switch (unit_id) {
                 case UnitId::TerranDilettante:
                 case UnitId::TerranSevenstep:
@@ -332,7 +343,8 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranFulcrum)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::TerranFulcrum)) {
             switch (unit_id) {
                 case UnitId::TerranScrapyard:
                 case UnitId::TerranPalladium: {
@@ -406,7 +418,8 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranMantle)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::TerranMantle)) {
             switch (unit_id) {
                 case UnitId::TerranRamesses:
                 case UnitId::TerranDurendal:
@@ -425,7 +438,8 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranIronFoundry)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::TerranIronFoundry)) {
             switch (unit_id) {
                 case UnitId::TerranPaladin:
                 case UnitId::TerranCuirassTankMode:
@@ -448,7 +462,8 @@ namespace hooks {
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranStarpad)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::TerranStarpad)) {
             switch (unit_id) {
                 case UnitId::TerranWraith: {
                     if (faction != Faction::TerranFuturistFederation) {
@@ -506,7 +521,8 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranStarport)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::TerranStarport)) {
             switch (unit_id) {
                 case UnitId::TerranGorgon:
                 case UnitId::TerranWyvern:
@@ -523,33 +539,38 @@ namespace hooks {
                 } break;
                 case UnitId::TerranSeraph: {
                     if (faction != Faction::TerranHecatonCoalition && faction != Faction::TerranGoldenRepublic) {
-                        if (ignore_creator || player_has_completed_addon_unit_id(player_id, UnitId::TerranCommandment)) {
+                        if (check_creator <= CheckCreator::None
+                            || player_has_completed_addon_unit_id(player_id, UnitId::TerranCommandment)) {
                             return true;
                         }
                     }
                 } break;
                 case UnitId::TerranAzazel: {
-                    if (ignore_creator || player_has_completed_addon_unit_id(player_id, UnitId::TerranCommandment)) {
+                    if (check_creator <= CheckCreator::None
+                        || player_has_completed_addon_unit_id(player_id, UnitId::TerranCommandment)) {
                         return true;
                     }
                 } break;
                 case UnitId::TerranLuminary: {
                     if (faction == Faction::TerranGoldenRepublic) {
-                        if (ignore_creator || player_has_completed_addon_unit_id(player_id, UnitId::TerranCommandment)) {
+                        if (check_creator <= CheckCreator::None
+                            || player_has_completed_addon_unit_id(player_id, UnitId::TerranCommandment)) {
                             return true;
                         }
                     }
                 } break;
                 case UnitId::TerranSerathiel: {
                     if (faction == Faction::TerranHecatonCoalition) {
-                        if (ignore_creator || player_has_completed_addon_unit_id(player_id, UnitId::TerranCommandment)) {
+                        if (check_creator <= CheckCreator::None
+                            || player_has_completed_addon_unit_id(player_id, UnitId::TerranCommandment)) {
                             return true;
                         }
                     }
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::TerranNaniteAssembly)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::TerranNaniteAssembly)) {
             switch (unit_id) {
                 case UnitId::TerranHadron:
                 case UnitId::TerranCentaur:
@@ -559,7 +580,8 @@ namespace hooks {
                 } break;
                 case UnitId::TerranHippogriff:
                 case UnitId::TerranPhobos: {
-                    if (player_has_completed_addon_unit_id(player_id, UnitId::TerranHadron)) {
+                    if (check_creator <= CheckCreator::None
+                        || player_has_completed_addon_unit_id(player_id, UnitId::TerranHadron)) {
                         return true;
                     }
                 } break;
@@ -568,12 +590,14 @@ namespace hooks {
 
         // PROTOSS
         // Units
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossNexus)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ProtossNexus)) {
             if (unit_id == UnitId::ProtossScribe) {
                 return true;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossEmbassy)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ProtossEmbassy)) {
             switch (unit_id) {
                 case UnitId::ProtossArtisan:
                 case UnitId::ProtossEnvoy:
@@ -583,14 +607,16 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossStridentStratum)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ProtossStridentStratum)) {
             switch (unit_id) {
                 case UnitId::ProtossMonogram: {
                     return true;
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossGateway)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ProtossGateway)) {
             switch (unit_id) {
                 case UnitId::ProtossZealot: {
                     if (faction != Faction::ProtossStarbound) {
@@ -649,7 +675,8 @@ namespace hooks {
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossGrandLibrary)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ProtossGrandLibrary)) {
             switch (unit_id) {
                 case UnitId::ProtossAmaranth:
                 case UnitId::ProtossHerald:
@@ -659,7 +686,8 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossRogueGallery)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ProtossRogueGallery)) {
             switch (unit_id) {
                 case UnitId::ProtossVagrant:
                 case UnitId::ProtossCharlatan:
@@ -678,7 +706,8 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossProstrationStage)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ProtossProstrationStage)) {
             switch (unit_id) {
                 case UnitId::ProtossPariah:
                 case UnitId::ProtossPotentate:
@@ -688,7 +717,8 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossAncestralArchives)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ProtossAncestralArchives)) {
             switch (unit_id) {
                 case UnitId::ProtossArchon:
                 case UnitId::ProtossOptecton:
@@ -697,7 +727,8 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossHallOfHeretics)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ProtossHallOfHeretics)) {
             switch (unit_id) {
                 case UnitId::ProtossApostate:
                 case UnitId::ProtossAugur: {
@@ -705,7 +736,8 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossLattice)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ProtossLattice)) {
             switch (unit_id) {
                 case UnitId::ProtossSimulacrum: {
                     if (faction != Faction::ProtossKhalendricKnights && faction != Faction::ProtossAstralOmen) {
@@ -757,7 +789,8 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossArdentAuthority)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ProtossArdentAuthority)) {
             switch (unit_id) {
                 case UnitId::ProtossServitor:
                 case UnitId::ProtossPositron:
@@ -767,7 +800,8 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossAuxiliaryOasis)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ProtossAuxiliaryOasis)) {
             switch (unit_id) {
                 case UnitId::ProtossOscilliant:
                 case UnitId::ProtossUnar:
@@ -777,7 +811,8 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossSyntheticSynod)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ProtossSyntheticSynod)) {
             switch (unit_id) {
                 case UnitId::ProtossAnalogue:
                 case UnitId::ProtossDemiurge:
@@ -786,7 +821,8 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossStargate)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ProtossStargate)) {
             switch (unit_id) {
                 case UnitId::ProtossAurora: {
                     if (faction != Faction::ProtossOrderOfTheSacredSaber) {
@@ -813,7 +849,8 @@ namespace hooks {
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossArgosy)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ProtossArgosy)) {
             switch (unit_id) {
                 case UnitId::ProtossMagister:
                 case UnitId::ProtossEpigraph:
@@ -824,7 +861,8 @@ namespace hooks {
                 } break;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossMonumentOfSin)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ProtossMonumentOfSin)) {
             switch (unit_id) {
                 case UnitId::ProtossAnthelion:
                 case UnitId::ProtossStarSovereign: {
@@ -834,19 +872,22 @@ namespace hooks {
         }
 
         // Hangar units
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossAccantorOld)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ProtossAccantorOld)) {
             if (unit_id == UnitId::ProtossPlasmaShell) {
                 return true;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossSolarion)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ProtossSolarion)) {
             if (unit_id == UnitId::ProtossSteward) {
                 return true;
             }
         }
 
         // Structures
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ProtossScribe) || player_has_completed_unit_id(player_id, UnitId::ProtossAutocort)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ProtossScribe) || player_has_completed_unit_id(player_id, UnitId::ProtossAutocort)) {
             switch (unit_id) {
                 case UnitId::ProtossNexus:
                 case UnitId::ProtossPylon:
@@ -890,7 +931,8 @@ namespace hooks {
 
         // ZERG
         // Units
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergLarva)) {
             switch (unit_id) {
                 case UnitId::ZergDroleth:
                 case UnitId::ZergRilirokor: {
@@ -1080,196 +1122,253 @@ namespace hooks {
         }
 
         // Morphs
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergDroleth) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergDroleth)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergGosvileth) {
                 if (TierUnlocked[RaceId::Zerg][Tier2]) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva) || player_has_completed_unit_id(player_id, UnitId::ZergOvileth)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOvileth)) {
             if (unit_id == UnitId::ZergIroleth) {
                 if (TierUnlocked[RaceId::Zerg][Tier2]) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva) || player_has_completed_unit_id(player_id, UnitId::ZergYblyleth)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
+            || player_has_completed_unit_id(player_id, UnitId::ZergYblyleth)) {
             if (unit_id == UnitId::ZergScrylyleth) {
                 if (TierUnlocked[RaceId::Zerg][Tier2] && faction == Faction::ZergZorthosTendril) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergZethrokor) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergZethrokor)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergVorvrokor) {
-                if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_base_unit_id(player_id, UnitId::ZergVornathPond)) {
+                if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake)
+                    || player_has_base_unit_id(player_id, UnitId::ZergVornathPond)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergSovrokor) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergSovrokor)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergGarvrokor) {
-                if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_base_unit_id(player_id, UnitId::ZergVornathPond)) {
+                if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake)
+                    || player_has_base_unit_id(player_id, UnitId::ZergVornathPond)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergZethrokor) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergZethrokor)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergZethalor) {
-                if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake) || player_has_base_unit_id(player_id, UnitId::ZergVornathPond)) {
+                if (player_has_unit_id(player_id, UnitId::ZergKalkiirLake)
+                    || player_has_base_unit_id(player_id, UnitId::ZergVornathPond)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
-        ||  player_has_completed_unit_id(player_id, UnitId::ZergQuazilisk) || player_has_completed_unit_id(player_id, UnitId::ZergQuazrokor)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
+            || player_has_completed_unit_id(player_id, UnitId::ZergQuazilisk)
+            || player_has_completed_unit_id(player_id, UnitId::ZergQuazrokor)) {
             if (unit_id == UnitId::ZergLiiralisk) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergKalkiirLake)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
-        ||  player_has_completed_unit_id(player_id, UnitId::ZergNathrokor) || player_has_completed_unit_id(player_id, UnitId::ZergNathrelisk)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
+            || player_has_completed_unit_id(player_id, UnitId::ZergNathrokor)
+            || player_has_completed_unit_id(player_id, UnitId::ZergNathrelisk)) {
             if (unit_id == UnitId::ZergKalkalisk) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergKalkiirLake)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergCikralisk) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergCikralisk)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergGhitorokor) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergTosvrolHaunt)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergProtathalor) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergProtathalor)
+             || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergSovroleth) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergTosvrolHaunt)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergMutalisk) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergMutalisk)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergTosgrilisk) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergTosvrolHaunt)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergAxitrilisk) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergAxitrilisk)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergBegrothilisk) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergBegrozithBarrow)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergMortothrokor) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergMortothrokor)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergOztukrokor) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergBegrozithBarrow)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
-        ||  player_has_completed_unit_id(player_id, UnitId::ZergHydralisk) || player_has_completed_unit_id(player_id, UnitId::ZergHydraliskOrkoti)
-        ||  player_has_completed_unit_id(player_id, UnitId::ZergHydrokor)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
+            || player_has_completed_unit_id(player_id, UnitId::ZergHydralisk)
+            || player_has_completed_unit_id(player_id, UnitId::ZergHydraliskOrkoti)
+            || player_has_completed_unit_id(player_id, UnitId::ZergHydrokor)) {
             if (unit_id == UnitId::ZergBactalisk) {
-                if (player_has_unit_id(player_id, UnitId::ZergTethvithSwamp) || player_has_base_unit_id(player_id, UnitId::ZergSkibactScab)) {
+                if (player_has_unit_id(player_id, UnitId::ZergTethvithSwamp)
+                    || player_has_base_unit_id(player_id, UnitId::ZergSkibactScab)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
-        ||  player_has_completed_unit_id(player_id, UnitId::ZergIzirokor) || player_has_completed_unit_id(player_id, UnitId::ZergRozirokor) || player_has_completed_unit_id(player_id, UnitId::ZergIziralisk)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
+            || player_has_completed_unit_id(player_id, UnitId::ZergIzirokor)
+            || player_has_completed_unit_id(player_id, UnitId::ZergRozirokor)
+            || player_has_completed_unit_id(player_id, UnitId::ZergIziralisk)) {
             if (unit_id == UnitId::ZergTethzorokor) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergTethvithSwamp)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergSkithrokor) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergSkithrokor)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergVithrilisk) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergTethvithSwamp)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergKagralisk) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergKagralisk)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergCherbrathalor) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergChokralChazsal)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergEvigrilisk) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergEvigrilisk)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergOkrimnilisk) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergChokralChazsal)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergAlmaksalisk) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergAlmaksalisk)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergAlgoztalisk) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergChokralChazsal)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergGeszithalor) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergGeszithalor)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergAlkajelisk) {
                 if (player_has_base_unit_id(player_id, UnitId::ZergGeszkathGrotto) || player_has_completed_unit_id(player_id, UnitId::ZergKethrajKeep)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
-        ||  player_has_completed_unit_id(player_id, UnitId::ZergZoryusthaleth)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
+            || player_has_completed_unit_id(player_id, UnitId::ZergZoryusthaleth)) {
             if (unit_id == UnitId::ZergUltrokor) {
-                if (ignore_creator || player_has_base_unit_id(player_id, UnitId::ZergUlgorgCavern || player_has_unit_id(player_id, UnitId::ZergZozarcGorge))) {
+                if (player_has_base_unit_id(player_id, UnitId::ZergUlgorgCavern) || player_has_unit_id(player_id, UnitId::ZergZozarcGorge)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
-        ||  player_has_completed_unit_id(player_id, UnitId::ZergInzorthrokor)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)
+            ||  player_has_completed_unit_id(player_id, UnitId::ZergInzorthrokor)) {
             if (unit_id == UnitId::ZergAlzurokor) {
-                if (ignore_creator || player_has_base_unit_id(player_id, UnitId::ZergUlgorgCavern || player_has_unit_id(player_id, UnitId::ZergZozarcGorge))) {
+                if (player_has_base_unit_id(player_id, UnitId::ZergUlgorgCavern) || player_has_unit_id(player_id, UnitId::ZergZozarcGorge)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergLakizilisk) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergLakizilisk)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergZobriolisk) {
-                if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergZozarcGorge)) {
+                if (player_has_completed_unit_id(player_id, UnitId::ZergZozarcGorge)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergGorgrokor) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergGorgrokor)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergZarcavrokor) {
-                if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergZozarcGorge)) {
+                if (player_has_completed_unit_id(player_id, UnitId::ZergZozarcGorge)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergKonvilisk) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergKonvilisk)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergTetcaerokor) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergAlmakisAntre)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergVilgorokor) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergVilgorokor)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergIsthrathaleth) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergAlmakisAntre)) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergMatraleth) || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergMatraleth)
+            || player_has_completed_unit_id(player_id, UnitId::ZergOcsalLarva)) {
             if (unit_id == UnitId::ZergAkistrokor) {
                 if (player_has_completed_unit_id(player_id, UnitId::ZergAlmakisAntre)) {
                     return true;
@@ -1278,7 +1377,9 @@ namespace hooks {
         }
 
         // Structures
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergDroleth) || player_has_completed_unit_id(player_id, UnitId::ZergGosvileth)
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ZergDroleth)
+            || player_has_completed_unit_id(player_id, UnitId::ZergGosvileth)
             || player_has_completed_unit_id(player_id, UnitId::ZergAgrileth)) {
             switch (unit_id) {
                 case UnitId::ZergHachirosk:
@@ -1308,7 +1409,8 @@ namespace hooks {
             }
         }
 
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergScrylyleth)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ZergScrylyleth)) {
             switch (unit_id) {
                 case UnitId::ZergZytryleth: {
                     if (TierUnlocked[RaceId::Zerg][Tier3]) {
@@ -1319,7 +1421,8 @@ namespace hooks {
         }
 
         // Structure morphs
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergCagrantCesiant)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ZergCagrantCesiant)) {
             if (unit_id == UnitId::ZergSurkithCesiant
             ||  unit_id == UnitId::ZergSpraithCesiant
             ||	unit_id == UnitId::ZergLarvoskCesiant
@@ -1332,94 +1435,112 @@ namespace hooks {
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergSurkithCesiant)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ZergSurkithCesiant)) {
             if (unit_id == UnitId::ZergSkortrithCesiant) {
                 if (TierUnlocked[RaceId::Zerg][Tier2]) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergSpraithCesiant)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ZergSpraithCesiant)) {
             if (unit_id == UnitId::ZergSpirtithCesiant) {
                 if (TierUnlocked[RaceId::Zerg][Tier2]) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergLarvoskCesiant)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ZergLarvoskCesiant)) {
             if (unit_id == UnitId::ZergOcsalCesiant) {
                 if (TierUnlocked[RaceId::Zerg][Tier2]) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergHachirosk)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ZergHachirosk)) {
             if (unit_id == UnitId::ZergCaphrolosk) {
                 if (TierUnlocked[RaceId::Zerg][Tier2]) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergExcisant)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ZergExcisant)) {
             if (unit_id == UnitId::ZergEzigrisant) {
                 if (TierUnlocked[RaceId::Zerg][Tier3]) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergQuazethPool)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ZergQuazethPool)) {
             if (unit_id == UnitId::ZergVornathPond) {
                 return true;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergVornathPond)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ZergVornathPond)) {
             if (unit_id == UnitId::ZergKalkiirLake) {
                 return true;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergHydrithDen)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ZergHydrithDen)) {
             if (unit_id == UnitId::ZergSkibactScab) {
                 return true;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergSkibactScab)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ZergSkibactScab)) {
             if (unit_id == UnitId::ZergTethvithSwamp) {
                 return true;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergZorkizShroud)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ZergZorkizShroud)) {
             if (unit_id == UnitId::ZergUlgorgCavern) {
                 return true;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergUlgorgCavern)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ZergUlgorgCavern)) {
             if (unit_id == UnitId::ZergZozarcGorge) {
                 return true;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergMutathSpire)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ZergMutathSpire)) {
             if (unit_id == UnitId::ZergTosvrolHaunt) {
                 return true;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergIrolIris)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ZergIrolIris)) {
             if (unit_id == UnitId::ZergOthstolOviform) {
-                return true;
+                if (TierUnlocked[RaceId::Zerg][Tier2]) {
+                    return true;
+                }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergHachirosk)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ZergHachirosk)) {
             if (unit_id == UnitId::ZergGathtelosk) {
                 if (TierUnlocked[RaceId::Zerg][Tier3]) {
                     return true;
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergMatravilNest)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ZergMatravilNest)) {
             if (unit_id == UnitId::ZergAlmakisAntre) {
                 return true;
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ZergAlkagIteth)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ZergAlkagIteth)) {
             if (unit_id == UnitId::ZergChokralChazsal) {
                 return true;
             }
@@ -1427,46 +1548,51 @@ namespace hooks {
 
         // ASKOSI
         // Units
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiLandlock) || player_has_completed_unit_id(player_id, UnitId::AskosiDomain)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::AskosiLandlock)
+            || player_has_completed_unit_id(player_id, UnitId::AskosiDomain)) {
             switch (unit_id) {
                 case UnitId::AskosiPilgrim: {
                     return true;
                 }
                 case UnitId::AskosiProselyte: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiRadix) || player_has_completed_unit_id(player_id, UnitId::AskosiFunction);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiRadix) || player_has_completed_unit_id(player_id, UnitId::AskosiFunction);
                 }
                 case UnitId::AskosiDyad: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiCipher) || player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiCipher) || player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
                 }
                 case UnitId::AskosiConstituent: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiProscenium) || player_has_completed_unit_id(player_id, UnitId::AskosiZylode);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiProscenium) || player_has_completed_unit_id(player_id, UnitId::AskosiZylode);
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiRadix)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::AskosiRadix)) {
             switch (unit_id) {
                 case UnitId::AskosiMissionary:
                 case UnitId::AskosiCardinal: {
                     return true;
                 }
                 case UnitId::AskosiMimic: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiCipher);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiCipher);
                 }
                 case UnitId::AskosiVicar: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiFunction)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::AskosiFunction)) {
             switch (unit_id) {
                 case UnitId::AskosiRove:
                 case UnitId::AskosiObject: {
                     return true;
                 }
                 case UnitId::AskosiScepter: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiCipher);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiCipher);
                 }
                 case UnitId::AskosiIntendent: {
+<<<<<<< HEAD
                     if (faction != Faction::AskosiSonsOfAsh) {
                         return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
                     }
@@ -1477,111 +1603,123 @@ namespace hooks {
                         return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
                     }
                     return false;
+=======
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
+>>>>>>> 956461184 (Add enum.name and enum.long_name; Fix new_requirements)
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiCosmoscope)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::AskosiCosmoscope)) {
             switch (unit_id) {
                 case UnitId::AskosiHelion:
                 case UnitId::AskosiEmissary: {
                     return true;
                 }
                 case UnitId::AskosiInkblot: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiCipher);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiCipher);
                 }
                 case UnitId::AskosiTirade: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiProscenium)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::AskosiProscenium)) {
             switch (unit_id) {
                 case UnitId::AskosiAphorist:
                 case UnitId::AskosiThaumalogue: {
                     return true;
                 }
                 case UnitId::AskosiAvatar: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiConduit);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiConduit);
                 }
                 case UnitId::AskosiDoronin: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiBestiary);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiBestiary);
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiZylode)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::AskosiZylode)) {
             switch (unit_id) {
                 case UnitId::AskosiAgonist:
                 case UnitId::AskosiPetract: {
                     return true;
                 }
                 case UnitId::AskosiPhontis: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiConduit);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiConduit);
                 }
                 case UnitId::AskosiZonguard: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiBestiary);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiBestiary);
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiAstrolabe)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::AskosiAstrolabe)) {
             switch (unit_id) {
                 case UnitId::AskosiAkreno:
                 case UnitId::AskosiIconoclast: {
                     return true;
                 }
                 case UnitId::AskosiCrematorium: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiConduit);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiConduit);
                 }
                 case UnitId::AskosiParaclete: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiBestiary);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiBestiary);
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiPanoply)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::AskosiPanoply)) {
             switch (unit_id) {
                 case UnitId::AskosiInsurant:
                 case UnitId::AskosiSilversoul: {
                     return true;
                 }
                 case UnitId::AskosiGhostwrit: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiLekrot);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiLekrot);
                 }
                 case UnitId::AskosiAzjoran: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiHearthshard);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiHearthshard);
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiLotiro)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::AskosiLotiro)) {
             switch (unit_id) {
                 case UnitId::AskosiElgird:
                 case UnitId::AskosiHistrion: {
                     return true;
                 }
                 case UnitId::AskosiAlacyne: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiLekrot);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiLekrot);
                 }
                 case UnitId::AskosiBegolor: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiHearthshard);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiHearthshard);
                 }
             }
         }
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiObelisk)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::AskosiObelisk)) {
             switch (unit_id) {
                 case UnitId::AskosiLimire:
                 case UnitId::AskosiEndbore: {
                     return true;
                 }
                 case UnitId::AskosiTortare: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiLekrot);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiLekrot);
                 }
                 case UnitId::AskosiCybrene: {
-                    return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiHearthshard);
+                    return player_has_completed_unit_id(player_id, UnitId::AskosiHearthshard);
                 }
             }
         }
 
         // Structures
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiPilgrim) || player_has_completed_unit_id(player_id, UnitId::AskosiDyad)
-                           || player_has_completed_unit_id(player_id, UnitId::AskosiConstituent)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::AskosiPilgrim)
+            || player_has_completed_unit_id(player_id, UnitId::AskosiDyad)
+            || player_has_completed_unit_id(player_id, UnitId::AskosiConstituent)) {
             switch (unit_id) {
                 case UnitId::AskosiLandlock:
                 case UnitId::AskosiArch:
@@ -1631,7 +1769,8 @@ namespace hooks {
 
         // FORERUNNER
         // Units
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ForerunnerMachinamentum)) {
+        if (check_creator <= CheckCreator::None
+            || player_has_completed_unit_id(player_id, UnitId::ForerunnerMachinamentum)) {
             switch (unit_id) {
                 case UnitId::ForerunnerAthla:
                 case UnitId::ForerunnerFerrum:
@@ -1645,7 +1784,8 @@ namespace hooks {
         }
 
         // Structures
-        if (ignore_creator || player_has_completed_unit_id(player_id, UnitId::ForerunnerAthla)) {
+        if (check_creator <= CheckCreator::Factories
+            || player_has_completed_unit_id(player_id, UnitId::ForerunnerAthla)) {
             switch (unit_id) {
                 case UnitId::ForerunnerMachinamentum: {
                     return true;

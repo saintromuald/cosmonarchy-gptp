@@ -107,6 +107,16 @@ public:
         for (auto [value, enum_name] : entries) {
             values.set(enum_name, value);
         }
+        values.set_function("name", [](Enum value) {
+            auto name = magic_enum::enum_name(value);
+            if (name.empty()) return std::format("{}", value);
+            return std::string{name};
+        });
+        values.set_function("long_name", [](Enum value) {
+            auto name = magic_enum::enum_name(value);
+            if (name.empty()) return std::format("{}({})", magic_enum::enum_type_name<Enum>(), value);
+            return std::format("{}.{}", magic_enum::enum_type_name<Enum>(), name);
+        });
 
         sol::table mt = m_root.create_table_with(
             sol::meta_function::new_index, sol::detail::fail_on_newindex,

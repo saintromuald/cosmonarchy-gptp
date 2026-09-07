@@ -69,14 +69,14 @@ struct Area {
     static void install(ScriptManager& manager, sol::state& lua) {
         lua.new_usertype<Area>("Area",
             sol::call_constructor, sol::constructors<Area()>(),
-            "location", sol::factories(
+            "from_location", sol::factories(
                 sol::resolve<Area(u32)>(&Area::from_location),
                 sol::resolve<Area(std::string_view)>(&Area::from_location)
             ),
-            "xywh", sol::factories(
+            "from_xywh", sol::factories(
                 sol::resolve<Area(s32, s32, s32, s32)>(&Area::xywh)
             ),
-            "ltrb", sol::factories(
+            "from_ltrb", sol::factories(
                 sol::resolve<Area(s32, s32, s32, s32)>(&Area::ltrb)
             ),
 
@@ -108,11 +108,10 @@ struct Area {
 Area = {}
 
 ---Creates an area from a map location.
----@overload fun(location_name: string): Area
----@param location integer Location ID from 0 to 255.
+---@param location string|integer Location name or ID from 0 to 255.
 ---@return Area area The location area.
 ---@nodiscard
-function Area.location(location) end
+function Area.from_location(location) end
 
 ---Creates an area from its top-left coordinate, width, and height.
 ---@param x integer Left coordinate.
@@ -121,7 +120,7 @@ function Area.location(location) end
 ---@param h integer Height.
 ---@return Area area The new area.
 ---@nodiscard
-function Area.xywh(x, y, w, h) end
+function Area.from_xywh(x, y, w, h) end
 
 ---Creates an area from its edge coordinates.
 ---@param left integer Left edge.
@@ -130,7 +129,7 @@ function Area.xywh(x, y, w, h) end
 ---@param bottom integer Bottom edge.
 ---@return Area area The new area.
 ---@nodiscard
-function Area.ltrb(left, top, right, bottom) end
+function Area.from_ltrb(left, top, right, bottom) end
 )lua";
     }
 
