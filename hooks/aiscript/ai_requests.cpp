@@ -836,6 +836,9 @@ namespace hooks {
         }
     }
 
+    static inline u32 heap_left(u32 i) { return 2 * i + 1; }
+    static inline u32 heap_right(u32 i) { return 2 * i + 2; }
+
     // Hooked to improve ordering consistency of spending requests. -Veeq7
     void pop_spending_request(u32 player) {	// 004476D0
         AI_Main* player_ai = &g_aiscript_controller[player];
@@ -848,22 +851,24 @@ namespace hooks {
         }
 
         u32 index = 0;
-        while (2 * index + 1 < player_ai->request_count) {
-            u32 left_index  = 2 * index + 1;
-            u32 right_index = 2 * index + 2;
+        while (heap_left(index) < player_ai->request_count) {
+            u32 left_index  = heap_left(index);
+            u32 right_index = heap_right(index);
 
             u32 highest_index = left_index;
-            if (right_index < player_ai->request_count && player_ai->requests[right_index].priority > player_ai->requests[left_index].priority) {
+            if (right_index < player_ai->request_count
+                && player_ai->requests[right_index].priority > player_ai->requests[left_index].priority) {
                 highest_index = right_index;
             }
 
-            SpendingRequest request         = player_ai->requests[index];
-            SpendingRequest highest_request = player_ai->requests[highest_index];
-            if (highest_request.priority >= request.priority) {
+            auto& request         = player_ai->requests[index];
+            auto& highest_request = player_ai->requests[highest_index];
+            if (request.priority >= highest_request.priority) {
                 break;
             }
-            player_ai->requests[index] = highest_request;
-            player_ai->requests[highest_index] = request;
+
+            std::swap(request, highest_request);
+            index = highest_index;
         }
     }
 

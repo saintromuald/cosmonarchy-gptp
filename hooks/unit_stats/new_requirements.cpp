@@ -1592,7 +1592,6 @@ namespace hooks {
                     return player_has_completed_unit_id(player_id, UnitId::AskosiCipher);
                 }
                 case UnitId::AskosiIntendent: {
-<<<<<<< HEAD
                     if (faction != Faction::AskosiSonsOfAsh) {
                         return player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
                     }
@@ -1603,9 +1602,6 @@ namespace hooks {
                         return player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
                     }
                     return false;
-=======
-                    return player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
->>>>>>> 956461184 (Add enum.name and enum.long_name; Fix new_requirements)
                 }
             }
         }
