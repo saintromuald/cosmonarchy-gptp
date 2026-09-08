@@ -1594,13 +1594,13 @@ namespace hooks {
                 case UnitId::AskosiIntendent: {
 <<<<<<< HEAD
                     if (faction != Faction::AskosiSonsOfAsh) {
-                        return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
+                        return player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
                     }
                     return false;
                 }
                 case UnitId::AskosiScralia: {
                     if (faction == Faction::AskosiSonsOfAsh) {
-                        return ignore_creator || player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
+                        return player_has_completed_unit_id(player_id, UnitId::AskosiGauntlet);
                     }
                     return false;
 =======
