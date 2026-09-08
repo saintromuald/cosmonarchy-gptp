@@ -256,8 +256,11 @@ function Defense:auto_remove(unit_id, count) end
         assert_unit_id(unit_id);
 
         const auto unit_property = units_dat::base_property[unit_id];
-        if (unit_property & UnitProperty::Building || !unit_id_is_combatant(unit_id)) {
-            throw sol::error(std::format("UnitId.{} is not a combatant unit", magic_enum::enum_name(unit_id)));
+        if (unit_property & UnitProperty::Building || !unit_id_is_military(unit_id)) {
+            throw sol::error(std::format("UnitId.{} is not a military unit", magic_enum::enum_name(unit_id)));
+        }
+        if (!unit_id_is_combatant(unit_id)) {
+            return; // Ignore military non-combatants, e.g. clerics, shamans
         }
         
         const auto set = [this, unit_id, count](DefenseArray array) {
