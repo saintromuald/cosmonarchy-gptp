@@ -12,7 +12,7 @@ namespace ui {
 enum class PalettePreserve : u32 {
     None         = 0,
     FontShade    = 1,  // indices 1..25
-    WidgetColors = 2,  // indices 26..53
+    WidgetColors = 2,  // indices 26..73
 };
 
 enum class Ease {
@@ -27,7 +27,7 @@ constexpr bool preserves_index(PalettePreserve mask, u32 index) {
     if ((mask & PalettePreserve::FontShade)    != PalettePreserve::None
         && index >= 1  && index <= 25)  return true;
     if ((mask & PalettePreserve::WidgetColors) != PalettePreserve::None
-        && index >= 26 && index <= 53)  return true;
+        && index >= 26 && index <= 73)  return true;
     return false;
 }
 
