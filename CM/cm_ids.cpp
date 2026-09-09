@@ -1979,6 +1979,8 @@ bool is_askosi(UnitId::Enum unit_id) {
 
 bool is_bloodsummon(UnitId::Enum unit_id) {
     return unit_id == UnitId::BloodsummonThrombocyte
+        || unit_id == UnitId::BloodsummonAcqui
+        || unit_id == UnitId::BloodsummonNihilist
 
         || unit_id == UnitId::BloodsummonGrimoire;
 }

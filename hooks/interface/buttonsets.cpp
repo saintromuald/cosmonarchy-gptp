@@ -4598,8 +4598,9 @@ namespace hooks {
 
                                 // BLOODSUMMON \\
                                 
-                                case UnitId::ProtossVestige: {
-                                    if (current_button->icon_id == IconId::VibranceSensoryOverload) { // Portents
+                                case UnitId::BloodsummonAcqui: {
+                                    if (current_button->icon_id == IconId::TosgriliskExplosiveSpores  // Coagulation
+                                    ||  current_button->icon_id == IconId::MuscularAugments) {        // Forlorn Haste
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
@@ -4608,10 +4609,13 @@ namespace hooks {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
-
-                                case UnitId::BloodsummonAcqui: {
-                                    if (current_button->icon_id == IconId::TosgriliskExplosiveSpores  // Coagulation
-                                    ||  current_button->icon_id == IconId::MuscularAugments) {        // Forlorn Haste
+                                case UnitId::ProtossVestige: {
+                                    if (current_button->icon_id == IconId::VibranceSensoryOverload) { // Portents
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::BloodsummonNihilist: {
+                                    if (current_button->icon_id == IconId::Hijack) { // War Atrophy
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;

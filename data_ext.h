@@ -482,6 +482,10 @@ enum ExtTimerId {
     TimerForlornHaste,
     TimerZapOverlay,
     TimerGladiusOrderBindingPlasma,
+    TimerWarAtrophySearch,
+    TimerWarAtrophySpeed,
+    TimerWarAtrophyVisuals,
+    TimerWarAtrophyAudio,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,
