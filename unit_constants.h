@@ -542,3 +542,8 @@ namespace Bloodsummon {
 inline constexpr s32 ForlornHasteRange = 3tiles;
 inline constexpr s32 BloodyBurstRange = 3tiles;
 }
+
+namespace BloodsummonNihilist {
+inline constexpr s32 WarAtrophyDuration = 2secs;
+inline constexpr s32 WarAtrophySearchRadius = 4tiles;
+}

@@ -107,6 +107,28 @@ namespace hooks {
             speed *= 1.33fp;
         }
 
+        if (unit_ext.timers[TimerWarAtrophySearch]) {
+            for (Unit* target : g_unit_search.radial_ex(unit, BloodsummonNihilist::WarAtrophySearchRadius, FilterEnemy)) {
+                if (!bw::unit_is_facing(unit, target->position)) {
+                    continue;
+                }
+                if (target) {
+                    if (unit_ext.try_reset_timer(TimerSwarmingOmenVisuals, 12)) {
+                        bw::add_unit_overlay(unit, ImageId::SwarmingOmenSmall + bw::get_overlay_offset(unit->id, true));
+                    }
+                    if (unit_ext.try_reset_timer(TimerSwarmingOmenAudio, 36)) {
+                        u32 sound_id = bw::rand_between(SoundId::SwarmingOmenProc01, SoundId::SwarmingOmenProc02);
+                        helper::play_sound_from_unit(sound_id, unit, 1, 0);
+                    }
+                    unit_ext.timers[TimerWarAtrophySpeed] = 6;
+                    break;
+                }
+            }
+        }
+        if (unit_ext.timers[TimerWarAtrophySpeed] > 1) {
+            speed *= 0.66fp;
+        }
+
         if (unit_ext.timers[TimerImpactDissipation] > 1 || unit_ext.timers[TimerImpactPrevarication] > 1) {
             speed *= 1.5fp;
         }
@@ -277,7 +299,8 @@ namespace hooks {
             case UnitId::ZergZoryusthaleth:
             case UnitId::AskosiVicar:
             case UnitId::AskosiObject:
-            case UnitId::AskosiThaumalogue: {
+            case UnitId::AskosiThaumalogue:
+            case UnitId::BloodsummonNihilist: {
                 speed *= 1.1fp;
             } break;
             case UnitId::TerranCamazotz:
