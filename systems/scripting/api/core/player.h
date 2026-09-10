@@ -29,7 +29,7 @@ public:
 
             "id", sol::property([](const Player& self) { return self.m_player+1; }),
             "race", sol::property(&Player::race),
-            "faction", sol::property([](const Player& self) { return g_globals->players[self.m_player].faction; }),
+            "faction", sol::property(&Player::faction),
             "type", sol::property(&Player::type),
             "force", sol::property(&Player::force),
             "name", sol::property(&Player::name),
@@ -44,7 +44,7 @@ public:
                     g_total_vespene[self.m_player] += value - g_game_vespene[self.m_player];
                     g_game_vespene[self.m_player] = value;
                 }),
-
+            
             "unit_count", &Player::unit_count,
             "can_make", &Player::can_make
         );
@@ -82,11 +82,15 @@ function Player:can_make(unit_id) end
 
     std::string to_string() const {
         return std::format("Player({}, race={}, faction={}, type={}, force={}, name={})",
-            m_player+1, magic_enum::enum_name(race()), magic_enum::enum_name(g_globals->players[m_player].faction), magic_enum::enum_name(type()), force(), name());
+            m_player+1, magic_enum::enum_name(race()), magic_enum::enum_name(faction()), magic_enum::enum_name(type()), force(), name());
     }
 
     RaceId::Enum race() const {
         return RaceId::Enum(g_player_table[m_player].race);
+    }
+
+    Faction faction() const {
+        return g_globals->players[m_player].faction;
     }
 
     PlayerType::Enum type() const {

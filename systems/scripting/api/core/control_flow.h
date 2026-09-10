@@ -115,7 +115,7 @@ ScriptHandle = {}
 function ScriptHandle:kill() end
 
 ---Runs a child script.
----@param func function Function to run.
+---@param func fun(...) Function to run.
 ---@param ... any Arguments passed to the function.
 ---@return ScriptHandle handle Child script handle.
 function multirun(func, ...) end
