@@ -1,5 +1,6 @@
 #pragma once
 #include "../script_common.h"
+#include "../../../../ai_layouts.h"
 
 namespace lua::api::ai {
 
@@ -71,10 +72,16 @@ function Town:transfer_workers(count) end
 function Town:auto_kill_script() end
 
 ---Runs a child script associated with this town.
----@param func function Function called with this town followed by `...`.
+---@param func fun(town: Town, ...) Function called with this town followed by `...`.
 ---@param ... any Additional arguments.
 ---@return ScriptHandle handle Child script handle.
 function Town:multirun(func, ...) end
+
+---Counts the number of units of a specific type in this town.
+---@param unit_id UnitId Unit type to count.
+---@param completed? boolean Count only completed units. Defaults to `true`.
+---@return integer count Number of units.
+function Town:unit_count(unit_id, completed) end
 )lua";
     }
 
@@ -121,6 +128,11 @@ function Town:multirun(func, ...) end
         if (!is_alive()) return 0;
         auto& resarea = g_resource_areas->areas[m_town->resarea];
         return (resarea.mineral_field_count + resarea.geyser_count) * 3;
+    }
+
+    u32 unit_count(UnitId::Enum unit_id, bool completed = true) const {
+        if (!is_alive()) return 0;
+        return town_count_units(*m_town, unit_id, completed);
     }
 
 private:

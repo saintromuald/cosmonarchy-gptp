@@ -189,6 +189,8 @@ UnitId::Enum find_equivalent_root_merge(UnitId::Enum unit_id);
 AiUnitEquivalent find_unit_equivalent_down(UnitId::Enum unit_id);
 AiUnitEquivalent find_unit_equivalent_up(UnitId::Enum unit_id, u32* index = 0);
 
+bool town_has_unit(AiTown& town, Unit* unit);
+
 u32 town_count_units(AiTown& town, UnitId::Enum unit_id, bool completed);
 u32 town_has_down_equivalent(AiTown& town, UnitId::Enum unit_id);
 u32 town_count_up_equivalents(AiTown& town, UnitId::Enum unit_id);

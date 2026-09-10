@@ -58,7 +58,10 @@ public:
             "start_area_town", &AI::start_area_town,
             "expand", &AI::expand,
             "defense", sol::property(&AI::defense),
-            "new_attack", &AI::new_attack
+            "new_attack", &AI::new_attack,
+
+            "minerals", sol::property([](const AI& self) { return g_ai_minerals_reserve[self.m_player]; }),
+            "gas", sol::property([](const AI& self) { return g_ai_vespene_reserve[self.m_player]; })
         );
     }
 
@@ -75,6 +78,8 @@ public:
 ---@field use_transports boolean Whether the AI uses transports. Defaults to true.
 ---@field max_force integer Maximum number of units the AI can control in a region. Defaults to 0 (no limit).
 ---@field defense Defense Defense settings.
+---@field minerals integer Player AI available minerals. Read-only.
+---@field gas integer Player AI available gas. Read-only.
 AI = {}
 
 ---Starts an AI town.

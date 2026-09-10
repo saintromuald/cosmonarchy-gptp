@@ -564,19 +564,35 @@ AiUnitEquivalent find_unit_equivalent_up(UnitId::Enum unit_id, u32* index) {
     return {};
 }
 
+bool town_has_unit(AiTown& town, Unit* unit) {
+    auto* unit_ai = unit->unit_ai;
+    if (unit_ai) {
+        if (unit_ai->type == AiType::Worker) {
+            return unit_ai->worker_ai.town == &town;
+        }
+        if (unit_ai->type == AiType::Building) {
+            return unit_ai->building_ai.town == &town;
+        }
+        if (unit_ai->type == AiType::Guard) {
+            return bw::get_closest_town(unit->player, unit_ai->guard_ai.current_home) == &town;
+        }
+    }
+    return bw::get_closest_town(unit->player, unit->position) == &town;
+}
+
 u32 town_count_units(AiTown& town, UnitId::Enum unit_id, bool completed) {
     u32 count = 0;
     for (Unit* unit = first_player_unit->unit[town.player]; unit; unit = unit->player_link.next) {
         if (completed) {
-            if (unit->id == unit_id && unit->status & UnitStatus::Completed && &town == bw::get_closest_town(unit->player, unit->position)) {
+            if (unit->id == unit_id && unit->status & UnitStatus::Completed && town_has_unit(town, unit)) {
                 count += 1;
             }
         } else {
-            if (unit->id == unit_id && &town == bw::get_closest_town(unit->player, unit->position)) {
+            if (unit->id == unit_id && town_has_unit(town, unit)) {
                 count += 1;
             }
             UnitAi* unit_ai = unit->unit_ai;
-            if (unit_ai && (unit_ai->type == AiType::Worker || unit_ai->type == AiType::Building) && unit_ai->worker_ai.town == &town) {
+            if (unit_ai && (unit_ai->type == AiType::Worker || unit_ai->type == AiType::Building) && town_has_unit(town, unit)) {
                 count += helper::ai_get_queued_count(unit, unit_id);
             }
         }
