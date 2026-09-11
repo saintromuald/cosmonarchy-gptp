@@ -16,7 +16,7 @@ namespace hooks {
     // Hooked to allow for aggressive order unit responses. -Pr0nogo
     void play_yes_unit_response(Unit* unit) { // 0048F4D0
         if (!g_use_quiet_sounds) {
-            *g_place_building_parent_unit = 0;
+            g_last_response_unit = nullptr;
             if (!g_is_in_replay && unit && unit->player == g_local_nation_id) { // unit nullcheck is new, resolves rare minimap crash
                 if (!unit->is_frozen()) {
                     u32 last_rand = g_last_random_sfx_id;
@@ -227,7 +227,7 @@ namespace hooks {
     // Written for aggressive order unit responses. -Pr0nogo
     void play_yes_unit_response_internal(Unit* self, UnitResponseContext context) {
         if (!g_use_quiet_sounds) {
-            *g_place_building_parent_unit = 0;
+            g_last_response_unit = nullptr;
             if (!g_is_in_replay && self->player == g_local_nation_id) {
                 if (!self->is_frozen()) {
                     u32 last_rand = g_last_random_sfx_id;
@@ -282,5 +282,16 @@ namespace hooks {
             return;
         }
         AudioSystem::instance().play_sound(sound_id, PlaySoundSettings{.position = pos, .min_volume = min_volume});
+    }
+
+    // Replaces vanilla preload_racial_sound_buffers @ 0x0048FB40
+    // Resets audio globals but skips preloading buffers since AudioSystem owns them
+    void __stdcall reset_race_audio_state(bool unused) { // 0048FB40
+        g_sound_cooldown_1 = 0;
+        g_sound_cooldown_2 = 0;
+        g_last_response_unit = nullptr;
+        g_selection_sound_counter = 0;
+        notify_cooldown = 0;
+        g_use_quiet_sounds = 0;
     }
 }

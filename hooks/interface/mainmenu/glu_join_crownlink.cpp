@@ -11,26 +11,26 @@ static constexpr u16 timer_index = 0x2d;
 static constexpr u32 timer_duration = 500;
 static constexpr u32 password_max_length = 50;
 
-static u32 __fastcall dlgproc_glu_join_crownlink_listbox(BinDlg* dialog, DialogEvent* event) {
+static u32 __fastcall dlgproc_glu_join_crownlink_listbox(bw::Dialog* dialog, DialogEvent* event) {
     if (event->number_order == DialogEventType_Dialog) {
         switch (event->user) {
         case DialogUserType_Create: {
-            g_context->update_listbox(dialog);
-            g_context->load_selected_entry(dialog);
+            g_context->update_listbox(dialog->to_bindlg());
+            g_context->load_selected_entry(dialog->to_bindlg());
             if (dialog->flags & DialogFlags::PropagateUpdate) {
                 dialog->flags &= ~DialogFlags::PropagateUpdate;
-                helper::generic_combobox_update(dialog);
+                helper::generic_combobox_update(dialog->to_bindlg());
             }
             helper::set_callback_timer(dialog, timer_index, timer_duration, 0);
         } break;
         case DialogUserType_Destroy: {
             helper::clear_callback_timer(dialog, timer_index);
-            return helper::generic_listbox_interact(dialog, event);
+            return helper::default_interaction_listbox(dialog, event);
         } break;
         case DialogUserType_InitSelf: {
             if (event->param == timer_index) {
-                g_context->update_listbox(dialog);
-                g_context->load_selected_entry(dialog);
+                g_context->update_listbox(dialog->to_bindlg());
+                g_context->load_selected_entry(dialog->to_bindlg());
                 g_context->update_crownlink_status();
                 return 1;
             }
@@ -39,16 +39,16 @@ static u32 __fastcall dlgproc_glu_join_crownlink_listbox(BinDlg* dialog, DialogE
             dialog->flags |= DialogFlags::RemoveStyles;
         } break;
         case DialogUserType_SetSelectionIndex: {
-            helper::generic_listbox_interact(dialog, event);
-            g_context->load_selected_entry(dialog);
+            helper::default_interaction_listbox(dialog, event);
+            g_context->load_selected_entry(dialog->to_bindlg());
             return 1;
         } break;
         }
     }
-    return helper::generic_listbox_interact(dialog, event);
+    return helper::default_interaction_listbox(dialog, event);
 }
 
-static u32 __fastcall dlgproc_glu_join_crownlink(BinDlg* dialog, DialogEvent* event) {
+static u32 __fastcall dlgproc_glu_join_crownlink(bw::Dialog* dialog, DialogEvent* event) {
     if (event->number_order == DialogEventType_Dialog) {
         switch (event->user) {
             case DialogUserType_Create: {
@@ -99,7 +99,7 @@ void GluJoinCrownlinkContext::update_crownlink_status() {
 }
 
 void GluJoinCrownlinkContext::update_label(GluJoinControls control, const char* text) {
-    m_labels.update(get_dialog(), control, text);
+    m_labels.update(get_dialog()->to_bindlg(), control, text);
 }
 
 void GluJoinCrownlinkContext::clear_lobby_labels() {
@@ -218,8 +218,8 @@ void GluJoinCrownlinkContext::update_listbox(BinDlg* dialog) {
     helper::scroll_selection_into_view(dialog, event.param);
 }
 
-void GluJoinCrownlinkContext::on_create(BinDlg* dialog, DialogEvent* event) {
-    bindlg_load_background_palette(dialog);
+void GluJoinCrownlinkContext::on_create(bw::Dialog* dialog, DialogEvent* event) {
+    bindlg_load_background_palette(dialog->to_bindlg());
     disable_dialogs_with_index(dialog, GluJoinControls::OK);
     auto& provider_manager = snp::ProviderManager::instance();
     std::string password;
@@ -227,7 +227,7 @@ void GluJoinCrownlinkContext::on_create(BinDlg* dialog, DialogEvent* event) {
     update_password(password.c_str());
 }
 
-u32 GluJoinCrownlinkContext::on_activate(BinDlg* dialog, DialogEvent* event) {
+u32 GluJoinCrownlinkContext::on_activate(bw::Dialog* dialog, DialogEvent* event) {
     switch (static_cast<GluJoinControls>(last_control_index)) {
         case GluJoinControls::OK: {
             disable_dialogs_with_index(dialog, GluJoinControls::OK);
@@ -254,16 +254,16 @@ u32 GluJoinCrownlinkContext::on_activate(BinDlg* dialog, DialogEvent* event) {
     return helper::generic_dialog_interact(dialog, event);
 }
 
-void GluJoinCrownlinkContext::on_init_children(BinDlg* dialog, DialogEvent* event) {
+void GluJoinCrownlinkContext::on_init_children(bw::Dialog* dialog, DialogEvent* event) {
     bindlg_load_background_pcx(g_context->get_dialog(), "glue\\dynamic\\backgrounds\\crownlink.pcx", true);
-    static const std::map<GluJoinControls, BinDlgProc> interaction_functions{
+    static const std::map<GluJoinControls, bw::DialogInteraction*> interaction_functions{
         {GluJoinControls::GameListBox, dlgproc_glu_join_crownlink_listbox}, // join_listbox
-        {GluJoinControls::GameTitle, (BinDlgProc)0x004b7ef0},   // Very generic but sets flag 0x40000000. Seems to make the text white.
-        {GluJoinControls::GameType, (BinDlgProc)0x004b7ef0},    //
-        {GluJoinControls::SubType, (BinDlgProc)0x004b7ef0},     //
-        {GluJoinControls::MapName, (BinDlgProc)0x004b7ef0},     //
-        {GluJoinControls::MapSize, (BinDlgProc)0x004b7ef0},     //
-        {GluJoinControls::GameSpeed, (BinDlgProc)0x004b7ef0},   //
+        {GluJoinControls::GameTitle, (bw::DialogInteraction*)0x004b7ef0},   // Very generic but sets flag 0x40000000. Seems to make the text white.
+        {GluJoinControls::GameType, (bw::DialogInteraction*)0x004b7ef0},    //
+        {GluJoinControls::SubType, (bw::DialogInteraction*)0x004b7ef0},     //
+        {GluJoinControls::MapName, (bw::DialogInteraction*)0x004b7ef0},     //
+        {GluJoinControls::MapSize, (bw::DialogInteraction*)0x004b7ef0},     //
+        {GluJoinControls::GameSpeed, (bw::DialogInteraction*)0x004b7ef0},   //
     };
     bindlg_load_interaction_functions(dialog, interaction_functions);
 }

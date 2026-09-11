@@ -1,6 +1,7 @@
 #pragma once
 #include "BW/structures.h"
-#include "hooks/interface/console/console.h"
+#include "hooks/interface/hud/hud.h"
+#include "hooks/interface/hud/hud_manager.h"
 
 u16 __fastcall get_stat_icon_graphic(u8 value);
 
@@ -19,8 +20,8 @@ struct tooltip_resource_cost {
     tooltip_resource resource;
     u16* value;
     GrpFile* grp;
-    u16 index;
-    bool use_race_offset;
+    u16 base_index;
+    u32 HudManager::Config::* hud_icon;
 };
 
 enum class StatPanel : s16 {

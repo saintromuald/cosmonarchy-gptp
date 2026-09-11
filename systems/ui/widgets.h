@@ -5,13 +5,16 @@
 #include "tooltip.h"
 
 #include <concepts>
+#include <format>
 #include <functional>
+#include <initializer_list>
 #include <deque>
 #include <memory>
 #include <optional>
 #include <span>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <variant>
 #include <vector>
 
@@ -165,13 +168,14 @@ public:
 
     // Mark this widget dirty so the compositor calls our draw fn again
     // Use when updating a widget
-    void invalidate();
+    void invalidate(bool force_refresh = false);
     // Mark the parent dialog dirty so the compositor redraws this widget's area
     // Use when hiding or moving a widget
-    void invalidate_parent();
+    void invalidate_parent(bool force_refresh = false);
 private:
     friend class Menu;
     friend class Modal;
+    friend class Hud;
     friend class Group;
 
     Widget() = default;
@@ -196,6 +200,8 @@ class Group {
 public:
     using Member = std::variant<std::unique_ptr<Widget>, std::unique_ptr<Group>>;
 
+    virtual ~Group() = default;
+
     // Any copy or move would leave dangling pointers
     Group(const Group&) = delete;
     Group& operator=(const Group&) = delete;
@@ -209,7 +215,13 @@ public:
     Widget* image(DialogBounds bounds, std::string path);
     Widget* slider(DialogBounds bounds, u16 min, u16 max, u16 initial, bool vertical = false);
     Widget* textinput(DialogBounds bounds);
+
     Widget* label(DialogBounds bounds, std::string text);
+    template <typename... Args>
+    Widget* label(DialogBounds bounds, std::format_string<Args...> fmt, Args&&... args) {
+        return label(bounds, std::format(fmt, std::forward<Args>(args)...));
+    }
+
     Widget* listbox(DialogBounds bounds);
     Widget* combobox(DialogBounds bounds);
     // Listbox variant where each row has a leading checkbox
@@ -237,6 +249,9 @@ public:
     virtual void on_top_dialog_init_children(Widget&) {}
     virtual void on_top_dialog_create       (Widget&) {}
     virtual void on_top_dialog_destroy      (Widget&) {}
+
+    // Return true to pass mouse events that don't hit a child widget through to the game
+    virtual bool passthrough_mouse() const { return false; }
 
     virtual TooltipController* tooltip_controller() { return nullptr; }
 
@@ -322,6 +337,26 @@ protected:
 
 private:
     TooltipController m_tooltip_controller;
+};
+
+class Hud : public Group {
+public:
+    Hud(DialogBounds bounds);
+    ~Hud() override;
+
+    Hud(const Hud&) = delete;
+    Hud& operator=(const Hud&) = delete;
+    Hud(Hud&&) = delete;
+    Hud& operator=(Hud&&) = delete;
+
+    void show();
+    void hide();
+    bool is_hidden() const;
+
+    bool passthrough_mouse() const override { return true; }
+
+protected:
+    void initialize();
 };
 
 bool modal_ok_cancel(std::string_view prompt);

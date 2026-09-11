@@ -116,10 +116,10 @@ namespace hooks {
                                         *minerals -= g_ai_minerals_reserve[player];
                                         *gas -= g_ai_vespene_reserve[player];
                                     } else {
-                                        helper::display_error_message_id_with_sfx((u8)player, 851, g_console_index + 150);
+                                        helper::display_error_message_id_with_sfx((u8)player, 851, g_hud_index + 150);
                                     }
                                 } else {
-                                    helper::display_error_message_id_with_sfx((u8)player, 850, g_console_index + 147);
+                                    helper::display_error_message_id_with_sfx((u8)player, 850, g_hud_index + 147);
                                 }
                             }
                         }
@@ -1093,11 +1093,11 @@ namespace hooks {
         g_ai_supply_reserved[player] = 0;
         // Originally also checked supplies.
         if (g_game_minerals[player] < g_ai_minerals_reserve[player]) {
-            helper::display_error_message_id_with_sfx(player, 850, g_console_index + 147);
+            helper::display_error_message_id_with_sfx(player, 850, g_hud_index + 147);
             return false;
         }
         if (g_game_vespene[player] < g_ai_vespene_reserve[player]) {
-            helper::display_error_message_id_with_sfx(player, 851, g_console_index + 150);
+            helper::display_error_message_id_with_sfx(player, 851, g_hud_index + 150);
             return false;
         }
         if (g_aiscript_controller[player].minerals_available < g_ai_minerals_reserve[player] || g_aiscript_controller[player].vespene_available < g_ai_vespene_reserve[player]) {

@@ -17,7 +17,7 @@ static void load_game_templates(){ // See: 004dbac5
     SMemFree(ums_data);
 }
 
-static u32 __fastcall dlgproc_glu_main(BinDlg* dialog, DialogEvent* event) { // 004DB7A0
+static u32 __fastcall dlgproc_glu_main(bw::Dialog* dialog, DialogEvent* event) { // 004DB7A0
     if (event->number_order == DialogEventType_Spacebar && event->virtual_key == VK_SPACE) {
         return 1;
     }
@@ -34,7 +34,7 @@ static u32 __fastcall dlgproc_glu_main(BinDlg* dialog, DialogEvent* event) { // 
             }
             case DialogUserType_Destroy: {
                 auto version_label = get_first_child_by_index(dialog, GluMainControls::VersionLabel);
-                if (version_label) SMemFree((void*)version_label->text);
+                if (version_label) SMemFree((void*)version_label->text<const char*>());
                 return helper::generic_dialog_interact(dialog, event);
             }
             case DialogUserType_Activate: {
@@ -76,8 +76,8 @@ static u32 __fastcall dlgproc_glu_main(BinDlg* dialog, DialogEvent* event) { // 
 void glu_main() {
     g_multiplayer_mode = false;
 
-    g_current_dialog = load_bin_file("rez\\gluMain.bin").release();
-    auto last_control = helper::glu_load_bin_dialog(g_current_dialog, dlgproc_glu_main);
+    auto dialog = load_bin_file("rez\\gluMain.bin").release();
+    auto last_control = helper::glu_load_bin_dialog(dialog, dlgproc_glu_main);
 
     switch (static_cast<GluMainControls>(last_control)) {
         case GluMainControls::ExitButton: {

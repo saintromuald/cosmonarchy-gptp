@@ -1,4 +1,4 @@
-#include "console.h"
+#include "hud.h"
 
 #include "BW/ui.h"
 #include "BW/structures.h"
@@ -6,7 +6,7 @@
 #include "graphics/Font.h"
 #include "hooks/interface/mainmenu/glucustom.h" // For g_tfontgame_image_data
 #include "player_color.h"
-#include "hooks/interface/console/console.h"
+#include "hooks/interface/hud/hud.h"
 #include "systems/triggers/trigger_system.h"
 #include "config.h"
 #include "hooks/interface/uifeatures/ui_features.h"
@@ -62,19 +62,19 @@ static void statres_text_with_icon_update(BinDlg* dialog, GrpFile* icons) {
 }
 
 static void __fastcall statres_minerals_update(BinDlg* dialog, int, int, int) {
-    statres_text_with_icon_update(dialog, g_console_icons.mineral());
+    statres_text_with_icon_update(dialog, g_hud_icons.mineral());
 }
 
 static void __fastcall statres_gas_update(BinDlg* dialog, int, int, int) {
-    statres_text_with_icon_update(dialog, g_console_icons.gas());
+    statres_text_with_icon_update(dialog, g_hud_icons.gas());
 }
 
 static void __fastcall statres_supply_update(BinDlg* dialog, int, int, int) {
-    statres_text_with_icon_update(dialog, g_console_icons.supply());
+    statres_text_with_icon_update(dialog, g_hud_icons.supply());
 }
 
-static void __fastcall statres_unit_update(BinDlg* dialog, int, int, int) {
-    statres_text_with_icon_update(dialog, g_console_icons.general());
+static void __fastcall statres_unit_update(BinDlg* dialog, DialogEvent*, u32, void*) {
+    statres_text_with_icon_update(dialog, g_hud_icons.general());
 }
 
 static void __fastcall statres_colortext_update(BinDlg* dialog, int, int, int) { // 004E5460
@@ -106,7 +106,7 @@ static void statres_prep_child_dialogs(BinDlg* dialog) {
     if (dialog) {
         BinDlg* parent_offset = dialog + ResSize;
 
-        do {
+        do { // this is just iterating over the children....
             auto control_type = dialog->control_type;
             if (control_type == DialogControlType::DialogBoxDC) {
                 dialog = dialog->child_dialog;
@@ -335,7 +335,7 @@ static void draw_player_stats(BinDlg** dialog_ptr, v2u16* pos, u32 player,
     BinDlg* dialog_name = dialog->statRes.player_name;
     BinDlg* dialog_production = dialog->child_dialog;
 
-    auto icon_index = race_icon_offset(static_cast<RaceId::Enum>(g_player_table[player].race));
+    auto icon_index = default_race_icon_index(static_cast<RaceId::Enum>(g_player_table[player].race));
 
     dialog->fxn_update = &statres_supply_update;
     show_supply_info(dialog, icon_index, workers, men);
@@ -459,13 +459,13 @@ static void __fastcall stat_res_timer_proc(BinDlg* dialog, u16 index_unused) { /
     }
 }
 
-static void statres_dialogproc_create(BinDlg* dialog) { // 004e58d0
+static void statres_dialogproc_create(bw::Dialog* dialog) { // 004e58d0
     dialog->flags |= DialogFlags::UseAlternateStyle | DialogFlags::ReverseDialogDirection | DialogFlags::TransparentHideColor;
-    statres_prep_child_dialogs(dialog);
+    statres_prep_child_dialogs(dialog->to_bindlg());
     helper::set_callback_timer(dialog, statres_state.timer_index, statres_state.timer_duration, &stat_res_timer_proc);
 }
 
-static u32 __fastcall statres_dialogproc(BinDlg* dialog, DialogEvent* event) { // 004e5910
+static u32 __fastcall statres_dialogproc(bw::Dialog* dialog, DialogEvent* event) { // 004e5910
     switch (event->number_order) {
         case DialogEventType_KeyDown:
         case DialogEventType_KeyRepeat:
@@ -494,5 +494,5 @@ static u32 __fastcall statres_dialogproc(BinDlg* dialog, DialogEvent* event) { /
 
 void load_statres() { // 004e5990
     g_statres_dialog = load_bin_file("rez\\statres.bin").release();
-    initialize_dialog(g_statres_dialog, statres_dialogproc);
+    initialize_bin_dialog(g_statres_dialog, statres_dialogproc);
 }

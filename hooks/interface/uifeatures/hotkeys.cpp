@@ -1,8 +1,10 @@
 #include "hotkeys.h"
 #include "BW/api.h"
-#include <windows.h>
 #include "hooks/interface/buttonsets.h"
+#include "hooks/interface/hud/hud_manager.h"
 #include "aise_signal.h"
+
+#include <windows.h>
 
 Hotkeys hotkeys;
 
@@ -120,6 +122,15 @@ static bool handle_key_event(const KeyEvent& ev) {
 	}
 	// Ignore Ctrl+Q
 	if (ev.control_held && ev.key == 'Q') {
+		return true;
+	}
+	// Toggle hud visibility
+	if (ev.key == VK_F11 && ev.pressed() && g_hud_manager && g_hud_manager->hotkey_enabled()) {
+		if (g_hud_manager->is_hidden()) {
+			g_hud_manager->show();
+		} else {
+			g_hud_manager->hide();
+		}
 		return true;
 	}
 	// Specifically ignore 1-6 for faction selection for non-grid hotkeys

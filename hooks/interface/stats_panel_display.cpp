@@ -9,20 +9,20 @@
 #include "BW/structures/Unit.h"
 #include "hooks/interface/weapon_armor_tooltip.h"
 #include "hooks/interface/uifeatures/hotkeys.h"
-#include "hooks/interface/console/console.h"
+#include "hooks/interface/hud/hud.h"
 #include "DatExtend/datext.h"
 
 #include <ranges>
 
 static const auto resource_tooltip_definitions = std::to_array<tooltip_resource_cost>({
-    {tooltip_resource::Minerals, tooltip_ore_cost, g_console_icons.mineral(), 0, true},
-    {tooltip_resource::Gas, tooltip_gas_cost, g_console_icons.gas(), 0, true},
-    {tooltip_resource::Energy, tooltip_energy_cost, g_console_icons.general(), 9, false},
-    {tooltip_resource::Unused, tooltip_unused_cost, g_console_icons.general(), 8, false},
-    {tooltip_resource::BuildTime, tooltip_time_cost, g_console_icons.general(), 7, false},
-    {tooltip_resource::PSupply, tooltip_p_supply_cost, g_console_icons.supply(), 0, true},
-    {tooltip_resource::TSupply, tooltip_t_supply_cost, g_console_icons.supply(), 0, true},
-    {tooltip_resource::ZSupply, tooltip_z_supply_cost, g_console_icons.supply(), 0, true},
+    {tooltip_resource::Minerals,  tooltip_ore_cost,      g_hud_icons.mineral(), 0, &HudManager::Config::mineral_icon},
+    {tooltip_resource::Gas,       tooltip_gas_cost,      g_hud_icons.gas(),     0, &HudManager::Config::gas_icon},
+    {tooltip_resource::Energy,    tooltip_energy_cost,   g_hud_icons.general(), 9, nullptr},
+    {tooltip_resource::Unused,    tooltip_unused_cost,   g_hud_icons.general(), 8, nullptr},
+    {tooltip_resource::BuildTime, tooltip_time_cost,     g_hud_icons.general(), 7, nullptr},
+    {tooltip_resource::PSupply,   tooltip_p_supply_cost, g_hud_icons.supply(),  0, &HudManager::Config::supply_icon},
+    {tooltip_resource::TSupply,   tooltip_t_supply_cost, g_hud_icons.supply(),  0, &HudManager::Config::supply_icon},
+    {tooltip_resource::ZSupply,   tooltip_z_supply_cost, g_hud_icons.supply(),  0, &HudManager::Config::supply_icon},
 });
 
 u16 __fastcall get_stat_icon_graphic(u8 value) {
@@ -652,9 +652,9 @@ namespace hooks {
 
         auto has_value = [](const auto& r) { return *r.value; };
         for (const auto& resource : resource_tooltip_definitions | std::ranges::views::filter(has_value)) {
-            auto index = resource.use_race_offset
-                ? resource.index + race_icon_offset(static_cast<RaceId::Enum>(g_console_index))
-                : resource.index;
+            auto index = resource.hud_icon
+                ? resource.base_index + g_hud_manager->current().*resource.hud_icon
+                : resource.base_index;
 
             if (index >= resource.grp->frame_count()) index = 0;
 

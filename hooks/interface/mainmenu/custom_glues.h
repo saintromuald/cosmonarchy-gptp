@@ -2,8 +2,6 @@
 #include "BW/ui.h"
 #include "glu_chat.h"
 
-inline BinDlg* g_current_dialog = nullptr;
-
 class GluJoinCrownlinkContext {
 public:
     GluJoinCrownlinkContext()
@@ -20,16 +18,15 @@ public:
         m_dialog = load_bin_file("rez\\glujoincrownlink.bin");
     }
 
-    //BinDlg* get_dialog() { return m_binfile.bin_dlg(); };
-    BinDlg* get_dialog() { return m_dialog.get(); };
+    bw::Dialog* get_dialog() { return m_dialog.get(); };
 
     void update_crownlink_status();
     void load_selected_entry(BinDlg* dialog);
     void update_listbox(BinDlg* dialog);
 
-    void on_create(BinDlg* dialog, DialogEvent* event);
-    u32 on_activate(BinDlg* dialog, DialogEvent* event);
-    void on_init_children(BinDlg* dialog, DialogEvent* event);
+    void on_create(bw::Dialog* dialog, DialogEvent* event);
+    u32 on_activate(bw::Dialog* dialog, DialogEvent* event);
+    void on_init_children(bw::Dialog* dialog, DialogEvent* event);
 
 private:
     void update_label(GluJoinControls control, const char* text);
@@ -42,7 +39,7 @@ private:
 
 private:
     BinDlgLabels<GluJoinControls> m_labels;
-    smem::ptr<BinDlg> m_dialog;
+    smem::ptr<bw::Dialog> m_dialog;
     GameData m_gamedata{};
     u8 m_ellipsis_counter{0};
     std::vector<u32> m_adfile_indexes;

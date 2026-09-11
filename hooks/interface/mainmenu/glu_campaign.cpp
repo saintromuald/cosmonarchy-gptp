@@ -52,20 +52,20 @@ void GluCampaignList::load_campaign_by_index(u16 index) {
     if (!selected) return;
     
     if (selected->has_error()) {
-        auto description_string = std::format("{}{}", static_cast<char>(LobbyTextColor::Red), *selected->error_string);
+        auto description_string = std::format("{}{}", LobbyTextColor::Red, *selected->error_string);
         m_description->set_text(description_string);
         m_ok_button->disable();
         m_author->set_text("");
         m_mission_count->set_text("");
-        m_title->set_text(std::format("{}Error loading campaign", static_cast<char>(LobbyTextColor::White)));
+        m_title->set_text(std::format("{}Error loading campaign", LobbyTextColor::White));
         return;
     }
 
-    auto title = std::format("{}{}", static_cast<char>(LobbyTextColor::White), selected->name);
+    auto title = std::format("{}{}", LobbyTextColor::White, selected->name);
     m_title->set_text(title);
 
     if (selected->description) {
-        auto description = std::format("{}{}", static_cast<char>(LobbyTextColor::Blue), *selected->description);
+        auto description = std::format("{}{}", LobbyTextColor::Blue, *selected->description);
         m_description->set_text(description);
     } else {
         m_description->set_text("");

@@ -9,7 +9,7 @@
 #include "config.h"
 #include "player_color.h"
 #include "hooks/interface/uifeatures/ui_features.h"
-#include "hooks/interface/console/console.h"
+#include "hooks/interface/hud/hud.h"
 #include "hooks/interface/mainmenu/glucustom.h"
 
 namespace hooks {

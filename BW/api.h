@@ -83,10 +83,21 @@ bool __assert_sprite(Sprite* sprite, const char* function, const char* file, u64
 template <>
 struct std::formatter<TextColor> {
     constexpr std::format_parse_context::iterator parse(std::format_parse_context& ctx) const {
-        return ctx.end();
+        return ctx.begin();
     }
 
     std::format_context::iterator format(TextColor c, std::format_context& ctx) const {
+        return std::format_to(ctx.out(), "{}", static_cast<char>(c));
+    }
+};
+
+template <>
+struct std::formatter<LobbyTextColor> {
+    constexpr std::format_parse_context::iterator parse(std::format_parse_context& ctx) const {
+        return ctx.begin();
+    }
+
+    std::format_context::iterator format(LobbyTextColor c, std::format_context& ctx) const {
         return std::format_to(ctx.out(), "{}", static_cast<char>(c));
     }
 };

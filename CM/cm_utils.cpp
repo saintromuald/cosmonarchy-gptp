@@ -345,7 +345,7 @@ void rescue_unit(Unit* unit, u32 player) {
     if (!bw::in_replay_or_witness()) {
         unit->sprite->selection_timer = 45;
         u32 sound_id = SoundId::Misc_TRescue_wav; // Default
-        switch (g_console_index) {
+        switch (g_hud_index) {
             case RaceId::Zerg:    sound_id = SoundId::Misc_ZRescue_wav; break;
             case RaceId::Terran:  sound_id = SoundId::Misc_TRescue_wav; break;
             case RaceId::Protoss: sound_id = SoundId::Misc_PRescue_wav; break;

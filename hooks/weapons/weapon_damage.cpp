@@ -93,7 +93,7 @@ static void swarming_omen_proc(Unit* target, u32 attacking_player_id) {
 namespace hooks {
     static void play_alert(Unit* unit, u32 sound_id) {
         u32 alert_id = SoundId::None;
-        switch (g_console_index) {
+        switch (g_hud_index) {
             case RaceId::Terran:  alert_id = SoundId::AlertTerran;  break;
             case RaceId::Protoss: alert_id = SoundId::AlertProtoss; break;
             case RaceId::Zerg:    alert_id = SoundId::AlertZerg;    break;

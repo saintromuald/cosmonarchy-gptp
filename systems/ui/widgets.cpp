@@ -72,26 +72,7 @@ static Widget& set_exclusive_flag(Widget& widget, DialogFlags::Enum group_mask, 
 // Event handling
 // --------------------------------
 static u32 default_interaction_function(bw::Dialog& dialog, DialogEvent* event) {
-    auto bindlg = dialog.to_bindlg();
-    switch (dialog.type) {
-        case DialogControlType::DialogBoxDC:           return helper::default_interaction_dialog(bindlg, event);
-        case DialogControlType::Button:                return helper::default_interaction_button(bindlg, event);
-        case DialogControlType::DefaultButton:         return helper::default_interaction_button(bindlg, event);
-        case DialogControlType::OptionButton:          return helper::default_interaction_option(bindlg, event);
-        case DialogControlType::CheckBox:              return helper::default_interaction_checkbox(bindlg, event);
-        case DialogControlType::Image:                 return helper::default_interaction_image(bindlg, event);
-        case DialogControlType::HorizontalScrollBar:   return helper::default_interaction_slider(bindlg, event);
-        case DialogControlType::VerticalScrollBar:     return helper::default_interaction_slider(bindlg, event);
-        case DialogControlType::TextInput:             return helper::default_interaction_textinput(bindlg, event);
-        case DialogControlType::LabelLeftAlign:        return helper::default_interaction_label(bindlg, event);
-        case DialogControlType::LabelCenterAlign:      return helper::default_interaction_label(bindlg, event);
-        case DialogControlType::LabelRightAlign:       return helper::default_interaction_label(bindlg, event);
-        case DialogControlType::ListBox:               return helper::default_interaction_listbox(bindlg, event);
-        case DialogControlType::ComboBox:              return helper::default_interaction_combobox(bindlg, event);
-        case DialogControlType::LightUpButton:         return helper::default_interaction_lightup(bindlg, event);
-    }
-    assert(!"Incorrect control type");
-    return 1;
+    return helper::g_default_dialog_interaction_functions[static_cast<size_t>(dialog.type)](&dialog, event);
 }
 
 static u32 option_button_handle_event(Widget& widget, DialogEvent* event) {
@@ -113,15 +94,18 @@ static u32 top_dialog_handle_event(Widget& widget, DialogEvent* event) {
     Group* group = widget.parent();
     if (group && event->number_order == DialogEventType_Dialog) {
         switch (event->user) {
-            case DialogUserType_InitChildren:
+            case DialogUserType_InitChildren: {
                 group->on_top_dialog_init_children(widget);
-                break;
-            case DialogUserType_Create:
+            } break;
+            case DialogUserType_Create: {
                 group->on_top_dialog_create(widget);
-                break;
-            case DialogUserType_Destroy:
+            } break;
+            case DialogUserType_Destroy: {
                 group->on_top_dialog_destroy(widget);
-                break;
+            } break;
+            case DialogUserType_MouseOver: {
+                if (group->passthrough_mouse()) return 0;
+            } break;
         }
     }
     return default_interaction_function(*widget.dialog(), event);
@@ -287,7 +271,7 @@ Widget* Widget::show() {
         scrollbar->flags |= DialogFlags::Visible | DialogFlags::UpdateNeeded;
         helper::update_dialog(scrollbar->to_bindlg());
     }
-    invalidate();
+    invalidate(true);
     return this;
 }
 
@@ -708,17 +692,17 @@ void Widget::set_screen_bounds(DialogBounds area) {
         : area;
 }
 
-void Widget::invalidate() {
-    if (!(m_dialog.flags & DialogFlags::UpdateNeeded)) {
+void Widget::invalidate(bool force_refresh) {
+    if (!(m_dialog.flags & DialogFlags::UpdateNeeded) || force_refresh) {
         m_dialog.flags |= DialogFlags::UpdateNeeded;
         helper::update_dialog(m_dialog.to_bindlg());
     }
 }
 
-void Widget::invalidate_parent() {
+void Widget::invalidate_parent(bool force_refresh) {
     auto* parent = m_dialog.parent;
     if (!parent) return;
-    if (!(parent->flags & DialogFlags::UpdateNeeded)) {
+    if (!(parent->flags & DialogFlags::UpdateNeeded) || force_refresh) {
         parent->flags |= DialogFlags::UpdateNeeded;
         helper::update_dialog(parent->to_bindlg());
     }
@@ -1311,6 +1295,44 @@ void Modal::on_top_dialog_create(Widget& top) {
 
 void Modal::on_top_dialog_destroy(Widget& top) {
     helper::menu_pop_z_index(top.dialog()->to_bindlg());
+}
+
+// --------------------------------
+// Hud
+// --------------------------------
+Hud::Hud(DialogBounds bounds) : Group() {
+    m_main = make(bounds, DialogControlType::DialogBoxDC, 0);
+    m_main->dialog()->data<bw::MenuData>()->backup_surface.width = bounds.w();
+    m_main->dialog()->data<bw::MenuData>()->backup_surface.height = bounds.h();
+    // ReverseDialogDirection puts us in the in-game repaint pass (FUN_0041c7b0 at 0x0041c7b0)
+    m_main->dialog()->flags = defaults::Dialog | DialogFlags::ReverseDialogDirection;
+    m_main->m_group = this;
+}
+
+Hud::~Hud() {
+    helper::destroy_dialog(m_main->dialog()->to_bindlg());
+}
+
+void Hud::initialize() {
+    initialize_widget_dialog(m_main->dialog());
+}
+
+void Hud::show() {
+    auto dialog = m_main->dialog();
+    dialog->flags |= DialogFlags::Visible;
+    dialog->flags |= DialogFlags::UpdateNeeded;
+    helper::update_dialog(dialog->to_bindlg());
+}
+
+void Hud::hide() {
+    auto dialog = m_main->dialog();
+    dialog->flags &= ~DialogFlags::Visible;
+    dialog->flags |= DialogFlags::UpdateNeeded;
+    helper::update_dialog(dialog->to_bindlg());
+}
+
+bool Hud::is_hidden() const {
+    return !(m_main->dialog()->flags & DialogFlags::Visible);
 }
 
 namespace {

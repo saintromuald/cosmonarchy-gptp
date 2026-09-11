@@ -10,7 +10,7 @@ void glu_provider_select(bool from_crownlink) {
 
     g_connect_bin = load_bin_file("rez\\gluConn.bin").release();
 
-    auto result = helper::glu_load_bin_dialog(g_connect_bin, (BinDlgProc)0x004bae20);
+    auto result = helper::glu_load_bin_dialog(g_connect_bin, (bw::DialogInteraction*)0x004bae20);
     bool force_refresh = false;
     switch (static_cast<GluConnControls>(result)) {
     case GluConnControls::OkButton: {

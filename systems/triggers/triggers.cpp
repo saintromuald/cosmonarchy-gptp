@@ -13,6 +13,8 @@
 #include "graphics/graphics.h"
 #include "aise_signal.h"
 #include "CampaignManager.h"
+#include "hooks/interface/hud/hud_manager.h"
+#include <algorithm>
 #include <limits>
 #include "../scripting/scripting.h"
 
@@ -1065,6 +1067,25 @@ Registry g_triggers = Registry()
         if (player == g_local_nation_id) {
             g_globals->current_advisor = advisor;
         }
+    })
+    .add_action("change_hud", [](Context& ctx, Identifier identifier) {
+        if (!g_hud_manager) {
+            ctx.error("change_hud: hud manager not initialized");
+            return;
+        }
+        const std::string_view name{identifier};
+        if (!g_hud_manager->has_hud(name)) {
+            ctx.error("change_hud: unknown hud '{}'", name);
+            return;
+        }
+        g_hud_manager->change(name);
+    })
+    .add_action("hud_view_mode", [](Context& ctx, HudViewMode mode) {
+        if (!g_hud_manager) {
+            ctx.error("hud_view_mode: hud manager not initialized");
+            return;
+        }
+        g_hud_manager->set_view_mode(mode);
     })
     .add_action("neutral_hostile", [](Context& ctx, bool state) {
         auto& cm_player = g_globals->players[ctx.player()];

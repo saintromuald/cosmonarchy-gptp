@@ -4888,6 +4888,6 @@ namespace hooks {
     // May need a special case using the original array address and count when in replay if modified
     void statbtn_bin_custom_ctrl_id(BinDlg* dialog) {
         helper::register_user_dialog_action(dialog, Btn_fxnInteractFuncs.data(), sizeof(Btn_fxnInteractFuncs));
-        helper::bindlg_blit_surface(dialog);
+        helper::bindlg_blit_surface(dialog->to_dialog());
     }
 }

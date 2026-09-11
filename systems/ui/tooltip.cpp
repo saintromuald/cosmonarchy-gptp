@@ -257,14 +257,14 @@ void Tooltip::rasterize(u8* pixels, v2u16 size) const {
     }
 }
 
-static u32 __fastcall tooltip_display_draw(bw::Dialog* dialog, DialogEvent*, u32, void*) {
-    if (!(dialog->flags & DialogFlags::Visible)) return 1;
+static void __fastcall tooltip_display_draw(bw::Dialog* dialog, DialogEvent*, u32, void*) {
+    if (!(dialog->flags & DialogFlags::Visible)) return;
     auto* widget = static_cast<Widget*>(dialog->user);
-    if (!widget || !widget->parent()) return 1;
+    if (!widget || !widget->parent()) return;
     auto* controller = widget->parent()->root()->tooltip_controller();
-    if (!controller) return 1;
+    if (!controller) return;
     controller->draw();
-    return 1;
+    return;
 }
 
 TooltipController::TooltipController() = default;
