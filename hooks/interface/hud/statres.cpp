@@ -7,6 +7,7 @@
 #include "hooks/interface/mainmenu/glucustom.h" // For g_tfontgame_image_data
 #include "player_color.h"
 #include "hooks/interface/hud/hud.h"
+#include "hooks/interface/hud/hud_manager.h"
 #include "systems/triggers/trigger_system.h"
 #include "config.h"
 #include "hooks/interface/uifeatures/ui_features.h"
@@ -393,6 +394,7 @@ static void __fastcall stat_res_timer_proc(BinDlg* dialog, u16 index_unused) { /
     }
 
     g_graphics.reset_stat_res_graphics();
+    if (g_hud_manager && g_hud_manager->is_hidden()) return;
     u32 local_player = g_local_nation_id;
     v2u16 pos = {434, 3};//x is dialog->bounds.left of the third row element (from the right), minus 2. -DF
 
