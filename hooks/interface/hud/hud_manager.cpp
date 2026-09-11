@@ -230,7 +230,9 @@ void HudManager::load_hud_unique() {
         reload_bitmap(g_statdata_progressbar_full,  m_current->progressbar_full.c_str());
     }
     load_command_buttons();
-    load_statf10();
+    if (g_stat_f10_dialog) {
+        refresh_backdrop(g_stat_f10_dialog);
+    }
     load_textbox();
     helper::load_minimap();
 
@@ -309,10 +311,6 @@ void HudManager::unload_hud_unique() {
     if (g_textbox_dialog) {
         helper::destroy_dialog(g_textbox_dialog);
         g_textbox_dialog = nullptr;
-    }
-    if (g_stat_f10_dialog) {
-        helper::destroy_dialog(g_stat_f10_dialog);
-        g_stat_f10_dialog = nullptr;
     }
     if (g_statres_dialog) {
         helper::destroy_dialog(g_statres_dialog);

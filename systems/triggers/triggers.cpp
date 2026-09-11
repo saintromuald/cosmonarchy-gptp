@@ -1068,21 +1068,21 @@ Registry g_triggers = Registry()
             g_globals->current_advisor = advisor;
         }
     })
-    .add_action("change_hud", [](Context& ctx, Identifier identifier) {
+    .add_action("set_hud", [](Context& ctx, Identifier identifier) {
         if (!g_hud_manager) {
-            ctx.error("change_hud: hud manager not initialized");
+            ctx.error("hud manager not initialized");
             return;
         }
         const std::string_view name{identifier};
         if (!g_hud_manager->has_hud(name)) {
-            ctx.error("change_hud: unknown hud '{}'", name);
+            ctx.error("unknown hud '{}'", name);
             return;
         }
         g_hud_manager->change(name);
     })
-    .add_action("hud_view_mode", [](Context& ctx, HudViewMode mode) {
+    .add_action("set_hud_visibility", [](Context& ctx, HudViewMode mode) {
         if (!g_hud_manager) {
-            ctx.error("hud_view_mode: hud manager not initialized");
+            ctx.error("hud manager not initialized");
             return;
         }
         g_hud_manager->set_view_mode(mode);
