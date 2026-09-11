@@ -89,6 +89,7 @@ private:
 };
 
 struct BinDlg;
+namespace bw { struct Dialog; }
 using BinDlgProc = u32(__fastcall*)(BinDlg*, DialogEvent*);
 using TimerCallback = void(__fastcall*)(BinDlg*, u16 index);
 
@@ -283,6 +284,9 @@ struct BinDlg {
             /* 0x4E */ unk_t       unk_4e[8];                   // 35,0,0,0,0,0,0,0
         } LightUpButton0x46;
     };
+
+    bw::Dialog* to_dialog();
+    const bw::Dialog* to_dialog() const;
 };
 
 C_ASSERT(sizeof(BinDlg) == 86); //0x56
@@ -292,7 +296,7 @@ namespace bw {
 struct Dialog;
 
 typedef u32 __fastcall DialogInteraction(Dialog*, DialogEvent*);
-typedef u32 __fastcall DialogDraw(Dialog*, DialogEvent*, u32 user, void* draw_context);
+typedef void __fastcall DialogDraw(Dialog*, DialogEvent*, u32 user, void* draw_context);
 
 // -------------------------------------------------------------------------------------
 // Data Union (0x36) members. This union is generally used for data used in interactions
@@ -464,6 +468,12 @@ struct Dialog {
     BinDlg* to_bindlg() { return reinterpret_cast<BinDlg*>(this); }
     const BinDlg* to_bindlg() const { return reinterpret_cast<const BinDlg*>(this); }
 };
+} // namespace bw
+
+inline bw::Dialog* BinDlg::to_dialog() { return reinterpret_cast<bw::Dialog*>(this); }
+inline const bw::Dialog* BinDlg::to_dialog() const { return reinterpret_cast<const bw::Dialog*>(this); }
+
+namespace bw {
 
 // Natvis / debug-info anchor.
 //

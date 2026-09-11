@@ -130,7 +130,7 @@
 #include "hooks/limits/tbl_extender.h"
 #include "BW/game_runner.h"
 #include "hooks/fraud_launcher.h"
-#include "hooks/interface/console/console.h"
+#include "hooks/interface/hud/hud.h"
 #include "hooks/race_randomization.h"
 #include "hooks/interface/mainmenu/custom_glues.h"
 #include "hooks/snp.h"
@@ -955,7 +955,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     hooks::inject_tbl_extender();
 
     hooks::inject_menu_hooks();
-    hooks::inject_console_hooks();
+    hooks::inject_hud_hooks();
     hooks::inject_randomization_hooks();
     hooks::inject_custom_glues();
     hooks::inject_snp_hooks();

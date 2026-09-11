@@ -127,5 +127,6 @@ namespace hooks {
 		jump_patch(play_unit_ready_sound_wrapper,			0x0048F440, 3);
 		jump_patch(play_sound_from_unit_wrapper,			0x0048ED50, 0);
 		jump_patch(play_sound_at_pos_wrapper,				0x0048EC10, 0);
+		jump_patch(reset_race_audio_state,					0x0048FB40);
 	}
 }

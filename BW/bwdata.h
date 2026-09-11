@@ -281,7 +281,7 @@ BW_REF(u32,					g_selection_sound_counter,	0x00640548);
 BW_REF(u32,					g_last_random_sfx_id,		0x006D5BE0);
 
 // For load_race_grp_and_sounds
-BW_REF(u8,				g_console_index,				0x0057F1E2);
+BW_REF(u8,				g_hud_index,				0x0057F1E2);
 BW_REF(u16,				g_current_music_id,				0x0057F1DE);
 BW_ARRAY(u8, 3,         g_campaign_first_mission_bw,	0x005122C0);
 BW_ARRAY(u8, 3,         g_campaign_first_mission,		0x005122BC);
@@ -917,6 +917,7 @@ BW_DATA(PlayerFlags<u8>*,		player_alliance,			0x0058D634); // See bw::is_allied_
 BW_DATA(PlayerFlags<u32>*,		player_vision,				0x0057F1EC);
 
 BW_DATA(Unit**,					g_active_portrait_unit,		0x00597248);
+BW_ARRAY(u32, 12,				g_old_client_selection_group, 0x00597208); // zeroed in unload_hud
 
 BW_DATA_REF(AI_Main*,			g_aiscript_controller,		0x0068FEE8);
 BW_DATA(AiRegion**,				g_ai_region_captains,		0x0069A604);
@@ -994,7 +995,7 @@ BW_DATA(Box16*,			tooltip_required_area,			0x006CE0D8);
 
 // For do_attack_notify_unit
 BW_DATA(char*,			g_palette_index_reference,		0x006CEB20); // sizeof at least 20
-BW_DATA(u32*,			notify_cooldown,				0x00640870);
+BW_REF(u32,				notify_cooldown,				0x00640870);
 //BW_DATA(SoundData*,	g_sound_data,					0x006D1270); // THIS IS NOT EXTENDED!!!
 
 // For stat_data_unit_wireframe_select_update
@@ -1080,7 +1081,7 @@ BW_DATA(s32*,			g_big_volume_array,					0x005008F0);
 BW_DATA(u32*,			g_game_speed_replay_modifiers,		0x005124D8);
 
 // For play_yes_unit_responses
-BW_DATA(Unit**,			g_place_building_parent_unit,		0x00640874);
+BW_REF(Unit*,			g_last_response_unit,		0x00640874);
 
 // For sprite_to_iscript_loop
 BW_DATA(u16*,			g_map_tile_height,					0x0057F1D6);
@@ -1292,6 +1293,7 @@ BW_REF(s8,				    g_hide_minimap_terrain,			0x006D5BBF);
 BW_REF(b32,					g_units_recalled,				0x0063FF50);
 
 BW_REF(BinDlg*,				g_statdata_dialog,				0x0068C1F0);
+BW_REF(BinDlg*,				g_statport_dialog,				0x0068AC8C);
 
 // For create_initial_melee_units
 BW_REF(StartingUnits,		g_starting_units,				0x00596871);
@@ -1363,10 +1365,10 @@ BW_REF(SPIFunctions*,       g_spi_functions,        0x1505e620);
 
 //-------- end storm.dll --------//
 
-BW_REF(BinDlg*, g_connect_bin, 0x006d5a24);
+BW_REF(bw::Dialog*, g_connect_bin, 0x006d5a24);
 BW_REF(BinDlg*, g_login_bin, 0x005999c4);
-BW_REF(BinDlg*, g_join_bin, 0x00599a80);
-BW_REF(BinDlg*, g_chat_bin, 0x006d5a30);
+BW_REF(bw::Dialog*, g_join_bin, 0x00599a80);
+BW_REF(bw::Dialog*, g_chat_bin, 0x006d5a30);
 BW_REF(BinDlg*, g_minimap_bin, 0x0059cb5c);
 
 // For bindlg_load_background_palette / dialog_swish_in
@@ -1392,24 +1394,25 @@ BW_ARRAY(RaceId::Enum, 8, g_race_array, 0x0057f1c0);
 // For sound loading override
 BW_REF(u32, g_sound_cooldown_1, 0x0064087c);
 BW_REF(u32, g_sound_cooldown_2, 0x00640878);
-BW_REF(b32, g_racial_sounds_loaded, 0x006d5bdc);
 
-BW_ARRAY(u16, 327, g_zerg_sounds, 0x006402b8);
-BW_ARRAY(u16, 413, g_terran_sounds, 0x0063ff78);
-BW_ARRAY(u16, 396, g_protoss_sounds, 0x00640550);
-
-BW_ARRAY(u16*, 3, g_racial_sound_arrays, 0x00513628);
+// preload_racial_sound_buffers (0048fb40) loaded default sounds to these arrays but we've replaced them
+// Leaving these here for documentation purposes
+// BW_REF(b32, g_racial_sounds_loaded_replaced, 0x006d5bdc);
+// BW_ARRAY(u16, 327, g_zerg_sounds_replaced, 0x006402b8);
+// BW_ARRAY(u16, 413, g_terran_sounds_replaced, 0x0063ff78);
+// BW_ARRAY(u16, 396, g_protoss_sounds_replaced, 0x00640550);
+// BW_ARRAY(u16*, 3, g_racial_sound_arrays_replaced, 0x00513628);
 
 BW_REF(b32, g_low_memory, 0x006d0f10);
 BW_REF(b32, g_low_memory_load_graphic, 0x006d1210);
 
-// Calculated in console_find_vertical_bounds
+// Calculated in hud_find_vertical_bounds
 // Used for trimming the console image in FUN_004d114
-BW_REF(u32, g_console_first_content_row, 0x00596b6c);
-BW_REF(u32, g_console_last_content_row, 0x00596b74);
+BW_REF(u32, g_hud_first_content_row, 0x00596b6c);
+BW_REF(u32, g_hud_last_content_row, 0x00596b74);
 BW_REF(SurfaceContext*, g_surface_list_head, 0x0051a338);
-BW_REF(Bitmap, g_console_image, 0x00597240);
-BW_REF(SurfaceContext*, g_console_surface, 0x00597238);
+BW_REF(Bitmap, g_hud_image, 0x00597240);
+BW_REF(SurfaceContext*, g_hud_surface, 0x00597238);
 
 // For load_statfluf_mouse_regions
 BW_ARRAY(MousePixelmaskRegion, 6, g_statfluf_mouse_regions_z, 0x005152a8);
@@ -1424,15 +1427,15 @@ BW_REF(Bitmap, g_statdata_progressbar_empty, 0x006d5cbc);
 BW_REF(Bitmap, g_statdata_progressbar_full, 0x006d5cc4);
 BW_REF(Bitmap, g_cmdbuttons_progressbar_empty, 0x006d5cac);
 BW_REF(Bitmap, g_cmdbuttons_progressbar_full, 0x006d5cb4);
-BW_REF(BinDlg*, g_textbox_dialog, 0x0068c140);
-BW_REF(BinDlg*, g_statlb_dialog, 0x00597284);
+BW_REF(bw::Dialog*, g_textbox_dialog, 0x0068c140);
+BW_REF(bw::Dialog*, g_statlb_dialog, 0x00597284);
 BW_REF(b32, g_show_statlb, 0x00597288);
 BW_REF(u8, g_statlb_unk, 0x0059728c);
-BW_REF(BinDlg*, g_statres_dialog, 0x0068c234);
+BW_REF(bw::Dialog*, g_statres_dialog, 0x0068c234);
 BW_REF(u32, g_statres_unused1, 0x0068c230);
 BW_REF(u32, g_statres_unused2, 0x0068c22c);
 BW_REF(GrpHead*, g_wirefram_grp, 0x0068c204);
-BW_REF(BinDlg*, g_stat_f10_dialog, 0x0068c224);
+BW_REF(bw::Dialog*, g_stat_f10_dialog, 0x0068c224);
 BW_REF(u16, g_minimap_move_to_tile_y, 0x0059c19c);
 BW_REF(u16, g_minimap_move_to_tile_x, 0x0059cc70);
 BW_REF(GrpHead*, g_minimap_blink_grp, 0x0059c1ac);

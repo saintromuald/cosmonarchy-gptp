@@ -9,6 +9,7 @@ namespace hooks
 	void play_unit_ready_sound(Unit* unit);														// 0048F440
 	bool play_sound_from_unit(SoundId::Enum sound_id, Unit* unit, bool play, s32 min_volume);	// 0048ED50
 	void play_sound_at_pos(SoundId::Enum sound_id, v2u16 pos, bool play, s32 min_volume);		// 0048EC10
+	void __stdcall reset_race_audio_state(bool unused);											// 0048FB40
 
 	// Internal funcs:
 	u32 get_random_yes_unit_response_internal(Unit* unit, UnitResponseContext context);

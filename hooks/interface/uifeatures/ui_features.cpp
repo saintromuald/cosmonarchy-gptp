@@ -8,6 +8,7 @@
 #include "systems/triggers/trigger_objectives.h"
 #include "hooks/audiovisuals/sfxhooks.h"
 #include "hooks/game_hooks.h"
+#include "hooks/interface/hud/hud_manager.h"
 #include "systems/triggers/trigger_system.h"
 #include "hooks/interface/minimap.h"
 #include "Game.h"
@@ -104,6 +105,8 @@ namespace hooks {
     }
 
     void draw_ui_features() {
+        if (g_hud_manager && g_hud_manager->is_hidden()) return;
+
         g_ui_text_pos = { 10, 3 };
         if (*leaderboard_type) {
             g_ui_text_pos.x += 80;

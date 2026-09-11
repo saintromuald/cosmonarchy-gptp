@@ -60,17 +60,17 @@ namespace helper {
     BW_ARRAY(bw::DialogDraw*,        15, g_default_dialog_draw_functions,        0x00501504);
 
     // Per control type
-    BW_FUNC(0x00418eb0, u32 __fastcall, default_interaction_dialog,   BinDlg* dialog, DialogEvent* event);
-    BW_FUNC(0x004e1c20, u32 __fastcall, default_interaction_button,   BinDlg* dialog, DialogEvent* event);
-    BW_FUNC(0x004e1bc0, u32 __fastcall, default_interaction_option,   BinDlg* dialog, DialogEvent* event);
-    BW_FUNC(0x004e1b50, u32 __fastcall, default_interaction_checkbox, BinDlg* dialog, DialogEvent* event);
-    BW_FUNC(0x004191e0, u32 __fastcall, default_interaction_image,    BinDlg* dialog, DialogEvent* event);
-    BW_FUNC(0x00415af0, u32 __fastcall, default_interaction_slider,   BinDlg* dialog, DialogEvent* event);
-    BW_FUNC(0x00416980, u32 __fastcall, default_interaction_textinput,  BinDlg* dialog, DialogEvent* event);
-    BW_FUNC(0x00419190, u32 __fastcall, default_interaction_label,    BinDlg* dialog, DialogEvent* event);
-    BW_FUNC(0x0041baa0, u32 __fastcall, default_interaction_listbox,  BinDlg* dialog, DialogEvent* event);
-    BW_FUNC(0x0041bc40, u32 __fastcall, default_interaction_combobox, BinDlg* dialog, DialogEvent* event);
-    BW_FUNC(0x004e17e0, u32 __fastcall, default_interaction_lightup,  BinDlg* dialog, DialogEvent* event);
+    BW_FUNC(0x00418eb0, u32 __fastcall, default_interaction_dialog,    bw::Dialog* dialog, DialogEvent* event);
+    BW_FUNC(0x004e1c20, u32 __fastcall, default_interaction_button,    bw::Dialog* dialog, DialogEvent* event);
+    BW_FUNC(0x004e1bc0, u32 __fastcall, default_interaction_option,    bw::Dialog* dialog, DialogEvent* event);
+    BW_FUNC(0x004e1b50, u32 __fastcall, default_interaction_checkbox,  bw::Dialog* dialog, DialogEvent* event);
+    BW_FUNC(0x004191e0, u32 __fastcall, default_interaction_image,     bw::Dialog* dialog, DialogEvent* event);
+    BW_FUNC(0x00415af0, u32 __fastcall, default_interaction_slider,    bw::Dialog* dialog, DialogEvent* event);
+    BW_FUNC(0x00416980, u32 __fastcall, default_interaction_textinput, bw::Dialog* dialog, DialogEvent* event);
+    BW_FUNC(0x00419190, u32 __fastcall, default_interaction_label,     bw::Dialog* dialog, DialogEvent* event);
+    BW_FUNC(0x0041baa0, u32 __fastcall, default_interaction_listbox,   bw::Dialog* dialog, DialogEvent* event);
+    BW_FUNC(0x0041bc40, u32 __fastcall, default_interaction_combobox,  bw::Dialog* dialog, DialogEvent* event);
+    BW_FUNC(0x004e17e0, u32 __fastcall, default_interaction_lightup,   bw::Dialog* dialog, DialogEvent* event);
 
     BW_FUNC(0x004ab840, u32* __stdcall, glu_main_load_ums_templates);
     BW_FUNC(0x004c4680, void __stdcall, glu_login_leave_game);
@@ -81,7 +81,7 @@ namespace helper {
     BW_FUNC(0x004c46e0, void __stdcall, process_make_game_public_command);
     BW_FUNC(0x00471670, void __stdcall, process_move_to_slot_request, const Command_MoveToForce* command, u32 sender);
     BW_FUNC(0x00470d10, void __stdcall, register_network_player, u8 player_id, u16 flags, u16 unk_1, u16 protocol_version);
-    BW_FUNC(0x004513f0, void __stdcall, chat_update_race_slots, BinDlg* dialog);
+    BW_FUNC(0x004513f0, void __stdcall, chat_update_race_slots, bw::Dialog* dialog);
     BW_FUNC(0x004b9bf0, void __stdcall, glu_chat_dlgproc_create, BinDlg* dialog);
     BW_FUNC(0x004b9ac0, void __stdcall, glu_chat_map_preview_init, BinDlg* dialog);
 
@@ -90,24 +90,27 @@ namespace helper {
     BW_FUNC(0x004a99c0, u32 __stdcall, find_first_available_slot);
     BW_FUNC(0x00472ab0, void __stdcall, add_player_to_active_list, u8* active_list, u32 sender);
     BW_FUNC(0x004c4160, void __stdcall, update_game_mode, u32 open_slots);
-
     BW_FUNC(0x0041bc40, u32 __fastcall, generic_combobox_interact, BinDlg* dialog, DialogEvent* event);
     BW_FUNC(0x004e1b50, u32 __fastcall, generic_checkbox_interact, BinDlg* dialog, DialogEvent* event);
     BW_FUNC(0x004e1560, u32 __fastcall, generic_menu_button, BinDlg* dialog, DialogEvent* event);
     
     BW_FUNC(0x00450a60, u32 __fastcall, chat_race_combobox_interact, BinDlg* dialog, DialogEvent* event);
 
-    // Console functions
-    BW_FUNC(0x0041d470, void __stdcall, console_update_surface_masks);
+    // Hud functions
+    BW_FUNC(0x0041d470, void __stdcall, hud_update_surface_masks);
+    BW_FUNC(0x00456ef0, void __cdecl,   unload_statdata_bar);   // destroys statdata dialog + progressbar buffers
+    BW_FUNC(0x00458cf0, void __cdecl,   unload_buttonset);      // destroys buttonset dialog + cmdbtns.grp + cmdicons.grp
+    BW_FUNC(0x0045e710, void __cdecl,   unload_statport);       // stops portrait video, destroys portrait dialog, frees portdata
+    BW_FUNC(0x00481480, void __cdecl,   reset_status_screen_area); // bw_refresh + reset status area to full-screen
     BW_FUNC(0x00456b40, void __fastcall, statdata_bar_update, BinDlg* dialog, DialogEvent* event);
     BW_FUNC(0x00458730, void __fastcall, cmdbuttons_bar_update, BinDlg* dialog, DialogEvent* event);
     BW_FUNC(0x00459B00, u32 __fastcall, statbtn_dlgproc, BinDlg* dialog, DialogEvent* dlg_event);
-    BW_FUNC(0x004f36c0, u32 __fastcall, textbox_dlgproc, BinDlg* dialog, DialogEvent* dlg_event);
-    BW_FUNC(0x004becf0, u32 __fastcall, statlb_dlgproc, BinDlg* dialog, DialogEvent* dlg_event);
+    BW_FUNC(0x004f36c0, u32 __fastcall, textbox_dlgproc, bw::Dialog* dialog, DialogEvent* dlg_event);
+    BW_FUNC(0x004becf0, u32 __fastcall, statlb_dlgproc, bw::Dialog* dialog, DialogEvent* dlg_event);
     BW_FUNC(0x004e5910, u32 __fastcall, statres_dlgproc, BinDlg* dialog, DialogEvent* dlg_event);
-    BW_FUNC(0x004f5240, u32 __fastcall, stat_f10_dlgproc, BinDlg* dialog, DialogEvent* dlg_event);
-    BW_FUNC(0x004b8590, u32 __fastcall, glujoin_dlgproc, BinDlg* dialog, DialogEvent* dlg_event);
-    BW_FUNC(0x004f4d60, u32 __fastcall, statfluf_dlgproc, BinDlg* dialog, DialogEvent* dlg_event);
+    BW_FUNC(0x004f5240, u32 __fastcall, stat_f10_dlgproc, bw::Dialog* dialog, DialogEvent* dlg_event);
+    BW_FUNC(0x004b8590, u32 __fastcall, glujoin_dlgproc, bw::Dialog* dialog, DialogEvent* dlg_event);
+    BW_FUNC(0x004f4d60, u32 __fastcall, statfluf_dlgproc, bw::Dialog* dialog, DialogEvent* dlg_event);
     BW_FUNC(0x004a5a80, void __stdcall, load_minimap);
     BW_FUNC(0x0045f320, void __stdcall, load_statport);
     BW_FUNC(0x00458570, void __stdcall, load_stat_data);
@@ -124,11 +127,12 @@ namespace helper {
 
     BW_FUNC(0x0045B850, void __stdcall, aiscript_cases, AiScript* script);
     
+    void hud_destroy_top_surface(SurfaceContext* surface);  // 0041d5a0
     void glu_create(bool multiplayer); // 004af6d0
 
     bool has_money_can_make(Unit* builder, u32 unit_to_build);
 
-    // Console functions
+    // Hud functions
     DialogTheme* dialog_grp_construct(const char* filename, const char* log_filename, u32 log_line);
     void* load_graphic(const char* filename, u32* bytes_read, const char* log_filename, u32 log_line);
     void apply_dialog_theme(DialogTheme* theme);
@@ -656,8 +660,12 @@ namespace helper {
     // For stats_weapon_level / stats_armor_level
     char get_armor_count(Unit* unit, s32 a2);																							// 00453FC0
     void show_dialog(BinDlg* dialog);																								// 004186A0
-    s32 disable_dialog(BinDlg* dialog);																								// 00418640
-    void update_dialog(BinDlg* dialog);																								// 0041C400
+    
+    s32 disable_dialog(bw::Dialog* dialog);																								// 00418640
+    inline s32 disable_dialog(BinDlg* dialog) { return disable_dialog(dialog->to_dialog()); }
+    
+    void update_dialog(bw::Dialog* dialog);                                                                                         // 0041C400
+    inline void update_dialog(BinDlg* dialog) { update_dialog(dialog->to_dialog()); }
 
     //// bunker_hooks
     Unit* find_random_attack_target(Unit* unit);																					// 00442FC0
@@ -948,16 +956,24 @@ namespace helper {
     Image* create_healthbar(Sprite* sprite);
     void remove_hp_bar(Image* a1);
     void refund_all_queue_slots(Unit* unit);
-    void set_callback_timer(BinDlg* dialog, u16 timer_index, u32 time, TimerCallback callback);                     // 00416090
-    void clear_callback_timer(BinDlg* dialog, u16 timer_index);                                                     // 00416000
+    
+    void set_callback_timer(bw::Dialog* dialog, u16 timer_index, u32 time, TimerCallback callback);                 // 00416090
+    inline void set_callback_timer(BinDlg* dialog, u16 timer_index, u32 time, TimerCallback callback) { set_callback_timer(dialog->to_dialog(), timer_index, time, callback); }
+    
+    void clear_callback_timer(bw::Dialog* dialog, u16 timer_index);                                                 // 00416000
+    inline void clear_callback_timer(BinDlg* dialog, u16 timer_index) { clear_callback_timer(dialog->to_dialog(), timer_index); }
+    
     void remove_from_selections(Unit* unit);																		// 0049A7F0
     u32 fxn_interact(BinDlg* dialog, u32 data_struct_offset);
     void register_user_dialog_action(BinDlg* dialog, BinDlgProc* interact_funcs, u32 count);                        // 00418100
-    void enable_dialog(BinDlg* dialog);																			    // 00418E00
+
+    void enable_dialog(bw::Dialog* dialog);                                                                         // 00418E00
+    inline void enable_dialog(BinDlg* dialog) { enable_dialog(dialog->to_dialog()); }
+    
     void replay_stat_buttons(BinDlg* dialog);																		// 00427A80
     void update_command_card();																						// 004591D0
     void refresh_button_tooltip();																					// 00459770
-    void bindlg_blit_surface(BinDlg* dialog);																		// 004C35F0
+    void bindlg_blit_surface(bw::Dialog* dialog);																		// 004C35F0
     s32 req_check(u32 requirement_func, u16 requirement_var, u32 player, Unit* unit);
     void update_image_position_offset(Image* image);
 
@@ -1300,7 +1316,8 @@ namespace helper {
 
     void* process_options_change(BinDlg* control);															// 004C9780
     void load_dialog(const char* filename, void* function);													// 004F57A0
-    BinDlg** destroy_dialog(BinDlg* control);																// 00419EA0
+    void destroy_dialog(bw::Dialog* dialog);                                                                // 00419EA0
+    inline void destroy_dialog(BinDlg* dialog) { destroy_dialog(dialog->to_dialog()); }
 
     typedef void main_menu_options_custom_interact_func(BinDlg* control);
     extern main_menu_options_custom_interact_func* main_menu_options_custom_interact;
@@ -1689,7 +1706,10 @@ namespace helper {
 
     void load_campaign_progress();																												// 004B5050
     BinDlg* load_full_menu_dialog(u32 filename, void* default_value, char* unused, u32 read, char* log_filename, u32 log_line);					// 004DDBE0
-    u32 glu_load_bin_dialog(BinDlg* dialog, void* proc);																						// 0041A080
+    
+    u32 glu_load_bin_dialog(bw::Dialog* dialog, bw::DialogInteraction* proc);                                                                    // 0041A080
+    inline u32 glu_load_bin_dialog(BinDlg* dialog, void* proc) { return glu_load_bin_dialog(dialog->to_dialog(), (bw::DialogInteraction*)proc ); }
+    
     u32 change_menu();																															// 004DCFA0
     void store_selection_group_hp_and_type();																									// 004DCFA0
 
@@ -1744,20 +1764,33 @@ namespace helper {
 
     bool statport_button_press(BinDlg* dialog_1, BinDlg* dialog_2);				// 0045F0B0
     BYTE* statport_alloc();														// 0045E360
-    bool generic_dialog_interact(BinDlg* dialog, DialogEvent* dlg_event);		// 00418EB0
-    bool generic_common_interact(BinDlg* dialog, DialogEvent* dlg_event);		// 00418C40
-    bool generic_listbox_interact(BinDlg* dialog, DialogEvent* dlg_event);		// 0041baa0
+    
+    bool generic_dialog_interact(bw::Dialog* dialog, DialogEvent* event);		// 00418EB0
+    inline bool generic_dialog_interact(BinDlg* dialog, DialogEvent* event) { return generic_dialog_interact(dialog->to_dialog(), event); }
 
-    void glu_main_create(BinDlg* dialog);										// 004DB280
-    void dialog_swish_in(BinDlg* dialog);										// 004DE150
+    bool generic_common_interact(BinDlg* dialog, DialogEvent* dlg_event);		// 00418C40
+
+    void glu_main_create(bw::Dialog* dialog);                                   // 004DB280
+
+    void dialog_swish_in(bw::Dialog* dialog);                                   // 004DE150
+    inline void dialog_swish_in(BinDlg* dialog) { dialog_swish_in(dialog->to_dialog()); }
+
     void dialog_music_fade(u32 music_id);										// 004A6310
     void glu_main_destroy(BinDlg* dialog);										// 004DB140
     char load_glu_pok_bindlg(const char* string);								// 004B7180
     s32 select_game_mode(u32 game_mode);										// 004DB6E0
-    char dialog_swish_out(BinDlg* dialog);										// 004DD040
-    s32 load_staredit_process(BinDlg* dialog);									// 004DB490
+
+    char dialog_swish_out(bw::Dialog* dialog);                                  // 004DD040
+    inline char dialog_swish_out(BinDlg* dialog) { return dialog_swish_out(dialog->to_dialog()); }
+
+    s32 load_staredit_process(bw::Dialog* dialog);                              // 004DB490
     s32 glu_main_display_cdrom_error_bindlg();									// 004DB770
-    s32 register_menu_functions(BinDlgProc dialog_proc_array, BinDlg* dialog, u32 count, u32 palette); // 004DD9E0
+
+    s32 register_menu_functions(BinDlgProc dialog_proc_array, bw::Dialog* dialog, u32 count, u32 palette); // 004DD9E0
+    inline s32 register_menu_functions(BinDlgProc dialog_proc_array, BinDlg* dialog, u32 count, u32 palette) {
+        return register_menu_functions(dialog_proc_array, dialog->to_dialog(), count, palette);
+    }
+
     void game_menu_bindlg(BinDlg* dialog);										// 004CA370
     void game_menu_bindlg_bypass(BinDlg* dialog);								// 004CA450
 
@@ -1921,7 +1954,6 @@ namespace helper {
     void menu_pop_z_index(BinDlg* dialog);                                          // 004dcc00
     void glu_change_menu_palette(u32 fade_time);                                    // 0041e9e0
 
-    void enable_sound_list(u16* sounds_array);                                      // 004bccf0
     bool initialize_bnet(u32 provider_id);                                          // 00452a30
 
     graphics::Font* load_font(const char* font_name);                               // 0041fd10

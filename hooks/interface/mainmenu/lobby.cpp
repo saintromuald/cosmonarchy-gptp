@@ -92,9 +92,8 @@ void init_singleplayer_custom(BinDlg* dialog) { // 004AD850
         dialog = dialog->parent;
     }
 
-    auto children = get_children_by_index(dialog, GluCustomControls::PlayerRace1);
-    if (children.empty()) return;
-    BinDlg* player_race_combo = children[0];
+    BinDlg* player_race_combo = get_first_child_by_index(dialog, GluCustomControls::PlayerRace1);
+    if (!player_race_combo) return;
 
 
 

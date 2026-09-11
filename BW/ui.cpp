@@ -4,46 +4,26 @@
 #include "hooks/interface/mainmenu/glucustom.h"
 #include "storm/sfile.h"
 
-std::vector<BinDlg*> get_children_by_index(BinDlg* parent, s16 index) {
-    std::vector<BinDlg*> output;
-    if (!parent) return output;
-
-    if (parent->control_type != DialogControlType::DialogBoxDC) {
-        parent = parent->parent;
-        if (!parent) return output;
-    }
-    for (auto child = parent->child_dialog; child; child = child->next) {
-        if (child->index == index) output.push_back(child);
-    }
-    return output;
-}
-
-BinDlg* get_first_child_by_index(BinDlg* parent, s16 index) {
-    if (parent->control_type != DialogControlType::DialogBoxDC) {
-        parent = parent->parent;
-        if (!parent) return nullptr;
-    }
-    for (auto child = parent->child_dialog; child; child = child->next) {
+bw::Dialog* get_first_child_by_index(bw::Dialog* parent, s16 index) {
+    for (auto child : dialog_children(parent)) {
         if (child->index == index) return child;
     }
     return nullptr;
 }
 
-void show_dialogs_with_index(BinDlg* dialog, s16 index) {
-    auto children = get_children_by_index(dialog, index);
-    for (auto child : children) {
-        if (child) show_bin_dialog(child);
+void show_dialogs_with_index(bw::Dialog* dialog, s16 index) {
+    for (auto child : get_children_by_index(dialog, index)) {
+        show_bin_dialog(child);
     }
 }
 
-void hide_dialogs_with_index(BinDlg* dialog, s16 index) {
-    auto children = get_children_by_index(dialog, index);
-    for (auto child : children) {
-        if (child) hide_bin_dialog(child);
+void hide_dialogs_with_index(bw::Dialog* dialog, s16 index) {
+    for (auto child : get_children_by_index(dialog, index)) {
+        hide_bin_dialog(child);
     }
 }
 
-void update_dialog_visibility(BinDlg* dialog, s16 index, bool show) {
+void update_dialog_visibility(bw::Dialog* dialog, s16 index, bool show) {
     auto child = get_first_child_by_index(dialog, index);
     if (!child) return;
     if (show) {
@@ -53,17 +33,15 @@ void update_dialog_visibility(BinDlg* dialog, s16 index, bool show) {
     }
 }
 
-void enable_dialogs_with_index(BinDlg* dialog, s16 index) {
-    auto children = get_children_by_index(dialog, index);
-    for (auto child : children) {
-        if (child) helper::enable_dialog(child);
+void enable_dialogs_with_index(bw::Dialog* dialog, s16 index) {
+    for (auto child : get_children_by_index(dialog, index)) {
+        helper::enable_dialog(child);
     }
 }
 
-void disable_dialogs_with_index(BinDlg* dialog, s16 index) {
-    auto children = get_children_by_index(dialog, index);
-    for (auto child : children) {
-        if (child) helper::disable_dialog(child);
+void disable_dialogs_with_index(bw::Dialog* dialog, s16 index) {
+    for (auto child : get_children_by_index(dialog, index)) {
+        helper::disable_dialog(child);
     }
 }
 
@@ -101,9 +79,7 @@ void bindlg_load_image(const char* filename, Palette* palette, BinDlg* dialog, u
 void update_dialog_text(BinDlg* dialog, s16 index, const char* text) {
     if (!dialog || !text) return;
 
-    auto children = get_children_by_index(dialog, index);
-    for (auto child : children) {
-        if (!child) continue;
+    for (auto child : get_children_by_index(dialog, index)) {
         if (child->control_type == DialogControlType::TextInput) {
             safe_copy(*child->textbox_buffer, text);
             child->TextBox0x36.unkFlags36 |= 1;
@@ -158,14 +134,14 @@ MenuId::Enum menu_with_theme(GluTheme theme) {
     return MenuId::GlueChatroom;
 }
 
-void bindlg_load_background_pcx(BinDlg* dialog, const char* filename, bool apply_dynamic_theme) {
+void bindlg_load_background_pcx(bw::Dialog* dialog, const char* filename, bool apply_dynamic_theme) {
     if (dialog->bitmap.buffer) return;
     load_bitmap(filename, dialog->bitmap, &g_init_palette);
     g_background = dialog->bitmap;
     g_background_palette = g_init_palette;
     auto original_glues = g_gl_glues_mode;
     g_gl_glues_mode = g_gl_glues_mode >= MenuId::OriginalCount ? MenuId::GlueSelConn : g_gl_glues_mode;
-    helper::register_menu_functions(0, dialog, 0, 0);
+    helper::register_menu_functions(0, dialog->to_bindlg(), 0, 0);
     g_gl_glues_mode = original_glues;
     if (apply_dynamic_theme) {
         DynamicTheme::instance().apply();
@@ -187,7 +163,7 @@ void change_menu(bool force_refresh) {
     g_menu_z_index = 0;
 }
 
-void initialize_dialog(BinDlg* dialog, BinDlgProc dialogproc) { // 00419d20
+void initialize_bin_dialog(BinDlg* dialog, BinDlgProc dialogproc) { // 00419d20
     dialog->flags |= (DialogFlags::DrawActiveState | DialogFlags::VerticalAlignmentBottom);
     dialog->onInitDialog0x46.unk_function = nullptr;
     if (dialogproc) {
@@ -213,7 +189,28 @@ void initialize_dialog(BinDlg* dialog, BinDlgProc dialogproc) { // 00419d20
     dialog->flags &= ~DialogFlags::VerticalAlignmentBottom;
 }
 
-void quick_send_event(BinDlg* dialog, DialogUserType user_type, u16 param) {
+void initialize_widget_dialog(bw::Dialog* dialog, std::optional<bw::DialogInteraction*> interaction_function) { // 00419d20
+    dialog->flags |= (DialogFlags::DrawActiveState | DialogFlags::VerticalAlignmentBottom);
+    dialog->to_bindlg()->onInitDialog0x46.unk_function = nullptr; // TODO: Figure out what this is actually nulling and clean this up -Jesse
+    if (interaction_function) {
+        dialog->interaction_function = *interaction_function;
+    }
+
+    auto& area = dialog->data<bw::MenuData>()->backup_surface;
+    area.buffer = reinterpret_cast<u8*>(SMemAlloc(area.width * area.height));
+
+    dialog->index = 0;
+
+    quick_send_event(dialog, DialogUserType_Generic);
+    quick_send_event(dialog, DialogUserType_InitChildren);
+    quick_send_event(dialog, DialogUserType_Create);
+
+    helper::set_callback_timer(dialog->to_bindlg(), 12, 100, nullptr);
+
+    dialog->flags &= ~DialogFlags::VerticalAlignmentBottom;
+}
+
+void quick_send_event(bw::Dialog* dialog, DialogUserType user_type, u16 param) {
     if (!dialog->interaction_function) return;
     DialogEvent event{
         .user = user_type,
@@ -224,7 +221,7 @@ void quick_send_event(BinDlg* dialog, DialogUserType user_type, u16 param) {
     dialog->interaction_function(dialog, &event);
 }
 
-void show_bin_dialog(BinDlg* dialog) {
+void show_bin_dialog(bw::Dialog* dialog) {
     if (!dialog) return;
     if (dialog->flags & DialogFlags::Visible) return;
     DialogEvent event{
@@ -239,7 +236,7 @@ void show_bin_dialog(BinDlg* dialog) {
     }
 }
 
-void hide_bin_dialog(BinDlg* dialog) {
+void hide_bin_dialog(bw::Dialog* dialog) {
     if (!dialog) return;
     if (!(dialog->flags & DialogFlags::Visible)) return;
     DialogEvent event{
@@ -261,78 +258,11 @@ void hide_bin_dialog(BinDlg* dialog) {
     }
 }
 
-smem::ptr<BinDlg> load_bin_file(const char* filename) {
-    auto output = sfile::load_file(filename).unsafe_cast<BinDlg>();
+smem::ptr<bw::Dialog> load_bin_file(const char* filename) {
+    auto output = sfile::load_file(filename).unsafe_cast<bw::Dialog>();
     output.get()->flags |= DialogFlags::HeapAllocated;
-    helper::fixup_and_init_dialog_data(output.get(), helper::alloc_background_image);
+    helper::fixup_and_init_dialog_data(output.get()->to_bindlg(), helper::alloc_background_image);
     return output;
-}
-
-std::vector<BinDlg*> splice_children_into(BinDlg* dest, BinDlg* source,
-    s16 offset_x, s16 offset_y, s16 index_base, bool bounds_are_ltrb) {
-    std::vector<BinDlg*> out;
-    if (!dest || !source) return out;
-
-    BinDlg* first = source->child_dialog;
-    if (!first) return out;
-
-    for (BinDlg* child = first; child; child = child->next) {
-        child->parent = dest;
-        if (bounds_are_ltrb) {
-            child->bounds.left   += offset_x;
-            child->bounds.right  += offset_x;
-            child->bounds.top    += offset_y;
-            child->bounds.bottom += offset_y;
-        } else {
-            child->bounds.x += offset_x;
-            child->bounds.y += offset_y;
-        }
-        child->index = static_cast<u16>(child->index + index_base);
-        out.push_back(child);
-    }
-
-    source->child_dialog = nullptr;
-
-    if (dest->child_dialog) {
-        BinDlg* tail = dest->child_dialog;
-        while (tail->next) tail = tail->next;
-        tail->next = first;
-    } else {
-        dest->child_dialog = first;
-    }
-
-    return out;
-}
-
-CompositeBinDlg::CompositeBinDlg(const char* main_filename)
-    : m_main(load_bin_file(main_filename)) {
-}
-
-u32 CompositeBinDlg::add_tab(const char* tab_filename, s16 offset_x, s16 offset_y, s16 index_base) {
-    auto tab_bin = load_bin_file(tab_filename);
-    auto controls = splice_children_into(m_main.get(), tab_bin.get(),
-        offset_x, offset_y, index_base, true);
-
-    m_tab_bins.push_back(std::move(tab_bin));
-    m_tabs.emplace_back(std::move(controls), index_base, offset_x, offset_y);
-    return m_tabs.size() - 1;
-}
-
-void CompositeBinDlg::show_tab(u32 i) {
-    if (i >= m_tabs.size()) return;
-    for (auto* c : m_tabs[i].controls) show_bin_dialog(c);
-}
-
-void CompositeBinDlg::hide_tab(u32 i) {
-    if (i >= m_tabs.size()) return;
-    for (auto* c : m_tabs[i].controls) hide_bin_dialog(c);
-}
-
-void CompositeBinDlg::show_only(u32 i) {
-    for (size_t t = 0; t < m_tabs.size(); ++t) {
-        if (t == i) show_tab(t);
-        else        hide_tab(t);
-    }
 }
 
 DynamicTheme::DynamicTheme() {

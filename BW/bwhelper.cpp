@@ -4490,7 +4490,7 @@ namespace helper {
         }
     }
 
-    s32 disable_dialog(BinDlg* dialog) {
+    s32 disable_dialog(bw::Dialog* dialog) {
         const u32 func_address = 0x00418640;
         static s32 result;
         __asm {
@@ -4503,7 +4503,7 @@ namespace helper {
         return result;
     }
 
-    void update_dialog(BinDlg* dialog) {
+    void update_dialog(bw::Dialog* dialog) {
         const u32 func_address = 0x0041C400;
         __asm {
             PUSHAD
@@ -6361,7 +6361,7 @@ namespace helper {
     }
 
     // Enure matching clear_callback_timer is called in dlgproc destroy function
-    void set_callback_timer(BinDlg* dialog, u16 timer_index, u32 time, TimerCallback callback) {
+    void set_callback_timer(bw::Dialog* dialog, u16 timer_index, u32 time, TimerCallback callback) {
         const u32 func_address = 0x00416090;
         __asm {
             PUSHAD
@@ -6374,7 +6374,7 @@ namespace helper {
         }
     }
 
-    void clear_callback_timer(BinDlg* dialog, u16 timer_index) {
+    void clear_callback_timer(bw::Dialog* dialog, u16 timer_index) {
         const u32 func_address = 0x00416000;
         __asm {
             PUSHAD
@@ -6423,7 +6423,7 @@ namespace helper {
         }
     }
 
-    void enable_dialog(BinDlg* dialog) {
+    void enable_dialog(bw::Dialog* dialog) {
         const u32 func_address = 0x00418E00;
         __asm {
             PUSHAD
@@ -6461,7 +6461,7 @@ namespace helper {
         }
     }
 
-    void bindlg_blit_surface(BinDlg* dialog) {
+    void bindlg_blit_surface(bw::Dialog* dialog) {
         const u32 func_address = 0x004C35F0;
         __asm {
             PUSHAD
@@ -9930,17 +9930,14 @@ namespace helper {
         }
     }
 
-    BinDlg** destroy_dialog(BinDlg* control) {
-        static BinDlg** result;
+    void destroy_dialog(bw::Dialog* control) {
         const u32 func_address = 0x00419EA0;
         __asm {
             PUSHAD
             MOV ESI, control
             CALL func_address
-            MOV result, EAX
             POPAD
         }
-        return result;
     }
 
     main_menu_options_custom_interact_func* main_menu_options_custom_interact = (main_menu_options_custom_interact_func*)0x004CA0A0;
@@ -13574,7 +13571,7 @@ namespace helper {
         return result;
     }
 
-    u32 glu_load_bin_dialog(BinDlg* dialog, void* proc) {
+    u32 glu_load_bin_dialog(bw::Dialog* dialog, bw::DialogInteraction* proc) {
         static u32 result;
         const u32 func_address = 0x0041A080;
         __asm {
@@ -14072,13 +14069,13 @@ namespace helper {
         return result;
     }
 
-    bool generic_dialog_interact(BinDlg* dialog, DialogEvent* dlg_event) {
+    bool generic_dialog_interact(bw::Dialog* dialog, DialogEvent* event) {
         const u32 func_address = 0x00418EB0;
         static u32 result;
         __asm {
             PUSHAD
             MOV ECX, dialog
-            MOV EDX, dlg_event
+            MOV EDX, event
             CALL func_address
             MOV result, EAX
             POPAD
@@ -14100,21 +14097,7 @@ namespace helper {
         return (bool)result;
     }
 
-    bool generic_listbox_interact(BinDlg* dialog, DialogEvent* dlg_event) {
-        const u32 func_address = 0x0041baa0;
-        static u32 result;
-        __asm {
-            PUSHAD
-            MOV ECX, dialog
-            MOV EDX, dlg_event
-            CALL func_address
-            MOV result, EAX
-            POPAD
-        }
-        return (bool)result;
-    }
-
-    void glu_main_create(BinDlg* dialog) {
+    void glu_main_create(bw::Dialog* dialog) {
         const u32 func_address = 0x004DB280;
         __asm {
             PUSHAD
@@ -14124,7 +14107,7 @@ namespace helper {
         }
     }
 
-    void dialog_swish_in(BinDlg* dialog) {
+    void dialog_swish_in(bw::Dialog* dialog) {
         const u32 func_address = 0x004DE150;
         __asm {
             PUSHAD
@@ -14180,7 +14163,7 @@ namespace helper {
         return result;
     }
 
-    char dialog_swish_out(BinDlg* dialog) {
+    char dialog_swish_out(bw::Dialog* dialog) {
         const u32 func_address = 0x004DD040;
         static char result;
         __asm {
@@ -14192,7 +14175,7 @@ namespace helper {
         }
     }
 
-    s32 load_staredit_process(BinDlg* dialog) {
+    s32 load_staredit_process(bw::Dialog* dialog) {
         const u32 func_address = 0x004DB490;
         static s32 result;
         __asm {
@@ -14217,7 +14200,7 @@ namespace helper {
         return result;
     }
 
-    s32 register_menu_functions(BinDlgProc dialog_proc_array, BinDlg* dialog, u32 count, u32 palette) {
+    s32 register_menu_functions(BinDlgProc dialog_proc_array, bw::Dialog* dialog, u32 count, u32 palette) {
         const u32 func_address = 0x004DD9E0;
         static s32 result;
         __asm {
@@ -14617,7 +14600,7 @@ namespace helper {
             PUSH width
             MOV ECX, top
             MOV EDX, height
-            MOV EAX, result
+            MOV EAX, left
             CALL func_address
             MOV result, EAX
             POPAD
@@ -15869,16 +15852,6 @@ namespace helper {
         }
     }
 
-    void enable_sound_list(u16* sounds_array) {
-        const u32 func_address = 0x004bccf0;
-        __asm {
-            PUSHAD
-            MOV EAX, sounds_array
-            CALL func_address
-            POPAD
-        }
-    }
-
     bool initialize_bnet(u32 provider_id) {
         const u32 func_address = 0x00452a30;
         static b32 result;
@@ -16157,6 +16130,16 @@ namespace helper {
         __asm {
             PUSHAD
             MOV EDI, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void hud_destroy_top_surface(SurfaceContext* surface) {
+        const u32 func_address = 0x0041d5a0;
+        __asm {
+            PUSHAD
+            MOV EAX, surface
             CALL func_address
             POPAD
         }

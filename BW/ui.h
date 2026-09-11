@@ -12,8 +12,11 @@
 #include <map>
 #include <memory>
 #include <concepts>
+#include <optional>
 #include <string>
 #include <initializer_list>
+#include <iterator>
+#include <ranges>
 #include <vector>
 
 constexpr u32 TFontCopyCount = 48;  // 6 font styles * 8 shades
@@ -46,43 +49,152 @@ concept EnumS16 = std::is_enum_v<T> && std::is_same_v<std::underlying_type_t<T>,
 template<typename T>
 concept NotVoid = !std::is_void_v<T>;
 
-std::vector<BinDlg*> get_children_by_index(BinDlg* parent, s16 index);
+template<typename T>
+concept LinkedListNode = requires(T* node) {
+    { node->next } -> std::convertible_to<T*>;
+};
+
+template<LinkedListNode T>
+class linked_list_view : public std::ranges::view_interface<linked_list_view<T>> {
+public:
+    class iterator {
+    public:
+        using iterator_concept = std::forward_iterator_tag;
+        using iterator_category = std::forward_iterator_tag;
+        using value_type = T*;
+        using difference_type = std::ptrdiff_t;
+
+        iterator() = default;
+        explicit iterator(T* node) : node_(node) {}
+
+        T* operator*() const { return node_; }
+        iterator& operator++() { node_ = node_->next; return *this; }
+        iterator operator++(int) { iterator tmp = *this; ++*this; return tmp; }
+
+        bool operator==(const iterator& other) const = default;
+        bool operator==(std::default_sentinel_t) const { return node_ == nullptr; }
+
+    private:
+        T* node_ = nullptr;
+    };
+
+    linked_list_view() = default;
+    explicit linked_list_view(T* head) : head_(head) {}
+
+    iterator begin() const { return iterator(head_); }
+    std::default_sentinel_t end() const { return {}; }
+
+private:
+    T* head_ = nullptr;
+};
+
+inline linked_list_view<bw::Dialog> dialog_children(bw::Dialog* parent) {
+    if (!parent) return {};
+    if (parent->type != DialogControlType::DialogBoxDC) {
+        parent = parent->parent;
+        if (!parent) return {};
+    }
+    return linked_list_view<bw::Dialog>(*parent->child<bw::Dialog*>());
+}
+inline linked_list_view<BinDlg> dialog_children(BinDlg* parent) {
+    if (!parent) return {};
+    if (parent->control_type != DialogControlType::DialogBoxDC) {
+        parent = parent->parent;
+        if (!parent) return {};
+    }
+    return linked_list_view<BinDlg>(parent->child_dialog);
+}
+
+inline auto get_children_by_index(bw::Dialog* parent, s16 index) {
+    return dialog_children(parent) | std::views::filter([index](bw::Dialog* child) { return child->index == index; });
+}
+
+inline auto get_children_by_index(BinDlg* parent, s16 index) {
+    return dialog_children(parent) | std::views::filter([index](BinDlg* child) { return child->index == index; });
+}
+
 template<EnumS16 T>
-std::vector<BinDlg*> get_children_by_index(BinDlg* parent, T index) {
+auto get_children_by_index(bw::Dialog* parent, T index) {
     return get_children_by_index(parent, std::to_underlying(index));
 }
 
-BinDlg* get_first_child_by_index(BinDlg* parent, s16 index);
+template<EnumS16 T>
+auto get_children_by_index(BinDlg* parent, T index) {
+    return get_children_by_index(parent, std::to_underlying(index));
+}
+
+bw::Dialog* get_first_child_by_index(bw::Dialog* parent, s16 index);
+inline BinDlg* get_first_child_by_index(BinDlg* parent, s16 index) { return get_first_child_by_index(parent->to_dialog(), index)->to_bindlg(); }
+
+template<EnumS16 T>
+bw::Dialog* get_first_child_by_index(bw::Dialog* parent, T index) {
+    return get_first_child_by_index(parent, std::to_underlying(index));
+}
+
 template<EnumS16 T>
 BinDlg* get_first_child_by_index(BinDlg* parent, T index) {
     return get_first_child_by_index(parent, std::to_underlying(index));
 }
 
-void show_dialogs_with_index(BinDlg* dialog, s16 index);
+void show_dialogs_with_index(bw::Dialog* dialog, s16 index);
+inline void show_dialogs_with_index(BinDlg* dialog, s16 index) { show_dialogs_with_index(dialog->to_dialog(), index); };
+
+template<EnumS16 T>
+void show_dialogs_with_index(bw::Dialog* dialog, T index) {
+    show_dialogs_with_index(dialog, std::to_underlying(index));
+}
+
 template<EnumS16 T>
 void show_dialogs_with_index(BinDlg* dialog, T index) {
     show_dialogs_with_index(dialog, std::to_underlying(index));
 }
 
-void hide_dialogs_with_index(BinDlg* dialog, s16 index);
+void hide_dialogs_with_index(bw::Dialog* dialog, s16 index);
+inline void hide_dialogs_with_index(BinDlg* dialog, s16 index) { hide_dialogs_with_index(dialog->to_dialog(), index); }
+
+template<EnumS16 T>
+void hide_dialogs_with_index(bw::Dialog* dialog, T index) {
+    hide_dialogs_with_index(dialog, std::to_underlying(index));
+}
+
 template<EnumS16 T>
 void hide_dialogs_with_index(BinDlg* dialog, T index) {
     hide_dialogs_with_index(dialog, std::to_underlying(index));
 }
 
-void update_dialog_visibility(BinDlg* dialog, s16 index, bool show);
+void update_dialog_visibility(bw::Dialog* dialog, s16 index, bool show);
+inline void update_dialog_visibility(BinDlg* dialog, s16 index, bool show) { update_dialog_visibility(dialog->to_dialog(), index, show); }
+
+template<EnumS16 T>
+void update_dialog_visibility(bw::Dialog* dialog, T index, bool show) {
+    update_dialog_visibility(dialog, std::to_underlying(index), show);
+}
+
 template<EnumS16 T>
 void update_dialog_visibility(BinDlg* dialog, T index, bool show) {
     update_dialog_visibility(dialog, std::to_underlying(index), show);
 }
 
-void enable_dialogs_with_index(BinDlg* dialog, s16 index);
+void enable_dialogs_with_index(bw::Dialog* dialog, s16 index);
+inline void enable_dialogs_with_index(BinDlg* dialog, s16 index) { enable_dialogs_with_index(dialog->to_dialog(), index); }
+
+template<EnumS16 T>
+void enable_dialogs_with_index(bw::Dialog* dialog, T index) {
+    enable_dialogs_with_index(dialog, std::to_underlying(index));
+}
 template<EnumS16 T>
 void enable_dialogs_with_index(BinDlg* dialog, T index) {
     enable_dialogs_with_index(dialog, std::to_underlying(index));
 }
 
-void disable_dialogs_with_index(BinDlg* dialog, s16 index);
+void disable_dialogs_with_index(bw::Dialog* dialog, s16 index);
+inline void disable_dialogs_with_index(BinDlg* dialog, s16 index) { disable_dialogs_with_index(dialog->to_dialog(), index); }
+
+template<EnumS16 T>
+void disable_dialogs_with_index(bw::Dialog* dialog, T index) {
+    disable_dialogs_with_index(dialog, std::to_underlying(index));
+}
+
 template<EnumS16 T>
 void disable_dialogs_with_index(BinDlg* dialog, T index) {
     disable_dialogs_with_index(dialog, std::to_underlying(index));
@@ -90,9 +202,20 @@ void disable_dialogs_with_index(BinDlg* dialog, T index) {
 
 void update_dialog_text(BinDlg* dialog, s16 index, const char* text); // 004dcf30
 template<EnumS16 T>
+
 void update_dialog_text(BinDlg* dialog, T index, const char* text) {
     update_dialog_text(dialog, std::to_underlying(index), text);
 }
+
+template<EnumS16 T>
+void bindlg_load_interaction_functions(bw::Dialog* dialog, const std::map<T, bw::DialogInteraction*>& functions) {
+    for (auto& [index, function] : functions) {
+        auto children = get_children_by_index(dialog, index);
+        for (bw::Dialog* child : children) {
+            child->interaction_function = function;
+        }
+    }
+};
 
 template<EnumS16 T>
 void bindlg_load_interaction_functions(BinDlg* dialog, const std::map<T, BinDlgProc>& functions) {
@@ -108,16 +231,34 @@ s32 background_id(MenuId::Enum menu_id);
 
 void bindlg_load_background_palette(BinDlg* dialog); // See dialog_swish_in 0x004de150
 void bindlg_load_image(const char* filename, Palette* palette, BinDlg* dialog, u8* (__stdcall* malloc_func)(u32));
+
 void bindlg_load_background(BinDlg* dialog);
+
 MenuId::Enum menu_with_theme(GluTheme theme);
-void bindlg_load_background_pcx(BinDlg* dialog, const char* filename, bool apply_dynamic_theme = false);
+
+void bindlg_load_background_pcx(bw::Dialog* dialog, const char* filename, bool apply_dynamic_theme = false);
 
 void change_menu(bool force_refresh = false);
-void initialize_dialog(BinDlg* dialog, BinDlgProc dialogproc); // 00419d20
-void quick_send_event(BinDlg* dialog, DialogUserType user_type, u16 param = 0);
 
-void show_bin_dialog(BinDlg* dialog);
-void hide_bin_dialog(BinDlg* dialog);
+// For dialogs loaded from a .bin file
+void initialize_bin_dialog(BinDlg* dialog, BinDlgProc dialogproc);
+inline void initialize_bin_dialog(bw::Dialog* dialog, bw::DialogInteraction* proc) {
+    initialize_bin_dialog(dialog->to_bindlg(), reinterpret_cast<BinDlgProc>(proc));
+}
+
+// For dialogs built with the widget system: bounds are already in absolute
+void initialize_widget_dialog(bw::Dialog* dialog, std::optional<bw::DialogInteraction*> interaction_function = std::nullopt);
+
+void quick_send_event(bw::Dialog* dialog, DialogUserType user_type, u16 param = 0);
+inline void quick_send_event(BinDlg* dialog, DialogUserType user_type, u16 param = 0) {
+    quick_send_event(dialog->to_dialog(), user_type, param);
+}
+
+void show_bin_dialog(bw::Dialog* dialog);
+inline void show_bin_dialog(BinDlg* dialog) { show_bin_dialog(dialog->to_dialog()); };
+
+void hide_bin_dialog(bw::Dialog* dialog);
+inline void hide_bin_dialog(BinDlg* dialog) { hide_bin_dialog(dialog->to_dialog()); };
 
 template<EnumS16 T>
 class BinDlgLabels {
@@ -154,46 +295,7 @@ private:
     std::map<T, std::string> labels;
 };
 
-smem::ptr<BinDlg> load_bin_file(const char* filename);
-
-std::vector<BinDlg*> splice_children_into(BinDlg* dest, BinDlg* source,
-    s16 offset_x = 0, s16 offset_y = 0, s16 index_base = 0, bool bounds_are_ltrb = true);
-
-// See usage in glu_options.cpp
-// Make sure and add all tabs before calling glu_load_bin_dialog
-class CompositeBinDlg {
-public:
-    struct Tab {
-        std::vector<BinDlg*> controls;
-        s16 index_base = 0;
-        s16 offset_x = 0;
-        s16 offset_y = 0;
-    };
-
-    explicit CompositeBinDlg(const char* main_filename);
-
-    CompositeBinDlg(const CompositeBinDlg&) = delete;
-    CompositeBinDlg& operator=(const CompositeBinDlg&) = delete;
-    CompositeBinDlg(CompositeBinDlg&&) noexcept = default;
-    CompositeBinDlg& operator=(CompositeBinDlg&&) noexcept = default;
-
-    u32 add_tab(const char* tab_filename, s16 offset_x = 0, s16 offset_y = 0, s16 index_base = 0);
-
-    BinDlg* bin_dlg() { return m_main.get(); }
-    BinDlg* release() { return m_main.release(); }
-
-    size_t tab_count() const { return m_tabs.size(); }
-    const Tab& tab(u32 i) const { return m_tabs[i]; }
-
-    void show_tab(u32 i);
-    void hide_tab(u32 i);
-    void show_only(u32 i);
-
-private:
-    smem::ptr<BinDlg> m_main;
-    std::vector<smem::ptr<BinDlg>> m_tab_bins;
-    std::vector<Tab> m_tabs;
-};
+smem::ptr<bw::Dialog> load_bin_file(const char* filename);
 
 class DynamicTheme {
 public:

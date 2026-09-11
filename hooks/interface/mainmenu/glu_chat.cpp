@@ -120,8 +120,8 @@ static void glu_chat_update_password_dialogs(BinDlg* dialog) {
     if (password_set) {
         show_dialogs_with_index(dialog, GluChatControls::GamePasswordLabel);
         show_dialogs_with_index(dialog, GluChatControls::GamePasswordValue);
-        get_children_by_index(dialog, GluChatControls::GamePasswordLabel)[0]->graphic = 1;
-        get_children_by_index(dialog, GluChatControls::GamePasswordValue)[0]->graphic = 1;
+        if (auto* label = get_first_child_by_index(dialog, GluChatControls::GamePasswordLabel)) label->graphic = 1;
+        if (auto* value = get_first_child_by_index(dialog, GluChatControls::GamePasswordValue)) value->graphic = 1;
     } else {
         hide_dialogs_with_index(dialog, GluChatControls::GamePasswordLabel);
         hide_dialogs_with_index(dialog, GluChatControls::GamePasswordValue);
@@ -154,8 +154,8 @@ static void map_preview_init(BinDlg* dialog) {
     g_chat_minimap_shown = 1;
     g_minimap_draw_neutrals = true;
     
-    g_minimap_bin = load_bin_file("rez\\minimappreview.bin").release();
-    initialize_dialog(g_minimap_bin, (BinDlgProc)0x004a5900);
+    g_minimap_bin = load_bin_file("rez\\minimappreview.bin").release()->to_bindlg();
+    initialize_bin_dialog(g_minimap_bin, (BinDlgProc)0x004a5900);
 
     g_minimap_draw_neutrals = false;
     helper::set_callback_timer(dialog, 1, 1000, (TimerCallback)0x004b9a50);
@@ -251,7 +251,7 @@ void glu_chat() {
 
     g_chat_context = std::make_unique<GluChatContext>();
 
-    auto last_control = static_cast<GluChatControls>(helper::glu_load_bin_dialog(g_chat_bin, glu_chat_dlgproc));
+    auto last_control = static_cast<GluChatControls>(helper::glu_load_bin_dialog(g_chat_bin->to_bindlg(), glu_chat_dlgproc));
 
     if (GetUserDefaultLangID() == MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN) && !g_input_context) {
         g_input_context = ImmGetContext(g_main_window);
@@ -280,5 +280,5 @@ void glu_chat() {
 }
 
 void GluChatContext::update_label(GluChatControls control, const char* text) {
-    m_labels.update(g_chat_bin, control, text);
+    m_labels.update(g_chat_bin->to_bindlg(), control, text);
 }
