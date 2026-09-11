@@ -373,16 +373,26 @@ namespace hooks {
         if (flags & ChkUnitFlags_Cloaked || chkunit->unit_id == UnitId::TownCenterMarker) {
             return 0;
         }
+        // Assign resource nodes to user-defined resource areas.
+        u32 custom_resarea = 0;
+        if (flags & ChkUnitFlags_Burrowed && (units_dat::base_property[chkunit->unit_id] & UnitProperty::ResourceContainer) && chkunit->player == 11) {
+            custom_resarea = chkunit->hitpoints;
+        }
+
         chkunit->state_flags &= ~ChkUnitFlags_Cloaked;
         chkunit->state_flags &= ~ChkUnitFlags_Burrowed;
         chkunit->state_flags &= ~ChkUnitFlags_Lifted;
         chkunit->state_flags &= ~ChkUnitFlags_Hallucinated;
         chkunit->state_flags &= ~ChkUnitFlags_Invincible;
-        chkunit->hp = 100;
+        chkunit->hitpoints = 100;
         chkunit->shields = 100;
         chkunit->energy = 100;
+
         Unit* unit = create_unit_xy(chkunit->player, chkunit->unit_id, chkunit->x, chkunit->y, false);
         if (unit) {
+            if (custom_resarea) {
+                unit->building.temp_custom_resarea_id = custom_resarea;
+            }
             helper::edit_unit_flags(unit, &chkunit->valid_state_flags);
             unit->remove_timer = 0;
             hooks::init_unit(unit);

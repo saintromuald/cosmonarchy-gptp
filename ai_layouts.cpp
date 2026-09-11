@@ -328,7 +328,7 @@ void AiLayouts::add_placeholder_chk(const ChkUnit& unit, u32 player) {
     AiPlaceholder placeholder = {};
     placeholder.position.x = unit.x;
     placeholder.position.y = unit.y;
-    placeholder.priority = unit.hp;
+    placeholder.priority = unit.hitpoints;
     placeholder.guard_rebuilds = unit.energy == 100 ? 0 : unit.energy + 1;
     u32 flags = unit.valid_state_flags & unit.state_flags;
     placeholder.was_preplaced = !(flags & ChkUnitFlags_Cloaked);
