@@ -340,11 +340,11 @@ static bool is_valid_name(u32 player, const char* name) {
     return true;
 }
 
-static u32 get_name_count(u32 race, u32 personality) {
+static u32 get_name_count(PlayableRaceId race, u32 personality) {
     u32 count = 0;
     if (personality < AiPersonality_AnyCount) {
         for (u32 i = 0; i < PlayerPesonalityMaxNames; ++i) {
-            if (player_personality_names[race][personality][i]) {
+            if (player_personality_names[u32(race)][personality][i]) {
                 count = i;
             }
         }
@@ -372,13 +372,13 @@ static void update_player_name(u32 player) {
     if (!can_get_player_name(player)) {
         return;
     }
-    u32 race = g_player_table[player].race;
+    auto race = to_playable_race_id(RaceId::Enum(g_player_table[player].race));
     u32 personality = g_unit_deaths_table[UnitId::Spell_CarapaceSwarmSmall].player[player];
     u32 count = get_name_count(race, personality);
     if (count) {
         for (u32 tries = 0; tries < 100; ++tries) {
             u32 random = bw::rand_between(0, PlayerPesonalityMaxNames - 1);
-            const char* name = player_personality_names[race][personality][random];
+            const char* name = player_personality_names[u32(race)][personality][random];
             if (is_valid_name(player, name)) {
                 set_player_name(player, name, true);
                 return;

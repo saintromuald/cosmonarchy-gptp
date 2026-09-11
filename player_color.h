@@ -433,7 +433,7 @@ inline const std::vector<std::vector<std::vector<PlayerColor>>> personality_colo
 // Feel free to modify this to suit your needed amount of names per personality
 // (you can also specify less names than this maximum)
 #define PlayerPesonalityMaxNames 20
-inline const char* player_personality_names[RaceId::Count][AiPersonality_AnyCount][PlayerPesonalityMaxNames] = {
+inline const char* player_personality_names[RaceId::FullCount][AiPersonality_AnyCount][PlayerPesonalityMaxNames] = {
 	// Zerg
 	{
 		{},
@@ -609,6 +609,9 @@ inline const char* player_personality_names[RaceId::Count][AiPersonality_AnyCoun
 			"nullptr",
 			"Little Timmy's Nexus-First",
 		},
+	},
+	// Askosi
+	{
 	},
 };
 

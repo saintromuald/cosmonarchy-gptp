@@ -280,7 +280,8 @@ enum class PlayableRaceId {
     Bloodsummon,
     Kogri,
 
-    None,
+    Count,
+    None = Count,
 };
 
 inline RaceId::Enum to_race_id(PlayableRaceId id) {
@@ -294,6 +295,18 @@ inline RaceId::Enum to_race_id(PlayableRaceId id) {
         case PlayableRaceId::None:        return RaceId::None;
     }
     return RaceId::None;
+}
+
+inline PlayableRaceId to_playable_race_id(RaceId::Enum id) {
+    switch (id) {
+        case RaceId::Zerg:        return PlayableRaceId::Zerg;
+        case RaceId::Terran:      return PlayableRaceId::Terran;
+        case RaceId::Protoss:     return PlayableRaceId::Protoss;
+        case RaceId::Askosi:      return PlayableRaceId::Askosi;
+        case RaceId::Bloodsummon: return PlayableRaceId::Bloodsummon;
+        case RaceId::Kogri:       return PlayableRaceId::Kogri;
+        default:                  return PlayableRaceId::None;
+    }
 }
 
 inline std::optional<char> get_race_initial(RaceId::Enum race) {
