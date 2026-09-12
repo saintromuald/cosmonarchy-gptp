@@ -1478,6 +1478,7 @@ bool unit_id_is_available_without_an_addon(u16 id) {
         || id == UnitId::TerranMagnetar
 
         || id == UnitId::TerranHotshot
+        || id == UnitId::TerranCyprianHecaton
         || id == UnitId::TerranVultureHecaton
         || id == UnitId::TerranArhaun
         || id == UnitId::TerranValkyrieHecaton

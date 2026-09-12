@@ -218,7 +218,7 @@ namespace hooks {
                     }
                 } break;
                 case UnitId::TerranCyprian: {
-                    if (faction != Faction::TerranNydusTrinity && faction != Faction::TerranUpstart) {
+                    if (faction != Faction::TerranHecatonCoalition && faction != Faction::TerranNydusTrinity && faction != Faction::TerranUpstart) {
                         return true;
                     }
                 } break;
@@ -229,6 +229,11 @@ namespace hooks {
                 } break;
                 case UnitId::TerranCamazotz: {
                     if (faction == Faction::TerranNydusTrinity) {
+                        return true;
+                    }
+                } break;
+                case UnitId::TerranCyprianHecaton: {
+                    if (faction == Faction::TerranHecatonCoalition) {
                         return true;
                     }
                 } break;
@@ -2051,7 +2056,7 @@ namespace hooks {
                         return TECH_HIDDEN;
                     }
                     case UnitId::TerranCyprian: {
-                        if (faction != Faction::TerranNydusTrinity && faction != Faction::TerranUpstart) {
+                        if (faction != Faction::TerranHecatonCoalition && faction != Faction::TerranNydusTrinity && faction != Faction::TerranUpstart) {
                             if (in_air || is_adding_on) {
                                 return TECH_HIDDEN;
                             }
@@ -2148,6 +2153,15 @@ namespace hooks {
                     }
                     case UnitId::TerranCamazotz: {
                         if (faction == Faction::TerranNydusTrinity) {
+                            if (in_air || is_adding_on) {
+                                return TECH_HIDDEN;
+                            }
+                            return TECH_ACTIVE;
+                        }
+                        return TECH_HIDDEN;
+                    }
+                    case UnitId::TerranCyprianHecaton: {
+                        if (faction == Faction::TerranHecatonCoalition) {
                             if (in_air || is_adding_on) {
                                 return TECH_HIDDEN;
                             }

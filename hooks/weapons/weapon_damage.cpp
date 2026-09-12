@@ -1133,6 +1133,7 @@ namespace hooks {
                             }
                         }
                     } break;
+                    case WeaponId::CyprianHecatonBorealRailguns:
                     case WeaponId::HeraclesJavelinCannons:
                     case WeaponId::ShamanUpstartSupportScalpelCannon:
                     case WeaponId::ClaymoreHarpoonRailgun:

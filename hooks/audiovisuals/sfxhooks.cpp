@@ -59,7 +59,8 @@ namespace hooks {
                 case UnitId::TerranHotshot: {
                     return helper::get_random_unit_response(SoundId::HotshotOrderAggressive01, SoundId::HotshotOrderAggressive04);
                 } break;
-                case UnitId::TerranCyprian: {
+                case UnitId::TerranCyprian:
+                case UnitId::TerranCyprianHecaton: {
                     return helper::get_random_unit_response(SoundId::CyprianOrderAggressive01, SoundId::CyprianOrderAggressive04);
                 } break;
                 case UnitId::TerranCannibal: {

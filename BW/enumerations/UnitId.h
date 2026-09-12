@@ -191,6 +191,7 @@ namespace UnitId {
         TerranArchbishop                                    = 600,
         TerranCamazotz                                      = 620,
         TerranArquebus                                      = 624,
+        TerranCyprianHecaton                                = 641,
 
     // Terran-Building
         TerranVestry										= 119,		// Starbase / Terran Unused 1

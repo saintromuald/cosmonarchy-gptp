@@ -434,6 +434,7 @@ UnitId::Enum get_factional_unit_id(u32 player, UnitId::Enum unit_id) {
         case Faction::TerranHecatonCoalition: {
             switch (unit_id) {
                 case UnitId::TerranMaverick:              return UnitId::TerranHotshot;
+                case UnitId::TerranCyprian:               return UnitId::TerranCyprianHecaton;
                 case UnitId::TerranApostle:               return UnitId::TerranAuriel;
                 case UnitId::TerranVulture:               return UnitId::TerranVultureHecaton;
                 case UnitId::TerranGoliath:               return UnitId::TerranArhaun;
