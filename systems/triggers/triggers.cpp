@@ -184,7 +184,7 @@ Registry g_triggers = Registry()
         }
         return quota.check(count);
     })
-    .add_condition(aliases("camera", "local_camera"), [](Context& ctx, Area area, Visibility min_visibility, std::optional<PlayablePlayer> player) {
+    .add_condition(aliases("camera", "local_camera"), [](Context& ctx, Area area, std::optional<Visibility> min_visibility, std::optional<PlayablePlayer> player) {
         const auto actual_player = player.transform([](PlayablePlayer p) { return u32(p); }).value_or(g_multiplayer_mode ? ctx.player() : g_local_nation_id);
         const auto camera = g_globals->players[actual_player].camera;
         const auto center = v2u16{
@@ -423,10 +423,10 @@ Registry g_triggers = Registry()
             g_globals->sound_replacements.push_back(replacement);
         }
     })
-    .add_local_action("play_sound", [](Context& ctx, std::string_view path, PlayerBitset players, v2u16 position, Visibility min_visibility) {
+    .add_local_action("play_sound", [](Context& ctx, std::string_view path, PlayerBitset players, v2u16 position, std::optional<Visibility> min_visibility) {
         const auto trigger_player = ctx.player();
         if (trigger_player < PlayerLimit && players[trigger_player]) {
-            if (position.x == 0 && position.y == 0) {
+            if (!position) {
                 AudioSystem::instance().play_sound(AudioSystem::instance().get_sound(std::string{path}.c_str()), {.bw_volume = AudioSystem::instance().get_sound_volume()});
             } else {
                 auto play = false;
