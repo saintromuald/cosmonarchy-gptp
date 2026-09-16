@@ -5,12 +5,14 @@
     "cppcodec",
     "lua",
     "magic-enum",
+    "miniaudio",
     "nlohmann-json",
     {
       "name": "reflectcpp",
       "features": ["yaml"]
     },
     "sol2",
+    "stb",
     "stduuid",
     "yaml-cpp"
   ]
