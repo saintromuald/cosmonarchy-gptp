@@ -326,7 +326,7 @@ static std::shared_ptr<ColorListEditor> player_color_selector(ui::Group* tab, v2
 }
 
 GluOptions::GluOptions()
-    : ui::Menu("glue\\dynamic\\backgrounds\\options.pcx"), m_config(g_config) {
+    : ui::Menu("glue\\dynamic\\backgrounds\\options.pcx"), m_config(g_config), m_race_flags(RaceRandomizer::instance().race_flags()) {
     const char hotkey_color = static_cast<char>(LobbyTextColor::YellowGreen);
     const char revert_color = static_cast<char>(LobbyTextColor::Revert);
 
