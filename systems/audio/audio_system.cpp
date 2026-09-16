@@ -91,7 +91,7 @@ void AudioSystem::initialize_direct_sound() {
 			buffer_description.dwFlags = DSBCAPS_PRIMARYBUFFER;
 
 			// @Todo: what is a primary buffer needed for? seems like sounds play without too 
-			LPDIRECTSOUNDBUFFER primary_buffer = nullptr;
+			IDirectSoundBuffer* primary_buffer = nullptr;
 			if (SUCCEEDED(m_direct_sound->CreateSoundBuffer(&buffer_description, &primary_buffer, nullptr))) {
 				primary_buffer->SetFormat(&wave_format);
 				primary_buffer->Release();
@@ -240,7 +240,7 @@ bool AudioSystem::load_ds_buffer(SoundMainBuffer* sound) {
 
 	auto file = mpq_load_file(sound->path);
 	if (!file) {
-		bw::printf("Error: File %s missing!", sound->path);
+		bw::println("Error: File {} missing!", sound->path);
 		return false;
 	}
 
@@ -292,13 +292,13 @@ bool AudioSystem::load_ds_buffer(SoundMainBuffer* sound) {
 
 	u32 play_cursor = 0;
 	u32 write_cursor = 0;
-	if (SUCCEEDED(sound->ds_buffer->GetCurrentPosition((LPDWORD)&play_cursor, (LPDWORD)&write_cursor))) {
+	if (SUCCEEDED(sound->ds_buffer->GetCurrentPosition((DWORD*)&play_cursor, (DWORD*)&write_cursor))) {
 		u8* ptr1 = nullptr;
 		u32 bytes1 = 0;
 		u8* ptr2 = nullptr;
 		u32 bytes2 = 0;
 
-		if (SUCCEEDED(sound->ds_buffer->Lock(write_cursor, size, (LPVOID*)&ptr1, (LPDWORD)&bytes1, (LPVOID*)&ptr2, (LPDWORD)&bytes2, 0))) {
+		if (SUCCEEDED(sound->ds_buffer->Lock(write_cursor, size, (void**)&ptr1, (DWORD*)&bytes1, (void**)&ptr2, (DWORD*)&bytes2, 0))) {
 			if (ptr1) {
 				for (u32 i = 0; i < bytes1; ++i) {
 					ptr1[i] = data[i];

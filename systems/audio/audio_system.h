@@ -101,7 +101,7 @@ struct PlaySoundSettings {
 struct SoundMainBuffer;
 
 struct SoundBuffer {
-	LPDIRECTSOUNDBUFFER ds_buffer = nullptr;
+	IDirectSoundBuffer* ds_buffer = nullptr;
 	u64 generation = 0;
 	PlaySoundSettings settings = {};
 	u32 last_play_time = 0;
@@ -223,7 +223,7 @@ public:
 	MusicPlayback& get_music_playback() { return m_music_playback; }
 	const MusicPlayback& get_music_playback() const { return m_music_playback; }
 
-	LPDIRECTSOUND get_direct_sound() { return m_direct_sound; }
+	IDirectSound* get_direct_sound() { return m_direct_sound; }
 
 private:
 	void initialize_direct_sound();
@@ -240,7 +240,7 @@ private:
 private:
 	AudioSystem();
 
-	LPDIRECTSOUND m_direct_sound = nullptr;
+	IDirectSound* m_direct_sound = nullptr;
 
 	// Sound buffers
 	std::array<SoundDupBuffer, MaxDupChannels> m_dup_channels;
