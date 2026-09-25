@@ -82,6 +82,11 @@ namespace hooks {
         Unit* active = get_selected_unit();
         active_button_set_id = active->current_buttonset;
 
+        if (active && std::ranges::all_of(g_client_selection_group->unit, [active](Unit* unit) { return !unit || unit->id == active->id; })) {
+            g_current_buttonset_id = UnitId::Buttons_Blank;
+            return;
+        }
+
         for (u32 i = 0; i < SelectionCap; ++i) { // count units to know if will be using special group buttonset (workers, burrowers, etc)
             Unit* selected = g_client_selection_group->unit[i];
             if (selected) {
@@ -312,7 +317,7 @@ namespace hooks {
 
         u16 buttonset_id = g_buttonset_special_buttonset_id;
         b32 refresh = g_force_button_refresh;
-        Unit* active_unit = *g_active_portrait_unit;
+        Unit* active_unit = get_selected_unit();
         if (g_force_button_refresh && (g_buttonset_special_buttonset_id == UnitId::None || g_is_in_replay)) {
             helper::update_buttonset();
             buttonset_id = g_buttonset_special_buttonset_id;
