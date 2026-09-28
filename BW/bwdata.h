@@ -96,7 +96,8 @@ BW_DATA(char**,			g_chk_string_table,				0x005993D4);
 BW_REF(HWND,			g_main_window,					0x0051BFB0);
 BW_REF(s32,				g_music_volume,					0x006D5BB4);
 BW_REF(b8,				g_music_playing,				0x006D5BBC);
-BW_REF(b8,              g_music_fade_out,               0x006D5BBD);
+// BW_REF(b8, g_music_fade_out, 0x006D5BBD); // Replaced by MusicSystem
+BW_REF(s32,				g_sfx_volume,					0x006D5E3C);	// Effective SFX volume in DS centibels
 
 
 //////////////////////////////////////////////////////////////// @}
@@ -177,6 +178,7 @@ BW_DATA(s32*,		g_active_nation_id,			0x00512678);
 BW_REF(s32,         g_active_player_id,         0x0051267C);	// Used by get_active_player_next_selection
 BW_REF(s32,			g_local_nation_id,			0x00512684);	// Actually stores the player ID, shared in team games
 BW_REF(s32,         g_local_human_id,           0x00512688);	// Invalid in replays, unique even in team games
+BW_REF(GameResult,  g_game_result,              0x0059B3D0);
 BW_DATA(u8*,		g_current_tileset,			0x00596828);	// Tileset of current map - compare with TilesetType::Enum
 BW_DATA(s32*,		g_provider_max_buffer,		0x0057F0D8);
 BW_REF(u32,         g_provider_turns_in_transit,0x0057F090);
@@ -282,10 +284,10 @@ BW_REF(u32,					g_last_random_sfx_id,		0x006D5BE0);
 
 // For load_race_grp_and_sounds
 BW_REF(u8,				g_hud_index,				0x0057F1E2);
-BW_REF(u16,				g_current_music_id,				0x0057F1DE);
-BW_ARRAY(u8, 3,         g_campaign_first_mission_bw,	0x005122C0);
-BW_ARRAY(u8, 3,         g_campaign_first_mission,		0x005122BC);
-BW_REF(s32,				g_race_ui_music_offset,		0x0051A3B4);
+// BW_REF(u16, g_current_music_id, 0x0057F1DE);              // Replaced by MusicSystem
+// BW_ARRAY(u8, 3, g_campaign_first_mission_bw, 0x005122C0); // Replaced by MusicSystem
+// BW_ARRAY(u8, 3, g_campaign_first_mission, 0x005122BC);    // Replaced by MusicSystem
+// BW_REF(s32, g_race_ui_music_offset, 0x0051A3B4);          // Replaced by MusicSystem
 
 // For load_game_create
 BW_REF(b32,				g_is_host,					0x00596888);
@@ -543,7 +545,7 @@ BW_DATA(HANDLE*,		g_sound_thread_event,		0x006D5A00);
 BW_DATA(s32*,			g_unk_sound_core,			0x006D5A08);
 BW_DATA(s32*,			g_sound_volume,				0x00599900);
 BW_DATA(s32*,			g_volume_reduction,			0x006D5A0C);
-BW_DATA(DSound*,		g_direct_sound_interface,	0x006D59F4);
+BW_REF(DSound*,			g_direct_sound_interface,	0x006D59F4);
 BW_DATA(s32*,			g_unk_sound_core_2,			0x005999C0);
 BW_DATA(CritSect*,		g_sound_lock,				0x006D5F4C);
 
@@ -1076,6 +1078,7 @@ BW_DATA(u32*,			g_minimap_unit_box_count,	0x0059C2B8);
 BW_DATA(void**,			g_trigger_condition_list,	0x00515A98);
 
 // For play_sound trigger
+BW_ARRAY(s32, 101,		g_music_volume_table,				0x005008EC);	// Music percent (0-100) -> DS centibels; index 0 unused
 BW_DATA(s32*,			g_big_volume_array,					0x005008F0);
 
 BW_DATA(u32*,			g_game_speed_replay_modifiers,		0x005124D8);
@@ -1262,10 +1265,9 @@ BW_DATA(u32*,				g_notification_message_id,			0x0068ACA0);
 // For update_selected_unit_portrait
 BW_DATA(u32*,				g_unk_portrait,						0x0068AC60);
 
-// For dialog_music_fade
-BW_REF(HANDLE*,				g_direct_sound_handle,				0x006D5BAC);
-BW_DATA(MusicTrack*,		g_music_bank,						0x00512BB8);
-BW_REF(u32,					g_big_music_volume,					0x006D5BB8);
+// BW_REF(HANDLE*, g_direct_sound_handle, 0x006D5BAC); // Replaced by MusicSystem
+// BW_DATA(MusicTrack*, g_music_bank, 0x00512BB8);     // Replaced by MusicSystem
+// BW_REF(u32, g_big_music_volume, 0x006D5BB8);        // Replaced by MusicSystem
 
 // For ignoring inputs in menu
 BW_DATA(BinDlg**,			g_popup_dialog,                     0x006D5BF4);

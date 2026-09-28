@@ -7,6 +7,7 @@
 #include "systems/ui/tooltip.h"
 #include "systems/ui/palette_fader.h"
 #include "systems/triggers/trigger_vars.h"
+#include "systems/audio/music_system.h"
 
 #include <algorithm>
 #include <format>
@@ -84,7 +85,7 @@ void GluCampaignList::load_campaign_by_index(u16 index) {
     m_mission_count->set_text(mission_count);
 
     std::string background = selected->background && !selected->background->empty()
-        ? (selected->directory.get() / *selected->background).generic_string()
+        ? campaigns::resolve_asset(selected->directory.get(), *selected->background)
         : "glue\\dynamic\\backgrounds\\options.pcx";
 
     if (ui::BackgroundState::instance().current().empty()) {
@@ -104,6 +105,8 @@ void GluCampaignList::load_campaign_by_index(u16 index) {
 
 void GluCampaignList::on_init() {
     g_campaign_manager.enter();
+    MusicSystem::instance().play("title");
+
     m_listbox->on_create([&](ui::Widget& self) {
         const auto& registry = g_campaign_manager;
         for (auto& campaign : registry.campaigns()) {
@@ -122,9 +125,6 @@ void GluCampaignList::on_init() {
     })->on_selection([&](ui::Widget&, u16 index) {
         load_campaign_by_index(index);
     });
-    if (!g_music_playing) {
-        helper::dialog_music_fade(MusicId_Title);
-    }
 
     if (g_campaign_manager.has_transition_error()) {
         ui::modal_ok(g_campaign_manager.take_transition_error());
@@ -148,8 +148,7 @@ void GluCampaignList::on_exit(u32 last_control) {
 static std::string initial_background() {
     const auto selected = g_campaign_manager.selected_campaign();
     if (selected->background && !selected->background->empty()) {
-        auto path = selected->directory.get() / *selected->background;
-        return path.generic_string();
+        return campaigns::resolve_asset(selected->directory.get(), *selected->background);
     }
     return "glue\\dynamic\\backgrounds\\options.pcx";
 }
@@ -216,10 +215,6 @@ void GluCampaignDetails::on_init() {
         const u16 target = first_uncompleted_index.value_or(last_index);
         quick_send_event(self.dialog()->to_bindlg(), DialogUserType_SetSelectionIndex, target);
 
-        if (!g_music_playing) {
-            helper::dialog_music_fade(MusicId_Title);
-        }
-
         if (g_campaign_manager.has_transition_error()) {
             ui::modal_ok(g_campaign_manager.take_transition_error());
         }
@@ -247,10 +242,17 @@ void GluCampaignDetails::on_init() {
         }
 
         if (mission.background && !mission.background->empty()) {
-            auto path = selected->directory.get() / *mission.background;
-            change_background(path.generic_string());
+            auto background = campaigns::resolve_asset(selected->directory.get(), *mission.background);
+            change_background(background);
         } else {
             change_background(initial_background());
+        }
+
+        if (mission.music && !mission.music->empty()) {
+            auto music = campaigns::resolve_asset(selected->directory.get(), *mission.music);
+            MusicSystem::instance().play_from_path(music);
+        } else {
+            MusicSystem::instance().play("title");
         }
     });
     m_reset_button->on_activate([](ui::Widget&) -> ui::ActivateResult {

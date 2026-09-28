@@ -63,7 +63,7 @@ void init_trigger_system() {
     g_objectives.reset();
     init_spawn();
     g_trigger_vars.reset();
-    AudioSystem::instance().reset();
+    AudioSystem::instance().reset_user_music();
     init_trigger_events();
 }
 
@@ -183,10 +183,6 @@ void update_trigger_system(bool in_game) {
         // Leaving the game should reset music
         g_trigger.in_game = false;
         init_trigger_system();
-    }
-
-    if (in_game) {
-        AudioSystem::instance().update();
     }
 
     bool paused = bw::is_game_paused();

@@ -59,7 +59,7 @@ std::optional<T> yaml_try_cast(const YAML::Node& node) {
 	try {
 		return node.as<T>();
 	} catch (const YAML::BadConversion&) {
-		return std::nullopt;
+		return {};
 	}
 }
 

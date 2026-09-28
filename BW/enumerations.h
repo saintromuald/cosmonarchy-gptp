@@ -1586,12 +1586,6 @@ enum DialogUserType {
     DialogUserType_AnimationDone     = 0x405,
 };
 
-enum class MusicType : u8 {
-    None = 0,
-    Loop = 1,
-    Playlist = 2, // Uses the "next_index" field to create a looping playlist
-};
-
 enum MusicId {
     MusicId_None           = 0,
     MusicId_Zerg1          = 1,
@@ -1678,6 +1672,14 @@ enum class GameState : u8 {
     InProgress = 12,
 };
 
+enum class GameResult : u32 {
+    Unknown,
+    Victory,
+    Defeat,
+    Draw,
+    Disconnect
+};
+
 enum class MainState : u32 {
     Intro,
     Init,
@@ -1746,7 +1748,7 @@ enum TriggerFlags : u32 {
     AlwaysDisplay = 0x0000004,
 };
 
-enum OptionsFlags : u32 {
+enum SoundOptionFlags : u32 {
     UnitSpeech              = 0x0000001,
     UnitAcknowledgements    = 0x0000002,
     BuildingSounds          = 0x0000004,

@@ -8,7 +8,7 @@
 #include "../config.h"
 #define NOMINMAX
 #include <Windows.h>
-#include <Utils/captivating_claws.h>
+#include <utils/captivating_claws.h>
 #include <algorithm>
 #include "player_color.h"
 #include "hooks/unit_stats/armor_bonus.h"

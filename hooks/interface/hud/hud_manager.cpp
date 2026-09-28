@@ -16,15 +16,11 @@
 #include <rfl/yaml.hpp>
 
 namespace {
-struct DefinitionsFile {
-    HudManager::ConfigMap huds;
-};
-
-constexpr auto DefinitionsPath = "game\\huds.yml";
+constexpr auto HudsYamlPath = "config\\huds.yml";
 } // namespace
 
 std::optional<DialogBounds> HudManager::Config::chat_textbox() const {
-    if (chat_textbox_bounds.size() != 4) return std::nullopt;
+    if (chat_textbox_bounds.size() != 4) return {};
     return DialogBounds::from_xywh(
         chat_textbox_bounds[0],
         chat_textbox_bounds[1],
@@ -42,6 +38,20 @@ void HudManager::install(std::string_view name) {
 
     g_hud_manager->m_logo_banner = std::make_unique<LogoBanner>();
     g_hud_manager->m_logo_banner->hide();
+}
+
+void HudManager::install(RaceId::Enum race) {
+    switch (race) {
+        case RaceId::Zerg:    install("zerg");    break;
+        case RaceId::Terran:  install("terran");  break;
+        case RaceId::Protoss: install("protoss"); break;
+        case RaceId::Askosi:  install("askosi");  break;
+        default:              install("terran");  break; // Shouldn't this be neutral? -Veeq7
+    }
+}
+
+void HudManager::install_replay() {
+    install("neutral");
 }
 
 HudManager::~HudManager() {
@@ -169,16 +179,16 @@ const HudManager::Config& HudManager::current() const {
 void HudManager::load_definitions() {
     m_configs.clear();
 
-    auto loaded = sfile::load_file(DefinitionsPath);
+    auto loaded = sfile::load_file(HudsYamlPath);
     const std::string contents{loaded.data.get(), loaded.size};
 
-    auto result = rfl::yaml::read<DefinitionsFile>(contents);
+    auto result = rfl::yaml::read<ConfigMap>(contents);
     if (!result) {
-        auto message = std::format("{}: {}", DefinitionsPath, result.error().what());
+        auto message = std::format("{}: {}", HudsYamlPath, result.error().what());
         helper::fatal_file_not_found(sfile::ErrorInvalidData, message.c_str());
     }
 
-    m_configs = std::move(result.value().huds);
+    m_configs = std::move(result.value());
 }
 
 // Order is important
@@ -351,7 +361,7 @@ bool HudManager::has_hud(std::string_view name) const {
 void HudManager::resolve_current(std::string_view name) {
     auto it = m_configs.find(std::string{name});
     if (it == m_configs.end()) {
-        const auto message = std::format("hud '{}' not defined in {}", name, DefinitionsPath);
+        const auto message = std::format("hud '{}' not defined in {}", name, HudsYamlPath);
         helper::fatal_file_not_found(sfile::ErrorInvalidData, message.c_str());
     }
     m_current = &it->second;
@@ -359,7 +369,7 @@ void HudManager::resolve_current(std::string_view name) {
 
     auto require = [&](std::string_view field, const std::string& value) {
         if (!value.empty()) return;
-        const auto message = std::format("hud '{}' missing required field '{}' in {}", m_current_name, field, DefinitionsPath);
+        const auto message = std::format("hud '{}' missing required field '{}' in {}", m_current_name, field, HudsYamlPath);
         helper::fatal_file_not_found(sfile::ErrorInvalidData, message.c_str());
     };
     require("image",               m_current->image);

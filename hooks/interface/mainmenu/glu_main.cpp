@@ -5,6 +5,7 @@
 #include "BW/api.h"
 #include "BW/bwhelper.h"
 #include "hooks/snp.h"
+#include "systems/audio/music_system.h"
 
 static void load_game_templates(){ // See: 004dbac5
     auto ums_data = helper::glu_main_load_ums_templates();
@@ -27,9 +28,7 @@ static u32 __fastcall dlgproc_glu_main(bw::Dialog* dialog, DialogEvent* event) {
                 helper::glu_main_create(dialog);
                 helper::dialog_swish_in(dialog);
                 helper::generic_dialog_interact(dialog, event);
-                if (!g_music_playing) {
-                    helper::dialog_music_fade(MusicId::MusicId_Title);
-                }
+                MusicSystem::instance().play("title");
                 return 1;
             }
             case DialogUserType_Destroy: {

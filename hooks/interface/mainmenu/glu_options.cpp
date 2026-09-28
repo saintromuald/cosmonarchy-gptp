@@ -1,5 +1,6 @@
 #include "glu_options.h"
 #include "BW/bwdata.h"
+#include "BW/bwhelper.h"
 #include "BW/ui.h"
 #include "BW/enumerations.h"
 #include "BW/structures/ui_structures.h"
@@ -7,6 +8,7 @@
 #include "storm/storm.h"
 #include "config.h"
 #include "systems/triggers/trigger_system.h"
+#include "systems/audio/audio_system.h"
 #include "systems/ui/tooltip.h"
 
 #include <algorithm>
@@ -16,6 +18,7 @@
 #include <ranges>
 #include <span>
 #include <string_view>
+#include <type_traits>
 #include <utility>
 
 #include <magic_enum/magic_enum.hpp>
@@ -26,6 +29,7 @@ static constexpr auto TabCount = 4;
 
 static constexpr auto CheckboxHeight = 20;
 static constexpr auto ComboboxHeight = 20;
+static constexpr auto SliderHeight = 20;
 static constexpr auto LabelHeight = 25;
 
 static constexpr auto ColumnWidth = 230;
@@ -37,9 +41,22 @@ static constexpr auto ColumnPadding = 40;
 static constexpr auto StartX = 30;
 static constexpr auto StartY = 70;
 
+static constexpr u32 SfxPreviewThrottleMs = 200; // Min time gap between SFX slider preview blips
+static constexpr s32 SfxPreviewVolumeStep = 5;   // Min volume change between SFX slider preview blips
+
 static constexpr u8  SwatchShadeCount = 8;
 static constexpr u16 SwatchBoxSize = 10;
 static constexpr std::array<u8, SwatchShadeCount> SwatchPaletteSlots = {247, 248, 249, 250, 251, 252, 253, 255};
+
+struct LayoutCursor : public v2u16 {
+    LayoutCursor(u16 start_x = StartX, u16 start_y = StartY) {
+        x = start_x;
+        y = start_y;
+    }
+
+    LayoutCursor& pad_vertical(u16 amount = SectionPadding) { y += amount; return *this; };
+    LayoutCursor& next_column() { y = StartY; x += ColumnPadding + ColumnWidth; return *this; };
+};
 
 // Horizontal line under the inactive tabs to show they're not selected
 static void add_tab_blockers(ui::Group* group, u8 index) {
@@ -52,34 +69,36 @@ static void add_tab_blockers(ui::Group* group, u8 index) {
     }
 }
 
-static ui::Widget* options_label(ui::Group* tab, v2u16& cursor, std::string text) {
+static ui::Widget* options_label(ui::Group* tab, LayoutCursor& cursor, std::string text) {
     auto label = tab->label(DialogBounds::from_xywh(cursor.x, cursor.y, ColumnWidth, LabelHeight), std::move(text));
     label->fontsize(ui::FontSize::Large16);
-    cursor.y += LabelHeight;
+    cursor.pad_vertical(LabelHeight);
     return label;
 }
 
-static ui::Widget* linked_checkbox(ui::Group* tab, v2u16& cursor, std::string text, bool& target) {
+static ui::Widget* linked_checkbox(ui::Group* tab, LayoutCursor& cursor, std::string text, bool& target) {
     auto checkbox = tab->checkbox(DialogBounds::from_xywh(cursor.x + ItemIndent, cursor.y, ColumnWidth, CheckboxHeight),
         std::move(text), target)->on_activate([&target](ui::Widget&) -> ui::ActivateResult {
             target = !target;
             return ui::ActivateResult::ContinueWithDefault;
         });
-    cursor.y += CheckboxHeight;
+    cursor.pad_vertical(CheckboxHeight);
     return checkbox;
 }
 
-static ui::Widget* race_flags_checkbox(ui::Group* tab, v2u16& cursor, std::string text, RaceFlags::Enum& target, RaceFlags::Enum flag) {
+template <typename Enum>
+requires std::is_enum_v<Enum>
+static ui::Widget* flags_checkbox(ui::Group* tab, LayoutCursor& cursor, std::string text, Enum& target, Enum flag) {
     auto checkbox = tab->checkbox(DialogBounds::from_xywh(cursor.x + ItemIndent, cursor.y, ColumnWidth, CheckboxHeight),
-        std::move(text), target & flag)->on_activate([&target, flag](ui::Widget&) -> ui::ActivateResult {
+        std::move(text), (target & flag) != Enum{})->on_activate([&target, flag](ui::Widget&) -> ui::ActivateResult {
             target ^= flag;
             return ui::ActivateResult::ContinueWithDefault;
         });
-    cursor.y += CheckboxHeight;
+    cursor.pad_vertical(CheckboxHeight);
     return checkbox;
 }
 
-static ui::Widget* linked_uibool(ui::Group* tab, v2u16& cursor, std::string text, UiBool& target) {
+static ui::Widget* linked_uibool(ui::Group* tab, LayoutCursor& cursor, std::string text, UiBool& target) {
     tab->label(DialogBounds::from_xywh(cursor.x + ItemIndent, cursor.y, ColumnWidth, ComboboxHeight), std::move(text));
     auto combobox = tab->combobox(DialogBounds::from_xywh(cursor.x + ItemIndent + ColumnWidth, cursor.y, UIBoolWidth, ComboboxHeight));
     combobox->on_create([&target](ui::Widget& self) {
@@ -91,8 +110,19 @@ static ui::Widget* linked_uibool(ui::Group* tab, v2u16& cursor, std::string text
         if (index >= std::to_underlying(EUiBool::Count)) return;
         target.value = EUiBool{index};
     });
-    cursor.y += ComboboxHeight;
+    cursor.pad_vertical(ComboboxHeight);
     return combobox;
+}
+
+template <typename T>
+requires std::is_integral_v<T>
+static ui::Widget* linked_slider(ui::Group* tab, LayoutCursor& cursor, u16 min, u16 max, T& target) {
+    auto slider = tab->slider(DialogBounds::from_xywh(cursor.x + ItemIndent, cursor.y, ColumnWidth, SliderHeight), min, max, target);
+    slider->on_selection([&target](ui::Widget&, u16 index) {
+        target = index;
+    });
+    cursor.pad_vertical(SliderHeight);
+    return slider;
 }
 
 // Advisor matrix
@@ -115,7 +145,7 @@ static Advisor advisor_for_race_flag(RaceFlags::Enum flag) {
     }
 }
 
-static std::vector<MatrixCell> checkbox_matrix(ui::Group* tab, v2u16& cursor,
+static std::vector<MatrixCell> checkbox_matrix(ui::Group* tab, LayoutCursor& cursor,
     std::span<const MatrixColumn> columns, std::span<const MatrixRow> rows) {
     const auto grid_x  = static_cast<s16>(cursor.x + ItemIndent);
     const auto grid_y  = static_cast<s16>(cursor.y + MatrixRowHeight);
@@ -156,7 +186,7 @@ public:
     ui::Widget* listbox() const { return m_listbox; }
 
     std::optional<PlayerColor> value_at(u8 display_row) const {
-        if (display_row >= m_display.size()) return std::nullopt;
+        if (display_row >= m_display.size()) return {};
         return m_display[display_row];
     }
 
@@ -277,10 +307,10 @@ static std::vector<PlayerColor> valid_colors() {
     return out;
 }
 
-static std::shared_ptr<ColorListEditor> player_color_selector(ui::Group* tab, v2u16& cursor,
+static std::shared_ptr<ColorListEditor> player_color_selector(ui::Group* tab, LayoutCursor& cursor,
     std::vector<std::pair<std::string, std::vector<PlayerColor>*>> targets,
     std::initializer_list<PlayerColor> exclude = {}) {
-    v2u16 layout{cursor};
+    LayoutCursor layout{cursor};
 
     tab->image(DialogBounds::from_xywh(layout.x - 4, layout.y + 1, 168, 257), "glue\\dynamic\\checked_listbox_back.pcx")->translucent();
 
@@ -303,7 +333,7 @@ static std::shared_ptr<ColorListEditor> player_color_selector(ui::Group* tab, v2
     auto move_down = tab->lightup_button(DialogBounds::from_xywh(list_x + 85, buttons_y, 75, 24), "Down")
         ->tooltip("Move selected color down in the priority list");
 
-    cursor.y += 264;   // 30 (button row) + 200 (listbox) + 4 gap + 24 (buttons) + 6
+    cursor.pad_vertical(264); // 30 (button row) + 200 (listbox) + 4 gap + 24 (buttons) + 6
 
     auto ordered = std::views::values(targets) | std::ranges::to<std::vector>();
 
@@ -326,7 +356,7 @@ static std::shared_ptr<ColorListEditor> player_color_selector(ui::Group* tab, v2
 }
 
 GluOptions::GluOptions()
-    : ui::Menu("glue\\dynamic\\backgrounds\\options.pcx"), m_config(g_config), m_race_flags(RaceRandomizer::instance().race_flags()) {
+    : ui::Menu("glue\\dynamic\\backgrounds\\options.pcx"), m_config(g_config), m_options(*g_options_list), m_race_flags(RaceRandomizer::instance().race_flags()) {
     const char hotkey_color = static_cast<char>(LobbyTextColor::YellowGreen);
     const char revert_color = static_cast<char>(LobbyTextColor::Revert);
 
@@ -342,13 +372,13 @@ GluOptions::GluOptions()
         std::format("{}U{}i", hotkey_color, revert_color))->enable_hotkey('u');
     m_color_tab_button   = lightup_button(DialogBounds::from_xywh(434, 16, 86, 24), 
         std::format("Co{}l{}or", hotkey_color, revert_color))->enable_hotkey('l');
-    m_control_tab_button = lightup_button(DialogBounds::from_xywh(533, 16, 86, 24),
-        std::format("Cont{}r{}ol", hotkey_color, revert_color))->enable_hotkey('r')->disable(); // TODO: Implement control tab -Jesse
+    m_audio_tab_button = lightup_button(DialogBounds::from_xywh(533, 16, 86, 24),
+        std::format("{}A{}udio", hotkey_color, revert_color))->enable_hotkey('a');
 
     m_misc_tab    = make_misc_tab();
     m_ui_tab      = make_ui_tab()->hide();
     m_color_tab   = make_color_tab()->hide();
-    m_control_tab = make_control_tab()->hide();
+    m_audio_tab   = make_audio_tab()->hide();
     m_active_tab  = m_misc_tab;
 }
 
@@ -365,8 +395,8 @@ void GluOptions::on_init() {
         change_tab(m_color_tab);
         return ui::ActivateResult::ConsumeActivation;
     });
-    m_control_tab_button->on_activate([&](ui::Widget&) -> ui::ActivateResult {
-        change_tab(m_control_tab);
+    m_audio_tab_button->on_activate([&](ui::Widget&) -> ui::ActivateResult {
+        change_tab(m_audio_tab);
         return ui::ActivateResult::ConsumeActivation;
     });
 
@@ -387,12 +417,22 @@ void GluOptions::on_init() {
         race_randomizer.update_config();
         race_randomizer.cleanup_and_reset();
         save_config();
+        m_options.music = g_options_list->music;
+        m_options.sfx = g_options_list->sfx;
+        *g_options_list = m_options;
+        m_committed = true;
         return ui::ActivateResult::ContinueWithDefault;
     })->tooltip("Save changes and return to the main menu");
     m_cancel_button->tooltip("Discard changes and return");
 }
 
 void GluOptions::on_exit(u32 last_control) {
+    if (!m_committed) {
+        // Cancel: undo the live volume preview. m_options still holds the values from menu open.
+        g_options_list->music = m_options.music;
+        g_options_list->sfx = m_options.sfx;
+        helper::sound_update_volumes();
+    }
     g_gl_glues_mode = MenuId::GlueMainMenu;
 }
 
@@ -406,41 +446,40 @@ void GluOptions::change_tab(ui::Group* new_tab) {
 }
 
 ui::Group* GluOptions::make_misc_tab() {
-    v2u16 cursor{StartX, StartY};
+    LayoutCursor cursor;
     auto tab = group();
     add_tab_blockers(tab, 0);
 
     load_advisor_flags();
 
     options_label(tab, cursor, "Random Race Pool");
-    race_flags_checkbox(tab, cursor, "Zerg", m_race_flags, RaceFlags::Zerg);
-    race_flags_checkbox(tab, cursor, "Terran", m_race_flags, RaceFlags::Terran);
-    race_flags_checkbox(tab, cursor, "Protoss", m_race_flags, RaceFlags::Protoss);
-    race_flags_checkbox(tab, cursor, "Askosi", m_race_flags, RaceFlags::Askosi);
-    cursor.y += SectionPadding;
+    flags_checkbox(tab, cursor, "Zerg", m_race_flags, RaceFlags::Zerg);
+    flags_checkbox(tab, cursor, "Terran", m_race_flags, RaceFlags::Terran);
+    flags_checkbox(tab, cursor, "Protoss", m_race_flags, RaceFlags::Protoss);
+    flags_checkbox(tab, cursor, "Askosi", m_race_flags, RaceFlags::Askosi);
+    cursor.pad_vertical();
 
     options_label(tab, cursor, "Launch Settings");
     linked_checkbox(tab, cursor, "Disable WMode Prompt", m_config.disable_wmode_prompt);
     linked_checkbox(tab, cursor, "Prefer WMode", m_config.prefer_wmode);
     linked_checkbox(tab, cursor, "Suppress Windows Key", m_config.suppress_windows_key);
-    cursor.y += SectionPadding;
+    cursor.pad_vertical();
 
     options_label(tab, cursor, "Audiovisuals");
     linked_checkbox(tab, cursor, "Celebrations", m_config.celebrations_enabled);
     linked_checkbox(tab, cursor, "Flash Window on Lobby Join", m_config.flash_window_lobby_join)
         ->tooltip("Flashes the window when a player joins even if Cosmonarchy is in the background");
-    cursor.y += SectionPadding;
+    cursor.pad_vertical();
 
     options_label(tab, cursor, "Replays");
     linked_checkbox(tab, cursor, "Auto Save", m_config.auto_save_replays);
     linked_checkbox(tab, cursor, "Show Progressbar", m_config.show_replay_progress_bar);
     linked_checkbox(tab, cursor, "SanitizeChat", m_config.sanitize_replay_chat)
         ->tooltip("Removes all chat messages except 'glhf' and 'gg'");
-    cursor.y += SectionPadding;
+    cursor.pad_vertical();
 
     // Second column: which advisors are eligible for each race.
-    cursor.x += ColumnWidth + ColumnPadding;
-    cursor.y = StartY;
+    cursor.next_column();
     options_label(tab, cursor, "Race Advisors");
 
     static constexpr Advisor AdvisorMatrixExclude[] = {
@@ -560,7 +599,7 @@ bool GluOptions::advisors_valid() const {
 }
 
 ui::Group* GluOptions::make_ui_tab() {
-    v2u16 cursor{StartX, StartY};
+    LayoutCursor cursor;
     auto tab = group();
     add_tab_blockers(tab, 1);
 
@@ -569,7 +608,7 @@ ui::Group* GluOptions::make_ui_tab() {
     linked_checkbox(tab, cursor, "Show Timer", m_config.show_timer);
     linked_checkbox(tab, cursor, "Show APM", m_config.show_apm);
     linked_checkbox(tab, cursor, "Always Show Ext. Tooltips", m_config.always_show_extended_tooltips);
-    cursor.y += SectionPadding;
+    cursor.pad_vertical();
 
     options_label(tab, cursor, "Team UI");
     linked_checkbox(tab, cursor, "Show Team UI", m_config.show_team_ui);
@@ -577,8 +616,7 @@ ui::Group* GluOptions::make_ui_tab() {
     linked_checkbox(tab, cursor, "Show Team Names", m_config.show_team_ui_names);
     linked_checkbox(tab, cursor, "Show Self in Team UI", m_config.show_team_ui_self);
     linked_checkbox(tab, cursor, "Show Global Queue", m_config.show_ingame_global_queue);
-    cursor.x += ColumnWidth + ColumnPadding;
-    cursor.y = StartY;
+    cursor.next_column();
 
     options_label(tab, cursor, "Selection UI");
     linked_uibool(tab, cursor, "Show Rally Lines", m_config.show_rally_lines);
@@ -589,7 +627,7 @@ ui::Group* GluOptions::make_ui_tab() {
     linked_uibool(tab, cursor, "Show Ability Ranges", m_config.show_ability_ranges);
     linked_uibool(tab, cursor, "Condensed Selection", m_config.always_show_condensed_selection);
     linked_uibool(tab, cursor, "Alt for Selection UI", m_config.use_alt_for_selection_ui);
-    cursor.y += SectionPadding;
+    cursor.pad_vertical();
 
     options_label(tab, cursor, "Minimap UI");
     linked_uibool(tab, cursor, "Show Cameras", m_config.show_minimap_cameras);
@@ -599,7 +637,7 @@ ui::Group* GluOptions::make_ui_tab() {
 }
 
 ui::Group* GluOptions::make_color_tab() {
-    v2u16 cursor{StartX, StartY};
+    LayoutCursor cursor;
     auto tab = group();
     add_tab_blockers(tab, 2);
 
@@ -611,10 +649,11 @@ ui::Group* GluOptions::make_color_tab() {
         "Colors will be chosen in order of preference. Use the up/down arrows to reorder.\n\n"
         "Hover your mouse over a color to see a preview.",
         static_cast<char>(LobbyTextColor::White), static_cast<char>(LobbyTextColor::Revert)));
-    cursor.y += 225 + SectionPadding;
+    cursor.pad_vertical(225 + SectionPadding);
     linked_checkbox(tab, cursor, "Shuffle Colors", m_config.shuffle_preferred_colors);
 
     cursor = {StartX + 230, StartY + 26};
+
     Bitmap tunit{};
     load_bitmap("game\\tunit.pcx", tunit, &m_palette);
     m_indexes = smem::ptr<u8[]>{tunit.buffer};
@@ -664,10 +703,50 @@ ui::Group* GluOptions::make_color_tab() {
     return tab;
 }
 
-ui::Group* GluOptions::make_control_tab() {
-    v2u16 cursor{StartX, StartY};
+ui::Group* GluOptions::make_audio_tab() {
+    LayoutCursor cursor;
     auto tab = group();
     add_tab_blockers(tab, 3);
+
+    options_label(tab, cursor, "Background Audio");
+    linked_checkbox(tab, cursor, "Play music in background", m_config.play_music_in_background)
+        ->tooltip("If unchecked, mute music when the menu isn't focused");
+    linked_checkbox(tab, cursor, "Play sound in background", m_config.play_sound_in_background)
+        ->tooltip("If unchecked, mute sound when the menu isn't focused");
+    cursor.pad_vertical();
+
+    options_label(tab, cursor, "Enabled Sounds");
+    flags_checkbox(tab, cursor, "Unit Speech", m_options.flags, SoundOptionFlags::UnitSpeech);
+    flags_checkbox(tab, cursor, "Unit Acknowledgements", m_options.flags, SoundOptionFlags::UnitAcknowledgements);
+    flags_checkbox(tab, cursor, "Building Sounds", m_options.flags, SoundOptionFlags::BuildingSounds);
+    cursor.pad_vertical();
+
+    options_label(tab, cursor, "Accessibility");
+    flags_checkbox(tab, cursor, "Subtitles", m_options.flags, SoundOptionFlags::Subtitles);
+    cursor.next_column();
+
+    options_label(tab, cursor, "Music Volume");
+    tab->slider(DialogBounds::from_xywh(cursor.x + ItemIndent, cursor.y, ColumnWidth, SliderHeight), 0, 99, m_options.music)
+        ->on_selection([](ui::Widget&, u16 value) {
+            g_options_list->music = value;
+            helper::sound_update_volumes();
+        });
+    cursor.pad_vertical(SliderHeight);
+
+    options_label(tab, cursor, "Sound Volume");
+    tab->slider(DialogBounds::from_xywh(cursor.x + ItemIndent, cursor.y, ColumnWidth, SliderHeight), 0, 99, m_options.sfx)
+        ->on_selection([last_preview = u32{0}, last_value = s32{-1000}](ui::Widget&, u16 value) mutable {
+            g_options_list->sfx = value;
+            helper::sound_update_volumes();
+            u32 now = GetTickCount();
+            s32 delta = value > last_value ? value - last_value : last_value - value;
+            if (now - last_preview >= SfxPreviewThrottleMs && delta > SfxPreviewVolumeStep) {
+                last_preview = now;
+                last_value = value;
+                AudioSystem::instance().play_sound(SoundId::glue_mousedown2_wav, PlaySoundSettings{.force_globally = true});
+            }
+        });
+    cursor.pad_vertical(SliderHeight + SectionPadding);
 
     return tab;
 }

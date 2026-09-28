@@ -10,7 +10,7 @@
 #include "hooks/interface/uifeatures/hotkeys.h"
 #include "hooks/interface/uifeatures/ui_features.h"
 #include "hooks/interface/hpbars/hpbars.h"
-#include "Utils/captivating_claws.h"
+#include "utils/captivating_claws.h"
 #include "hooks/cosmonarchy_finder.h"
 #include "globals.h"
 #include "target_related.h"
@@ -805,7 +805,9 @@ namespace hooks {
         *cpu_throttle = false;
 
         g_game->tick();
-        AudioSystem::instance().update_playing_sounds();
+        auto& audio_system = AudioSystem::instance();
+        audio_system.update();
+        audio_system.update_playing_sounds();
 
         s32* trigger_cooldown = (s32*)0x006509A0;
         *trigger_cooldown = 0; // Single frame hypertriggers
@@ -1250,8 +1252,8 @@ namespace hooks {
             unit_ext.values[ValueWeaponBulletLocalIndex] = 0;
             unit_ext.values[ValueWeaponBulletTotalIndex] = 0;
             unit_ext.values[ValueProjectilePattern] = 0;
-            unit_ext.target_pos_override = std::nullopt;
-            unit_ext.last_unit_target = std::nullopt;
+            unit_ext.target_pos_override = {};
+            unit_ext.last_unit_target = {};
         }
 
         if (g_active_game_mode) {
@@ -4361,7 +4363,7 @@ namespace hooks {
 
     bool game_end() {
         lua::g_script_manager.reset();
-        AudioSystem::instance().stop_playing_sounds();
+        AudioSystem::instance().stop_and_clear_playing_sounds();
         end_threshold();
         g_graphics.reset_stat_res_graphics();
         for (u32 player = 0; player < PlayerLimit; player++) {

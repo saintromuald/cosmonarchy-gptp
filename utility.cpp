@@ -3,16 +3,6 @@
 
 #include <stdarg.h>
 
-bool mpq_file_exists(const char* filename) {
-    HANDLE file = 0;
-    SFileOpenFile(filename, &file);
-    if (file) {
-        SFileCloseFile(file);
-        return true;
-    }
-    return false;
-}
-
 std::optional<std::string> mpq_load_file(const char* filename) {
     HANDLE handle = 0;
     SFileOpenFile(filename, &handle);

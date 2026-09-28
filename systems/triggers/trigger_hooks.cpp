@@ -438,46 +438,6 @@ void update_selected_unit_portrait() { // 0045EBC0
     }
 }
 
-// Hooked to enable crig-based briefing music. -Pr0nogo
-void dialog_music_fade(u32 music_id) { // 004A6310
-    if (!g_direct_sound_handle || !g_music_playing) {
-        switch (music_id) {
-            case MusicId_TRdyRoom: {
-                if (g_current_map_name == "Sunset Mission"sv
-                ||  g_current_map_name == "Early Retirement"sv
-                ||  g_current_map_name == "Amber Word"sv) {
-                    // Temporary, for mapcrap
-                    music_id = MusicId_None;
-                }
-            } break;
-            case MusicId_PRdyRoom: {
-                if (g_current_map_name == "The Arbiter"sv) {
-                    music_id = MusicId_None;
-                }
-            } break;
-            case MusicId_ZRdyRoom: {
-                if (g_current_map_name == "Eye of the Needle"sv) {
-                    music_id = MusicId_None;
-                }
-            } break;
-        }
-
-        if (g_music_bank[music_id].fade_in) {
-            u32 volume = g_music_volume;
-            g_music_volume = -10000;
-            helper::play_music(music_id);
-            g_music_volume = volume;
-            if (g_options_list->music) {
-                g_big_music_volume = 4294963900;
-                KillTimer(g_main_window, 3);
-                SetTimer(g_main_window, 3, 0x14, (TIMERPROC)0x004A6030);
-            }
-        } else {
-            helper::play_music(music_id);
-        }
-    }
-}
-
 // Hooked to investigate adding a rescue unit crig action. -Pr0nogo
 void orders_rescue_passive(Unit* unit) { // 004A1EF0
     if (!unit->main_order_timer) {
@@ -613,7 +573,7 @@ void __declspec(naked) stop_sounds_partial_wrapper() { // 004BBF5C
     __asm {
         PUSHAD
     }
-    AudioSystem::instance().stop_all_sounds_partial();
+    AudioSystem::instance().stop_all_sounds();
     __asm {
         POPAD
         JMP func_address
@@ -776,19 +736,6 @@ void __declspec(naked) update_selected_unit_portrait_wrapper() { // 0045EBC0
     }
 }
 
-void __declspec(naked) dialog_music_fade_wrapper() { // 004A6310
-    static u32 music_id;
-    __asm {
-        MOV music_id, EAX
-        PUSHAD
-    }
-    dialog_music_fade(music_id);
-    __asm {
-        POPAD
-        RETN
-    }
-}
-
 void __declspec(naked) orders_rescue_passive_wrapper() { // 004A6310
     static Unit* unit;
     __asm {
@@ -836,7 +783,6 @@ void inject_trigger_system_hooks() {
     jump_patch(show_portrait,								0x0046CF30, 3);
     jump_patch(do_unit_event_notification_wrapper,			0x0045EFE0, 1);
     jump_patch(update_selected_unit_portrait_wrapper,		0x0045EBC0, 0);
-    jump_patch(dialog_music_fade_wrapper,					0x004A6310, 3);
     jump_patch(orders_rescue_passive_wrapper,				0x004A1EF0, 1);
     jump_patch(ai_unit_can_enter_bunker_proc_wrapper,		0x00440220, 0);
 }

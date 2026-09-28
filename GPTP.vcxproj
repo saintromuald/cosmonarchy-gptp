@@ -333,8 +333,10 @@
     </ClCompile>
     <ClCompile Include="GameModes\Uprising.cpp" />
     <ClCompile Include="ReplayKraken.cpp" />
+    <ClCompile Include="systems\audio\music_registry.cpp" />
     <ClCompile Include="systems\scripting\scripting.cpp" />
     <ClCompile Include="systems\audio\audio_system.cpp" />
+    <ClCompile Include="systems\audio\music_system.cpp" />
     <ClCompile Include="systems\audio\music_stream.cpp" />
     <ClCompile Include="systems\audio\audio_decoder.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -344,7 +346,6 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <IncludeInUnityFile>false</IncludeInUnityFile>
     </ClCompile>
-
     <ClCompile Include="systems\ui\palette_fader.cpp" />
     <ClCompile Include="systems\ui\tooltip.cpp" />
     <ClCompile Include="systems\ui\widgets.cpp" />
@@ -368,6 +369,8 @@
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="hooks\audiovisuals\sfxhooks.cpp" />
     <ClCompile Include="hooks\audiovisuals\sfxhooks_inject.cpp" />
+    <ClCompile Include="hooks\audiovisuals\music_hooks.cpp" />
+    <ClCompile Include="hooks\audiovisuals\music_hooks_inject.cpp" />
     <ClCompile Include="hooks\byte_operations_utils.cpp" />
     <ClCompile Include="hooks\game\file_operations.cpp" />
     <ClCompile Include="hooks\game\file_operations_inject.cpp" />
@@ -637,7 +640,8 @@
     <ClCompile Include="systems\triggers\trigger_vars.cpp" />
     <ClCompile Include="unit_search.cpp" />
     <ClCompile Include="Utils.cpp" />
-    <ClCompile Include="Utils\captivating_claws.cpp" />
+    <ClCompile Include="utils\captivating_claws.cpp" />
+    <ClCompile Include="utils\enum.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aise_signal.h" />
@@ -660,6 +664,7 @@
     <ClInclude Include="hooks\interface\hud\logo_banner.h" />
     <ClInclude Include="hooks\interface\mainmenu\glu_options.h" />
     <ClInclude Include="safeunion.h" />
+    <ClInclude Include="systems\audio\music_registry.h" />
     <ClInclude Include="systems\scripting\api\ai\ai.h" />
     <ClInclude Include="systems\scripting\api\ai\attack_wave.h" />
     <ClInclude Include="systems\scripting\api\ai\defense.h" />
@@ -721,6 +726,7 @@
     <ClInclude Include="interpolation.h" />
     <ClInclude Include="hooks/snp.h" />
     <ClInclude Include="systems\audio\audio_system.h" />
+    <ClInclude Include="systems\audio\music_system.h" />
     <ClInclude Include="systems\audio\music_stream.h" />
     <ClInclude Include="systems\audio\audio_decoder.h" />
     <ClInclude Include="defer.h" />
@@ -771,6 +777,7 @@
     <ClInclude Include="hooks\build_time.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="hooks\audiovisuals\sfxhooks.h" />
+    <ClInclude Include="hooks\audiovisuals\music_hooks.h" />
     <ClInclude Include="hooks\byte_operations_utils.h" />
     <ClInclude Include="hooks\game\file_operations.h" />
     <ClInclude Include="hooks\cosmonarchy_finder.h" />
@@ -805,7 +812,8 @@
     <ClInclude Include="unit_constants.h" />
     <ClInclude Include="unit_search.h" />
     <ClInclude Include="Utils.h" />
-    <ClInclude Include="Utils\captivating_claws.h" />
+    <ClInclude Include="utils\captivating_claws.h" />
+    <ClInclude Include="utils\enum.h" />
     <ClInclude Include="hooks\limits\ccmu.h" />
     <ClInclude Include="hooks\limits\extender.h" />
     <ClInclude Include="hooks\economic_units.h" />
@@ -934,6 +942,7 @@
     <ClInclude Include="hooks\weapons\weapon_fire.h" />
     <ClInclude Include="hooks\unit_stats\weapon_range.h" />
     <ClInclude Include="BW\enumerations\WeaponId.h" />
+    <ClInclude Include="utils\rfl.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

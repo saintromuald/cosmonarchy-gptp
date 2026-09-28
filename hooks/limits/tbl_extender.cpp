@@ -1,5 +1,6 @@
 #include "tbl_extender.h"
 #include "storm/storm.h"
+#include "storm/sfile.h"
 #include <fstream>
 #include <string>
 #include <format>
@@ -50,7 +51,7 @@ static void load_stat_txt_error(const std::format_string<Ts...>& format, Ts&&...
 
 void __cdecl load_stat_txt() { // 004C3A20
     static constexpr auto RezStatTxt = "rez\\stat.txt";
-    if (!mpq_file_exists(RezStatTxt)) {
+    if (!sfile::file_exists(RezStatTxt, SFileScope::MpqOnly)) {
         load_stat_txt_error("File {} not found", RezStatTxt);
     }
     std::istringstream stream{mpq_load_file(RezStatTxt).value_or("")};

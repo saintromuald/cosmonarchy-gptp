@@ -10,7 +10,7 @@ namespace fs = std::filesystem;
 #include <vector>
 
 #include <types.h>
-#include <rfl.hpp>
+#include <utils/rfl.h>
 
 namespace campaigns {
 using CompletionVar = std::string;
@@ -34,6 +34,9 @@ enum class MissionSelectType {
     ComboBox,
     ListBox,
 };
+
+// Return absolute path to on-disk file relative to manifest if it exists, otherwise fall back to normal path for MPQ loading
+std::string resolve_asset(const fs::path& directory, std::string_view name);
 } // namespace campaigns
 
 struct Mission {

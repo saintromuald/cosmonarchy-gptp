@@ -3,6 +3,7 @@
 #include "BW/game_runner.h"
 #include "BW/enumerations.h"
 #include "magic_enum/magic_enum.hpp"
+#include "systems/audio/music_system.h"
 
 namespace {
 static std::unique_ptr<GluJoinCrownlinkContext> g_context;
@@ -273,7 +274,7 @@ void glu_join_crownlink() {
     g_glue_background_id = -1;
     change_menu(true);
 
-    if (!g_music_playing) helper::dialog_music_fade(MusicId::MusicId_Title);
+    MusicSystem::instance().play("title");
 
     g_is_in_replay = false;
     if (scenario_chk) {

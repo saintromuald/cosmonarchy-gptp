@@ -26,6 +26,21 @@ constexpr std::array OfficialCampaigns {
     // The Fall (Waiting for AI voice removal)
 };
 
+std::string campaigns::resolve_asset(const fs::path& directory, std::string_view name) {
+    std::error_code ec;
+    fs::path candidate = directory / fs::path{name};
+    if (!fs::exists(candidate, ec)) {
+        return std::string{name};
+    }
+
+    std::string resolved = candidate.generic_string();
+    if (resolved.size() >= MAX_PATH) {
+        bw::println("Error: Campaign asset path exceeds MAX_PATH: {}", resolved);
+        return std::string{name};
+    }
+    return resolved;
+}
+
 // For displaying campaign read error in the UI
 template <class... Args>
 static Campaign error_entry_campaign(const fs::path& manifest_path,

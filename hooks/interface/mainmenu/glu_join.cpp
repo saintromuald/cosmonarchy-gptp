@@ -1,8 +1,9 @@
 #include "custom_glues.h"
 #include "BW/ui.h"
+#include "systems/audio/music_system.h"
 
 void glu_join() {
-    if (!g_music_playing) helper::dialog_music_fade(MusicId::MusicId_Title);
+    MusicSystem::instance().play("title");
 
     g_join_bin = load_bin_file("rez\\glujoin.bin").release();
 

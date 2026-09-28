@@ -247,7 +247,7 @@ inline void initialize_bin_dialog(bw::Dialog* dialog, bw::DialogInteraction* pro
 }
 
 // For dialogs built with the widget system: bounds are already in absolute
-void initialize_widget_dialog(bw::Dialog* dialog, std::optional<bw::DialogInteraction*> interaction_function = std::nullopt);
+void initialize_widget_dialog(bw::Dialog* dialog, std::optional<bw::DialogInteraction*> interaction_function = {});
 
 void quick_send_event(bw::Dialog* dialog, DialogUserType user_type, u16 param = 0);
 inline void quick_send_event(BinDlg* dialog, DialogUserType user_type, u16 param = 0) {

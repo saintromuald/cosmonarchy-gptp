@@ -78,6 +78,7 @@
 #include "hooks/interface/select_larva.h"
 #include "hooks/interface/selection.h"
 #include "hooks/audiovisuals/sfxhooks.h"
+#include "hooks/audiovisuals/music_hooks.h"
 #include "hooks/orders/siege_transform.h"
 #include "hooks/interface/stats_panel_display.h"
 #include "hooks/orders/base_orders/stopholdpos_orders.h"
@@ -902,6 +903,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     hooks::inject_spellcaster_ai_hooks();
     hooks::inject_ai_orders_hooks();
     hooks::inject_sfx_hooks();
+    hooks::inject_music_hooks();
     hooks::inject_miss_chance_hooks();
     hooks::inject_build_time_hooks();
     hooks::inject_hotkey_hooks();
