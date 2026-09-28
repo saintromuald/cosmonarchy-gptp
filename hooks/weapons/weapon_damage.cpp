@@ -2,7 +2,7 @@
 #include "../../BW/api.h"
 #include <algorithm>
 #include <cmath>
-#include "Utils/captivating_claws.h"
+#include "utils/captivating_claws.h"
 #include "hooks/cosmonarchy_finder.h"
 #include "globals.h"
 #include "logger.h"

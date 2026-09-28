@@ -289,7 +289,7 @@ namespace hooks {
             } else {
                 helper::game_talking_portrait(-1, trigger_time, trigger->type, -1);
             }
-            if (g_options_list->flags & OptionsFlags::Subtitles || trigger->flags & TriggerFlags::AlwaysDisplay) {
+            if (g_options_list->flags & SoundOptionFlags::Subtitles || trigger->flags & TriggerFlags::AlwaysDisplay) {
                 char* string = helper::get_chk_string(trigger->text_string);
                 u32 display_time = helper::get_text_display_time(string);
                 if (trigger_time > display_time) {

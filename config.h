@@ -56,6 +56,8 @@ struct Config {
     std::vector<Advisor> askosi_advisors{};
     bool celebrations_enabled = true;
     bool flash_window_lobby_join = true;
+    bool play_sound_in_background = false;
+    bool play_music_in_background = false;
 
     // Hotkeys
     bool quick_casting = false;

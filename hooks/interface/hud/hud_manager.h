@@ -2,6 +2,7 @@
 #include "BW/enumerations.h"
 #include "BW/structures.h"
 #include "storm/sfile.h"
+#include "utils/rfl.h"
 
 #include <map>
 #include <memory>
@@ -43,12 +44,12 @@ private:
 class HudManager {
 public:
     struct Config {
-        std::string image;
-        std::string hud_overlay;
-        std::string progressbar_empty;
-        std::string progressbar_full;
-        std::string command_buttons;
-        std::string command_buttons_bin;
+        SFilePath image;
+        SFilePath hud_overlay;
+        SFilePath progressbar_empty;
+        SFilePath progressbar_full;
+        SFilePath command_buttons;
+        SFilePath command_buttons_bin;
 
         u32 mineral_icon = 0;
         u32 gas_icon = 0;
@@ -61,6 +62,8 @@ public:
     using ConfigMap = std::map<std::string, Config>;
 
     static void install(std::string_view name);
+    static void install(RaceId::Enum race);
+    static void install_replay();
     ~HudManager();
 
     HudManager(const HudManager&) = delete;

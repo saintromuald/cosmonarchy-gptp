@@ -89,7 +89,7 @@ public:
     Widget* horizontal_align(Align alignment);
     // Todo: vertical_align
     Widget* fontsize(FontSize size);
-    Widget* enable_hotkey(std::optional<char> hotkey = std::nullopt);
+    Widget* enable_hotkey(std::optional<char> hotkey = {});
     Widget* translucent(bool value = true);
     Widget* transparent(bool value = true);
     Widget* hide();

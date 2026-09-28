@@ -116,6 +116,8 @@ void load_config() {
     // Audiovisuals
     load_field(yaml, "celebrations-enabled", g_config.celebrations_enabled);
     load_field(yaml, "flash-window-on-lobby-join", g_config.flash_window_lobby_join);
+    load_field(yaml, "play-sound-in-background", g_config.play_sound_in_background);
+    load_field(yaml, "play-music-in-background", g_config.play_music_in_background);
     if (auto yaml_advisors = yaml["advisors"]) {
         load_field(yaml_advisors, "common", g_config.common_advisors);
         load_field(yaml_advisors, "terran", g_config.terran_advisors);
@@ -261,6 +263,8 @@ void save_config() {
     yaml << YAML::Comment("Audiovisuals");
     write_field(yaml, "celebrations-enabled", g_config.celebrations_enabled);
     write_field(yaml, "flash-window-on-lobby-join", g_config.flash_window_lobby_join);
+    write_field(yaml, "play-sound-in-background", g_config.play_sound_in_background);
+    write_field(yaml, "play-music-in-background", g_config.play_music_in_background);
     {
         std::stringstream available_advisors;
         available_advisors << "Available Advisors are: ";

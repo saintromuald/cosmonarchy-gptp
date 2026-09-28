@@ -1,7 +1,6 @@
 #pragma once
 #include "BW/api.h"
 
-bool mpq_file_exists(const char* filename);
 std::optional<std::string> mpq_load_file(const char* filename);
 
 constexpr u32 hash_string(const char* string) {

@@ -17,7 +17,7 @@ public:
     MusicStream(const MusicStream&) = delete;
     MusicStream& operator=(const MusicStream&) = delete;
 
-    void refill();	// Decode the played-out region behind the cursor
+    void pump(); // Decode the played - out region behind the cursor
     void play();
     void stop();
     void set_volume(s32 volume);
@@ -27,14 +27,14 @@ public:
 private:
     MusicStream() = default;
     void prime();
-    void pump(u8* destination, u32 size);
+    void fill_region(u8* destination, u32 size);
     u32 block_align() const { return m_decoder.format().nBlockAlign; }
 
     AudioDecoder m_decoder;
     IDirectSoundBuffer* m_ds_buffer = nullptr;
-    u32 m_ring_bytes = 0;       // Cached buffer size; avoids a GetCaps COM call every refill
+    u32 m_ring_bytes = 0;       // Cached buffer size; avoids a GetCaps COM call every pump
     u32 m_write_offset = 0;     // Ring write position; diverges from bytes_written during silence padding
-    u32 m_last_play_cursor = 0;	// Prior wrap cursor; required to accumulate bytes_played across wraps
+    u32 m_last_play_cursor = 0; // Prior wrap cursor; required to accumulate bytes_played across wraps
     u64 m_bytes_written = 0;    // Valid PCM bytes written; freezes at stream end (excludes silence)
     u64 m_bytes_played = 0;     // Accumulated across wraps; DirectSound exposes no total-played count
 };

@@ -6,8 +6,11 @@
 #include <algorithm>
 #include <concepts>
 #include <string>
+#include <string_view>
 #include <type_traits>
 #include <utility>
+#include <filesystem>
+namespace fs = std::filesystem;
 
 // So we don't need to include bwhelper.
 namespace helper {
@@ -155,6 +158,19 @@ cleanup:
 // Load a file, returning an empty `LoadedFile` if it can't be found.
 [[nodiscard]] inline LoadedFile try_load_file(const char* filename, SFileScope scope = SFileScope::MpqOnly) {
     return detail::load_file_impl<false>(filename, scope);
+}
+
+// Check whether a file exists (disk and/or MPQ per scope) without loading it
+[[nodiscard]] inline bool file_exists(std::string_view filename, SFileScope scope = SFileScope::DiskAndMpq) {
+    fs::path path{filename};
+    path.make_preferred();
+
+    void* file_handle = nullptr;
+    if (!SFileOpenFileEx(0, path.string().c_str(), scope, &file_handle)) {
+        return false;
+    }
+    SFileCloseFile(file_handle);
+    return true;
 }
 
 } // namespace sfile

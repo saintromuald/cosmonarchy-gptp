@@ -115,6 +115,10 @@ namespace helper {
     BW_FUNC(0x0045f320, void __stdcall, load_statport);
     BW_FUNC(0x00458570, void __stdcall, load_stat_data);
 
+    // Sound functions
+    BW_FUNC(0x004A5EF0, s32 __cdecl, get_music_volume_centibels);   // Master music volume in DS centibels
+    BW_FUNC(0x004BC320, void __cdecl, sound_update_volumes);        // Reimplemented in music_hooks; applies g_options_list volumes
+
     // Generic modal text entry with custom prompt
     BW_FUNC(0x004b6e50, BOOL __stdcall, glu_modal_string_prompt, const char* prompt, char* output, u32 output_size, const char* disallowed_chars);
 
@@ -1240,8 +1244,8 @@ namespace helper {
     u32 ai_defend_region(AiRegion* military_region, s32 defense_region, s32 against_air, s32 region_strength);	// 0043F100
     u32 ai_add_base_unit_spending_request(u32 final_unit_id, u32 player_id, AiRegion* region, u8 priority);		// 004484A0
 
-    void play_sound_global(u32 id);																		// 004BC2C0
-    VectorHead* play_sound_from_file(const char* filename, char* unused);								// 004BC490
+    void play_sound_global(u32 id);										// 004BC2C0
+    VectorHead* play_sound_from_file(const char* filename, char* unused);				// 004BC490
 
     b32 is_valid_for(u32 a1, Unit* unit, u32 a3);
     b32 region_is_for_attack_prepare(AiRegion* region);

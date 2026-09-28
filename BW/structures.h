@@ -4,6 +4,7 @@
 
 #pragma once
 #include "types.h"
+#include "enumerations.h"
 #include <span>
 
 // New extender limits
@@ -268,7 +269,7 @@ struct Options { // taken from IDA
     u32		music;						// 0xC
     u32		sfx;						// 0x10
     u32		tip_number;					// 0x14
-    u32		flags;						// 0x18 // See OptionsFlags
+    SoundOptionFlags flags;					// 0x18
     u32		m_mouse_scroll;				// 0x1C
     u32		m_keyboard_scroll;			// 0x20
     u32		use_chat_colors;			// 0x24
@@ -1540,14 +1541,6 @@ struct VR4 {
 
 struct MTXM {
     u16 tile[1];
-};
-
-struct MusicTrack {
-    const char* file;
-    MusicType type;
-    bool fade_in;
-    u8 next_index;
-    u8 padding;
 };
 
 struct PingArray {

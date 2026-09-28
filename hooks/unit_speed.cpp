@@ -8,7 +8,7 @@
 #include "BW/api.h"
 #include "globals.h"
 #include "interpolation.h"
-#include "Utils/captivating_claws.h"
+#include "utils/captivating_claws.h"
 
 namespace hooks {
     fp32 get_speed_multiplier(Unit* unit) {

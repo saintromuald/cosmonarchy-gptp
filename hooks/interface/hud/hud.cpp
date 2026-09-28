@@ -19,39 +19,15 @@ void load_race_grp_and_sounds() {
     switch (g_hud_index) {
         case RaceId::Zerg: {
             helper::dialog_grp_construct("dlgs\\zerg.grp", __FILE__, __LINE__);
-            g_current_music_id = 1;
         } break;
         case RaceId::Protoss: {
             helper::dialog_grp_construct("dlgs\\protoss.grp", __FILE__, __LINE__);
-            g_current_music_id = 7;
         } break;
         default: // Temporary default for Askosi etc TODO: Make this configurable in huds.yml -Jesse
         case RaceId::Terran: {
             helper::dialog_grp_construct("dlgs\\terran.grp", __FILE__, __LINE__);
-            g_current_music_id = 4;
         } break;
     }
-
-    u32 music_offset = 0;
-
-    if (g_campaign_index && g_hud_index <= 2) {
-        const auto& mission_table = (g_campaign_index < 0x20)
-            ? g_campaign_first_mission
-            : g_campaign_first_mission_bw;
-
-        auto first_mission = mission_table[g_hud_index];
-        music_offset = (g_campaign_index - first_mission) % 3;
-    } else if (g_race_ui_music_offset == -1) {
-        auto random_value = helper::rand_func();
-        g_race_ui_music_offset = random_value % 3;
-    }
-    g_race_ui_music_offset = (g_race_ui_music_offset + 1) % 3;
-    if (g_race_ui_music_offset == 0) {
-        return;
-    }
-
-    music_offset = g_race_ui_music_offset;
-    g_current_music_id += music_offset;
 }
 
 void load_progressbar(BinDlg* dialog, BinDlgProc update_function, Bitmap& empty, Bitmap& full) {
@@ -66,19 +42,12 @@ void load_progressbar(BinDlg* dialog, BinDlgProc update_function, Bitmap& empty,
     }
 }
 
-static std::string default_hud(RaceId::Enum race) {
-    if (g_is_in_replay) return "Neutral";
-    switch (race) {
-        case RaceId::Zerg: return "Zerg";
-        case RaceId::Terran: return "Terran";
-        case RaceId::Protoss: return "Protoss";
-        case RaceId::Askosi: return "Askosi";
-        default: return "Terran";
-    }
-}
-
 void load_hud() { // 004c3bb0
-    HudManager::install(default_hud(static_cast<RaceId::Enum>(g_hud_index)));
+    if (g_is_in_replay) {
+        HudManager::install_replay();
+    } else {
+        HudManager::install(static_cast<RaceId::Enum>(g_hud_index));
+    }
 
     *g_client_selection_group = {};
     g_client_selection_count = 0;

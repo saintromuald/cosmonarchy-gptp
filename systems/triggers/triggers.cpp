@@ -260,10 +260,10 @@ Registry g_triggers = Registry()
     // Local actions
     // -------------------------------------------------------------------------
     .add_local_action("play_music", [](std::string_view filename) {
-        AudioSystem::instance().queue_music(std::string{filename});
+        AudioSystem::instance().play_music(filename);
     })
-    .add_local_action("stop_music", []() {
-        AudioSystem::instance().stop_music();
+    .add_local_action(aliases("skip_music", "stop_music"), []() {
+        AudioSystem::instance().skip_music();
     })
     .add_local_action("pause_music", []() {
         AudioSystem::instance().pause_music();
@@ -283,13 +283,16 @@ Registry g_triggers = Registry()
     .add_local_action("playlist_clear", []() {
         AudioSystem::instance().clear_playlist();
     })
-    .add_local_action("playlist_add", [](std::string_view filename) {
-        if (!AudioSystem::instance().add_to_playlist(std::string{filename})) {
-            bw::printf("Error: Playlist already full! (%s)", std::string{filename}.c_str());
+    .add_local_action("playlist_add", [](Context& ctx, std::string_view filename) {
+        if (!AudioSystem::instance().add_to_playlist(filename)) {
+            ctx.error("Could not load playlist track: '{}'", filename);
         }
     })
     .add_local_action("playlist_shuffle", [](s32 do_shuffle) {
         AudioSystem::instance().set_playlist_shuffle(do_shuffle != 0);
+    })
+    .add_local_action("playlist_loop", [](s32 do_loop) {
+        AudioSystem::instance().set_playlist_loop(do_loop != 0);
     })
     .add_local_action("set_player_name", [](PlayablePlayer player, std::string_view name, s32 ignore_human_name) {
         if (!ignore_human_name && (g_player_table[player].type == PlayerType::Human || g_player_table[player].type == PlayerType::HumanDefeated)) {

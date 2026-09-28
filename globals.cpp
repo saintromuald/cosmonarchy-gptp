@@ -5,7 +5,7 @@
 #include "hooks/weapons/weapon_fire.h"
 #include <algorithm>
 #include <unordered_set>
-#include <Utils/captivating_claws.h>
+#include <utils/captivating_claws.h>
 #include "hooks/weapons/weapon_damage.h"
 #include "hooks/weapons/weapon_spellhit.h"
 
@@ -140,7 +140,7 @@ static void tick_effect(EffectField& effect) {
     if (effect_info.loop_sound) {
         if (!effect.playing_sound) {
             effect.playing_sound = bw::play_looping_sound(effect_info.loop_sound, effect.position);
-        } else if (auto buffer = effect.playing_sound.GetBuffer()) {
+        } else if (auto buffer = effect.playing_sound.get_buffer()) {
             buffer->settings.position = effect.position;
         }
     }
@@ -559,7 +559,7 @@ void IquareGlobals::tick() {
             }
             effect.thingy = nullptr;
             if (effect.playing_sound) {
-                effect.playing_sound.Stop();
+                effect.playing_sound.stop();
             }
             const EffectInfo& effect_info = get_effect_info(effect.id);
             if (effect_info.end_sound) {

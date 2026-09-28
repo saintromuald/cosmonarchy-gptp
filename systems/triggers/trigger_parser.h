@@ -1,6 +1,7 @@
 #pragma once
 #include "BW/api.h"
 #include "color_palette.h"
+#include "utils/enum.h"
 
 #include <bitset>
 #include <charconv>
@@ -299,8 +300,6 @@ enum class StringType {
 	QuotesDeprecated,
 	Identifier,
 };
-
-std::string enum_name_to_snake_case(std::string_view name);
 
 struct LuaScript {
     std::string_view name;

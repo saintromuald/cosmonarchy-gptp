@@ -16,7 +16,7 @@ namespace ui {
 
 class Widget;
 enum class Placement {
-    Auto,  // Prefer below but flip if needed
+    Auto, // Prefer below but flip if needed
     Below,
     Above,
     Right,
@@ -40,11 +40,11 @@ public:
     Tooltip& text(std::string string, LobbyTextColor color = LobbyTextColor::Green);
     Tooltip& image(const std::string& pcx_path);
     Tooltip& fill(u8 palette_index, u16 height);
-    Tooltip& divider(std::optional<u8> palette_index = std::nullopt); // 1px line, nullopt = theme default color
+    Tooltip& divider(std::optional<u8> palette_index = {}); // 1px line, nullopt = theme default color
     Tooltip& spacer(u16 height);
 
     // Appearance
-    Tooltip& background(std::optional<u8> palette_index = std::nullopt); // Background fill color, nullopt = theme default
+    Tooltip& background(std::optional<u8> palette_index = {}); // Background fill color, nullopt = theme default
     Tooltip& border(bool value = true);
     Tooltip& padding(u8 pixels);
     Tooltip& max_width(std::optional<u16> pixels); // Text wraps to this box width; nullopt disables wrapping (default 200)
@@ -88,11 +88,13 @@ class TooltipController {
 public:
     TooltipController();
     ~TooltipController();
+
     TooltipController(const TooltipController&) = delete;
     TooltipController& operator=(const TooltipController&) = delete;
 
     void on_mouse_enter(Widget* widget);
     void on_mouse_leave(Widget* widget);
+
     // Fires per-frame while cursor is over a widget
     void on_mouse_over(Widget* widget);
     void tick(u32 now_ms);

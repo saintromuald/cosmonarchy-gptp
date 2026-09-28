@@ -25,7 +25,7 @@ private:
     ui::Group* make_misc_tab();
     ui::Group* make_ui_tab();
     ui::Group* make_color_tab();
-    ui::Group* make_control_tab();
+    ui::Group* make_audio_tab();
 
 private:
     ui::Widget* m_cancel_button;
@@ -44,9 +44,11 @@ private:
     Palette m_palette;
     smem::ptr<u8[]> m_indexes;
 
-    ui::Widget* m_control_tab_button;
-    ui::Group* m_control_tab;
+    ui::Widget* m_audio_tab_button;
+    ui::Group* m_audio_tab;
 
     ui::Group* m_active_tab;
     Config m_config;
+    Options m_options;
+    bool m_committed = false;
 };
