@@ -63,6 +63,7 @@ EXPORTS
     SFileOpenFile@8                @267 NONAME
     SFileOpenFileEx@16             @268 NONAME
     SFileReadFile@20               @269 NONAME
+    SFileSetFilePointer@16         @271 NONAME
 
     ; ---- SBmp ----
     SBmpDecodeImage@36             @321 NONAME

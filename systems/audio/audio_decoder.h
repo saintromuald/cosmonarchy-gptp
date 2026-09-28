@@ -5,6 +5,8 @@
 #include <windows.h>
 #include <mmreg.h>
 
+#include "../storm/storm.h"
+
 #include <memory>
 #include <optional>
 #include <span>
@@ -32,6 +34,8 @@ public:
 
     // Opens a decoder over a copy of the given file bytes (the copy is retained for the decoder's life)
     static std::optional<AudioDecoder> open(std::string file_bytes);
+    // Streams the file from Storm incrementally instead of holding it in memory
+    static std::optional<AudioDecoder> open_stream(const char* path, SFileScope scope = SFileScope::DiskAndMpq);
 
     const WAVEFORMATEX& format() const { return m_format; }
 
@@ -41,6 +45,7 @@ public:
 
 private:
     struct Impl;
+    static std::optional<AudioDecoder> finish_open(std::unique_ptr<Impl> impl);
     std::unique_ptr<Impl> m_impl;
     WAVEFORMATEX m_format{};
     bool m_at_end = false;

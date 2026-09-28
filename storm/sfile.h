@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <concepts>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -76,6 +77,77 @@ private:
         }
         return result;
     }
+};
+
+// Streaming file handle; reads incrementally instead of loading the whole file
+class StreamFile {
+public:
+    StreamFile() = default;
+    ~StreamFile() {
+        if (m_handle) {
+            SFileCloseFile(m_handle);
+        }
+    }
+
+    StreamFile(StreamFile&& other) noexcept : m_handle{std::exchange(other.m_handle, nullptr)} {}
+    StreamFile& operator=(StreamFile&& other) noexcept {
+        if (this != &other) {
+            if (m_handle) {
+                SFileCloseFile(m_handle);
+            }
+            m_handle = std::exchange(other.m_handle, nullptr);
+        }
+        return *this;
+    }
+
+    StreamFile(const StreamFile&) = delete;
+    StreamFile& operator=(const StreamFile&) = delete;
+
+    [[nodiscard]] static std::optional<StreamFile> open(std::string_view filename, SFileScope scope = SFileScope::DiskAndMpq) {
+        std::string path{filename};
+        std::replace(path.begin(), path.end(), '/', '\\');
+
+        void* handle = nullptr;
+        if (!SFileOpenFileEx(0, path.c_str(), scope, &handle)) {
+            return {};
+        }
+
+        StreamFile file;
+        file.m_handle = handle;
+        return file;
+    }
+
+    explicit operator bool() const { return m_handle != nullptr; }
+
+    // Reads up to count bytes, returning how many were actually read (a short read marks the end of the file)
+    u64 read(void* destination, u64 count) {
+        u32 bytes_read = 0;
+        const u32 chunk = (u32)std::min<u64>(count, 0xFFFFFFFF);
+        if (!SFileReadFile(m_handle, destination, chunk, &bytes_read, 0) && bytes_read == 0) {
+            return 0;
+        }
+        return bytes_read;
+    }
+
+    bool seek(u64 position) {
+        s32 position_high = (s32)(position >> 32);
+        const u32 position_low = SFileSetFilePointer(m_handle, (s32)(u32)position, &position_high, SFileSeekMethod::Begin);
+        return position_low != 0xFFFFFFFF || SErrGetLastError() == 0;
+    }
+
+    u64 position() {
+        const u32 position_low = SFileSetFilePointer(m_handle, 0, nullptr, SFileSeekMethod::Current);
+        return position_low;
+    }
+
+    u64 size() const {
+        u32 size_high = 0;
+        const s32 size_low = SFileGetFileSize(m_handle, &size_high);
+        return size_low == -1 ? 0 : ((u64)size_high << 32) | (u32)size_low;
+    }
+
+private:
+    void* m_handle = nullptr;
 };
 
 namespace detail {

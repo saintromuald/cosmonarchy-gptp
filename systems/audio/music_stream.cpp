@@ -3,7 +3,7 @@
 #include "audio_decoder.h"
 #include "../defer.h"
 #include "../BW/api.h"
-#include "../storm/sfile.h"
+#include "../storm/storm.h"
 
 #include <algorithm>
 #include <memory>
@@ -16,15 +16,9 @@ std::unique_ptr<MusicStream> MusicStream::open(IDirectSound* direct_sound, const
         return nullptr;
     }
 
-    auto file = sfile::try_load_file(path, SFileScope::DiskAndMpq);
-    if (!file) {
-        bw::println("Error: Music file {} missing!", path);
-        return nullptr;
-    }
-
-    auto decoder = AudioDecoder::open(std::string(file.data.get(), file.size));
+    auto decoder = AudioDecoder::open_stream(path, SFileScope::DiskAndMpq);
     if (!decoder) {
-        bw::println("Error: Music file {} failed to decode!", path);
+        bw::println("Error: Music file {} failed to open or decode!", path);
         return nullptr;
     }
 

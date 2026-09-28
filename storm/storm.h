@@ -24,6 +24,12 @@ enum class SFileScope : u32 {
     RawHandle   = 4, // Return raw win32 HANDLE instead of storm handle
 };
 
+enum class SFileSeekMethod : u32 {
+    Begin   = 0,
+    Current = 1,
+    End     = 2,
+};
+
 extern "C" {
 // ---- SNet ----
 __declspec(dllimport) b32   __stdcall SNetDestroy();
@@ -48,6 +54,7 @@ __declspec(dllimport) b32   __stdcall SFileOpenArchive(const char* archive_name,
 __declspec(dllimport) b32   __stdcall SFileOpenFile(const char* filename, HANDLE* handle);
 __declspec(dllimport) b32   __stdcall SFileOpenFileEx(HANDLE archive, const char* filename, SFileScope flags, HANDLE* file);
 __declspec(dllimport) b32   __stdcall SFileReadFile(HANDLE file, void* buffer, u32 to_read, u32* bytes_read, int unknown);
+__declspec(dllimport) u32   __stdcall SFileSetFilePointer(HANDLE file, s32 offset, s32* offset_high, SFileSeekMethod method);
 
 // ---- SDraw ----
 // Flags is typically 1
