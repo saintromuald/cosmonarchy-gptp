@@ -1,6 +1,7 @@
 #include "music_registry.h"
-#include <utility>
+#include "utils/enum.h"
 #include <optional>
+#include <utility>
 #include <rfl/yaml.hpp>
 #include <storm/sfile.h>
 
@@ -17,25 +18,25 @@ Music music_def(std::vector<SFilePath> tracks, bool fade_in = false, u32 loop_st
 MusicRegistry load_default_config() {
     MusicConfig config;
     config.races = {
-        {RaceId::Zerg, RaceMusic{
+        {"zerg", RaceMusic{
             .in_game    = music_def({"music\\zerg1.wav", "music\\zerg2.wav", "music\\zerg3.wav"}),
             .ready_room = music_def({"music\\zrdyroom.wav"}, true),
             .victory    = music_def({"music\\zvict.wav"}, true),
             .defeat     = music_def({"music\\zdefeat.wav"}, true),
         }},
-        {RaceId::Terran, RaceMusic{
+        {"terran", RaceMusic{
             .in_game    = music_def({"music\\terran1.wav", "music\\terran2.wav", "music\\terran3.wav"}),
             .ready_room = music_def({"music\\trdyroom.wav"}, true),
             .victory    = music_def({"music\\tvict.wav"}, true),
             .defeat     = music_def({"music\\tdefeat.wav"}),
         }},
-        {RaceId::Protoss, RaceMusic{
+        {"protoss", RaceMusic{
             .in_game    = music_def({"music\\protoss1.wav", "music\\protoss2.wav", "music\\protoss3.wav"}),
             .ready_room = music_def({"music\\prdyroom.wav"}, true),
             .victory    = music_def({"music\\pvict.wav"}),
             .defeat     = music_def({"music\\pdefeat.wav"}),
         }},
-        {RaceId::Askosi, RaceMusic{
+        {"askosi", RaceMusic{
             .in_game = music_def({"music\\askosi1.wav", "music\\askosi2.wav"}),
             .victory = music_def({"music\\avict.wav"}),
             .defeat  = music_def({"music\\adefeat.wav"}),
@@ -61,7 +62,7 @@ MusicRegistry MusicRegistry::load_config() {
 
 // Trivial copy of Music here is acceptable for the superior ergonomics to reference_wrapper or raw pointer
 std::optional<Music> MusicRegistry::find_racial(RaceId::Enum race, MusicCategory category) const {
-    auto it = m_config.races.find(race);
+    auto it = m_config.races.find(enum_to_snake_case(race));
     if (it == m_config.races.end()) {
         return {};
     }

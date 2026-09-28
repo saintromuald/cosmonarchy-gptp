@@ -26,7 +26,7 @@ struct RaceMusic {
 
 // music.yml layout: `races` plus any number of top-level named cues
 struct MusicConfig {
-    std::map<RaceId::Enum, RaceMusic, std::less<>> races;
+    std::map<std::string, RaceMusic, std::less<>> races;
     rfl::ExtraFields<Music> cues;
 };
 
