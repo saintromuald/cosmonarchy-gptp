@@ -356,9 +356,9 @@ struct ChkUnit {
     /*0C*/	u16	 valid_state_flags;
     /*0E*/	u16	 valid_properties;
     /*10*/	u8	 player;
-    /*11*/	u8	 hp;
-    /*12*/	u8	 shields;
-    /*13*/	u8	 energy;
+    /*11*/	u8	 hitpoints; // percentage
+    /*12*/	u8	 shields;   // percentage
+    /*13*/	u8	 energy;    // percentage
     /*14*/	u16	 resources;
     /*16*/	u16	 field_16;
     /*18*/	u16	 hangar;

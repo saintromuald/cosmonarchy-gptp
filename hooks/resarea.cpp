@@ -6,25 +6,14 @@
 v2u16* ext_start_locs;
 
 namespace hooks {
-	u32 __fastcall get_unit_hp_or_resarea(Unit* unit, ChkUnitSettings* settings) {
-		u32 max_hp = units_dat::max_hitpoints[unit->id];
-		u32 hp_percent = settings->hitpoints;
-		if (!settings->state_flags & ChkUnitFlags_Burrowed || !(units_dat::base_property[unit->id] & UnitProperty::ResourceContainer)) {
-			if (hp_percent < 100) {
-				return max_hp - (max_hp / 100 * (100 - hp_percent));
-			}
-		} else {
-			unit->building.temp_custom_resarea_id = hp_percent | 256;
-		}
-		return max_hp;
-	}
-
 	b32 __fastcall encode_start_location(ChkUnit* chk_unit, v2u16* position) {
 		if (chk_unit->unit_id != UnitId::Special_StartLocation) {
 			return false;
 		}
 		const u32 player = chk_unit->player;
-		v2u16 unit_pos = {chk_unit->x, chk_unit->y};
+		v2u16 unit_pos;
+		unit_pos.x = chk_unit->x;
+		unit_pos.y = chk_unit->y;
 		if (player < PLAYABLE_PLAYER_COUNT) {
 			position[player] = unit_pos;
 			if (g_is_in_replay ? (s16)g_move_to_tile_x == -1 : player == g_local_nation_id) {
@@ -36,7 +25,7 @@ namespace hooks {
 			return true;
 		}
 		if ((unit_pos.x || unit_pos.y)
-		&& (ext_start_locs || (ext_start_locs = (v2u16*)SMemAlloc((256 - PLAYABLE_PLAYER_COUNT) * sizeof(v2u16), __FILE__, __LINE__, 0)))) {
+		&& (ext_start_locs || (ext_start_locs = (v2u16*)SMemAlloc((256 - PlayerLimit) * sizeof(v2u16), __FILE__, __LINE__, 0)))) {
 			ext_start_locs[player - PLAYABLE_PLAYER_COUNT] = unit_pos;
 		}
 		return true;
@@ -77,7 +66,8 @@ namespace hooks {
 
 		helper::assign_to_nearest_resarea(2, res_type_list);
 		helper::assign_to_nearest_resarea(1, res_type_list);
-		if ((resarea_count != g_resource_areas->count)) {
+		resarea_count = g_resource_areas->count;
+		if (!resarea_count) {
 			return;
 		}
 		if (ext_start_locs) { // Adjust resarea positions using P9+ start locs.
