@@ -5,11 +5,9 @@
 
 #define ColorSetCount 256
 #define MinimapColorCount (ColorSetCount * TilesetType::Count)
-#define UnitColorCount 2048
 
 static bool g_loaded_colors;
 static u8 g_tminimap_colors[MinimapColorCount];
-static u8 g_tunit_colors[UnitColorCount];
 static std::vector<const char*> g_easter_egg_unit_names[UnitsIdLimit];
 
 static std::vector<u32> get_player_tints_from_color(PlayerColor color);

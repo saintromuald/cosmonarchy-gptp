@@ -2019,4 +2019,6 @@ namespace helper {
 
     bool modal_ok_cancel(const char* prompt); // 004b73b0
     s32 save_replay(char* filename, b32 delete_existing = true);   // 004DFAB0
+
+    s32 get_color_id(u8 player); // 0049B0E0
 }

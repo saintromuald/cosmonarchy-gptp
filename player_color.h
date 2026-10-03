@@ -617,6 +617,8 @@ inline const char* player_personality_names[RaceId::FullCount][AiPersonality_Any
 
 #define ColorSetSize 8
 #define NameCap 64
+#define UnitColorCount 2048
+static u8 g_tunit_colors[UnitColorCount];
 
 struct PlayerData {
 	bool has_custom_color[PlayerLimit];

@@ -90,22 +90,37 @@ static u32 option_button_handle_event(Widget& widget, DialogEvent* event) {
     return helper::button_shared_interact(widget.dialog()->to_bindlg(), event);
 }
 
+static bool is_keyboard_event(const DialogEvent* event) {
+    switch (event->number_order) {
+        case DialogEventType_KeyDown:
+        case DialogEventType_KeyRepeat:
+        case DialogEventType_KeyUp:
+        case DialogEventType_Spacebar:
+        case DialogEventType_SystemKey: return true;
+        default: return false;
+    }
+}
+
 static u32 top_dialog_handle_event(Widget& widget, DialogEvent* event) {
     Group* group = widget.parent();
-    if (group && event->number_order == DialogEventType_Dialog) {
-        switch (event->user) {
-            case DialogUserType_InitChildren: {
-                group->on_top_dialog_init_children(widget);
-            } break;
-            case DialogUserType_Create: {
-                group->on_top_dialog_create(widget);
-            } break;
-            case DialogUserType_Destroy: {
-                group->on_top_dialog_destroy(widget);
-            } break;
-            case DialogUserType_MouseOver: {
-                if (group->passthrough_mouse()) return 0;
-            } break;
+    if (group) {
+        if (event->number_order == DialogEventType_Dialog) {
+            switch (event->user) {
+                case DialogUserType_InitChildren: {
+                    group->on_top_dialog_init_children(widget);
+                } break;
+                case DialogUserType_Create: {
+                    group->on_top_dialog_create(widget);
+                } break;
+                case DialogUserType_Destroy: {
+                    group->on_top_dialog_destroy(widget);
+                } break;
+                case DialogUserType_MouseOver: {
+                    if (group->passthrough_mouse()) return 0;
+                } break;
+            }
+        } else if (group->passthrough_keyboard() && is_keyboard_event(event)) {
+            return 0;
         }
     }
     return default_interaction_function(*widget.dialog(), event);

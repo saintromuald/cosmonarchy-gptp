@@ -305,23 +305,14 @@ namespace hooks {
     // Hooked to add features and color Vespene Ridges cyan. -Pr0nogo
     void draw_minimap_unit_box(u32 player) { // 004A4650
         u32 unit_id = UnitId::None;
-        char index_ref = 0;
-        if (*g_minimap_state && player < PlayerLimit) {
-            if (bw::is_allied_to(g_local_nation_id, player)) {
-                index_ref = g_palette_index_reference[17];
-            } else {
-                index_ref = g_palette_index_reference[20];
-            }
-        } else {
-            index_ref = g_player_minimap_colors[player];
-        }
+        auto color_id = get_minimap_color(player);
         Unit* unit = first_player_unit->unit[player];
         if (unit) {
             // Required for goto to compile in C++20 mode :( -Veeq7
             u32 visibility;
             u32 vision;
 
-            u32 checksum = *g_minimap_box_checksum;
+            u32 checksum = g_minimap_box_checksum;
             while (true) {
                 if (unit_id_ignored_on_minimap(unit->id)) {
                     goto next;
@@ -351,13 +342,13 @@ namespace hooks {
             next:
                 unit = unit->player_link.next;
                 if (!unit) {
-                    *g_minimap_box_checksum = checksum;
+                    g_minimap_box_checksum = checksum;
                     return;
                 }
             }
             u32 color = g_palette_index_reference[25];
             if ((!unit_id_is_minerals(unit->id) && !unit_id_is_uncapped_gas_node(unit->id)) || player == NeutralHostilePlayer) {
-                color = index_ref;
+                color = color_id;
             }
 
             v2u16 pos = unit->sprite->position;
@@ -400,7 +391,7 @@ namespace hooks {
         u32 player = g_local_nation_id;
         *g_current_surface = g_minimap_surface_2;
         *g_minimap_unit_box_count = 0;
-        *g_minimap_box_checksum = 0;
+        g_minimap_box_checksum = 0;
 
         u32 index = 12;
         while (index) {
@@ -417,44 +408,24 @@ namespace hooks {
         }
         
         for (Thingy* thingy = *g_first_fow_sprite; thingy; thingy = thingy->next) {
-            if (thingy->unit_id != UnitId::Spell_CarapaceSwarm) {
-                bool not_visible = helper::thingy_visiblity_check(1, thingy) && !unit_id_is_resource_node(thingy->unit_id, true);
-                if (!g_is_in_replay || !not_visible) {
-                    Sprite* sprite = thingy->sprite;
-
-                    char color = g_palette_index_reference[25];
-                    if (sprite->id != SpriteId::VespeneRidge
-                    &&	sprite->id != SpriteId::VespeneGeyser
-                    &&  sprite->id != SpriteId::MineralFieldType1
-                    &&  sprite->id != SpriteId::MineralFieldType2
-                    &&  sprite->id != SpriteId::MineralFieldType3) {
-                        if (*g_minimap_state) {
-                            if (bw::is_allied_to(player, sprite->player)) {
-                                color = g_palette_index_reference[17];
-                            } else {
-                                color = g_palette_index_reference[20];
-                            }
-                        } else {
-                            color = g_player_minimap_colors[sprite->player];
-                        }
-                    }
-
-                    v2u16 pos = sprite->position;
-                    /*
-                    if (sprite->player == 11) {
-                        ActiveTile* tile = bw::get_active_tile_at_coords(pos);
-                        if (tile->explored_flags & 1 << *g_local_nation_id) {
-                            color = dark_pcx_image_map->index[28][color];
-                        } else {
-                            color = dark_pcx_image_map->index[32][color];
-                        }
-                    }
-                    */
-                    v2u16 dims = units_dat::building_dimensions[thingy->unit_id];
-                    helper::draw_unit_box(pos.x, pos.y, dims.x, dims.y, color, units_dat::base_property[thingy->unit_id] & UnitProperty::Building);
-                    --*g_minimap_unit_box_count;
-                }
+            if (unit_id_is_spell(thingy->unit_id)) {
+                continue;
             }
+            bool not_visible = helper::thingy_visiblity_check(1, thingy) && !unit_id_is_resource_node(thingy->unit_id, true);
+            if (g_is_in_replay && not_visible) {
+                continue;
+            }
+
+            Sprite* sprite = thingy->sprite;
+            auto color_id = g_palette_index_reference[25]; // Neutral
+            if (!SpriteId::is_resource_node((SpriteId::Enum)sprite->id)) {
+                color_id = get_minimap_color(sprite->player);
+            }
+            v2u16 pos = sprite->position;
+            // Previously revealed resource nodes here, but we implemented that in game_hooks long ago. -Pr0nogo
+            v2u16 dims = units_dat::building_dimensions[thingy->unit_id];
+            helper::draw_unit_box(pos.x, pos.y, dims.x, dims.y, color_id, units_dat::base_property[thingy->unit_id] & UnitProperty::Building);
+            --*g_minimap_unit_box_count;
         }
 
         if (g_config.show_minimap_cameras) {
@@ -470,7 +441,7 @@ namespace hooks {
                 }
                 v2u16 camera = g_globals->players[player].camera;
                 if (camera.x || camera.y) {
-                    draw_camera_box(camera.x, camera.y, g_player_minimap_colors[player]);
+                    draw_camera_box(camera.x, camera.y, get_minimap_color(player));
                 }
             }
         }
@@ -1037,12 +1008,84 @@ namespace hooks {
         helper::move_screen(pos);
     }
 
-    // Eventually, hook the following to make stat_txt.tbl a .txt:
-    //		004A5110 draw_stat_lb_buttons_context
-    //		004C3780 destroy_game_hud
-    //		004C3A20 load_stat_txt
-    //		004575A0 draw_cancel_upgrade_context
-    // -Pr0nogo
+    // Hooked to improve shift-tab functionality. -Pr0nogo
+    s32 get_color_id(u8 player) { // 0049B0E0
+        if (g_minimap_state != MinimapState::RecolorGame) {
+            return player;
+        }
+        auto color_override = PlayerColor::Teal; // For own units.
+        if (bw::in_replay_or_witness()) {
+            switch (player) { // Use vanilla player color logic in replay/witness modes.
+                case 0: color_override = PlayerColor::Red;    break;
+                case 1: color_override = PlayerColor::Blue;   break;
+                case 2: color_override = PlayerColor::Teal;   break;
+                case 3: color_override = PlayerColor::Purple; break;
+                case 4: color_override = PlayerColor::Orange; break;
+                case 5: color_override = *g_current_tileset != TilesetType::Desert ? PlayerColor::Brown : PlayerColor::Green; break;
+                case 6: color_override = *g_current_tileset != TilesetType::Ice    ? PlayerColor::White : PlayerColor::Green; break;
+                case 7: color_override = PlayerColor::Yellow; break;
+            }
+        } else {
+            if (!bw::is_allied_to(g_local_nation_id, player)) {
+                color_override = PlayerColor::Red;
+            } else if (g_local_nation_id != player) {
+                color_override = player != 11 ? PlayerColor::Yellow : PlayerColor::RoyalBlue;
+            }
+        }
+
+        auto final_color = static_cast<s32>(color_override);
+        for (u8 player_it = 0; player_it < PlayerLimit; player_it++) {
+            if (g_factions_colors_ordering[player_it] == final_color) {
+                return player_it;
+            }
+        }
+        return final_color;
+    }
+
+    // Hooked to improve shift-tab. -Pr0nogo
+    void __fastcall draw_minimap_unit_box_2(u32 player) { // 004A47B0
+        auto minimap_color = g_player_minimap_colors[player]; // Default
+        if (g_minimap_state != MinimapState::Normal) {
+            minimap_color = get_minimap_color(player);
+        }
+        Unit* first_unit = first_player_unit->unit[player];
+        if (!first_unit) {
+            return;
+        }
+        u32 checksum = g_minimap_box_checksum;
+        bool reveal_all = false;
+        for (Unit* first_unit = first_player_unit->unit[player]; first_unit; first_unit = first_unit->player_link.next) {
+            if (!unit_id_ignored_on_minimap(first_unit->id)) {
+                auto first_visibility = first_unit->sprite->visibility_status;
+                if (first_unit->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) {
+                    first_visibility &= first_unit->detection_status;
+                }
+                checksum ^= first_visibility;
+                if (g_minimap_draw_neutrals != 1) {
+                    if (g_is_in_replay) {
+                        if (first_visibility & *g_replay_visions) {
+                            helper::draw_unit_box(
+                                first_unit->sprite->position.x, first_unit->sprite->position.y,
+                                units_dat::building_dimensions[first_unit->id].x, units_dat::building_dimensions[first_unit->id].y,
+                                minimap_color, units_dat::base_property[first_unit->id] & UnitProperty::Building);
+                            continue;
+                        }
+                        reveal_all = g_replay_reveal_all == 0;
+                    } else {
+                        reveal_all = (first_visibility & *g_player_visions) == 0;
+                    }
+                    if (reveal_all) {
+                        continue;
+                    }
+                    helper::draw_unit_box(
+                        first_unit->sprite->position.x, first_unit->sprite->position.y,
+                        units_dat::building_dimensions[first_unit->id].x, units_dat::building_dimensions[first_unit->id].y,
+                        minimap_color, units_dat::base_property[first_unit->id] & UnitProperty::Building);
+                }
+            }
+        }
+        g_minimap_box_checksum = checksum;
+    }
 
     bool __fastcall latency_dialog_proc(BinDlg* dialog, DialogEvent* dialog_event) { // 004e8ae0
         switch (dialog_event->number_order) {

@@ -1755,6 +1755,12 @@ enum SoundOptionFlags : u32 {
     Subtitles               = 0x0000400,
 };
 
+enum class MinimapState : s8 {
+    Normal         = 0,
+    RecolorMinimap = 1,
+    RecolorGame    = 2,
+};
+
 enum class CrowServeState : u32 {
     Disconnected,
     Connecting,

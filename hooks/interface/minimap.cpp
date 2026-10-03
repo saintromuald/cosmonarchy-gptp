@@ -6,6 +6,30 @@
 u16 box_width;
 u16 box_height;
 
+s8 get_minimap_color(u8 player) {
+	if (g_minimap_state != MinimapState::Normal && player < PlayerLimit) {
+		if (g_minimap_state == MinimapState::RecolorGame || bw::in_replay_or_witness()) {
+			auto special_color_desert = *g_current_tileset != TilesetType::Desert ? 23 : 19;
+			auto special_color_ice = *g_current_tileset != TilesetType::Ice ? 58 : 19;
+			switch (player) {
+			case 0: return g_palette_index_reference[20];
+			case 1: return g_palette_index_reference[16];
+			case 2: return g_palette_index_reference[213];
+			case 3: return g_palette_index_reference[234];
+			case 4: return g_palette_index_reference[21];
+			case 5: return g_palette_index_reference[special_color_desert];
+			case 6: return g_palette_index_reference[special_color_ice];
+			case 7: return g_palette_index_reference[17];
+			}
+		}
+		if (bw::is_allied_to(g_local_nation_id, player) && player != 11) {
+			return g_palette_index_reference[17];
+		}
+		return g_palette_index_reference[20];
+	}
+	return g_player_minimap_colors[player];
+}
+
 namespace hooks {
 	void minimapVisionUpdate_256() {
 		u32 pos_y = g_map_height;

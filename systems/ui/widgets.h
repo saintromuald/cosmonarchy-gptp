@@ -253,6 +253,9 @@ public:
     // Return true to pass mouse events that don't hit a child widget through to the game
     virtual bool passthrough_mouse() const { return false; }
 
+    // Return true to pass keyboard events through to the game instead of consuming them
+    virtual bool passthrough_keyboard() const { return false; }
+
     virtual TooltipController* tooltip_controller() { return nullptr; }
 
 protected:
@@ -354,6 +357,7 @@ public:
     bool is_hidden() const;
 
     bool passthrough_mouse() const override { return true; }
+    bool passthrough_keyboard() const override { return true; }
 
 protected:
     void initialize();

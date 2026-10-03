@@ -68,6 +68,8 @@ void draw_show_hide_terrain_context(BinDlg* dialog);                            
 void draw_cancel_unit_context(BinDlg* dialog);                                      // 00457B10
 void statdata_mouseover_interact(BinDlg* main_dialog, BinDlg* secondary_dialog);    // 00457CE0
 void move_screen_to_unit(Unit* unit);                                               // 004E6020
+s32 get_color_id(u8 player);                                                        // 0049B0E0
+void __fastcall draw_minimap_unit_box_2(u32 player);                                // 004A47B0
 
 bool __fastcall latency_dialog_proc(BinDlg* dialog, DialogEvent* dialog_event);     // 004e8ae0
 void __fastcall latency_dialog_activate(BinDlg* dialog, DialogEvent* dialog_event); // 004e8a30

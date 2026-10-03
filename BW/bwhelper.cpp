@@ -16315,4 +16315,17 @@ namespace helper {
         }
         return result;
     }
+
+    s32 get_color_id(u8 player) {
+        const u32 func_address = 0x0049B0E0;
+        static s32 result;
+        __asm {
+            PUSHAD
+            MOVZX EAX, player
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
 }
