@@ -2576,7 +2576,6 @@ namespace hooks {
             } break;
             case UnitId::TerranVulture:
             case UnitId::TerranVultureHecaton:
-            case UnitId::RaynorVulture: {
             case UnitId::TerranVultureUpstart: {
                 if (unit->mine_carrier.mine_count > 3) {
                     unit->mine_carrier.mine_count = 3;
