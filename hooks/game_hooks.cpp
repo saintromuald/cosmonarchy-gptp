@@ -2576,8 +2576,8 @@ namespace hooks {
             } break;
             case UnitId::TerranVulture:
             case UnitId::TerranVultureHecaton:
-            case UnitId::TerranVultureUpstart:
             case UnitId::RaynorVulture: {
+            case UnitId::TerranVultureUpstart: {
                 if (unit->mine_carrier.mine_count > 3) {
                     unit->mine_carrier.mine_count = 3;
                 }
@@ -3036,6 +3036,20 @@ namespace hooks {
             } break;
             case UnitId::BloodsummonThrombocyte: {
                 unit->cast_bloody_burst();
+            } break;
+            case UnitId::RaynorVulture: {
+                if (unit->mine_carrier.mine_count > 3) {
+                    unit->mine_carrier.mine_count = 3;
+                }
+                if (unit->mine_carrier.mine_count < 3) {
+                    if (!unit_ext.timers[TimerMineRestock]) {
+                        unit_ext.timers[TimerMineRestock] = TerranHeroes::RaynorVultureMineRestockTimer;
+                    } else if (unit_ext.timers[TimerMineRestock] == 1) {
+                        unit->mine_carrier.mine_count++;
+                        bw::play_sound(SoundId::MineRestock01, unit->position);
+                        unit->sprite->create_top_overlay(ImageId::MineRestockOverlay); // TODO: Own visuals
+                    }
+                }
             } break;
         }
         // Huge switch statement ends
