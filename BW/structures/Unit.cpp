@@ -934,37 +934,37 @@ graphics::ColorId Unit::get_faction_color() {
 
 graphics::ColorId Unit::get_faction_color(Unit* unit) {
     // store a player until the end where it will properly store a ColorId
-    graphics::ColorId return_value;
+    graphics::ColorId color;
     if (unit != nullptr) {
         if (unit->sprite != nullptr) {
             // note: using the sprite player to preserve recruitable units color
-            return_value = unit->sprite->player;
+            color = unit->sprite->player;
         } else {
             // note: using player color for spriteless units (if that exist)
-            return_value = unit->player;
+            color = unit->player;
         }
         // for normal players, apply colors switching
-        if (unit->player < PLAYABLE_PLAYER_COUNT) {
+        if (unit->player < PlayerLimit) {
             // get the proper player in multiplayer game (don't break campaigns/UMS)
-            return_value = g_factions_colors_ordering[return_value];
+            color = g_factions_colors_ordering[color];
             // fix BROWN to GREEN color swap in Desert map
-            if (*g_current_tileset == TilesetType::Desert && return_value == 5) {
-                return_value = 8;
+            if (*g_current_tileset == TilesetType::Desert && color == 5) {
+                color = 8;
             }
             // fix WHITE to GREEN color swap in Ice map
-            if (*g_current_tileset == TilesetType::Ice && return_value == 6) {
-                return_value = 8;
+            if (*g_current_tileset == TilesetType::Ice && color == 6) {
+                color = 8;
             }
         }
-        if (return_value < PLAYER_COUNT) {
-            return_value = graphics::standardColors[return_value];
+        if (color < FullPlayerLimit) {
+            color = graphics::standardColors[color];
         } else {
-            return_value = graphics::BLACK; // will return 0/black if abnormal player
+            color = graphics::BLACK; // will return 0/black if abnormal player
         }
     } else {
-        return_value = graphics::BLACK; // will return 0/black if null pointer is the argument
+        color = graphics::BLACK; // will return 0/black if null pointer is the argument
     }
-    return return_value;
+    return color;
 }
 
 graphics::ColorId Unit::get_color() {
@@ -973,22 +973,19 @@ graphics::ColorId Unit::get_color() {
 }
 
 graphics::ColorId Unit::get_color(Unit* unit) {
-    // getColourID internal function
-    const u32 Func_getColourID = 0x0049B0E0;
+    // get_color internal function
     graphics::ColorId return_value;
-    if (unit != nullptr) {
-        if (unit->sprite != nullptr) {
-            // note: using the sprite player to preserve recruitable units color
-            return_value = unit->sprite->player;
-        } else {
-            // note: using player color for spriteless units (if that exist)
-            return_value = unit->player;
+    if (unit) {
+        return_value = unit->player; // Using player color for spriteless units (if that exist)
+        if (unit->sprite) {
+            return_value = unit->sprite->player; // Using the sprite player to preserve rescuable unit color
         }
-        if (return_value < PLAYABLE_PLAYER_COUNT) {
+        if (return_value < PlayerLimit) {
+            const u32 func_address = 0x0049B0E0;
             __asm {
                 PUSHAD
                 MOV AL, return_value
-                CALL Func_getColourID
+                CALL func_address
                 MOV return_value, AL
                 POPAD
             }

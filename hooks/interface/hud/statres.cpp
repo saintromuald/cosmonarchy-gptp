@@ -11,6 +11,7 @@
 #include "systems/triggers/trigger_system.h"
 #include "config.h"
 #include "hooks/interface/uifeatures/ui_features.h"
+#include "hooks/interface/minimap.h"
 
 namespace {
 struct StatresState {
@@ -88,11 +89,11 @@ static void __fastcall statres_colortext_update(BinDlg* dialog, int, int, int) {
         if (dialog->non_user_value & 0x10000) { // use_player_color
             g_saved_font_color = g_current_font_color;
             g_current_font_color = (u32)&g_tfontgame_image_data[304];
-            u32 player = dialog->non_user_value >> 24;
-            u32 i_0 = 0;
+            auto color = helper::get_color_id((u8)(dialog->non_user_value >> 24));
 
+            u32 i_0 = 0;
             do {
-                g_tfontgame_image_data[305 + i_0] = g_player_in_game_colors[player * ColorSetSize + i_0 * 2];
+                g_tfontgame_image_data[305 + i_0] = g_player_in_game_colors[color * ColorSetSize + i_0 * 2];
             } while (++i_0 < 4);
         } else {
             helper::get_color_handle(TextColor::Green);
@@ -363,7 +364,7 @@ static void draw_player_stats(BinDlg** dialog_ptr, v2u16* pos, u32 player,
 
     if (show_color_box) {
         local_pos.x -= 12;
-        g_graphics.draw_statres_box(local_pos.x + 2, local_pos.y + 2, local_pos.x + 11, local_pos.y + 11, g_player_minimap_colors[player]);
+        g_graphics.draw_statres_box(local_pos.x + 2, local_pos.y + 2, local_pos.x + 11, local_pos.y + 11, get_minimap_color(player));
     }
 
     if (show_production) {
@@ -407,9 +408,9 @@ static void __fastcall stat_res_timer_proc(BinDlg* dialog, u16 index_unused) { /
                     true,					// use_player_color
                     g_config.show_apm,		// can_show_apm
                     true,					// show_production
-                    true,						// show_name
+                    true,					// show_name
                     true,					// show_color_box
-                    *g_is_holding_alt);	// count_in_production
+                    *g_is_holding_alt);	    // count_in_production
             }
         }
     } else { // Normal player UI. -Veeq7

@@ -2395,3 +2395,13 @@ bool bounces_power_breach(WeaponId::Enum weapon_id) {
     return weapon_id == WeaponId::IntendentErsaDriver;
 }
 } // namespace WeaponId
+
+namespace SpriteId {
+bool is_resource_node(SpriteId::Enum sprite_id) {
+    return sprite_id == SpriteId::VespeneRidge
+        || sprite_id == SpriteId::VespeneGeyser
+        || sprite_id == SpriteId::MineralFieldType1
+        || sprite_id == SpriteId::MineralFieldType2
+        || sprite_id == SpriteId::MineralFieldType3;
+}
+} // namespace SpriteId

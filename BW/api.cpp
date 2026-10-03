@@ -4695,5 +4695,4 @@ fs::path get_replay_path() {
     return bw::get_starcraft_path() / "maps" / "replays";
 }
 
-
 } // namespace bw

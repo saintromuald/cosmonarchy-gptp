@@ -1062,8 +1062,8 @@ BW_REF(TriggerLink*,	g_current_trigger_node,		0x006509AC);
 BW_DATA(u32*,			g_trigger_wait,				0x00650980);
 
 // For draw_minimap_box
-BW_DATA(char*,			g_minimap_state,			0x006D5BBE);
-BW_DATA(u32*,			g_minimap_box_checksum,		0x0059C1A8);
+BW_REF(MinimapState,	g_minimap_state,			0x006D5BBE);
+BW_REF(u32,			    g_minimap_box_checksum,		0x0059C1A8);
 BW_REF(b32,             g_minimap_draw_neutrals,    0x005993AC);
 
 // For draw_train_progress

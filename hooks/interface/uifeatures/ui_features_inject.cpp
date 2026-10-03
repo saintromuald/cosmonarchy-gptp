@@ -495,6 +495,21 @@ namespace {
         }
     }
 
+    void __declspec(naked) get_color_id_wrapper() { // 0049B0E0
+        static u8 player;
+        static s32 result;
+        __asm {
+            MOV player, AL
+            PUSHAD
+        }
+        result = hooks::get_color_id(player);
+        __asm {
+            POPAD
+            MOV EAX, result
+            RETN
+        }
+    }
+
     // Non-hooks \\
 
     const u32 replayStatBtns_27AB5 = 0x00427AB5;
@@ -681,16 +696,18 @@ namespace hooks {
         jump_patch(CMDRECV_minimap_ping_wrapper,			0x004BF7A0, 0);
 
     //	jump_patch(show_or_hide_minimap,					            0x004A4150, 2);
-        jump_patch(draw_game_menu_context_wrapper,		0x004F4F70, 1);
-        jump_patch(get_tile_image_data_wrapper,			0x0040C3B0, 1);
-        jump_patch(get_stat_txt_string_wrapper,			0x004C36F0, 1);
-        jump_patch(draw_show_hide_terrain_context_wrapper,0x004A4C40, 0);
-        jump_patch(draw_cancel_unit_context_wrapper,	    0x00457B10, 4);
-        jump_patch(statdata_mouseover_interact_wrapper,   0x00457CE0, 1);
-    //  jump_patch(move_screen_to_unit_wrapper,                         0x004E6020, 3); // Working, but disabled to use memory patches instead. -Pr0nogo
+        jump_patch(draw_game_menu_context_wrapper,		   0x004F4F70, 1);
+        jump_patch(get_tile_image_data_wrapper,			   0x0040C3B0, 1);
+        jump_patch(get_stat_txt_string_wrapper,			   0x004C36F0, 1);
+        jump_patch(draw_show_hide_terrain_context_wrapper, 0x004A4C40, 0);
+        jump_patch(draw_cancel_unit_context_wrapper,	   0x00457B10, 4);
+        jump_patch(statdata_mouseover_interact_wrapper,    0x00457CE0, 1);
+    //  jump_patch(move_screen_to_unit_wrapper,            0x004E6020, 3); // Working, but disabled to use memory patches instead. -Pr0nogo
+        jump_patch(get_color_id_wrapper,                   0x0049B0E0, 2);
+        jump_patch(draw_minimap_unit_box_2,                0x004A47B0, 4);
 
-        call_patch(get_scroll_directions_partial,			0x0047F155, 0);
-        jump_patch(replayStatBtns_patch_27AB0,			0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF
+        call_patch(get_scroll_directions_partial,		   0x0047F155, 0);
+        jump_patch(replayStatBtns_patch_27AB0,			   0x00427AB0);	// Don't show replay progress bar based on config. This doesn't hide it, just never shows it. -DF
 
         // Make ingame menus appear above custom UI elements. -DF
         call_patch(dialog_update_proc_patch_1CB64,		0x0041CB64);

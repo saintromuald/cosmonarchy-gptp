@@ -4,6 +4,8 @@
 extern u16 box_width;
 extern u16 box_height;
 
+s8 get_minimap_color(u8 player);
+
 namespace hooks {
 	void minimapVisionUpdate_256();																// 004A3A40
 	void minimapVisionUpdate_128();																// 004A3B30
