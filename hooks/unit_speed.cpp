@@ -338,6 +338,7 @@ namespace hooks {
                 speed *= 1.25fp;
             } break;
             case UnitId::TerranCyprian:
+            case UnitId::TerranCyprianHecaton:
             case UnitId::ProtossSimulacrumKhalendric:
             case UnitId::ZergYblyleth:
             case UnitId::ZergGarvrokor:

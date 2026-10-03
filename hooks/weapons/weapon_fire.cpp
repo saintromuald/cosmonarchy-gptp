@@ -911,7 +911,7 @@ namespace hooks {
         switch (bullet_ext->weapon_id) {
             // Same as default, but orange effect
             case WeaponId::CyprianTwinRailguns:
-            case WeaponId::AutocratEminenceRifle:
+            case WeaponId::CyprianHecatonBorealRailguns:
             case WeaponId::RamessesPharoahCannons: {
                 g_iquare_globals->add_bullet_multihit(bullet, target);
                 bw::create_and_init_thingy(SpriteId::BurstLasersImpactDamageless, cp.x, cp.y, bullet->player);

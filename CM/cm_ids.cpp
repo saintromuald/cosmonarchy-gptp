@@ -451,6 +451,7 @@ bool unit_id_is_town_center(u16 unit_id) {
 
 bool unit_id_is_factional(u16 unit_id) {
     return unit_id == UnitId::TerranHotshot
+        || unit_id == UnitId::TerranCyprianHecaton
         || unit_id == UnitId::TerranCohort
         || unit_id == UnitId::TerranCannibal
         || unit_id == UnitId::TerranAspirant
@@ -677,6 +678,7 @@ u32 weapon_id_intercepts(WeaponId::Enum weapon_id) {
 bool weapon_id_pierces(WeaponId::Enum weapon_id) {
     switch (weapon_id) {
         case WeaponId::CyprianTwinRailguns:
+        case WeaponId::CyprianHecatonBorealRailguns:
         case WeaponId::SavantDiscoidRailgunEntropy:
         case WeaponId::BlackguardAsoniCarbine:
         case WeaponId::AutocratEminenceRifle:
@@ -813,7 +815,8 @@ WeaponOffsets* get_weapon_offsets(WeaponId::Enum weapon_id) {
     // NOTE: using per case static so we can return a pointer to valid memory, since stack memory is invalidated after return
     // TODO: rework to using a weapon_id WeaponOffsets table, with some sort of optionality check (maybe a bool?)
     switch (weapon_id) {
-        case WeaponId::CyprianTwinRailguns: {
+        case WeaponId::CyprianTwinRailguns:
+        case WeaponId::CyprianHecatonBorealRailguns: {
             static WeaponOffsets offsets{};
             offsets.value_id = ValueCyprianLaunchPos;
             offsets.count = 2;
@@ -1792,6 +1795,7 @@ SpriteId::Enum get_corpse_sprite_id(UnitId::Enum unit_id) {
         case UnitId::TerranHarakan:                      return SpriteId::Corpse_Harakan;
         case UnitId::TerranHarakanGolden:                return SpriteId::Corpse_Harakan;
         case UnitId::TerranCyprian:                      return SpriteId::Corpse_Cyprian;
+        case UnitId::TerranCyprianHecaton:               return SpriteId::Corpse_Cyprian;
         case UnitId::TerranCleric:                       return SpriteId::Corpse_Cleric;
         case UnitId::TerranShamanSupportMode:            return SpriteId::Corpse_Shaman;
         case UnitId::TerranShamanVisionaryMode:          return SpriteId::Corpse_Shaman;
@@ -2029,7 +2033,8 @@ SoundId::Enum get_unit_ready_sound(UnitId::Enum unit_id) {
         case UnitId::TerranHotshot: {
             ready_sound = helper::get_random_unit_response(SoundId::HotshotReady01, SoundId::HotshotReady03);
         } break;
-        case UnitId::TerranCyprian: {
+        case UnitId::TerranCyprian:
+        case UnitId::TerranCyprianHecaton: {
             ready_sound = helper::get_random_unit_response(SoundId::CyprianReady01, SoundId::CyprianReady03);
         } break;
         case UnitId::TerranCannibal: {
@@ -2233,21 +2238,6 @@ bool has_automandate(UnitId::Enum unit_id) {
     return unit_id == UnitId::ProtossSimulacrumAstral;
 }
 
-bool has_interruptable_windup(UnitId::Enum unit_id) {
-    return unit_id == UnitId::TerranCyprian
-        || unit_id == UnitId::TerranEidolon
-        || unit_id == UnitId::TerranGoliath;
-}
-
-SoundId::Enum get_windup_sfx(UnitId::Enum unit_id) {
-    switch (unit_id) {
-    case UnitId::TerranCyprian: return bw::SoundSet{ SoundId::CyprianWindup01, SoundId::CyprianWindup03 }.rand();
-    case UnitId::TerranEidolon: return bw::SoundSet{ SoundId::EidolonWindup01, SoundId::EidolonWindup03 }.rand();
-    case UnitId::TerranGoliath: return bw::SoundSet{ SoundId::GoliathTwinAutocannonWindup01, SoundId::GoliathTwinAutocannonWindup03 }.rand();
-    }
-    return SoundId::None;
-}
-
 bool is_terran_worker(UnitId::Enum unit_id) {
     return unit_id == UnitId::TerranMason
         || unit_id == UnitId::TerranTalos
@@ -2292,6 +2282,25 @@ bool match_id_to_base(UnitId::Enum match_id, UnitId::Enum base_id) {
         case UnitId::ZergGeszkathGrotto: return match_id == UnitId::ZergKethrajKeep;
     }
     return false;
+}
+
+bool has_interruptable_windup(UnitId::Enum unit_id) {
+    return unit_id == UnitId::TerranCyprian
+        || unit_id == UnitId::TerranCyprianHecaton
+        || unit_id == UnitId::TerranEidolon
+        || unit_id == UnitId::TerranAutocrat
+        || unit_id == UnitId::TerranGoliath;
+}
+
+SoundId::Enum get_windup_sfx(UnitId::Enum unit_id) {
+    switch (unit_id) {
+        case UnitId::TerranCyprian:        return bw::SoundSet{SoundId::CyprianWindup01, SoundId::CyprianWindup03}.rand();
+        case UnitId::TerranCyprianHecaton: return bw::SoundSet{SoundId::CyprianWindup01, SoundId::CyprianWindup03}.rand();
+        case UnitId::TerranEidolon:        return bw::SoundSet{SoundId::EidolonWindup01, SoundId::EidolonWindup03}.rand();
+        case UnitId::TerranAutocrat:       return bw::SoundSet{SoundId::AutocratWindup01, SoundId::AutocratWindup03}.rand();
+        case UnitId::TerranGoliath:        return bw::SoundSet{SoundId::GoliathTwinAutocannonWindup01, SoundId::GoliathTwinAutocannonWindup03}.rand();
+    }
+    return SoundId::None;
 }
 
 bool is_triple_birth(UnitId::Enum unit_id) {

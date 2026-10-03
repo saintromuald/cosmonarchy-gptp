@@ -1107,8 +1107,15 @@ namespace hooks {
                                         }
                                     } break;
                                     case UnitId::TerranCyprian: {
-                                        if (faction == Faction::TerranNydusTrinity) {
+                                        if (faction == Faction::TerranHecatonCoalition || faction == Faction::TerranNydusTrinity || faction == Faction::TerranUpstart) {
                                             current_button_state = Button_State::Invisible;
+                                        }
+                                    } break;
+                                    case UnitId::TerranCyprianHecaton: {
+                                        if (bw::unit_queue_full(unit) || is_adding_on || in_air || faction != Faction::TerranHecatonCoalition) {
+                                            current_button_state = Button_State::Invisible;
+                                        } else {
+                                            current_button_state = Button_State::Enabled;
                                         }
                                     } break;
                                     case UnitId::TerranCohort: {
@@ -3306,6 +3313,12 @@ namespace hooks {
                                 case UnitId::TerranCyprian:
                                 case UnitId::TerranBlackguard: {
                                     if (current_button->icon_id == IconId::KineticPenetration) {
+                                        current_button_state = Button_State::Enabled;
+                                    }
+                                } break;
+                                case UnitId::TerranCyprianHecaton: {
+                                    if (current_button->icon_id == IconId::KineticPenetration
+                                    ||  current_button->icon_id == IconId::KelvinMunitions) {
                                         current_button_state = Button_State::Enabled;
                                     }
                                 } break;
