@@ -1363,6 +1363,8 @@ namespace ImageId {
         
         HarakanGoldenFlamethrower                   = 2487,
 
+        MineRestockOverlay                          = 2469,
+
         // Used for damage overlay crash fix
         FirstMinorDamageOverlay						= 450,
         LastMinorDamageOverlay						= 471,

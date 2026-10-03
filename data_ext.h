@@ -486,6 +486,7 @@ enum ExtTimerId {
     TimerWarAtrophySpeed,
     TimerWarAtrophyVisuals,
     TimerWarAtrophyAudio,
+    TimerMineRestock,
 
     // probably convert the following to use TimerAI_GenericAbilityCooldown
     TimerAI_Lazarus,

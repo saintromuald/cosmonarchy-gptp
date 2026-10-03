@@ -188,6 +188,10 @@ inline constexpr s32 Timer = 2secs + 1;
 inline constexpr s32 StackCap = 3;
 }
 
+namespace TerranHeroes {
+inline constexpr s32 RaynorVultureMineRestockTimer = 10secs + 1;
+}
+
 namespace Terran {
 inline constexpr s32 BurnDownDamage = 1.875hp / 1secs;
 inline constexpr s32 ControlledDemolitionTimer = 10secs + 1;

@@ -2894,6 +2894,7 @@ namespace SoundId {
         HelionWeaponfire02                                  = 4303,
         HelionWeaponfire03                                  = 4304,
         
+        MineRestock01                                       = 4317,
         ParacleteWeaponfire01                               = 4318,
         ParacleteWeaponfire02                               = 4319,
         ParacleteWeaponfire03                               = 4320,
