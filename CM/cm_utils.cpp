@@ -643,6 +643,7 @@ UnitId::Enum get_factional_regression(Unit* unit) {
 void init_corpse(Thingy* corpse, SpriteId::Enum id, u32 player) {
     if (id == SpriteId::Egg_Spawn) {
         corpse->sprite->player = player;
+        corpse->sprite->elevation = 0;
     } else if (SpriteId::is_corpse(SpriteId::Enum(id))) {
         corpse->sprite->player = player;
 

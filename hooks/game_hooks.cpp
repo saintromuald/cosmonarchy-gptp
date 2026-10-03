@@ -1185,7 +1185,7 @@ namespace hooks {
             } break;
             case UnitId::AskosiEyelet:
             case UnitId::AskosiEgocent: {
-                helper::play_sound_from_unit(SoundId::SpiderMineDeploy01, unit, 1, 0);
+                bw::play_sound(SoundId::SpiderMineDeploy01, unit->position); // TODO: Own sfx
                 unit->status |= UnitStatus::NoCollide;
             } break;
         }
@@ -1614,7 +1614,7 @@ namespace hooks {
             } break;
             case UnitId::TerranCannibal: {
                 if (!unit_ext.timers[TimerCannibalHealing] && unit->hitpoints != unit->get_max_hp_raw()) {
-                    u32 radius = 1 * 32;
+                    u32 radius = 1tiles;
                     for (Thingy* corpse : g_corpse_search.radial(unit->position, radius)) {
                         unit_ext.timers[TimerCannibalHealing] = UpstartCannibal::ReintegrationTimer;
 
@@ -1973,7 +1973,7 @@ namespace hooks {
                             continue;
                         }
                         has_cargo = true;
-                        cargo->heal_hp(Shaman::NaniteFieldHealAmount * 256, unit);
+                        cargo->heal_hp(Shaman::NaniteFieldHealAmount * 1hp, unit);
                     }
                     if (has_cargo) {
                         bw::add_unit_overlay(overlay_unit, ImageId::RestorationHit_Small + bw::get_overlay_offset(unit->id));
@@ -2943,7 +2943,9 @@ namespace hooks {
                 u32 mineral_cost = units_dat::mineral_cost[target->id];
                 u32 vespene_cost = units_dat::vespene_cost[target->id];
                 u32 time = units_dat::time_cost[target->id] / 2;
+                unit_ext.timers[TimerStun] = time;
                 target_ext.salvage_time += 1;
+
                 target_ext.salvage_minerals += mineral_cost * 0.50fp / time;
                 while (target_ext.salvage_minerals > 1fp) {
                     target_ext.salvage_minerals -= 1;
@@ -2954,10 +2956,13 @@ namespace hooks {
                     target_ext.salvage_gas -= 1;
                     resources->gas[unit->player] += 1;
                 }
+
                 if (target_ext.salvage_time >= time) {
                     resources->minerals[unit->player] += static_cast<s32>(fpm::ceil(target_ext.salvage_minerals));
                     resources->gas[unit->player] += static_cast<s32>(fpm::ceil(target_ext.salvage_gas));
-                    target->damage_with_custom(target->get_current_life_ingame() * 256, 255);
+                    
+                    target->damage_with_custom(target->get_current_life_ingame() * 1hp, 255);
+                    unit_ext.timers[TimerStun] = 2;
                     unit->order_to_idle();
                 }
 
@@ -2977,29 +2982,6 @@ namespace hooks {
                     u32 subtimer = bw::rand_between(3, 7);
                     unit_ext.timers[TimerSalvageAnimationSubtimer] = subtimer;
                 }
-                if (!unit_ext.values[ValueSalvageAnimationTimer] || unit_ext.values[ValueSalvageAnimationTimer] % 128 == 0) {
-                    v2u16 pos = target->sprite->position;
-                    switch (bw::random() % 4) {
-                    case 0: {
-                        pos.x -= u16(units_dat::unit_bounds[target->id].left * 0.75fp);
-                        pos.y -= u16(units_dat::unit_bounds[target->id].top * 0.75fp);
-                    } break;
-                    case 1: {
-                        pos.x += u16(units_dat::unit_bounds[target->id].right * 0.75fp);
-                        pos.y -= u16(units_dat::unit_bounds[target->id].top * 0.75fp);
-                    } break;
-                    case 2: {
-                        pos.x -= u16(units_dat::unit_bounds[target->id].left * 0.75fp);
-                        pos.y += u16(units_dat::unit_bounds[target->id].bottom * 0.75fp);
-                    } break;
-                    case 3: {
-                        pos.x += u16(units_dat::unit_bounds[target->id].right * 0.75fp);
-                        pos.y += u16(units_dat::unit_bounds[target->id].bottom * 0.75fp);
-                    } break;
-                    }
-                    helper::set_move_target_xy(unit, pos.x, pos.y);
-                }
-                unit_ext.values[ValueSalvageAnimationTimer] += 1;
             } break;
             case UnitId::AskosiScepter: {
                 if (unit_ext.values[ValueReassemblyActive] && unit->is_completed() && !unit->is_frozen()) {

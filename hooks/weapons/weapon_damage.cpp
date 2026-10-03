@@ -706,8 +706,10 @@ namespace hooks {
             case WeaponId::ScepterOrmaScrapray:
             case WeaponId::HelionUskoScrapray:
             case WeaponId::IconoclastOnjiDriver: {
-                target_ext.timers[TimerGoldRush] = Askosi::ScrapworldGoldRushTimer;
-                target_ext.values[ValueGoldRushPlayer] = data.attacking_player_id;
+                if (!bw::is_allied_to(data.attacking_player_id, data.target->player)) {
+                    target_ext.timers[TimerGoldRush] = Askosi::ScrapworldGoldRushTimer;
+                    target_ext.values[ValueGoldRushPlayer] = data.attacking_player_id;
+                }
             } break;
             case WeaponId::RemoteHijack: {
                 Unit* auxine = bw::create_unit_from_bullet(UnitId::AskosiAuxine, data.attacking_player_id, data.target->position, data.attacker);

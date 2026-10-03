@@ -61,10 +61,10 @@ namespace hooks {
 			case UnitId::ZergDroleth: {
 				return strength / 4;
 			}
-			case UnitId::TerranPietyWard:
-			case UnitId::TerranSpiderMine:
 			case UnitId::TerranLobotomyMine:
+			case UnitId::TerranSpiderMine:
 			case UnitId::TerranTartarusMine:
+			case UnitId::TerranPietyWard:
 			case UnitId::TerranGoremast:
 			case UnitId::ProtossSteward:
 			case UnitId::ProtossPlasmaShell:

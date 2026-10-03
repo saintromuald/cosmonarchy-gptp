@@ -1641,9 +1641,10 @@ u32 get_player_portrait_id_override(u32 portrait_id, u32 player) {
 }
 
 bool unit_id_is_tiny_unit(u32 unit_id) {
-    return unit_id == UnitId::TerranPietyWard
+    return unit_id == UnitId::TerranSpiderMine
         || unit_id == UnitId::TerranLobotomyMine
         || unit_id == UnitId::TerranTartarusMine
+        || unit_id == UnitId::TerranPietyWard
         || unit_id == UnitId::TerranGoremast
         || unit_id == UnitId::ZergRilirokor
         || unit_id == UnitId::AskosiEyelet
