@@ -302,9 +302,9 @@ namespace hooks {
 					tick_heal += 11 * 5;
 				}
 
-				// Cannibal Reintegration - 5 HP per sec
+				// Cannibal Reintegration - 10 HP per sec
 				if (unit_ext.timers[TimerCannibalHealing]) {
-					tick_heal += 11 * 5;
+					tick_heal += 11 * 10;
 				}
 
 				// Azazel Defensive Matrix - heal over time

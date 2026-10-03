@@ -55,7 +55,7 @@ inline constexpr s32 OnhitRange = 2tiles;
 }
 
 namespace UpstartCannibal {
-inline constexpr s32 ReintegrationTimer = 10secs;
+inline constexpr s32 ReintegrationTimer = 5secs;
 }
 
 namespace Cleric {

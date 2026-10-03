@@ -1828,7 +1828,11 @@ Unit* Unit::corpse_cocoon_search() {
             if (bw::is_allied_to(this->player, corpse->sprite->player)) {
                 unit_id = units_dat::base_property[corpse->unit_id] & UnitProperty::Flyer ? UnitId::ZergRililisk : UnitId::ZergRilirokor;
             }
-            set_custom_egg(egg, unit_id, units_dat::time_cost[unit_id] / 2);
+            auto time_cost = units_dat::time_cost[unit_id] / 2;
+            if (units_dat::base_property[unit_id] & UnitProperty::TwoUnitsIn1Egg) {
+                time_cost /= 2;
+            }
+            set_custom_egg(egg, unit_id, time_cost);
             auto& egg_ext = egg->ext();
             egg_ext.values[ValueNoCorpse] = true;
             egg_ext.values[ValueRegressionUnstable] = true;

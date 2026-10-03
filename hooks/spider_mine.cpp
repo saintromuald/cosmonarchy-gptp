@@ -45,7 +45,7 @@ namespace hooks {
 
 	void orders_terran_mine(Unit* unit) { // 00463DF0
 		if (unit->main_order_state == 0) {
-			helper::play_sound_from_unit(SoundId::SpiderMineDeploy01, unit, 1, 0);
+			bw::play_sound(SoundId::SpiderMineDeploy01, unit->position);
 			unit->ground_weapon_cooldown = TerranMine::BurrowTime;
 			unit->main_order_state = 1;
 		}
