@@ -17,6 +17,7 @@
 #include "hooks/interface/mainmenu/custom_glues.h"
 #include "hooks/race_randomization.h"
 #include "storm/storm.h"
+#include "CM/cm_ids.h"
 
 static s32* const g_fonts = (s32*)0x006CE0F4;
 static u32* const g_print_xy_pos_y = (u32*)0x006CE0E0;

@@ -172,3 +172,7 @@ bool bounces_binding_plasma(WeaponId::Enum weapon_id);
 bool can_attack_target(WeaponId::Enum weapon_id, Unit* target);
 bool bounces_power_breach(WeaponId::Enum weapon_id);
 } // namespace WeaponId
+
+namespace SpriteId {
+bool is_resource_node(SpriteId::Enum sprite_id);
+} // namespace SpriteId
