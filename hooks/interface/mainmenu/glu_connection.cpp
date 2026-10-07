@@ -8,7 +8,7 @@
 void glu_provider_select(bool from_crownlink) {
     g_gl_glues_mode = MenuId::GlueSelConn;
 
-    g_connect_bin = load_bin_file("rez\\gluConn.bin").release();
+    g_connect_bin = load_bin_file_scaled("rez\\gluConn.bin", ui::MenuBinScale).release();
 
     auto result = helper::glu_load_bin_dialog(g_connect_bin, (bw::DialogInteraction*)0x004bae20);
     bool force_refresh = false;

@@ -8,6 +8,7 @@
 #include "magic_enum/magic_enum.hpp"
 
 #include "hooks/interface/uifeatures/ui_features.h"
+#include "hooks/interface/minimap.h"
 
 #include <windows.h>
 #include <utility>
@@ -45,22 +46,35 @@ void glu_chat_race_combobox_prep(BinDlg* dialog, RaceId::Enum selected_Race, u32
     dialog->interaction_function = helper::chat_race_combobox_interact;
 }
 
+static void place_map_preview(BinDlg* chat_root, bool size_to_image) {
+    BinDlg* ctrl_bin = *g_minimap_dlg;
+    if (!ctrl_bin) {
+        return;
+    }
+    constexpr s32 PreviewBottomY = 550;
+    bw::Dialog* ctrl = ctrl_bin->to_dialog();
+    s32 left = ctrl->bounds.left();
+    s32 width = ctrl->bounds.right() - ctrl->bounds.left() + 1;
+    s32 height = ctrl->bounds.bottom() - ctrl->bounds.top() + 1;
+    if (bw::Dialog* label = get_first_child_by_index(chat_root->to_dialog(), GluChatControls::MapPreview)) {
+        left = label->bounds.left();
+    }
+    if (size_to_image) {
+        const s32 factor = s32(ui_scale::Factor);
+        width = g_map_width * factor;
+        height = g_map_height * factor;
+    }
+    ctrl->bounds = DialogBounds::from_xywh(s16(left), s16(PreviewBottomY - height + 1), u16(width), u16(height));
+    if (size_to_image) {
+        hooks::refresh_minimap_rect(ctrl_bin);
+    }
+}
+
 static void update_map_preview_visibility(BinDlg* dialog, bool show_map_preview, bool show_map_preview_label) { // 004b89f0
     if (g_minimap_draw_neutrals && g_chat_unkown_2 && g_chat_minimap_shown) {
-
-        // Show/hide dialogs that will be covered by minimap preview
-        char password[24]{};
-        SNetGetGameInfo(SNetGetGameInfoType::Password, password, 24, 0);
-        if (password[0]) {
-            update_dialog_visibility(dialog, GluChatControls::GamePasswordLabel, !show_map_preview);
-            update_dialog_visibility(dialog, GluChatControls::GamePasswordValue, !show_map_preview);
-        }
-        update_dialog_visibility(dialog, GluChatControls::GameTypeLabel, !show_map_preview);
-        update_dialog_visibility(dialog, GluChatControls::GameModeValue, !show_map_preview);
-        update_dialog_visibility(dialog, GluChatControls::GameTypeValue, !show_map_preview);
-        update_dialog_visibility(dialog, GluChatControls::SubtypeOrReplayValue, !show_map_preview);
-        update_dialog_visibility(dialog, GluChatControls::MapNameLabel, !show_map_preview);
-        update_dialog_visibility(dialog, GluChatControls::MapNameValue, !show_map_preview);
+        // Re-derived on every hover: the box is a pure function of the label and
+        // the composite dims, so no stale shrink can survive to the draw.
+        place_map_preview(dialog, true);
 
         update_dialog_visibility(g_minimap_bin, 1, show_map_preview);
 
@@ -149,16 +163,23 @@ static u32 glu_chat_destroy(BinDlg* dialog, DialogEvent* event) {
     return helper::generic_dialog_interact(dialog, event);
 };
 
+static void __fastcall finish_map_preview(BinDlg* dialog, u16 index) {
+    reinterpret_cast<TimerCallback>(0x004b9a50)(dialog, index);
+    place_map_preview(dialog, true);
+}
+
 static void map_preview_init(BinDlg* dialog) {
     g_chat_unkown_2 = 0;
     g_chat_minimap_shown = 1;
     g_minimap_draw_neutrals = true;
-    
+
     g_minimap_bin = load_bin_file("rez\\minimappreview.bin").release()->to_bindlg();
     initialize_bin_dialog(g_minimap_bin, (BinDlgProc)0x004a5900);
+    ui::scale_bin(*g_minimap_bin->to_dialog(), ui::MenuBinScale);
+    place_map_preview(dialog, false);
 
     g_minimap_draw_neutrals = false;
-    helper::set_callback_timer(dialog, 1, 1000, (TimerCallback)0x004b9a50);
+    helper::set_callback_timer(dialog, 1, 1000, finish_map_preview);
 }
 
 static u32 __fastcall dlgproc_ok_button_host_only(BinDlg* dialog, DialogEvent* event) {
@@ -240,7 +261,7 @@ void glu_chat() {
     g_chat_comboboxes_enabled = true;
     g_chat_game_is_public = false;
 
-    g_chat_bin = load_bin_file("rez\\gluChat.bin").release();
+    g_chat_bin = load_bin_file_scaled("rez\\gluChat.bin", ui::MenuBinScale).release();
 
     helper::chat_update_race_slots(g_chat_bin);
 

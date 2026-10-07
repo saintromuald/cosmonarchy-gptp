@@ -77,5 +77,16 @@ inline consteval u32 operator""mins(unsigned long long minutes) { return static_
 inline consteval u32 operator""hp(long double value) { return static_cast<u32>(value * 256); }
 inline consteval u32 operator""hp(unsigned long long value) { return static_cast<u32>(value * 256); }
 
+// Largest multiple of step not exceeding value.
+constexpr s32 align_down(s32 value, s32 step) {
+    const s32 remainder = value % step;
+    return remainder != 0 && value < 0 ? value - remainder - step : value - remainder;
+}
+
+// Smallest multiple of step not less than value (value >= 0).
+constexpr s32 align_up(s32 value, s32 step) {
+    return align_down(value + step - 1, step);
+}
+
 template <typename... Ts>
 struct Overloaded : Ts... { using Ts::operator()...; };

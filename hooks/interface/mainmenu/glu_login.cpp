@@ -7,14 +7,17 @@
 #include "storm/sfile.h"
 
 void glu_login() {
-    g_login_bin = sfile::load_file("rez\\gluLogin.bin").unsafe_cast<BinDlg>().release();
+    auto multiplayer_mode = g_multiplayer_mode;
 
-    g_login_bin->flags |= DialogFlags::HeapAllocated;
-    helper::fixup_and_init_dialog_data(g_login_bin, helper::alloc_background_image, __FILE__, __LINE__);
+    // Force multiplayer mode to unify single/multi characters
+    g_multiplayer_mode = true;
+    g_login_bin = load_bin_file_scaled("rez\\gluLogin.bin", ui::MenuBinScale).release();
     
-    auto last_control = helper::glu_load_bin_dialog(g_login_bin, (BinDlgProc)0x004edaa0);
+    auto last_control = helper::glu_load_bin_dialog(g_login_bin, (bw::DialogInteraction*)0x004edaa0);
     auto& provider_manager = snp::ProviderManager::instance();
     bool force_refresh = false;
+    g_multiplayer_mode = multiplayer_mode;
+
     switch (static_cast<GluLoginControls>(last_control)) {
     case GluLoginControls::OkButton: {
         if (g_multiplayer_mode) {

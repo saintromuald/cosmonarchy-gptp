@@ -508,13 +508,6 @@ namespace hooks {
 			RET
 		}
 	};
-
-	void __declspec(naked) get_display_text_color() {
-		__asm {
-			MOV		AX, [EBX * 2 + display_text_color]
-			RET
-		}
-	};
 	
 	const u32 load_dialog = 0x004F57A0;
 	void __declspec(naked) RestartGameMenu() {

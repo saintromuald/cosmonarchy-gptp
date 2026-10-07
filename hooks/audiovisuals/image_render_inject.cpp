@@ -1,4 +1,7 @@
 #include "image_render.h"
+
+#include "../../systems/display/display.h"
+
 #include <hook_tools.h>
 
 namespace {
@@ -249,6 +252,21 @@ void inject_image_render_hooks() {
     memory_patch(0x0040B10E, &threshold_map);
     memory_patch(0x0040B92D, &threshold_map); // drawFunc_CloakThreshold2 @ 0x0040B824
     memory_patch(0x0040B963, &threshold_map);
+
+    // The hidden-cloak (0040B155 / 0040B9A9) and EMP (0040B2D3 / 0040BB2E) draws render their "invisible" pixels by copying the surface from a small displacement
+    // This was bugged in WS because they wrapped at 640x480. Fix by widening the end/wrap constants to the screen surface size
+    constexpr u32 screen_surface_bytes = u32(display::SurfaceWidth) * u32(display::SurfaceHeight);
+    memory_patch(0x0040B168, screen_surface_bytes); // draw_hiddenCloak @ 0x0040B155: surface end
+    memory_patch(0x0040B252, screen_surface_bytes); // literal-run wrap
+    memory_patch(0x0040B28E, screen_surface_bytes); // rle-run wrap
+    memory_patch(0x0040BAAF, screen_surface_bytes); // draw_hiddenCloak2 @ 0x0040B9A9: literal-run wrap
+    memory_patch(0x0040BAEB, screen_surface_bytes); // rle-run wrap
+    memory_patch(0x0040B2E6, screen_surface_bytes); // draw_EMP @ 0x0040B2D3: surface end
+    memory_patch(0x0040B3CA, screen_surface_bytes); // literal-run wrap
+    memory_patch(0x0040B400, screen_surface_bytes); // rle-run wrap
+    memory_patch(0x0040BC2E, screen_surface_bytes); // draw_EMP2 @ 0x0040BB2E: literal-run wrap
+    memory_patch(0x0040BC64, screen_surface_bytes); // rle-run wrap
+
     memory_patch(0x004D562D, &sgUpdateFuncs[0].fxn); // unpackImageGrpData @ 0x004D5600
     memory_patch(0x004D5618, &sgRenderFuncs[0].fxn_mirror);
     memory_patch(0x004D5621, &sgRenderFuncs[0].fxn);

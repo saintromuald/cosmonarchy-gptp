@@ -5,6 +5,7 @@
 #include <hooks/byte_operations_utils.h>
 #include <hooks/limits/sfx_extender.h>
 #include "systems/audio/audio_system.h"
+#include "systems/display/display.h"
 
 namespace hooks {
     // Hooked to allow more unit ids to have "annoyed" lines.
@@ -297,5 +298,56 @@ namespace hooks {
         g_selection_sound_counter = 0;
         notify_cooldown = 0;
         g_use_quiet_sounds = 0;
+    }
+
+    // 0048E8D0(ecx = world x, eax = world y) -> 0..99. Attenuates volume from 99 to 0 linearly over 512px outside viewport.
+    s32 get_sfx_volume_from_screen_distance(s32 x, s32 y) { // 0048E8D0
+        const s32 left = s32(g_move_to_x);
+        const s32 top = s32(g_move_to_y);
+        const s32 right = left + s32(g_display.world_width());
+        const s32 bottom = top + s32(g_display.world_height());
+
+        s32 distance = 0;
+        if (x < left) {
+            distance = left - x;
+        } else if (x > right) {
+            distance = x - right;
+        }
+        if (y < top) {
+            distance += top - y;
+        } else if (y > bottom) {
+            distance += y - bottom;
+        }
+
+        const s32 volume = 99 - distance * 99 / 512;
+        return volume < 0 ? 0 : volume;
+    }
+
+    // 0048E850(eax = world x) -> -10000..10000. Stereo pan based on tile distance from viewport acoustic center.
+    s32 get_sfx_pan_from_screen_distance(s32 x) { // 0048E850
+        const s32 centre = s32(g_move_to_tile_x) + s32(g_display.world_width() / (2 * display::TileSize));
+        s32 tiles = x / s32(display::TileSize) - centre;
+
+        const bool is_left = tiles < 0;
+        if (is_left) {
+            tiles = -tiles;
+        }
+
+        s32 pan = 0;
+        if (tiles > 80) {
+            pan = 10000;
+        } else if (tiles > 40) {
+            pan = 5000;
+        } else if (tiles > 20) {
+            pan = 1000;
+        } else if (tiles > 10) {
+            pan = 600;
+        } else if (tiles > 5) {
+            pan = 300;
+        } else if (tiles > 2) {
+            pan = 100;
+        }
+
+        return is_left ? -pan : pan;
     }
 }

@@ -12,6 +12,15 @@ struct Config {
     bool prefer_wmode = false;
     bool allow_multiple_instances = false;
 
+    // Display
+    u32 ui_redraw_cap_hz = 0; // 0 = match the monitor's refresh rate
+
+    // World zoom, in percent of window magnification: the visible world is
+    // surface / zoom. Defaults, role floors, and the surface size are fixed
+    // constants (display::, zoom::).
+    bool world_zoom = true;
+    bool smooth_world_zoom = true;
+
     // General UI
     bool extended_camera_hotkeys = true;
     bool show_timer = true;

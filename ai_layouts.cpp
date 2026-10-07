@@ -4,6 +4,7 @@
 #include "hooks/harvest.h"
 #include "data_ext.h"
 #include "systems/triggers/trigger_parser.h"
+#include "systems/display/display.h"
 
 static bool update_townhall_marker(AiPlaceholder& placeholder, u32 player, u32 townhall_index);
 static u32 ai_mining_base_count(u32 player);
@@ -264,8 +265,8 @@ void AiLayouts::update() {
                 Box16 camera = {};
                 camera.left = g_move_to_x;
                 camera.top = g_move_to_y;
-                camera.right = g_move_to_x + 640;
-                camera.bottom = g_move_to_y + 400;
+                camera.right = g_move_to_x + g_display.world_width();
+                camera.bottom = g_move_to_y + g_display.world_height();
 
                 if (unit_box.left <= camera.right && unit_box.right >= camera.left &&
                     unit_box.top <= camera.bottom && unit_box.bottom >= camera.top) {

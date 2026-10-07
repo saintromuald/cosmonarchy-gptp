@@ -412,6 +412,8 @@ struct PortraitData {
     u16			flags;			// 0xC
     u16			portrait_id;	// 0xE
     u8			anim_type;		// 0x10
+    u8			center_offset_x;	// 0x11 | Where the video canvas draws within the window
+    u8			center_offset_y;	// 0x12
 };
 
 struct ButtonSet {
@@ -1741,10 +1743,14 @@ struct RGBA {
     u8 g;
     u8 b;
     u8 a;
+
+    bool operator==(const RGBA&) const = default;
 };
 
 struct Palette {
     RGBA colors[256];
+
+    bool operator==(const Palette&) const = default;
 };
 
 // For lobby_recv

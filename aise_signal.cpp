@@ -1,6 +1,7 @@
 #include "aise_signal.h"
 #include "DatExtend/datext.h"
 #include "hooks/grafting/grafting.h"
+#include "systems/display/frame_overlay.h"
 #include "config.h"
 
 static u16* find_req_id(u16* req_table, u32 req_id) {
@@ -78,6 +79,12 @@ u32 parse_aise_signal(Unit* unit1, Unit* unit2, AiseSignal type, u32 v1, u32 v2,
 		} break;
 		case AiseSignal::InReplayOrWitness: {
 			return bw::in_replay_or_witness();
+		} break;
+		// Callbacks passed in v2/v3 because 00479930 marshals v1 via 16-bit AX.
+		// Returns 1 to signal protocol support (older builds return 0).
+		case AiseSignal::SetFrameOverlay: {
+			g_frame_overlay.set_procs((FrameOverlay::DrawProc)v2, (FrameOverlay::SkipProc)v3);
+			return 1;
 		} break;
 	}
 	return 0;

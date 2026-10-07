@@ -27,6 +27,7 @@ namespace helper {
     BW_FUNC(0x00410154, b32 __stdcall, sbmp_load_image, const char* filename, PaletteEntry* palette, const char* buffer, u32 buffer_size, u32* width, u32* height, u32* bpp);
     BW_FUNC(0x004B5220, char __fastcall, glu_expcampaign_custom_ctrl_id, BinDlg* dialog, DialogEvent* dlg_event);
     BW_FUNC(0x004BE0B0, char __cdecl, refresh_cursor_0);
+    BW_FUNC(0x004BDFA0, void __stdcall, mouse_layer_draw, graphics::Bitmap* surface, Bounds* bounds);
     BW_FUNC(0x0041ca00, void __stdcall, refresh_region);
     BW_FUNC(0x004BE060, s32 __cdecl, cursor_refresh);
     BW_FUNC(0x0049BFD0, char __cdecl, update_screen_position);
@@ -37,6 +38,14 @@ namespace helper {
     BW_FUNC(0x004c9780, void __stdcall, save_options_menu_result, BinDlg* dialog);
     BW_FUNC(0x004f57a0, void __fastcall, load_bin_dlg, const char* bin_name, BinDlgProc dlgproc);
     BW_FUNC(0x004de140, void __fastcall, show_queued_network_error, u16 index);
+
+    // game_loop_top's callees, in the order it runs them
+    BW_FUNC(0x004D1BF0, void __stdcall, pump_messages, u32 flags);
+    BW_FUNC(0x004D14D0, void __cdecl, update_cursor);
+    BW_FUNC(0x0047F0E0, void __cdecl, scroll_screen_step);
+    BW_FUNC(0x00485F70, void __cdecl, receive_network_messages);
+    BW_FUNC(0x0047F590, void __cdecl, send_bnet_league_query);
+    BW_FUNC(0x004D9670, b32 __fastcall, run_game_tick, b32 replay_step_only);
 
     // Menu functions
     BW_FUNC(0x004db930, void __stdcall, glu_main);
@@ -111,13 +120,39 @@ namespace helper {
     BW_FUNC(0x004f5240, u32 __fastcall, stat_f10_dlgproc, bw::Dialog* dialog, DialogEvent* dlg_event);
     BW_FUNC(0x004b8590, u32 __fastcall, glujoin_dlgproc, bw::Dialog* dialog, DialogEvent* dlg_event);
     BW_FUNC(0x004f4d60, u32 __fastcall, statfluf_dlgproc, bw::Dialog* dialog, DialogEvent* dlg_event);
+    BW_FUNC(0x0045f290, u32 __fastcall, statport_dlgproc, bw::Dialog* dialog, DialogEvent* dlg_event);
     BW_FUNC(0x004a5a80, void __stdcall, load_minimap);
+    BW_FUNC(0x004A4150, void __cdecl, show_or_hide_minimap);
+    BW_FUNC(0x004A3870, void __cdecl, draw_minimap_pings);
     BW_FUNC(0x0045f320, void __stdcall, load_statport);
     BW_FUNC(0x00458570, void __stdcall, load_stat_data);
 
     // Sound functions
     BW_FUNC(0x004A5EF0, s32 __cdecl, get_music_volume_centibels);   // Master music volume in DS centibels
     BW_FUNC(0x004BC320, void __cdecl, sound_update_volumes);        // Reimplemented in music_hooks; applies g_options_list volumes
+
+    // Register-convention vanilla calls used by the graphics/sound init path.
+    u32 register_shutdown_proc(u32 proc);                              // 004F6100, proc in EBX
+    u32 load_sfx_data(u32 dest, u32 filename);                         // 004D2E80, dest in EAX
+    u32 load_sfx_table(u32 entry_count, u32 entry_table, u32 type_count, u32 type_table, u32 sound_files, u32 loader); // 00415CC0, first three args in EAX/ECX/EDX
+    u32 init_directsound(void* error_buffer, u32 window);              // 004BCB70, error_buffer in EAX
+
+    // Unions a screen rectangle into the dialog refresh region. 0041CB50 draws
+    // each dialog once per rectangle that region yields and not at all when it
+    // yields none, so this is how a dialog is asked to repaint. Takes its
+    // argument in EAX, which BW_FUNC cannot express.
+    void invalidate_dialog_region(RECT* rect);                                          // 0041C200
+
+    // Blits a span of dirty cells from the world scratch ring to the screen.
+    BW_FUNC(0x0040C2BD, void __fastcall, blit_map_span, s32 y, s32 x, s32 width, s32 src_offset);
+    // Presents a rectangle to the primary surface; takes the rect pointer in ESI.
+    void present_rect(const s32* rect);                                                 // 0041D3A0
+    // Invokes a layer update proc; engine procs expect zeroed ECX/EDX.
+    void call_layer_update(void* proc, graphics::Bitmap* surface, void* clip);
+    // Dialog bitmap blit; the clip arrives in ECX (__thiscall).
+    void blit_bitmap_with_flags(const Box16* clip, Bitmap* bitmap, s32 source_x, s32 source_y, u32 flags);  // 004EF440
+    BW_FUNC(0x0041C780, void __cdecl, redraw_main_dialog);
+    BW_FUNC(0x0041D420, void __cdecl, present_screen);
 
     // Generic modal text entry with custom prompt
     BW_FUNC(0x004b6e50, BOOL __stdcall, glu_modal_string_prompt, const char* prompt, char* output, u32 output_size, const char* disallowed_chars);
@@ -873,7 +908,8 @@ namespace helper {
     void cancel_target_order();																						// 0048CA10
     s32 update_disruption_web_status();																				// 004EB2F0
     Unit* progress_dying_unit_frame(Unit* unit);																	// 004EB5E0
-    void reveal_sight_at_location(s32 sight_range, u32 vision_flags, s32 pt_x, s32 pt_y, bool is_air);				// 004806F0
+    void reveal_sight_at_location(s32 sight_range, u32 vision_flags, s32 pt_x, s32 pt_y, bool is_air);		// 004806F0
+    void init_sight_values(u32 count, u32* table, u32 tile_width);					// 0042AD60, count in EAX
     void update_visibility(Unit* unit);																				// 004EBE10
     void progress_active_unit_frame(Unit* unit);																	// 004EBC30
     void check_unit_visibility(Unit* unit);																			// 00443390
@@ -905,6 +941,7 @@ namespace helper {
     s32 bwfxn_print_xy(const char* text, s32 x, s32 y);
     void get_color_handle(TextColor color);      // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
     inline void get_color_handle(LobbyTextColor color) { get_color_handle((TextColor)color); };
+    void get_color_handle(u16 color);             // 0x0041F610, arg in AX; full pcolor: color id in the low byte, player color slot in the high byte
     void set_font_handle(u32* font);																				// 0041FB30
 
     // For targeted_order
@@ -962,6 +999,8 @@ namespace helper {
     void refund_all_queue_slots(Unit* unit);
     
     void set_callback_timer(bw::Dialog* dialog, u16 timer_index, u32 time, TimerCallback callback);                 // 00416090
+    BW_FUNC(0x0044EE80, void __fastcall, briefing_portrait_tick, BinDlg* dialog, u16 index);
+    BW_FUNC(0x0044E9E0, void __fastcall, briefing_portrait_draw, bw::Dialog* dialog, DialogEvent* event, u32 user, void* draw_context);
     inline void set_callback_timer(BinDlg* dialog, u16 timer_index, u32 time, TimerCallback callback) { set_callback_timer(dialog->to_dialog(), timer_index, time, callback); }
     
     void clear_callback_timer(bw::Dialog* dialog, u16 timer_index);                                                 // 00416000
@@ -1682,7 +1721,10 @@ namespace helper {
 
     void file_fatal(HANDLE* file, u32 something);																								// 004D2880
     void fixup_and_init_dialog_data(BinDlg* dialog, void(__fastcall* function)(const char*, Bitmap*, Palette*, const char*, u32), const char* log_filename = nullptr, u32 log_line = 0);	// 004194E0
-    void initialize_dialog(u32(__fastcall* function)(BinDlg*, DialogEvent*), BinDlg* dialog);													// 00419D20
+    void initialize_dialog(BinDlg* dialog, u32(__fastcall* function)(BinDlg*, DialogEvent*));													// 00419D20
+    inline void initialize_dialog(bw::Dialog* dialog, bw::DialogInteraction* function) {
+        initialize_dialog(dialog->to_bindlg(), reinterpret_cast<BinDlgProc>(function));
+    }
     s32 display_dialog(BinDlgProc dialog_proc, BinDlg* dialog);
 
     s32 get_fastest_distance(u32 angle);																										// 00494C10
@@ -1881,7 +1923,7 @@ namespace helper {
     char* get_unit_rank_string(Unit* unit);										// 0042F370
     u32 get_upgrade_time_cost(u32 player, u8 upgrade_id);						// 00453F70
     void create_context_help_from_dialog(BinDlg* dialog, const char* text);		// 00481510
-    u16 create_context_tooltip(s32 height, s32 width, char* text);				// 00481510
+    u16 create_context_tooltip(s32 x, s32 y, char* text);						// 00481510
     void parse_unit_dat_requirements();											// 0046E100
 
     s32 confirm_building_placeability(Unit* builder, u16 unit_id, u8 player, u16 tile_x, u32 tile_y); // 00473EF0

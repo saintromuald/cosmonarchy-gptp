@@ -117,6 +117,39 @@ namespace {
 			RETN 0x0C
 		}
 	}
+
+	// 0048E8D0 / 0048E850 wrappers: marshal register arguments from sound entry points (and 004E5D50).
+	void __declspec(naked) get_sfx_volume_from_screen_distance_wrapper() { // 0048E8D0
+		static s32 sound_x;
+		static s32 sound_y;
+		static s32 result;
+		__asm {
+			MOV sound_x, ECX
+			MOV sound_y, EAX
+			PUSHAD
+		}
+		result = hooks::get_sfx_volume_from_screen_distance(sound_x, sound_y);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) get_sfx_pan_from_screen_distance_wrapper() { // 0048E850
+		static s32 sound_x;
+		static s32 result;
+		__asm {
+			MOV sound_x, EAX
+			PUSHAD
+		}
+		result = hooks::get_sfx_pan_from_screen_distance(sound_x);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks {
@@ -128,5 +161,7 @@ namespace hooks {
 		jump_patch(play_sound_from_unit_wrapper,			0x0048ED50, 0);
 		jump_patch(play_sound_at_pos_wrapper,				0x0048EC10, 0);
 		jump_patch(reset_race_audio_state,					0x0048FB40);
+		jump_patch(get_sfx_volume_from_screen_distance_wrapper,	0x0048E8D0, 1);
+		jump_patch(get_sfx_pan_from_screen_distance_wrapper,	0x0048E850, 1);
 	}
 }

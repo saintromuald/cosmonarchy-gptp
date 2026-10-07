@@ -3,10 +3,8 @@
 #include "graphics/Font.h"
 #include "BW/ui.h"
 
-#define ResSize 32//PLAYABLE_PLAYER_COUNT * 4
 #define RowSize 16
 
-inline char stat_res_production_buffer[PlayerLimit][RowSize][4];
 struct ProductionArrays {
     u16 types[PlayerLimit][RowSize];
     u16 timers[PlayerLimit][RowSize];

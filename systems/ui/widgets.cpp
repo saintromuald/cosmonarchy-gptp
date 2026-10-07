@@ -1,6 +1,7 @@
 #include "widgets.h"
 #include "BW/bwhelper.h"
 #include "systems/audio/audio_system.h"
+#include "systems/graphics/translucency.h"
 #include "systems/ui/palette_fader.h"
 #include "systems/ui/tooltip.h"
 
@@ -123,6 +124,24 @@ static u32 top_dialog_handle_event(Widget& widget, DialogEvent* event) {
             return 0;
         }
     }
+
+    auto* dialog = widget.dialog();
+    // Vanilla's Create handler and arrow-key focus cycling (00418A60) pick the first
+    // focusable child from child_dlg and dereference it unchecked, so childless roots
+    // must not reach them. Create still needs its invalidation.
+    if (!dialog->child<bw::Dialog*>()) {
+        if (event->number_order == DialogEventType_Dialog && event->user == DialogUserType_Create) {
+            dialog->flags |= DialogFlags::UpdateNeeded;
+            helper::update_dialog(dialog->to_bindlg());
+            return 0;
+        }
+        if ((event->number_order == DialogEventType_KeyDown || event->number_order == DialogEventType_KeyRepeat)
+            && (event->virtual_key == VK_LEFT || event->virtual_key == VK_UP
+                || event->virtual_key == VK_RIGHT || event->virtual_key == VK_DOWN)) {
+            return 0;
+        }
+    }
+
     return default_interaction_function(*widget.dialog(), event);
 }
 
@@ -131,6 +150,10 @@ static u32 __fastcall widget_event_forward(bw::Dialog* dialog, DialogEvent* even
 
     auto widget = static_cast<Widget*>(dialog->user);
     return widget->handle_event(event);
+}
+
+bool is_widget_dialog(const bw::Dialog* dialog) {
+    return dialog->interaction_function == &widget_event_forward;
 }
 
 // -------------------------------------
@@ -357,6 +380,21 @@ Widget* Widget::on_row_hover(std::move_only_function<void(Widget&, u8)> callback
     assert(m_dialog.type == DialogControlType::ListBox
         || m_dialog.type == DialogControlType::ComboBox);
     m_callbacks.on_row_hover = std::move(callback);
+    return this;
+}
+
+void __fastcall Widget::draw_forward(bw::Dialog* dialog, DialogEvent*, u32, void*) {
+    assert(dialog->user && "widget draw_forward called without a user pointer");
+
+    auto widget = static_cast<Widget*>(dialog->user);
+    if (widget->m_draw_callback) {
+        widget->m_draw_callback(*widget);
+    }
+}
+
+Widget* Widget::on_draw(std::move_only_function<void(Widget&)> callback) {
+    m_draw_callback = std::move(callback);
+    m_dialog.draw_function = &draw_forward;
     return this;
 }
 
@@ -1209,10 +1247,10 @@ const Palette& BackgroundState::default_palette() {
 
 Menu::Menu(std::string background, PalettePreserve instant_colors)
     : Group(), m_instant_colors(instant_colors) {
-    m_main = make(DialogBounds::from_xywh(0, 0, ScreenWidth, ScreenHeight), DialogControlType::DialogBoxDC, 0);
+    m_main = make(DialogBounds::from_xywh(0, 0, display::SurfaceWidth, display::SurfaceHeight), DialogControlType::DialogBoxDC, 0);
     m_main->m_text = std::move(background);
-    m_main->dialog()->data<bw::MenuData>()->backup_surface.width = ScreenWidth;
-    m_main->dialog()->data<bw::MenuData>()->backup_surface.height = ScreenHeight;
+    m_main->dialog()->data<bw::MenuData>()->backup_surface.width = display::SurfaceWidth;
+    m_main->dialog()->data<bw::MenuData>()->backup_surface.height = display::SurfaceHeight;
     m_main->dialog()->flags = defaults::Dialog;
     m_main->m_group = this;
 }
@@ -1229,9 +1267,9 @@ u32 Menu::load() {
 void Menu::on_top_dialog_init_children(Widget& top) {
     auto dialog = top.dialog();
     if (top.text().empty()) {
-        dialog->bitmap.width = ScreenWidth;
-        dialog->bitmap.height = ScreenHeight;
-        dialog->bitmap.buffer = static_cast<u8*>(SMemAlloc(ScreenWidth * ScreenHeight));
+        dialog->bitmap.width = display::SurfaceWidth;
+        dialog->bitmap.height = display::SurfaceHeight;
+        dialog->bitmap.buffer = static_cast<u8*>(SMemAlloc(display::SurfaceWidth * display::SurfaceHeight));
         g_init_palette = Palette{};
         copy_preserved_indices(g_init_palette,
             BackgroundState::instance().default_palette(), m_instant_colors);
@@ -1274,16 +1312,16 @@ Modal::Modal(std::string background) : Group() {
     Bitmap popup_bitmap{};
     load_bitmap(background.c_str(), popup_bitmap, nullptr, SFileScope::DiskAndMpq, false);
 
-    const s16 w = popup_bitmap.width ? static_cast<s16>(popup_bitmap.width) : static_cast<s16>(ScreenWidth);
-    const s16 h = popup_bitmap.height ? static_cast<s16>(popup_bitmap.height) : static_cast<s16>(ScreenHeight);
-    const s16 x = static_cast<s16>((ScreenWidth - w) / 2);
-    const s16 y = static_cast<s16>((ScreenHeight - h) / 2);
+    const s16 w = popup_bitmap.width ? static_cast<s16>(popup_bitmap.width) : static_cast<s16>(display::SurfaceWidth);
+    const s16 h = popup_bitmap.height ? static_cast<s16>(popup_bitmap.height) : static_cast<s16>(display::SurfaceHeight);
+    const s16 x = static_cast<s16>((display::SurfaceWidth - w) / 2);
+    const s16 y = static_cast<s16>((display::SurfaceHeight - h) / 2);
 
     m_main = make(DialogBounds::from_xywh(x, y, w, h), DialogControlType::DialogBoxDC, 0);
     m_main->m_text = std::move(background);
     m_main->dialog()->bitmap = popup_bitmap;
-    m_main->dialog()->data<bw::MenuData>()->backup_surface.width = ScreenWidth;
-    m_main->dialog()->data<bw::MenuData>()->backup_surface.height = ScreenHeight;
+    m_main->dialog()->data<bw::MenuData>()->backup_surface.width = display::SurfaceWidth;
+    m_main->dialog()->data<bw::MenuData>()->backup_surface.height = display::SurfaceHeight;
     m_main->dialog()->flags = defaults::Dialog | DialogFlags::ApplyTranslucency;
     m_main->m_group = this;
 }
@@ -1315,12 +1353,17 @@ void Modal::on_top_dialog_destroy(Widget& top) {
 // --------------------------------
 // Hud
 // --------------------------------
-Hud::Hud(DialogBounds bounds) : Group() {
+Hud::Hud(DialogBounds bounds, DialogFlags::Enum flags) : Group() {
     m_main = make(bounds, DialogControlType::DialogBoxDC, 0);
-    m_main->dialog()->data<bw::MenuData>()->backup_surface.width = bounds.w();
-    m_main->dialog()->data<bw::MenuData>()->backup_surface.height = bounds.h();
-    // ReverseDialogDirection puts us in the in-game repaint pass (FUN_0041c7b0 at 0x0041c7b0)
-    m_main->dialog()->flags = defaults::Dialog | DialogFlags::ReverseDialogDirection;
+    auto* dialog = m_main->dialog();
+    auto& surface = dialog->data<bw::MenuData>()->backup_surface;
+    surface.width = bounds.w();
+    surface.height = bounds.h();
+    dialog->flags = flags;
+    // The DialogBoxDC draw blits its background into the container with flags
+    // hardcoded to 0 (opaque); draw like an Image so TransparentHideColor can
+    // colorkey the container's blit
+    dialog->draw_function = helper::g_default_dialog_draw_functions[std::to_underlying(DialogControlType::Image)];
     m_main->m_group = this;
 }
 
@@ -1330,16 +1373,18 @@ Hud::~Hud() {
 
 void Hud::initialize() {
     initialize_widget_dialog(m_main->dialog());
+    on_initialized();
 }
 
 void Hud::show() {
     auto dialog = m_main->dialog();
-    dialog->flags |= DialogFlags::Visible;
-    dialog->flags |= DialogFlags::UpdateNeeded;
+    dialog->flags |= DialogFlags::Visible | DialogFlags::UpdateNeeded;
     helper::update_dialog(dialog->to_bindlg());
+    on_show();
 }
 
 void Hud::hide() {
+    on_hide();
     auto dialog = m_main->dialog();
     dialog->flags &= ~DialogFlags::Visible;
     dialog->flags |= DialogFlags::UpdateNeeded;
@@ -1348,6 +1393,34 @@ void Hud::hide() {
 
 bool Hud::is_hidden() const {
     return !(m_main->dialog()->flags & DialogFlags::Visible);
+}
+
+OverlayHud::OverlayHud(DialogBounds bounds)
+    : Hud(bounds, defaults::Dialog | DialogFlags::ReverseDialogDirection) {}
+
+void OverlayHud::on_initialized() {
+    // No background: keep the container empty so the colorkey blit skips every
+    // pixel and only child widgets composite over the world
+    m_main->transparent();
+    auto& surface = m_main->dialog()->data<bw::MenuData>()->backup_surface;
+    std::fill_n(surface.buffer, size_t(surface.width) * surface.height, 0);
+
+    // The container's 0x0C bitmap is the erase source for dirty regions: the
+    // DialogBoxDC draw (generic_dialog_update @ 0x004EF590) blits it opaquely
+    // into the surface before children redraw, clearing their stale pixels.
+    // All-zero keeps the erased area on the colorkey so the world presents
+    // through it. The Destroy path frees it (generic_common_interact @ 0x00418C40).
+    auto& backdrop = m_main->dialog()->bitmap;
+    backdrop.width = surface.width;
+    backdrop.height = surface.height;
+    backdrop.buffer = static_cast<u8*>(SMemAlloc(size_t(backdrop.width) * backdrop.height));
+    std::fill_n(backdrop.buffer, size_t(backdrop.width) * backdrop.height, 0);
+
+    // Hud's constructor draws the container like an Image so the backdrop blit
+    // honors TransparentHideColor - which would skip every zero pixel and
+    // erase nothing. The DialogBoxDC draw blits it opaque instead; the present
+    // blit (0x0041C810) still colorkeys the surface with the dialog flags.
+    m_main->dialog()->draw_function = helper::g_default_dialog_draw_functions[std::to_underlying(DialogControlType::DialogBoxDC)];
 }
 
 namespace {
@@ -1469,6 +1542,8 @@ void Menu::change_background(std::string background, PalettePreserve preserve, u
         SFileScope::DiskAndMpq, false)) return;
 
     m_main->m_text = background;
+    // Exclude preserved indices from translucency LUT during transition.
+    graphics::g_translucency_preserve = preserve;
 
     smem::ptr<u8[]> new_buffer{new_bitmap.buffer};
     const Palette black{};
@@ -1497,21 +1572,27 @@ void Menu::change_background(std::string background, PalettePreserve preserve, u
             helper::update_dialog(dialog->to_bindlg());
 
             ui::g_palette_fader.start(dialog->to_bindlg(),
-                new_palette, fade_ms, Ease::Out, nullptr, preserve);
+                new_palette, fade_ms, Ease::Out,
+                [] { graphics::g_translucency_preserve = PalettePreserve::None; }, preserve);
         },
         preserve);
 }
 
 void Menu::fade_background_out(std::move_only_function<void()> on_complete,
     PalettePreserve preserve, u32 fade_ms) {
+    graphics::g_translucency_preserve = preserve;
     const Palette black{};
     bw::Dialog* dialog = m_main->dialog();
     ui::g_palette_fader.start(dialog->to_bindlg(), black, fade_ms, Ease::In,
-        std::move(on_complete), preserve);
+        [on_complete = std::move(on_complete)]() mutable {
+            graphics::g_translucency_preserve = PalettePreserve::None;
+            on_complete();
+        }, preserve);
 }
 
 void Menu::fade_background_in(std::string background, PalettePreserve preserve, u32 fade_ms) {
     bw::Dialog* dialog = m_main->dialog();
+    graphics::g_translucency_preserve = preserve;
 
     // Swap in a new background (display is assumed to be black) before revealing it.
     if (!background.empty() && m_main->m_text != background) {
@@ -1542,6 +1623,7 @@ void Menu::fade_background_in(std::string background, PalettePreserve preserve, 
     }
 
     ui::g_palette_fader.start(dialog->to_bindlg(),
-        g_background_palette, fade_ms, Ease::Out, nullptr, preserve);
+        g_background_palette, fade_ms, Ease::Out,
+        [] { graphics::g_translucency_preserve = PalettePreserve::None; }, preserve);
 }
 } // namespace ui

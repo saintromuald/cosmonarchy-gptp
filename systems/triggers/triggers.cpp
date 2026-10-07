@@ -14,6 +14,8 @@
 #include "aise_signal.h"
 #include "CampaignManager.h"
 #include "hooks/interface/hud/hud_manager.h"
+#include "hooks/display/grid.h"
+#include "systems/display/display.h"
 #include <algorithm>
 #include <limits>
 #include "../scripting/scripting.h"
@@ -188,8 +190,8 @@ Registry g_triggers = Registry()
         const auto actual_player = player.transform([](PlayablePlayer p) { return u32(p); }).value_or(g_multiplayer_mode ? ctx.player() : g_local_nation_id);
         const auto camera = g_globals->players[actual_player].camera;
         const auto center = v2u16{
-            u16(camera.x + 320),
-            u16(camera.y + 200),
+            u16(camera.x + g_display.center_offset_x()),
+            u16(camera.y + g_display.center_offset_y()),
         };
 
         if (center.x >= area.box.left && center.x <= area.box.right &&
@@ -1029,13 +1031,19 @@ Registry g_triggers = Registry()
             return;
         }
         g_globals->players[trigger_player].witness_mode = new_value;
-        g_graphics.reset_stat_res_graphics();
         if (new_value == WitnessMode_Pure) {
             g_player_name_list->player[trigger_player].type = 0;
             *g_score_screen_player_count -= 1;
         } else if (old_value == WitnessMode_Pure) {
             g_player_name_list->player[trigger_player].type = g_player_table[trigger_player].type;
             *g_score_screen_player_count += 1;
+        }
+        // Witness role reshapes the world extent and zoom bounds; refresh the
+        // display geometry when the local player flips. Safe at any frame —
+        // buffers are sized for the full FOV, and this action commonly runs on
+        // the first frame (CM maps assign witness slots via trigger).
+        if (trigger_player == g_local_nation_id) {
+            hooks::refresh_display_role();
         }
         if (new_value && g_elapsed_time_frames == 0 && trigger_player == g_local_nation_id) {
             u32 first_player = 0;
@@ -1056,8 +1064,10 @@ Registry g_triggers = Registry()
             if (first_player) {
                 first_player -= 1;
                 auto pos = g_start_positions[first_player];
-                pos.x = pos.x > 320 ? pos.x - 320 : 0;
-                pos.y = pos.y > 200 ? pos.y - 200 : 0;
+                const u16 half_width = g_display.center_offset_x();
+                const u16 half_height = g_display.center_offset_y();
+                pos.x = pos.x > half_width ? pos.x - half_width : 0;
+                pos.y = pos.y > half_height ? pos.y - half_height : 0;
                 helper::move_screen(pos);
             }
         }

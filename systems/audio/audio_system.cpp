@@ -9,12 +9,10 @@
 #include "../storm/sfile.h"
 #include "../hooks/limits/sfx_extender.h"
 #include "../hooks/game_hooks.h"
+#include "../display/display.h"
 #include <algorithm>
 #include <format>
 #include <utility>
-
-static constexpr s32 ScreenW = 640;
-static constexpr s32 ScreenH = 400;
 
 static constexpr u32 MenuMusicTimerId = 3077;
 static constexpr u32 MenuMusicTimerIntervalMs = 40; // ~24Hz to match next_frame's update call frequency
@@ -31,7 +29,7 @@ static bool should_check_duplicate(v2u16 existing_pos, v2u16 candidate_pos) {
     if (existing_pos) {
         if (candidate_pos) {
             // Candidate is local and existing is local, we skip the last time check if they are far away
-            if (abs(existing_pos.x - candidate_pos.x) > ScreenW || abs(existing_pos.y - candidate_pos.y) > ScreenH) {
+            if (abs(existing_pos.x - candidate_pos.x) > g_display.world_width() || abs(existing_pos.y - candidate_pos.y) > g_display.world_height()) {
                 return false;
             }
         } else {

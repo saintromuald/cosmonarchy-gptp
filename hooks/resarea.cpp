@@ -1,5 +1,6 @@
 #include "resarea.h"
 #include "BW/bwhelper.h"
+#include "systems/display/display.h"
 #include "ai_layouts.h"
 #include "storm/storm.h"
 
@@ -17,9 +18,9 @@ namespace hooks {
 		if (player < PLAYABLE_PLAYER_COUNT) {
 			position[player] = unit_pos;
 			if (g_is_in_replay ? (s16)g_move_to_tile_x == -1 : player == g_local_nation_id) {
-				s16 pos = ((s16)unit_pos.x >> 5) - 10;
+				s16 pos = ((s16)unit_pos.x >> 5) - (s16)g_display.center_offset_tile_x();
 				g_move_to_tile_x = pos >= 0 ? pos : 0;
-				pos = ((s16)unit_pos.y >> 5) - 6;
+				pos = ((s16)unit_pos.y >> 5) - (s16)g_display.center_offset_tile_y();
 				g_move_to_tile_y = pos >= 0 ? pos : 0;
 			}
 			return true;

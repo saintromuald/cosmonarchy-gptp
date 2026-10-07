@@ -11,6 +11,29 @@
 #include "ReplayKraken.h"
 #include "graphics/draw_hook.h"
 #include "config.h"
+#include "systems/display/display.h"
+#include "systems/display/zoom.h"
+#include "hooks/display/refresh.h"
+#include "hooks/display/framebuffer.h"
+#include "hooks/display/blit.h"
+#include "hooks/display/dialog_clip.h"
+#include "hooks/display/dialog_anchor.h"
+#include "hooks/display/widget_dialog_init.h"
+#include "hooks/display/tooltip_bounds.h"
+#include "hooks/display/mapblit.h"
+#include "hooks/display/grid.h"
+#include "hooks/display/translucent_image.h"
+#include "hooks/display/screen_text.h"
+#include "hooks/display/wheel.h"
+#include "hooks/display/gamemap.h"
+#include "hooks/display/terrain.h"
+#include "hooks/display/tiles.h"
+#include "hooks/display/fog.h"
+#include "hooks/display/starfield.h"
+#include "hooks/display/sprites.h"
+#include "hooks/display/mouse.h"
+#include "hooks/display/camera.h"
+#include "hooks/display/frame_pacing.h"
 #include "hooks/maxhp.h"
 #include "hooks/apply_upgrade_flags.h"
 #include "hooks/attack_priority.h"
@@ -212,6 +235,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     init_float_precision();
 
     load_config();
+    g_display.init();
+    g_zoom.init();
     run_wmode(g_config.disable_wmode_prompt, g_config.prefer_wmode);
     // StarCraft.exe version check
     char exe_path[300];
@@ -265,9 +290,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     const u8 human_slots = 0x01;
     memory_patch((void*)(0x004B995B + 2), &human_slots, sizeof(u8)); 
     memory_patch((void*)(0x004B9988 + 2), &human_slots, sizeof(u8));
-
-    // Frame rate hack
-    nop_patch(0x004D9923, 2);
 
     // Allow all players addons to connect
     nop_patch(0x00440314, 6);
@@ -635,8 +657,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     // DisplayTextMessage (0x0048CD30)
     memory_patch(0x0048CDC0, (u8)0x8B);//change AL to EAX
     call_patch(hooks::set_display_text_color, 0x0048CDC3, 1);
-    // drawGameText (0x0048CF60)
-    call_patch(hooks::get_display_text_color, 0x0048CFA3, 1);
     // off_48D478
     memory_patch(0x0048D478, (u32)0x0B0F1708);
 
@@ -731,11 +751,14 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     memory_patch(0x0046AB94, (u8)1);
 
     // Make following units with Ctrl+C smoother
+    // 004E6020 replaces tile-quantized 10x6 subtraction with pixel-exact center_offset_x/y
+    // subtraction off unit position for smooth camera following without tile-snapping.
+    // The half-viewport immediates (004E602D / 004E6033) are applied and re-applied per
+    // role by patch_camera_center_immediates (camera_inject.cpp).
     memory_patch(0x004E6027, (u16)0x0F14);     // MOVSX EAX, word ptr [ESI + 0x14]; MOVSX...
     memory_patch(0x004E6029, (u32)0x2D164EBF); // ...ECX, word ptr [ESI + 0x16]; SUB EAX, ...
-    memory_patch(0x004E602D, (u32)0x00000140); // ...0x140;
-    memory_patch(0x004E6031, (u32)0x00C8E981); // SUB ECX, 0xC8;
-    memory_patch(0x004E6035, (u32)0xE95E0000); // POP ESI; JMP...
+    memory_patch(0x004E6031, (u16)0xE981);     // SUB ECX, ...
+    memory_patch(0x004E6037, (u16)0xE95E);     // POP ESI; JMP...
     memory_patch(0x004E6039, (u32)0xFFFB6403); // ...0x0049C440;
     // DarkenedFantasies, end
 
@@ -759,50 +782,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     memory_patch((void*)0x004A4584, swtab, sizeof(swtab));
     memory_patch((void*)0x004A441B, nop3, sizeof(nop3));
 
-    // allow display of extended tile groups
-    const u8 nop = 0x90;
-    const u8 nop6[6] = {0x8d,0xb6,0x00,0x00,0x00,0x00};
-    const u8 bFF = 0xFF;
-    const u8 b0F = 0x0F;
-    const u8 b00 = 0x00; // easy workaround
-    const u8 b01 = 0x01;
-
-    memory_patch((void*)(0x0047E347 + 3), &b0F, sizeof(u8));
-    memory_patch((void*)(0x0047E38F + 2), &b0F, sizeof(u8));
-    memory_patch((void*)(0x0049C563 + 3), &b0F, sizeof(u8));
-    memory_patch((void*)(0x0049C6AC + 3), &b0F, sizeof(u8));
-    memory_patch((void*)(0x004BCEE0 + 2), &b0F, sizeof(u8));
-    memory_patch((void*)(0x004BD13F + 3), &b0F, sizeof(u8));
-    memory_patch((void*)(0x0049C595 + 3), &bFF, sizeof(u8));
-    memory_patch((void*)(0x0049C6DA + 3), &bFF, sizeof(u8));
-
-    memory_patch((void*)0x0047E3BA, nop6, sizeof(nop6));
-    memory_patch((void*)0x0049C580, nop6, sizeof(nop6));
-    memory_patch((void*)0x0049C6C9, nop6, sizeof(nop6));
-    memory_patch((void*)0x004BCF1E, nop6, sizeof(nop6));
-
-    // allow building on extended tile groups
-    memory_patch((void*)(0x004BCF34 + 4), &b00, sizeof(u8));
-    memory_patch((void*)(0x00413F38 + 2), &bFF, sizeof(u8));
-    memory_patch((void*)(0x00413F8D + 2), &bFF, sizeof(u8));
-    memory_patch((void*)(0x00414210 + 2), &bFF, sizeof(u8));
-    memory_patch((void*)(0x00414252 + 2), &bFF, sizeof(u8));
-    memory_patch((void*)(0x004142C5 + 3), &bFF, sizeof(u8));
-    memory_patch((void*)(0x004142EF + 3), &bFF, sizeof(u8));
-    memory_patch((void*)(0x00414326 + 3), &bFF, sizeof(u8));
-    memory_patch((void*)(0x0041435A + 3), &bFF, sizeof(u8));
-    memory_patch((void*)(0x00414390 + 3), &bFF, sizeof(u8));
-    memory_patch((void*)(0x004143C6 + 3), &bFF, sizeof(u8));
-    memory_patch((void*)(0x004143F2 + 3), &bFF, sizeof(u8));
-    memory_patch((void*)(0x0041441A + 2), &bFF, sizeof(u8));
-    memory_patch((void*)(0x00414467 + 2), &bFF, sizeof(u8));
-    memory_patch((void*)(0x004145D5 + 3), &bFF, sizeof(u8));
-    memory_patch((void*)(0x00414720 + 3), &bFF, sizeof(u8));
-    memory_patch((void*)(0x00414882 + 2), &bFF, sizeof(u8));
-    memory_patch((void*)(0x0047D75A + 2), &bFF, sizeof(u8));
-    memory_patch((void*)(0x0047DC99 + 2), &bFF, sizeof(u8));
-    memory_patch((void*)(0x0047DED5 + 3), &bFF, sizeof(u8));
-    memory_patch((void*)(0x0047E045 + 3), &bFF, sizeof(u8));
+    // Extended tile groups (display and buildability mask widenings) moved to
+    // hooks/display/tiles_inject.cpp with the rest of the tile pipeline.
     // FaRTy1billion, end
 
     // INJECTION \\
@@ -817,6 +798,27 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     hooks::inject_game_hooks();
     hooks::inject_replay_hooks();
     hooks::inject_draw_hook();
+    hooks::inject_refresh_hooks();
+    hooks::inject_framebuffer_hooks();
+    hooks::inject_blit_hooks();
+    hooks::inject_dialog_clip_hooks();
+    hooks::inject_dialog_anchor_hooks();
+    hooks::inject_widget_dialog_init_hooks();
+    hooks::inject_tooltip_bounds_hooks();
+    hooks::inject_mapblit_hooks();
+    hooks::inject_grid_hooks();
+    hooks::inject_translucent_image_hooks();
+    hooks::inject_screen_text_hooks();
+    hooks::inject_wheel_hooks();
+    hooks::inject_gamemap_hooks();
+    hooks::inject_terrain_hooks();
+    hooks::inject_tiles_hooks();
+    hooks::inject_fog_hooks();
+    hooks::inject_starfield_hooks();
+    hooks::inject_sprite_hooks();
+    hooks::inject_mouse_hooks();
+    hooks::inject_camera_hooks();
+    hooks::inject_frame_pacing_hooks();
     hooks::inject_loading_hook();
     hooks::inject_dat_load_hooks();
 

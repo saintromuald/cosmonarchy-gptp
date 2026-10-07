@@ -4,6 +4,7 @@
 #include "hook_tools.h"
 #include "hooks/limits/sfx_extender.h"
 #include "storm/storm.h"
+#include "systems/display/display.h"
 using namespace std::literals;
 
 // HOOKS \\
@@ -272,8 +273,11 @@ void game_talking_portrait(s32 x_pos, u32 time, u32 unit_id, s32 y_pos) { // 004
     helper::display_update_portrait(portrait_id, 0, 2);
     helper::set_callback_timer(*g_portrait, 3, time, (TimerCallback)0x0045EC40);
     if (x_pos != -1) {
-        g_last_event_position->x = (x_pos - 320) & ((x_pos - 320 < 0) - 1);
-        g_last_event_position->y = (y_pos - 200) & ((y_pos - 200 < 0) - 1);
+        // Sets g_last_event_position scroll offset with half-viewport subtraction (0045EC40) and branchless clamp to 0.
+        const s32 x = x_pos - s32(g_display.center_offset_x());
+        const s32 y = y_pos - s32(g_display.center_offset_y());
+        g_last_event_position->x = x & ((x < 0) - 1);
+        g_last_event_position->y = y & ((y < 0) - 1);
     }
 }
 
@@ -388,6 +392,8 @@ void __fastcall show_portrait(u8 portrait_slot, u32 player, u16 unit_id) { // 00
         SVidPlayEnd(portrait_data->smk);
         portrait_data->smk = 0;
     }
+    constexpr u32 PortraitIdInvalid = 0xFFFF;
+    if (portrait_id == PortraitIdInvalid) return; // TODO: Error message for missing portrait
     portrait_data->flags = 2;
     portrait_data->portrait_id = portrait_id;
     helper::start_unit_portrait(final_dlg);

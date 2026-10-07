@@ -17,10 +17,6 @@ inline u16 default_race_icon_index(RaceId::Enum race) {
     return 1;
 }
 
-inline HudIcons g_hud_icons{}; // TODO: make this a member of ConsoleManager during statres refactor -Jesse
-
-void load_statres(); // 004e5990
-
 namespace hooks {
 void load_race_grp_and_sounds(); // 004ee2d0
 

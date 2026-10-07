@@ -359,7 +359,7 @@ struct LightUpButtonAnimation { // For SMK animated buttons
     u16 unkown_8;
     const char* filename;
     void* smk_handle;
-    v2u16 render_pos; // Offset from center
+    v2u16 render_pos; // Offset from the button's top-left
     u16 smk_width;
     u16 smk_height;
     u8* frame_buffer;

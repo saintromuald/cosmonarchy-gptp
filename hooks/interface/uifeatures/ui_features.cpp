@@ -11,12 +11,14 @@
 #include "hooks/interface/hud/hud_manager.h"
 #include "systems/triggers/trigger_system.h"
 #include "hooks/interface/minimap.h"
+#include "hooks/display/mouse.h"
 #include "Game.h"
 #include "hooks/interface/weapon_armor_tooltip.h"
 #include "hooks/snp.h"
 #include "hooks/interface/mainmenu/custom_glues.h"
 #include "hooks/race_randomization.h"
 #include "storm/storm.h"
+#include "systems/display/display.h"
 #include "CM/cm_ids.h"
 
 static s32* const g_fonts = (s32*)0x006CE0F4;
@@ -365,8 +367,13 @@ namespace hooks {
         u32 zoom_level = *g_minimap_zoom_level;
         box.x = x / zoom_level;
         box.y = y / zoom_level;
-        box.w = box_width;
-        box.h = box_height;
+        // Other players' zoom levels aren't synced (no network message, not in
+        // replay serialization); draw their boxes at the 200% default
+        // equivalent — visible world = display / 2, with the engine's +16 slack.
+        const u32 assumed_visible_width = g_display.display_width() / 2;
+        const u32 assumed_visible_height = g_display.display_height() / 2;
+        box.w = u16(std::max((assumed_visible_width + zoom_level - 1) / zoom_level, 2u));
+        box.h = u16(std::max((assumed_visible_height + 16 + zoom_level - 1) / zoom_level, 1u));
 
         box.x = std::clamp<s32>(box.x, 0, g_map_width);
         box.y = std::clamp<s32>(box.y, 0, g_map_height);
@@ -390,7 +397,7 @@ namespace hooks {
     void draw_all_minimap_boxes() { // 004A4AC0
         Bitmap* surface = *g_current_surface;
         u32 player = g_local_nation_id;
-        *g_current_surface = g_minimap_surface_2;
+        *g_current_surface = g_minimap_surface_fog;
         *g_minimap_unit_box_count = 0;
         g_minimap_box_checksum = 0;
 
@@ -476,10 +483,13 @@ namespace hooks {
             }
             return CursorType_HoveringAlly;
         }
-        if (PtInRect((const RECT*)&g_minimap_rect, *(POINT*)g_mouse)) {
+        if (PtInRect(g_minimap_rect, *(POINT*)g_mouse)) {
             return g_minimap_cursor;
         }
-        if (helper::is_outside_of_game_screen(g_mouse->x, g_mouse->y) || !PtInRect(g_cursor_limit_rect, *(POINT*)g_mouse)) {
+        // 004D1140 expects zoom-mapped world coordinates (the input procs receive
+        // mapped events); the raw cursor would test the top-left visible-rect
+        // portion of the window instead of the whole magnified view.
+        if (helper::is_outside_of_game_screen(g_world_cursor.x, g_world_cursor.y) || !PtInRect(g_cursor_limit_rect, *(POINT*)g_mouse)) {
             return CursorType_Normal;
         }
         if (*g_is_drag_selecting) {
@@ -488,7 +498,9 @@ namespace hooks {
         if (g_is_placing_building) {
             return CursorType_Normal;
         }
-        Unit* unit_at_point = helper::find_unit_at_point(g_mouse->x + g_move_to_x, g_move_to_y + g_mouse->y);
+        // Hover check queries the world under the cursor — the zoom-mapped
+        // position, not the raw cursor (identity at 100%, wrong once magnified).
+        Unit* unit_at_point = helper::find_unit_at_point(g_world_cursor.x + g_move_to_x, g_move_to_y + g_world_cursor.y);
         if (g_is_targeting) {
             if (!unit_at_point) {
                 return CursorType_TargetingNoUnit;
@@ -706,40 +718,53 @@ namespace hooks {
         }
     }
 
-    static POINT get_mouse_pos() {
-        POINT result{};
-        GetCursorPos(&result);
-        return result;
-    }
-
-    static v2f32 g_mouse_error;
+    // Drag scrolls camera relative to grab origin to avoid warping during drag.
+    struct MiddleDrag {
+        v2s32 mouse_origin;
+        v2f32 camera;
+    };
+    static MiddleDrag g_middle_drag;
 
     char input_mmb_down(DialogEvent* event) {
         g_disable_mouse_scroll = true;
 
-        const auto mouse = get_mouse_pos();
-        g_mmb_pos_x = mouse.x;
-        g_mmb_pos_y = mouse.y;
-        g_mouse_error = {};
+        g_middle_drag = MiddleDrag{ .mouse_origin = *g_mouse, .camera = { f32(g_move_to_x), f32(g_move_to_y) } };
+        begin_middle_drag_cursor(g_middle_drag.mouse_origin);
 
         g_input_procs->funcs[3] = (InputProcsFunc*) 0x00484460;
-        return helper::refresh_cursor_0();
+        return 0;
+    }
+
+    // Idempotent middle-drag unwind. Popup dialog roots consume MButtonUp before it
+    // reaches the input procs (game_menu_dialog_interact returns 1 for it), so every
+    // path that ends a drag calls this instead of relying on the release dispatch.
+    void end_middle_drag() {
+        if (!g_middle_drag_cursor) {
+            return;
+        }
+
+        g_disable_mouse_scroll = false;
+        end_middle_drag_cursor();
+
+        g_input_procs->funcs[3] = (InputProcsFunc*) 0;
     }
 
     int __cdecl input_mmb_up() {
-        g_disable_mouse_scroll = false;
-
-        g_move_to_x = std::clamp<s32>(round(g_move_to_x / 4.0) * 4, 0, g_map_width_pixels  - 640);
-        g_move_to_y = std::clamp<s32>(round(g_move_to_y / 4.0) * 4, 0, g_map_height_pixels - 376);
-        g_mouse_error = {};
-
-        g_input_procs->funcs[3] = (InputProcsFunc*) 0;
-        return helper::cursor_refresh();
+        end_middle_drag();
+        return 0;
     }
 
+    constexpr s32 CameraPositionAlign = 8;
+
     static void scroll_screen(s32 dx, s32 dy) {
-        g_move_to_x = std::clamp<s32>((s32)g_move_to_x + dx, 0, g_map_width_pixels  - 640);
-        g_move_to_y = std::clamp<s32>((s32)g_move_to_y + dy, 0, g_map_height_pixels - 376);
+        // Keep camera positions 8-aligned — the invariant move_screen maintains
+        // for every vanilla camera write. The campaign Center View glide
+        // (0047EB70) stores an 8-aligned destination and arrives by exact
+        // equality (0047F0E0); a 4-aligned position left by a drag makes the
+        // glide land on destination ± 4 forever, freezing the camera and
+        // pausing trigger execution indefinitely.
+        g_move_to_x = align_down(std::clamp<s32>(s32(g_move_to_x) + dx, 0, g_display.scroll_max_x(g_map_width_pixels)), CameraPositionAlign);
+        g_move_to_y = align_down(std::clamp<s32>(s32(g_move_to_y) + dy, 0, g_display.scroll_max_y(g_map_height_pixels)), CameraPositionAlign);
 
         g_move_to_tile_x = g_move_to_x >> 5;
         g_move_to_tile_y = g_move_to_y >> 5;
@@ -748,24 +773,50 @@ namespace hooks {
     }
 
     void __cdecl input_mmb_move() {
-        const auto mouse = get_mouse_pos();
-        const s32 dx = (s32)mouse.x - (s32)g_mmb_pos_x;
-        const s32 dy = (s32)mouse.y - (s32)g_mmb_pos_y;
+        const s32 scroll_max_x = g_display.scroll_max_x(g_map_width_pixels);
+        const s32 scroll_max_y = g_display.scroll_max_y(g_map_height_pixels);
 
-        const auto sens = g_config.scroll_sensitivity;
-        const f32 sdx = dx * sens + f32(g_mouse_error.x);
-        const f32 sdy = dy * sens + f32(g_mouse_error.y);
-        if (g_config.use_pan_scrolling) {
-            scroll_screen(std::lround(sdx), std::lround(sdy));
-        } else {
-            scroll_screen(std::lround(-sdx), std::lround(-sdy));
-        }
-        g_mouse_error.x = sdx - f32((s32)sdx);
-        g_mouse_error.y = sdy - f32((s32)sdy);
+        const f32 gain = g_config.scroll_sensitivity * (g_config.use_pan_scrolling ? 1.0f : -1.0f);
 
-        if (dx || dy) {
-            SetCursorPos(g_mmb_pos_x, g_mmb_pos_y);
+        // The OS cursor is invisible and clipped to the window during the drag, so
+        // travel would saturate at the window edge (center grab → only half a
+        // window of scroll). Wrap it to the opposite edge when it pins against
+        // one, shifting the grab origin by the same distance so the drag amount
+        // stays continuous — scrolling is unbounded.
+        constexpr s32 WrapMargin = 8;
+        const s32 width = s32(g_display.surface_width());
+        const s32 height = s32(g_display.surface_height());
+        v2s32 mouse = *g_mouse;
+        v2s32 shift = {};
+
+        if (mouse.x < WrapMargin) {
+            shift.x = width - 2 * WrapMargin - mouse.x;
+            mouse.x += shift.x;
+        } else if (mouse.x > width - 1 - WrapMargin) {
+            shift.x = 2 * WrapMargin - mouse.x - 1;
+            mouse.x += shift.x;
         }
+        if (mouse.y < WrapMargin) {
+            shift.y = height - 2 * WrapMargin - mouse.y;
+            mouse.y += shift.y;
+        } else if (mouse.y > height - 1 - WrapMargin) {
+            shift.y = 2 * WrapMargin - mouse.y - 1;
+            mouse.y += shift.y;
+        }
+        if (shift.x || shift.y) {
+            g_middle_drag.mouse_origin += shift;
+            *g_mouse = mouse;
+            warp_cursor(mouse);
+        }
+
+        const v2s32 moved = mouse - g_middle_drag.mouse_origin;
+        g_middle_drag.mouse_origin = mouse;
+
+        g_middle_drag.camera.x = std::clamp(g_middle_drag.camera.x + gain * f32(moved.x) / f32(width) * f32(scroll_max_x), 0.0f, f32(scroll_max_x));
+        g_middle_drag.camera.y = std::clamp(g_middle_drag.camera.y + gain * f32(moved.y) / f32(height) * f32(scroll_max_y), 0.0f, f32(scroll_max_y));
+
+        scroll_screen(s32(std::lround(g_middle_drag.camera.x)) - g_move_to_x,
+            s32(std::lround(g_middle_drag.camera.y)) - g_move_to_y);
     }
 
     // Hooked to disable functionality when using space for drag. -Pr0nogo
@@ -857,7 +908,7 @@ namespace hooks {
     void __cdecl show_or_hide_minimap() { // 004A4150
         if (!g_minimap_draw_neutrals && g_hide_minimap_terrain && g_config.can_toggle_minimap_terrain) {
             Bitmap* current_surface = *g_current_surface;
-            memset(g_minimap_surface_2->buffer, 0, (s16)g_minimap_surface_2->height * (s16)g_minimap_surface_2->width);
+            memset(g_minimap_surface_fog->buffer, 0, (s16)g_minimap_surface_fog->height * (s16)g_minimap_surface_fog->width);
             *g_current_surface = current_surface;
         } else {
             helper::dark_minimap_related();
@@ -868,41 +919,8 @@ namespace hooks {
     // Hooked to make stat_txt.tbl a .txt. -Pr0nogo
     u16 draw_game_menu_context(BinDlg* dialog) { // 004F4F70
         return helper::create_context_tooltip(dialog->bounds.right + dialog->parent->bounds.left,
-                                              dialog->bounds.top + dialog->parent->bounds.top,
-                                              (char*)g_stat_txt_buffer.get_string32(814)); // Game Menu (F10)
-    }
-
-    // Hooked by DarkenedFantasies to investigate rare crashes.
-    // Eventually, this code will be made more clean and readable. -Pr0nogo
-    void get_tile_image_data(s32 offset_arg, vx4 tile) { // 0040C3B0
-        u8* map_data = g_game_map_data_for_blit;
-        u8* minitile = (u8*)(*g_vr4_file_handle)->minitile[tile.vr4_id];
-        u32 i_0 = 8;
-        if (tile.flipped) {
-            do {
-                if (offset_arg >= 301056) {
-                    offset_arg -= 301056;
-                }
-                u32* _map_data = (u32*)&map_data[offset_arg];
-                u32 _1 = (minitile[0] << 24) | (minitile[1] << 16) | (minitile[2] << 8) | minitile[3];
-                u32 _2 = (minitile[4] << 24) | (minitile[5] << 16) | (minitile[6] << 8) | minitile[7];
-                _map_data[0] = _2;
-                _map_data[1] = _1;
-                minitile += 8;
-                offset_arg += 672;
-            } while (--i_0);
-        } else {
-            do {
-                if (offset_arg >= 301056) {
-                    offset_arg -= 301056;
-                }
-                u32* _map_data = (u32*)&map_data[offset_arg];
-                _map_data[0] = ((u32*)minitile)[0];
-                _map_data[1] = ((u32*)minitile)[1];
-                minitile += 8;
-                offset_arg += 672;
-            } while (--i_0);
-        }
+            dialog->bounds.top + dialog->parent->bounds.top,
+            (char*)g_stat_txt_buffer.get_string32(814)); // Game Menu (F10)
     }
 
     // Hooked to eventually turn stat_txt.tbl into a .txt. -Pr0nogo
@@ -1004,8 +1022,9 @@ namespace hooks {
     }
 
     // Hooked to make movement smoother. -Pr0nogo
+    // Uninjected (patched via immediates in initialize.cpp); offsets camera by viewport center instead of 320x140.
     void move_screen_to_unit(Unit* unit) { // 004E6020
-        v2u16 pos(unit->position.x - 320, unit->position.y - 140);
+        v2u16 pos(unit->position.x - g_display.center_offset_x(), unit->position.y - g_display.center_offset_y());
         helper::move_screen(pos);
     }
 
@@ -1111,8 +1130,7 @@ namespace hooks {
                             &latency_interaction,
                             &latency_interaction,
                         };
-                        helper::register_user_dialog_action(dialog,
-                            latency_dialog_functions.data(), sizeof(latency_dialog_functions));
+                        helper::register_user_dialog_action(dialog, latency_dialog_functions.data(), sizeof(latency_dialog_functions));
                     } break;
                 }
             }

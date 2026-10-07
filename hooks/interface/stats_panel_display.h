@@ -19,7 +19,7 @@ enum class tooltip_resource {
 struct tooltip_resource_cost {
     tooltip_resource resource;
     u16* value;
-    GrpFile* grp;
+    HudIcons::Kind icon;
     u16 base_index;
     u32 HudManager::Config::* hud_icon;
 };

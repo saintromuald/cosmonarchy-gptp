@@ -18,10 +18,10 @@ enum class HudViewMode {
     Cinematic,
 };
 
-class LogoBanner;
-
 class HudIcons {
 public:
+    enum class Kind { Mineral, Gas, Supply, General };
+
     HudIcons() {
         m_mineral = sfile::load_file("game\\mineralicons.grp").unsafe_cast<GrpFile>();
         m_gas     = sfile::load_file("game\\gasicons.grp").unsafe_cast<GrpFile>();
@@ -34,6 +34,16 @@ public:
     GrpFile* supply()  { return m_supply.get(); }
     GrpFile* general() { return m_general.get(); }
 
+    GrpFile* get(Kind kind) {
+        switch (kind) {
+            case Kind::Mineral: return mineral();
+            case Kind::Gas:     return gas();
+            case Kind::Supply:  return supply();
+            case Kind::General: return general();
+        }
+        return nullptr;
+    }
+
 private:
     smem::ptr<GrpFile> m_mineral;
     smem::ptr<GrpFile> m_gas;
@@ -41,9 +51,16 @@ private:
     smem::ptr<GrpFile> m_general;
 };
 
+// Frees a dialog's create-time backdrop cache and re-blits it from the HUD
+// mask at the dialog's current bounds. Run after placing a root dialog.
+void refresh_dialog_backdrop(bw::Dialog* dialog);
+
+class StatResource;
+
 class HudManager {
 public:
     struct Config {
+        // Split HUD art: exactly surface width, bottom-anchored, palette index 0 transparent.
         SFilePath image;
         SFilePath hud_overlay;
         SFilePath progressbar_empty;
@@ -83,10 +100,15 @@ public:
     void show();
     bool is_hidden() const { return m_hidden; }
 
+    // Repaints HUD dialogs dirtied by world rendering; called once per frame from present_frame.
+    void invalidate_dirty_dialogs();
+
     const Config& current() const;
     std::string_view current_name() const { return m_current_name; }
     const ConfigMap& available() const { return m_configs; }
     bool has_hud(std::string_view name) const;
+
+    HudIcons& icons() { return m_icons; }
 
 private:
     HudManager() = default;
@@ -100,6 +122,9 @@ private:
     static void reset_ui_state();
 
     void load_hud_image();
+    void finish_hud_image();
+    void stamp_hud_dialogs_into_mask();
+    void write_dialog_mask_stamp(bw::Dialog* dialog);
     void load_statfluf_decoration_dialogs();
     void unload_statfluf_mouse_regions();
     void load_command_buttons();
@@ -124,7 +149,16 @@ private:
     HudViewMode m_view_mode = HudViewMode::Visible;
     bool m_hotkey_enabled = true;
     std::vector<StatflufDialog> m_statfluf_dialogs;
-    std::unique_ptr<LogoBanner> m_logo_banner;
+
+    HudIcons m_icons;
+    std::unique_ptr<StatResource> m_stat_resource;
+
+    // Number of frames to force full HUD repaints after placement. See invalidate_dirty_dialogs.
+    u32 m_forced_repaints = 0;
+
+    // Surface-sized HUD art mask (loaded art bottom-anchored); read by STransCreateE
+    // and 004C35F0. See HudManager::load_hud_image.
+    std::vector<u8> m_mask;
 
     // While hidden we swap masks
     void* m_transparent_mask = nullptr;

@@ -4,20 +4,6 @@
 #include "config.h"
 
 namespace {
-    const u32 SetFontHandle = 0x0041F610;
-    const u32 drawUIFeatures_jmp = 0x0048D0AE;
-    void _declspec(naked) draw_ui_features_wrapper() {
-        _asm {
-            PUSHAD
-        }
-        hooks::draw_ui_features();
-        _asm {
-            POPAD
-            CALL SetFontHandle
-            JMP drawUIFeatures_jmp
-        }
-    }
-
     void _declspec(naked) queue_game_command_wrapper() {
         static u8* data;
         static u32 len;
@@ -406,21 +392,6 @@ namespace {
         }
     }
 
-    void __declspec(naked) get_tile_image_data_wrapper() { // 0040C3B0
-        static s32 offset_arg;
-        static vx4 tile;
-        __asm {
-            MOV offset_arg, EDX
-            MOV tile, ECX
-            PUSHAD
-        }
-        hooks::get_tile_image_data(offset_arg, tile);
-        __asm {
-            POPAD
-            RETN
-        }
-    }
-
     void __declspec(naked) get_stat_txt_string_wrapper() { // 004C36F0
         static u16 string_id;
         static char* result;
@@ -665,7 +636,6 @@ namespace {
 
 namespace hooks {
     void inject_ui_features_hooks() {
-        jump_patch(draw_ui_features_wrapper,				0x0048D0A9, 0);
     //	jump_patch(select_units_wrapper,					            0x0046FA00, 1);
         jump_patch(queue_game_command_wrapper,			0x00485BD0, 4);
         jump_patch(check_hotkey_char_wrapper,				0x004588C0, 3);
@@ -697,7 +667,6 @@ namespace hooks {
 
     //	jump_patch(show_or_hide_minimap,					            0x004A4150, 2);
         jump_patch(draw_game_menu_context_wrapper,		   0x004F4F70, 1);
-        jump_patch(get_tile_image_data_wrapper,			   0x0040C3B0, 1);
         jump_patch(get_stat_txt_string_wrapper,			   0x004C36F0, 1);
         jump_patch(draw_show_hide_terrain_context_wrapper, 0x004A4C40, 0);
         jump_patch(draw_cancel_unit_context_wrapper,	   0x00457B10, 4);

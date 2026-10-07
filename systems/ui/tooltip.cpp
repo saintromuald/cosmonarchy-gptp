@@ -412,7 +412,7 @@ v2s16 TooltipController::compute_position(const Widget& widget, const v2u16& siz
     s16 y = static_cast<s16>(trigger_bottom + 2);
     switch (placement) {
         case Placement::Auto: {
-            if (y + static_cast<s16>(size.y) > static_cast<s16>(ScreenHeight)) {
+            if (y + static_cast<s16>(size.y) > static_cast<s16>(display::SurfaceHeight)) {
                 y = static_cast<s16>(trigger_top - static_cast<s16>(size.y) - 2);
             }
         } break;
@@ -435,14 +435,14 @@ v2s16 TooltipController::compute_position(const Widget& widget, const v2u16& siz
     }
 
     // Clamp to screen
-    if (x + static_cast<s16>(size.x) > static_cast<s16>(ScreenWidth)) {
-        x = static_cast<s16>(ScreenWidth - size.x);
+    if (x + static_cast<s16>(size.x) > static_cast<s16>(display::SurfaceWidth)) {
+        x = static_cast<s16>(display::SurfaceWidth - size.x);
     }
     if (x < 0) {
         x = 0;
     }
-    if (y + static_cast<s16>(size.y) > static_cast<s16>(ScreenHeight)) {
-        y = static_cast<s16>(ScreenHeight - size.y);
+    if (y + static_cast<s16>(size.y) > static_cast<s16>(display::SurfaceHeight)) {
+        y = static_cast<s16>(display::SurfaceHeight - size.y);
     }
     if (y < 0) {
         y = 0;
