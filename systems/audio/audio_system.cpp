@@ -140,10 +140,6 @@ void AudioSystem::initialize_sound_paths() {
     }
 }
 
-static bool is_main_window_focused() {
-    return GetForegroundWindow() == g_main_window;
-}
-
 void AudioSystem::update() {
     // Clean up buffers that are done playing
     for (u32 i = 0; i < m_loaded_sounds_count; ++i) {
@@ -610,7 +606,7 @@ s32 AudioSystem::get_sound_volume_at_pos(v2u16 pos) const {
 }
 
 s32 AudioSystem::get_playback_volume() const {
-    if (!g_config.play_music_in_background && !is_main_window_focused()) {
+    if (!g_config.play_music_in_background && !display::window_is_focused()) {
         return DSBVOLUME_MIN;
     }
     if (m_music_playback.fade == 0 || m_music_playback.volume == 0) {
@@ -682,7 +678,7 @@ void __stdcall AudioSystem::menu_music_timer_proc(HWND window, u32, u32 timer_id
 }
 
 VolumePan PlaySoundSettings::calculate_volume_pan() {
-    if (!g_config.play_sound_in_background && !is_main_window_focused()) {
+    if (!g_config.play_sound_in_background && !display::window_is_focused()) {
         return {DSBVOLUME_MIN, 0};
     }
     if (is_bw_hook) {

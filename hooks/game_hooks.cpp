@@ -56,6 +56,7 @@
 #include "hooks/race_randomization.h"
 #include "../systems/scripting/scripting.h"
 #include "hooks/display/grid.h"
+#include "systems/display/zoom.h"
 
 #include <random>
 #include <format>
@@ -96,9 +97,10 @@ namespace hooks {
                 helper::get_minimap_cursor_pos(&x, &y);
                 helper::do_targeted_order(x, y, 0, UnitId::None);
             } else {
+                const v2s32 world = g_zoom.surface_to_world_offset({ g_mouse->x, g_mouse->y });
                 Event event = {};
-                event.x_pos = g_mouse->x;
-                event.y_pos = g_mouse->y;
+                event.x_pos = u16(world.x);
+                event.y_pos = u16(world.y);
                 helper::input_target_order_left_mouse_click(&event);
             }
             if (g_is_targeting) {
@@ -119,9 +121,8 @@ namespace hooks {
                 }
             }
             if (not_held) {
-                v2u16 position = {};
-                position.x = g_mouse->x;
-                position.y = g_mouse->y;
+                const v2s32 world = g_zoom.surface_to_world_offset({ g_mouse->x, g_mouse->y });
+                v2u16 position = { u16(world.x), u16(world.y) };
 
                 Event event = {};
                 event.x_pos = position.x;
