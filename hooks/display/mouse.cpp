@@ -1,6 +1,7 @@
 #include "mouse.h"
 #include "../../BW/bwdata.h"
 #include "../../BW/bwhelper.h"
+#include "../../systems/display/display.h"
 #include "../../systems/display/zoom.h"
 #include "../../systems/display/cursor_cache.h"
 #include "../interface/uifeatures/ui_features.h"
@@ -83,6 +84,26 @@ void update_world_cursor() {
     g_world_cursor = g_zoom.surface_to_world_offset({ g_mouse->x, g_mouse->y });
 }
 
+void update_window_focus() {
+    if (!g_main_window) {
+        return;
+    }
+    if (display::window_is_focused()) {
+        if (g_window_focused) {
+            return;
+        }
+        g_window_focused = true;
+        SetCursorPos(g_unfocused_cursor_pos.x, g_unfocused_cursor_pos.y);
+    } else {
+        g_window_focused = false;
+        POINT cursor = {};
+        // Windows.h import bypasses cnc-ddraw's fake cursor
+        if (GetCursorPos(&cursor)) {
+            g_unfocused_cursor_pos = { cursor.x, cursor.y };
+        }
+    }
+}
+
 // 004D1140
 u32 is_point_on_console_ui(s32 x, s32 y) {
     const s32 left = g_zoom.source_left();
@@ -94,6 +115,11 @@ u32 is_point_on_console_ui(s32 x, s32 y) {
 
 // 004D1940: Button up; releases capture once no other button remains held.
 void __cdecl mouse_button_up(u32 button_bit, u32 packed_position, InputProcsFunc* input_proc, u32 event_type) {
+    if (g_refocus_swallowed_buttons & button_bit) {
+        g_refocus_swallowed_buttons &= ~button_bit;
+        return;
+    }
+
     const u16 remaining = u16(~button_bit) & g_mouse_button_state;
     if ((remaining & 0x2a) != 0) {
         return;
@@ -111,6 +137,13 @@ void __cdecl mouse_button_up(u32 button_bit, u32 packed_position, InputProcsFunc
 
 // 004D19C0 / 004D1A50: Button down and double-click; takes capture if no other button held.
 void __cdecl mouse_button_down(u32 button_bit, u32 packed_position, InputProcsFunc* input_proc, u32 event_type) {
+    if (!g_window_focused && display::window_is_focused()) {
+        g_window_focused = true;
+        g_refocus_swallowed_buttons |= button_bit;
+        warp_cursor({ s32(s16(packed_position)), s32(s16(packed_position >> 16)) });
+        return;
+    }
+
     const u8 others = u8(~button_bit) & u8(g_mouse_button_state);
     if ((others & 0x2a) != 0) {
         return;

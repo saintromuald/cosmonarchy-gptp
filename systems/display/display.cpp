@@ -29,6 +29,10 @@ u32 display::map_axis(u16 view) {
     return (tiles + 1) * display::TileSize;
 }
 
+bool display::window_is_focused() {
+    return g_main_window && GetForegroundWindow() == g_main_window;
+}
+
 void DisplayGeometry::init() {
     m_surface_width = display::SurfaceWidth;
     m_surface_height = display::SurfaceHeight;

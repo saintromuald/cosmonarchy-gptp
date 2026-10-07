@@ -62,6 +62,7 @@ u8& layer_flags(Layer& layer) {
 namespace hooks {
 // 0041D710: Checks window draw state and marks all cells if repaint is pending.
 s32 __cdecl begin_frame() {
+    update_window_focus();
     if (!g_ddraw_ready || !g_window_active || !g_main_window) {
         return 0;
     }

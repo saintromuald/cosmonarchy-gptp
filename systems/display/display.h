@@ -34,6 +34,8 @@ constexpr u32 LegacyMapSize = 0x49800;
 // Scratch buffer axis: viewport rounded up to terrain tiles, plus one tile margin for sub-tile scrolling.
 u32 map_axis(u16 view);
 
+bool window_is_focused();
+
 } // display
 
 class DisplayGeometry {
