@@ -19,6 +19,7 @@
 #include "hooks/rally_point.h"
 #include "hooks/interface/uifeatures/hotkeys.h"
 #include "systems/audio/audio_system.h"
+#include "systems/display/display.h"
 #include "hooks/unit_stats/weapon_range.h"
 
 #define NOMINMAX
@@ -971,8 +972,22 @@ u32 get_unit_overlay_adjustment(Unit* const unit) {
 }
 
 void refresh_screen(s32 left, s32 top, s32 right, s32 bottom) {
-    left >>= 4; right = (right + 15) >> 4;
-    top >>= 4; bottom = (bottom + 15) >> 4;
+    const s32 cols = g_display.grid_cols();
+    const s32 rows = g_display.grid_rows();
+    const s32 cell = s32(g_display.cell_size());
+
+    // Vanilla shifted here, which floors; truncating division lets negative
+    // edges round to 0 and spuriously dirty cell strip 0.
+    const auto floor_div = [cell](s32 value) {
+        return value / cell - (value % cell != 0 && value < 0);
+    };
+    const auto ceil_div = [cell](s32 value) {
+        return value >= 0 ? (value + cell - 1) / cell : value / cell;
+    };
+    left = floor_div(left);
+    top = floor_div(top);
+    right = ceil_div(right);
+    bottom = ceil_div(bottom);
 
     if (left > right) {
         std::swap(left, right);
@@ -982,20 +997,22 @@ void refresh_screen(s32 left, s32 top, s32 right, s32 bottom) {
     }
 
     // Rect out of bounds
-    if (left >= 40 || right < 0 || top >= 30 || bottom < 0) {
+    if (left >= cols || right < 0 || top >= rows || bottom < 0) {
         return;
     }
 
-    left = std::max(left, 0); right = std::min(right, 40 - 1);
-    top = std::max(top, 0); bottom = std::min(bottom, 30 - 1);
+    left = std::max(left, 0);
+    top = std::max(top, 0);
+    right = std::min(right, cols - 1);
+    bottom = std::min(bottom, rows - 1);
 
     for (s32 y = top; y <= bottom; ++y) {
-        memset(&g_refresh_regions[40 * y + left], 1, right - left + 1);
+        memset(&g_display.grid()[cols * y + left], 1, right - left + 1);
     }
 }
 
 void refresh_screen() {
-    memset(g_refresh_regions, 1, 1200);
+    memset(g_display.grid(), 1, g_display.grid_bytes());
 }
 
 void refresh_console() { // 004C36C0
@@ -1694,8 +1711,8 @@ void move_screen_to_unit(Unit* unit, u32 player) { // 004E6020
         if (y < 0) {
             y += 31;
         }
-        x = ((x / 32) - 10) * 32;
-        y = ((y / 32) - 6) * 32;
+        x = ((x / 32) - s32(g_display.center_offset_tile_x())) * 32;
+        y = ((y / 32) - s32(g_display.center_offset_tile_y())) * 32;
         __asm {
             PUSHAD
             MOV ECX, y
@@ -2846,13 +2863,15 @@ PlayerColorCode get_player_color_code(u32 player, bool use_green_for_self) {
 }
 
 void move_camera(v2u16 pos) {
-    if (pos.x >= 320) {
-        pos.x -= 320;
+    const u16 half_width = g_display.center_offset_x();
+    const u16 half_height = g_display.center_offset_y();
+    if (pos.x >= half_width) {
+        pos.x -= half_width;
     } else {
         pos.x = 0;
     }
-    if (pos.y >= 200) {
-        pos.y -= 200;
+    if (pos.y >= half_height) {
+        pos.y -= half_height;
     } else {
         pos.y = 0;
     }

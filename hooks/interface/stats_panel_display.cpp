@@ -15,14 +15,14 @@
 #include <ranges>
 
 static const auto resource_tooltip_definitions = std::to_array<tooltip_resource_cost>({
-    {tooltip_resource::Minerals,  tooltip_ore_cost,      g_hud_icons.mineral(), 0, &HudManager::Config::mineral_icon},
-    {tooltip_resource::Gas,       tooltip_gas_cost,      g_hud_icons.gas(),     0, &HudManager::Config::gas_icon},
-    {tooltip_resource::Energy,    tooltip_energy_cost,   g_hud_icons.general(), 9, nullptr},
-    {tooltip_resource::Unused,    tooltip_unused_cost,   g_hud_icons.general(), 8, nullptr},
-    {tooltip_resource::BuildTime, tooltip_time_cost,     g_hud_icons.general(), 7, nullptr},
-    {tooltip_resource::PSupply,   tooltip_p_supply_cost, g_hud_icons.supply(),  0, &HudManager::Config::supply_icon},
-    {tooltip_resource::TSupply,   tooltip_t_supply_cost, g_hud_icons.supply(),  0, &HudManager::Config::supply_icon},
-    {tooltip_resource::ZSupply,   tooltip_z_supply_cost, g_hud_icons.supply(),  0, &HudManager::Config::supply_icon},
+    {tooltip_resource::Minerals,  tooltip_ore_cost,      HudIcons::Kind::Mineral, 0, &HudManager::Config::mineral_icon},
+    {tooltip_resource::Gas,       tooltip_gas_cost,      HudIcons::Kind::Gas,     0, &HudManager::Config::gas_icon},
+    {tooltip_resource::Energy,    tooltip_energy_cost,   HudIcons::Kind::General, 9, nullptr},
+    {tooltip_resource::Unused,    tooltip_unused_cost,   HudIcons::Kind::General, 8, nullptr},
+    {tooltip_resource::BuildTime, tooltip_time_cost,     HudIcons::Kind::General, 7, nullptr},
+    {tooltip_resource::PSupply,   tooltip_p_supply_cost, HudIcons::Kind::Supply,  0, &HudManager::Config::supply_icon},
+    {tooltip_resource::TSupply,   tooltip_t_supply_cost, HudIcons::Kind::Supply,  0, &HudManager::Config::supply_icon},
+    {tooltip_resource::ZSupply,   tooltip_z_supply_cost, HudIcons::Kind::Supply,  0, &HudManager::Config::supply_icon},
 });
 
 u16 __fastcall get_stat_icon_graphic(u8 value) {
@@ -652,13 +652,18 @@ namespace hooks {
 
         auto has_value = [](const auto& r) { return *r.value; };
         for (const auto& resource : resource_tooltip_definitions | std::ranges::views::filter(has_value)) {
+            // Icons live in HudManager now, so resolve the GRP at draw time
+            GrpFile* grp = g_hud_manager ? g_hud_manager->icons().get(resource.icon) : nullptr;
+            if (!grp) {
+                continue;
+            }
             auto index = resource.hud_icon
                 ? resource.base_index + g_hud_manager->current().*resource.hud_icon
                 : resource.base_index;
 
-            if (index >= resource.grp->frame_count()) index = 0;
+            if (index >= grp->frame_count()) index = 0;
 
-            auto& current_frame = resource.grp->frame_headers()[index];
+            auto& current_frame = grp->frame_headers()[index];
             s16 width = current_frame.w;
             s16 height = current_frame.h;
             if (current_frame.data_offset < 0) {
@@ -667,7 +672,7 @@ namespace hooks {
             }
 
             Bounds bounds{0, 0, width, height, width, height};
-            FxnDrawIconData data{width, height, resource.grp->get_frame_pixel_data(index)};
+            FxnDrawIconData data{width, height, grp->get_frame_pixel_data(index)};
             helper::bw_print_icon(&bounds, &data, max_x, area->bottom);
             helper::bw_print_xy(std::format("{}", *resource.value).c_str(),
                 width + max_x + space_width, area->bottom);

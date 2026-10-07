@@ -104,7 +104,7 @@ void Shape::set_filled_circle(s32 x, s32 y, s32 radius, ColorId color, CoordType
 
 //-------- Drawing --------//
 
-void Shape::draw(bool is_statres) const {
+void Shape::draw() const {
 	v2s32 p1 = this->p1, p2 = this->p2;
 	switch (this->coordType) {
 		case ON_SCREEN:
@@ -129,7 +129,7 @@ void Shape::draw(bool is_statres) const {
 	switch (this->type) {
 		case Text: {
 			// TODO: Add ability to change font count
-			const char* string = is_statres ? g_graphics.get_statres_string_from_index(this->stringIndex).c_str() : g_graphics.get_string_from_index(this->stringIndex).c_str();
+			const char* string = g_graphics.get_string_from_index(this->stringIndex).c_str();
 			g_game_screen_buffer->blitString(string, p1.x, p1.y, this->fontSize);
 		} break;
 

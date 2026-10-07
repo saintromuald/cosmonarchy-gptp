@@ -6,17 +6,15 @@ namespace
 {
     void __declspec(naked) init_placement_box_pos_wrapper() // 0048D660
     {
-        static s32 unused;
         static v2u16* placement;
         static s32 result;
 
         __asm
         {
-            MOV unused, ECX
             MOV placement, EDX
             PUSHAD
         }
-        result = hooks::init_placement_box_pos(unused, placement);
+        result = hooks::init_placement_box_pos(placement);
         __asm
         {
             POPAD
@@ -27,15 +25,13 @@ namespace
 
     void __declspec(naked) draw_placement_box_wrapper() // 0048DDC0
     {
-        static v2u16 ecx0;
         static u8 result;
 
         __asm
         {
-            MOV ecx0, ECX
             PUSHAD
         }
-        result = hooks::draw_placement_box(ecx0);
+        result = hooks::draw_placement_box();
         __asm
         {
             POPAD
@@ -444,6 +440,7 @@ namespace
 
 namespace hooks {
 void inject_placement_hooks() {
+    jump_patch(draw_placement_layer,									0x0048D5C0, 0);
     jump_patch(init_placement_box_pos_wrapper,							0x0048D660, 0);
     jump_patch(draw_placement_box_wrapper,								0x0048DDC0, 4);
 //	jump_patch(update_placement_state_for_placement_box_wrapper,		                0x0048DCE0, 0);

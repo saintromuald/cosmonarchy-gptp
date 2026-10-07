@@ -55,6 +55,7 @@
 #include "NewGameCommand.h"
 #include "hooks/race_randomization.h"
 #include "../systems/scripting/scripting.h"
+#include "hooks/display/grid.h"
 
 #include <random>
 #include <format>
@@ -656,6 +657,13 @@ namespace hooks {
     }
 
     void game_init_first_frame() {
+        // Re-resolve the replay/witness role now that per-player state is certainly
+        // valid, in case map load (alloc_fog_arrays) ran before witness slots were
+        // assigned (CM maps assign witnesses via a first-frame trigger). Buffers
+        // are allocated for the full FOV extent, so growing the world extent here
+        // is safe.
+        refresh_display_role();
+
 #ifdef CM_DEBUG
         helper::play_sound_global(SoundId::Misc_Buzz_wav_1);
         bw::println(TextColor::Yellow, "\tGPTP was compiled in debug!\n\tThis will make the game run slower.");
@@ -4332,7 +4340,6 @@ namespace hooks {
         weapon_damage_current_bullet = 0;
 
         g_graphics.reset_all_graphics();
-        g_graphics.reset_stat_res_graphics();
 
         buttonset_context.reset();
 
@@ -4360,7 +4367,6 @@ namespace hooks {
         lua::g_script_manager.reset();
         AudioSystem::instance().stop_and_clear_playing_sounds();
         end_threshold();
-        g_graphics.reset_stat_res_graphics();
         for (u32 player = 0; player < PlayerLimit; player++) {
             g_factions_colors_ordering[player] = g_player_color_ids[player];
             g_player_color_ids[player] = 0;

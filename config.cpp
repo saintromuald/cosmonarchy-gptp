@@ -8,7 +8,6 @@
 #include <Windows.h>
 
 #include <algorithm>
-#include <ranges>
 #include <format>
 
 // Have to use std::vformat and no `const auto&...`, because of some obscure VS issue that makes it not compile for Pr0nogo.
@@ -107,6 +106,13 @@ void load_config() {
 
     // Witness and replay UI
     load_field(yaml, "show-replay-progress-bar", g_config.show_replay_progress_bar);
+
+    // Display
+    load_field(yaml, "ui-redraw-cap-hz", g_config.ui_redraw_cap_hz);
+
+    // World zoom
+    load_field(yaml, "world-zoom", g_config.world_zoom);
+    load_field(yaml, "smooth-world-zoom", g_config.smooth_world_zoom);
 
     // Scrolling
 //	load_field(yaml, "use-spacebar-for-scrolling", config.use_spacebar_for_scrolling);
@@ -252,6 +258,15 @@ void save_config() {
 
     yaml << YAML::Comment("Witness and replay UI");
     write_field(yaml, "show-replay-progress-bar", g_config.show_replay_progress_bar);
+    yaml << YAML::Newline << YAML::Newline;
+
+    yaml << YAML::Comment("Display");
+    write_field(yaml, "ui-redraw-cap-hz", g_config.ui_redraw_cap_hz);
+    yaml << YAML::Newline << YAML::Newline;
+
+    yaml << YAML::Comment("World zoom");
+    write_field(yaml, "world-zoom", g_config.world_zoom);
+    write_field(yaml, "smooth-world-zoom", g_config.smooth_world_zoom);
     yaml << YAML::Newline << YAML::Newline;
 
     yaml << YAML::Comment("Scrolling");

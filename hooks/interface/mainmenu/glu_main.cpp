@@ -75,8 +75,8 @@ static u32 __fastcall dlgproc_glu_main(bw::Dialog* dialog, DialogEvent* event) {
 void glu_main() {
     g_multiplayer_mode = false;
 
-    auto dialog = load_bin_file("rez\\gluMain.bin").release();
-    auto last_control = helper::glu_load_bin_dialog(dialog, dlgproc_glu_main);
+    auto dialog = load_bin_file_scaled("rez\\gluMain.bin", ui::MenuBinScale);
+    auto last_control = helper::glu_load_bin_dialog(dialog.get(), dlgproc_glu_main);
 
     switch (static_cast<GluMainControls>(last_control)) {
         case GluMainControls::ExitButton: {

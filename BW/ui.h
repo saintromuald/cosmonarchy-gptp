@@ -2,11 +2,13 @@
 
 #include "structures.h"
 #include "enumerations.h"
+#include "ui_scale.h"
 #include "color_palette.h"
 #include "bwhelper.h"
 #include "storm/storm.h"
 #include "storm/sfile.h"
 #include "storm/smem.hpp"
+#include "systems/display/display.h"
 
 #include <functional>
 #include <map>
@@ -20,8 +22,6 @@
 #include <vector>
 
 constexpr u32 TFontCopyCount = 48;  // 6 font styles * 8 shades
-constexpr u16 ScreenWidth = 640;
-constexpr u16 ScreenHeight = 480;
 
 // Loads an 8-bit PCX or BMP (auto-detected) into `bitmap`
 // Allocs using SMemAlloc so either capture buffer in smem::ptr or ensure it's otherwise freed
@@ -296,6 +296,24 @@ private:
 };
 
 smem::ptr<bw::Dialog> load_bin_file(const char* filename);
+
+namespace ui {
+
+struct BinScale {
+    u32 scale = ui_scale::Factor;
+    v2s16 offset = {};
+    bool fullscreen = false;
+};
+
+// Centers a full-screen menu bin in the 1920x1080 canvas.
+inline constexpr BinScale MenuBinScale{.offset = {320, 60}, .fullscreen = true};
+
+void scale_bin(bw::Dialog& dialog, const BinScale& options = {});
+
+} // ui
+
+// load_bin_file with ui::scale_bin applied before initialization.
+smem::ptr<bw::Dialog> load_bin_file_scaled(const char* filename, const ui::BinScale& options = {});
 
 class DynamicTheme {
 public:

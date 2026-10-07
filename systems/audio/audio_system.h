@@ -1,5 +1,6 @@
 #pragma once
 #define NOMINMAX
+#include <windows.h>
 #include <mmreg.h>
 #include <dsound.h>
 #include <vector>

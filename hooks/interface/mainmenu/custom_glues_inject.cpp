@@ -1,5 +1,6 @@
 #include "custom_glues.h"
 #include "hook_tools.h"
+#include "glu_chat.h"
 
 const u32 glu_main_switch_de433 = 0x004de433;
 static void __declspec(naked) glu_main_switch_wrapper() { // 004de445
@@ -29,6 +30,21 @@ static void __declspec(naked) chat_race_combobox_wrapper() { // 00451aa0
     }
 }
 
+// For call patch wrapping vanilla loader
+static void __declspec(naked) load_bin_scaled_wrapper() {
+    static bw::Dialog* dialog;
+    static const u32 func_address = 0x0041a080;
+    __asm {
+        PUSHAD
+        MOV dialog, EAX
+    }
+    ui::scale_bin(*dialog, ui::MenuBinScale);
+    __asm {
+        POPAD
+        JMP func_address
+    }
+}
+
 namespace hooks {
 void inject_custom_glues() {
     jump_patch(glu_main_switch_wrapper, 0x004de445);
@@ -36,6 +52,17 @@ void inject_custom_glues() {
     // Remove Sleep(1000) from glu_login cancel
     // It's not necessary with new flow to intentionally delay snetdestroy
     nop_patch(0x004c4690, 11);
-}
 
+    // Scorescreen fixes
+    // Scale untab.pcx draw location for unselected tabs
+    memory_patch(0x004B385D, u8(28 * ui_scale::Factor));
+    // Fix player name blit location
+    memory_patch(0x004b3978, u16(0xB8 * ui_scale::Factor + u32(ui::MenuBinScale.offset.x)));
+
+    call_patch(load_bin_scaled_wrapper, 0x004af763); // glu_create
+    call_patch(load_bin_scaled_wrapper, 0x004f79cd); // glu_p_readyroom
+    call_patch(load_bin_scaled_wrapper, 0x004f766d); // glu_t_readyroom
+    call_patch(load_bin_scaled_wrapper, 0x004f730d); // glu_z_readyroom
+    call_patch(load_bin_scaled_wrapper, 0x004b4d73); // glu_scorescreen
+}
 }

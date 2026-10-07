@@ -317,7 +317,7 @@ f32 Globals::calculate_hype() const {
     const auto count = eco_measurements.size();
     std::vector<f32> values(count);
     for (size_t i = 0; i < values.size(); i++) {
-        values[i] = log(std::accumulate(eco_measurements[i].begin(), eco_measurements[i].end(), 0));
+        values[i] = log(std::accumulate(eco_measurements[i].begin(), eco_measurements[i].end(), 0.0f));
     }
 
     auto changes_mean = 0.0f;

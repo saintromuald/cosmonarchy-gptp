@@ -1,6 +1,5 @@
 #pragma once
 #include "BW/ui.h"
-#include "glu_chat.h"
 
 class GluJoinCrownlinkContext {
 public:
@@ -15,7 +14,7 @@ public:
         GluJoinControls::SubType,
         GluJoinControls::MapSize,
         }) {
-        m_dialog = load_bin_file("rez\\glujoincrownlink.bin");
+        m_dialog = load_bin_file_scaled("rez\\glujoincrownlink.bin", ui::MenuBinScale);
     }
 
     bw::Dialog* get_dialog() { return m_dialog.get(); };
@@ -51,8 +50,6 @@ void glu_login();
 void glu_provider_select(bool from_crownlink);
 void glu_join();
 void glu_join_crownlink();
-void glu_singleplayer();
-void glu_options();
 
 void glu_main_switch();
 

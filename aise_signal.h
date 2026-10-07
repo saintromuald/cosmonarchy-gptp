@@ -22,6 +22,7 @@ enum class AiseSignal {
 	SetConsoleVisible         = 14,
 	AreCheatsAllowed          = 15,
 	InReplayOrWitness         = 16,
+	SetFrameOverlay           = 17,
 };
 
 struct AiseState {

@@ -12,7 +12,6 @@ public:
 	// Resets all previous graphics and clears error messages. This should be
 	// called every frame in game_hooks.cpp.
 	void reset_all_graphics();
-	void reset_stat_res_graphics();
 
 	void draw_text(s32 x, s32 y, const std::string& str, FontSize fontSize = FONT_MEDIUM, CoordType ct = ON_SCREEN);
 	void draw_dot(s32 x, s32 y, ColorId color, CoordType ct = ON_SCREEN);
@@ -25,24 +24,15 @@ public:
 	void draw_dotted_line(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType ct = ON_SCREEN);
 	void draw_dotted_elipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
 
-	void draw_statres_bar(s32 x1, s32 x2, s32 y, ColorId color);
-	void draw_statres_box(s32 left, s32 top, s32 right, s32 bottom, ColorId color);
-	void draw_statres_text(s32 x, s32 y, const std::string& str);
-
-	s32 draw_all_shapes();
-	s32 draw_stat_res_shapes();
+	// ON_MAP shapes scale with terrain zoom; ON_SCREEN/ON_MOUSE shapes are drawn unscaled after world resample.
+	s32 draw_world_shapes();
+	s32 draw_screen_shapes();
 
 	const std::string& get_string_from_index(s32 index);
-	const std::string& get_statres_string_from_index(s32 index);
 
 private:
 	std::vector<Shape> m_shapes;
 	std::vector<std::string> m_strings;
-
-	std::vector<Shape> m_statres_bars;
-	std::vector<Shape> m_statres_boxes;
-	std::vector<Shape> m_statres_shapes;
-	std::vector<std::string> m_statres_strings;
 };
 
 }

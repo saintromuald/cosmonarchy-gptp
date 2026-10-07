@@ -4,6 +4,8 @@
 #include "hooks/interface/mainmenu/glucustom.h"
 #include "storm/sfile.h"
 
+#include <algorithm>
+
 bw::Dialog* get_first_child_by_index(bw::Dialog* parent, s16 index) {
     for (auto child : dialog_children(parent)) {
         if (child->index == index) return child;
@@ -262,6 +264,95 @@ smem::ptr<bw::Dialog> load_bin_file(const char* filename) {
     auto output = sfile::load_file(filename).unsafe_cast<bw::Dialog>();
     output.get()->flags |= DialogFlags::HeapAllocated;
     helper::fixup_and_init_dialog_data(output.get()->to_bindlg(), helper::alloc_background_image);
+    return output;
+}
+
+namespace ui {
+
+void scale_bin(bw::Dialog& dialog, const BinScale& options) {
+    const auto scale = options.scale;
+    const auto offset = options.offset;
+    if (scale == 1 && offset == v2s16{} && !options.fullscreen) {
+        return;
+    }
+
+    auto resize_surface = [](Bitmap& surface, u16 width, u16 height) {
+        surface.width = width;
+        surface.height = height;
+        if (surface.buffer) {
+            SMemFree(surface.buffer);
+            const size_t area = size_t(width) * height;
+            surface.buffer = reinterpret_cast<u8*>(SMemAlloc(area));
+            std::fill_n(surface.buffer, area, 0);
+        }
+    };
+
+    // Fullscreen pins the root to the screen, so `offset` shifts the scaled
+    // children into place on it instead of translating the root.
+    const auto child_offset = options.fullscreen ? offset : v2s16{};
+
+    auto scale_node = [scale, child_offset, &resize_surface](bw::Dialog& node) {
+        auto& bounds = node.bounds;
+        bounds.set_ltrb(s16(bounds.left() * scale + child_offset.x), s16(bounds.top() * scale + child_offset.y),
+            s16(bounds.right() * scale + child_offset.x), s16(bounds.bottom() * scale + child_offset.y));
+
+        // LightUpButton animation bounds were offset by the (unscaled) bounds at
+        // fixup; multiplying after keeps them affine-correct.
+        if (node.type == DialogControlType::LightUpButton) {
+            auto& extra = node.extra<bw::LightUpButtonExtra>()->bounds;
+            extra.set_ltrb(s16(extra.left() * scale + child_offset.x), s16(extra.top() * scale + child_offset.y),
+                s16(extra.right() * scale + child_offset.x), s16(extra.bottom() * scale + child_offset.y));
+
+            // response_bounds is local-space, so it scales without the offset
+            auto& response = node.data<bw::LightUpButtonData>()->response_bounds;
+            response.set_ltrb(s16(response.left() * scale), s16(response.top() * scale),
+                s16(response.right() * scale), s16(response.bottom() * scale));
+
+            // Animation smk render positions are relative to the button's top-left, so
+            // they scale without the offset; their sizes are probed from the files
+            for (auto* animation = *node.child<bw::LightUpButtonAnimation*>(); animation; animation = animation->next) {
+                animation->render_pos = {
+                    u16(animation->render_pos.x * scale),
+                    u16(animation->render_pos.y * scale),
+                };
+            }
+        }
+
+        if (node.type != DialogControlType::DialogBoxDC) {
+            return;
+        }
+
+        auto& surface = node.data<bw::MenuData>()->backup_surface;
+        resize_surface(surface, u16(surface.width * scale), u16(surface.height * scale));
+    };
+
+    if (options.fullscreen) {
+        dialog.bounds = DialogBounds::from_xywh(0, 0, display::SurfaceWidth, display::SurfaceHeight);
+        if (dialog.type == DialogControlType::DialogBoxDC) {
+            resize_surface(dialog.data<bw::MenuData>()->backup_surface, display::SurfaceWidth, display::SurfaceHeight);
+        }
+    } else {
+        scale_node(dialog);
+
+        // Child bounds are relative to the root DialogBoxDC, so translating the
+        // root carries the whole tree.
+        dialog.bounds = dialog.bounds.offset(offset.x, offset.y);
+    }
+
+    if (dialog.type != DialogControlType::DialogBoxDC) {
+        return;
+    }
+
+    for (auto* node = *dialog.child<bw::Dialog*>(); node; node = node->next) {
+        scale_node(*node);
+    }
+}
+
+} // ui
+
+smem::ptr<bw::Dialog> load_bin_file_scaled(const char* filename, const ui::BinScale& options) {
+    auto output = load_bin_file(filename);
+    ui::scale_bin(*output.get(), options);
     return output;
 }
 

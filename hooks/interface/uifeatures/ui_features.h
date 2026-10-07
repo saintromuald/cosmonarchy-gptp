@@ -37,32 +37,32 @@ void queue_game_command(u8* data, u32 size);
 
 b32 check_hotkey_char(BinDlg* dialog, char hotkey);
 char create_upgrade_level_tooltip(char* text);
-bool trigact_transmission(TriggerAction* trigger);																		// 004C7890
-void draw_minimap_unit_box(u32 player);																					// 004A4650
-void draw_all_minimap_boxes();																							// 004A4AC0
-u32 get_cursor_type();																									// 004D1460
-void cmdact_right_click_minimap(DialogEvent* dlg_event);																// 004563A0
-u8* draw_vertical_line(u16 iterations, s16 width_offset, u16 buffer_multiplier);                                        // 0041D7D0
-void __fastcall centerview_unit_group(u8 slot);																			// 004967E0
-void draw_standard_button_graphic(BinDlg* button1, BinDlg* button2, BinDlg* dest);										// 004EFD90
-b32 generic_dialog_update(BinDlg* button, u32 width, u32 height, Box16* dims);											// 004EF590
-void draw_stat_button_image(BinDlg* dialog);																			// 00456C30
-void statbtn_button_update(BinDlg* button);																				// 00458900
+bool trigact_transmission(TriggerAction* trigger);                                  // 004C7890
+void draw_minimap_unit_box(u32 player);                                             // 004A4650
+void draw_all_minimap_boxes();                                                      // 004A4AC0
+u32 get_cursor_type();                                                              // 004D1460
+void cmdact_right_click_minimap(DialogEvent* dlg_event);                            // 004563A0
+u8* draw_vertical_line(u16 iterations, s16 width_offset, u16 buffer_multiplier);    // 0041D7D0
+void __fastcall centerview_unit_group(u8 slot);                                     // 004967E0
+void draw_standard_button_graphic(BinDlg* button1, BinDlg* button2, BinDlg* dest);  // 004EFD90
+b32 generic_dialog_update(BinDlg* button, u32 width, u32 height, Box16* dims);      // 004EF590
+void draw_stat_button_image(BinDlg* dialog);                                        // 00456C30
+void statbtn_button_update(BinDlg* button);                                         // 00458900
 
 void register_action(ApmCounter* counter, char* buffer);
 void init_actions();
 void update_actions();
 void draw_ui_features();
 
-char input_mmb_down(DialogEvent* event);											// 00484520
-int __cdecl input_mmb_up();															// 004843A0
-void __cdecl input_mmb_move();														// 00484460
+char input_mmb_down(DialogEvent* event);    // 00484520
+int __cdecl input_mmb_up();                 // 004843A0
+void __cdecl input_mmb_move();              // 00484460
+void end_middle_drag();
 
 bool statport_dlg_interact(BinDlg* dialog, DialogEvent* dlg_event);					// 0045F290
 char CMDRECV_minimap_ping(char* buffer);											// 004BF7A0
 void __cdecl show_or_hide_minimap();												// 004A4150
 u16 draw_game_menu_context(BinDlg* dialog);                                         // 004F4F70
-void get_tile_image_data(s32 offset_arg, vx4 tile);                                 // 0040C3B0
 char* get_stat_txt_string(u16 string_id);                                           // 004C36F0
 void draw_show_hide_terrain_context(BinDlg* dialog);                                // 004A4C40
 void draw_cancel_unit_context(BinDlg* dialog);                                      // 00457B10

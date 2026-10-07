@@ -139,11 +139,38 @@ BW_DATA(s32*,				g_screen_y,				0x00628470);
 // To use with a player ID
 BW_DATA(v2u16*,			g_start_positions,		0x0058D720);
 
-// Mouse position relative to the screen
-BW_DATA(const v2s32*,		g_mouse,				0x006CDDC4);
+// Mouse position relative to screen; written by 004D1940/004D19C0/004D1A50/004D1AE0.
+BW_DATA(v2s32*,				g_mouse,				0x006CDDC4);
 
-BW_REF(u32,				g_mmb_pos_x,            0x006556F8);
-BW_REF(u32,				g_mmb_pos_y,            0x006556F4);
+// Mouse button state: bit 0 = in window, bit 1 = left, bit 3 = right, bit 5 = middle (mask 0x2A).
+BW_REF(u16,					g_mouse_button_state,	0x006CDDC0);
+
+// Cursor clip bounds in the game's client space; consumed via the game's ClipCursor
+// import, where cnc-ddraw translates to screen. Filled by 004215E0/00421690.
+BW_REF(RECT,				g_cursor_clip_rect,		0x006CDDB0);
+
+using ClientToScreenProc = BOOL(WINAPI*)(HWND, LPPOINT);
+BW_REF(ClientToScreenProc,	g_client_to_screen,		0x004FE378);
+
+using SetCursorProc = HCURSOR(WINAPI*)(HCURSOR);
+BW_REF(SetCursorProc,		g_set_cursor_iat,		0x004FE338);
+
+using SetCursorPosProc = BOOL(WINAPI*)(int, int);
+BW_REF(SetCursorPosProc,	g_set_cursor_pos_iat,	0x004FE2CC);
+
+BW_ARRAY(GrpFile*,	19,		g_cursor_grps,			0x00596B20);
+BW_REF(u32,					g_current_cursor_id,	0x00596B70);
+BW_REF(u32,					g_cursor_frame_index,	0x00597390);
+BW_REF(u32,					g_cursor_next_tick,		0x00597398);
+BW_REF(u8,					g_disable_cursor_scroll,	0x006D1214);
+
+// Suppresses edge scrolling after a click until cursor moves.
+BW_REF(s32,					g_scroll_wait_for_move,	0x006D5C1C);
+BW_REF(s32,					g_last_scroll_cursor_x,	0x0051A3E0);
+BW_REF(s32,					g_last_scroll_cursor_y,	0x0051A3DC);
+
+// Edge-scroll cursor IDs, indexed by dx + 3 * dy + 4 (dx, dy in [-1, 1]; index 4 unused).
+BW_ARRAY(const u16,	9,	g_scroll_cursor_types,	0x00512754);
 
 // Booleans indicating which keyboard buttons are held
 // use g_is_keycode_used[VK_param] where VK_param is one of the Virtual-Key Codes of Windows as seen in msdn here: https://msdn.microsoft.com/fr-fr/library/windows/desktop/dd375731%28v=vs.85%29.aspx
@@ -152,9 +179,28 @@ BW_DATA(const b8*,			g_is_holding_shift,		0x00596A28);
 BW_DATA(const b8*,			g_is_holding_ctrl,		0x00596A29);
 BW_DATA(const b8*,			g_is_holding_alt,		0x00596A2A);
 
-// Maybe used by Map triggers to init a progressive movement toward the corresponding location, see GameImpl::setScreenPosition of BWAPI
-BW_REF(u32,					g_move_to_x,			0x0062848C);
-BW_REF(u32,					g_move_to_y,			0x006284A8);
+// Viewport origin in map pixels and axis maxima (written by 0049BB90; clamped to [0, max] by 0049C0C0..0049C360).
+BW_REF(s32,					g_move_to_x,			0x0062848C);
+BW_REF(s32,					g_move_to_y,			0x006284A8);
+BW_REF(s32,					g_move_to_x_max,		0x00628488);
+BW_REF(s32,					g_move_to_y_max,		0x006284B0);
+
+// Tile renderer scratch buffer scroll wrap coordinates and top-left tile origin.
+BW_REF(s32,					g_scratch_wrap_x,		0x00628490);
+BW_REF(s32,					g_scratch_wrap_y,		0x0062849C);
+BW_REF(u16,					g_drawn_tile_x,			0x00628498);
+BW_REF(u16,					g_drawn_tile_y,			0x006284AC);
+
+// Space tileset parallax layer offsets and scroll speeds (5 layers, walked backwards by engine).
+BW_ARRAY(u32,		5,		g_parallax_x,			0x00628474);
+BW_ARRAY(u32,		5,		g_parallax_y,			0x0062845C);
+BW_ARRAY(const u32,	5,	g_parallax_steps,		0x00512D10);
+
+// Star field state from parallax\star.spk, loaded by 0047F2C0. Entries are 8-byte {x, y, sprite*}
+// blocks (sprites: {width, height, packed pixels}); file blocks pair with parallax layers 4..0.
+// For hooks/display/starfield.cpp.
+BW_REF(u16*,					g_starfield_entries,		0x00658AA8);
+BW_ARRAY(u32,		5,		g_starfield_layer_counts,	0x00658AC4);
 
 // Contains various information (names, player types, race types, and associated forces) of each player in the current game
 BW_ARRAY(Player,    12, g_player_table,         0x0057EEE0);
@@ -296,6 +342,12 @@ BW_REF(MainState,       g_sc_main_state,			0x00596904);
 BW_REF(u8,				g_game_active,				0x006D11EC);
 BW_REF(u16,				g_next_sc_main_state,		0x0051CE90);
 BW_REF(u32,				g_replay_end_frame,			0x006D0F31);
+
+// game_loop_top clocks (GetTickCount-based).
+BW_REF(u32,				g_next_tick_ms,				0x0051CE94);
+BW_REF(u8,				g_turn_stalled,				0x0051CE9D);	// raised by 004D9550 while waiting for turn commands
+BW_REF(u32,				g_turn_ticks_left,			0x0051CEA0);	// turn tick countdown
+BW_REF(u32,				g_last_scroll_step_ms_negated,	0x0051CE8C);	// negated scroll timestamp for elapsed time; reset by 004D9200/004EED10
 
 // For level_cheat_create
 BW_REF(u32,				g_ophelia_enabled,			0x006D11C0);
@@ -534,7 +586,19 @@ BW_DATA(void**,		g_get_right_click_order_array,	0x005153FC);
 BW_DATA(BinDlg**,	g_portrait,						0x0068AC98);
 
 // For fog of war changes by DarkenedFantasies
+// Same memory as g_fog_shade_pairs below.
 BW_DATA(FogMask*,	g_fog_of_war_mask,				0x00657AA0);
+
+// 32x32 lookup of shade pairs for neighbouring mask values (read by 004805F0);
+// same memory as g_fog_of_war_mask above.
+BW_ARRAY(const u32, 0x400, g_fog_shade_pairs,		0x00657AA0);
+
+// Fog buffers allocated by 00480960 (1 byte/tile; g_fog_vision is 4 bytes/tile).
+BW_REF(u8*,			g_fog_shade,					0x006D5C0C);	// blurred mask
+BW_REF(u8*,			g_fog_drawn,					0x006D5C10);	// previous frame mask
+BW_REF(u8*,			g_fog_raw,						0x006D5C14);	// vision flags
+BW_REF(u8*,			g_fog_vision,					0x006D5C18);
+BW_REF(u8,			g_fog_max_shade,				0x00657A9C);
 
 // For score screen player name overrides, from DarkenedFantasies
 BW_DATA(const StringTbl*,	g_network_table_DF,		0x006D1220);
@@ -560,7 +624,7 @@ BW_DATA(s32*,			g_unk_sound_core_3,			0x005998E4);
 BW_DATA(s8*,			g_unk_sound_bool_core,		0x006D1264);
 BW_DATA(char**,			g_current_sound_memory,		0x006D59FC);
 
-BW_DATA(void*,			g_sfx_tbl_handle,			0x005999B0);
+BW_REF(u32,				g_sfx_tbl_handle,			0x005999B0);
 
 // For handle_window_messages
 typedef void __fastcall InputProcsFunc(s32 arg);
@@ -582,7 +646,7 @@ BW_DATA(s32*,		unit_stat_update_timer,		0x00640B54);
 // For cmdact_game_speed
 BW_REF(s16,         last_control_index,         0x006D051C);
 BW_DATA(b32*,		cpu_throttle,				0x006D5C00);
-BW_DATA(b32*,		wants_redraw,				0x005968EC);
+BW_REF(b32,			g_wants_redraw,				0x005968EC);
 BW_DATA(s32*,		temp_cpu_throttle,			0x00655C3C);
 BW_REF(s8,          bin_interact,               0x006D1224);
 BW_REF(void*,       last_bindlg_menu_function,  0x006D1234);
@@ -841,8 +905,13 @@ BW_DATA(PrepareForNextOrderFunc, prepare_for_next_order, 0x00475000);
 // Contains various tile info.
 BW_DATA(ActiveTile**,		g_active_tile_array,	0x006D1260);
 BW_DATA(u16**,				tileIdArray,			0x005993C4);
-BW_DATA(u16**,				megatileArray,			0x00628494);
+BW_DATA(u16**,				megatileArray,		0x00628494);
 //BW_DATA(u16**,			megatileExtArrayFlags,	0x00628494+0x20000); // extender only
+
+// For the tile pipeline (hooks/display/tiles.cpp)
+BW_REF(u8*,				g_creep_tile_borders,		0x006D0E80);	// Dynamic creep border state; stride *g_map_creep_width
+BW_REF(const u8*,		g_creep_border_records,	0x006D0C64);	// 8-byte RLE records, selected by the creep_tile_borders byte
+BW_REF(u32*,				g_megatile_classes,		0x005993CC);	// Per-megatile buildability classes, built from VF4 by 004BCF50
 
 // Stores an ordered list of all units currently in the game.
 BW_DATA(UnitFinderData*,	g_unit_ordering_x,		ccmu_extender.unit_finder_x);
@@ -864,18 +933,60 @@ namespace graphics {
 }
 BW_DATA(graphics::Font**,		font_base,				0x006CE0F4);
 BW_DATA(graphics::Bitmap*,		g_game_screen_buffer,	0x006CEFF0);
-BW_DATA(u8*,					g_refresh_regions,		0x006CEFF8); // 640 x 480 divided into 1200 squares of 16x16
+BW_DATA(u8*,					g_refresh_regions,		0x006CEFF8); // 1200 dirty cells; the cell size follows the surface, see g_display.cell_size()
 BW_DATA(Layers*,				g_screen_layers,		0x006CEF50);
+BW_REF(u32,						g_graphics_ready,		0x006D5DF8);	// set once init has completed
+// Storm region for dialog repaints; created by 0041C200, freed/nulled by 0041CA00 (null = none pending).
+BW_REF(u32,						g_dialog_refresh_region,	0x006D5E2C);
+BW_REF(void*,					g_scratch_buffer,		0x006D5DF4);	// 0x900 bytes, owned by 0041E050
+BW_REF(u32,						g_ddraw_ready,			0x006D5E00);
+BW_REF(u32,						g_window_active,		0x0051BFA8);
+BW_REF(u32,						g_repaint_pending,		0x006D5E1C);
+BW_REF(const u8,				g_full_redraw,			0x0051A0E9);
+BW_ARRAY(u32,			0x20,	g_graphics_state,		0x006CE2A0);
+BW_REF(const u8,				g_sound_disabled,		0x006D11D0);
+
+// Storm blit chain and update region rebuilt by 0041D470; region passed as storm 432 context.
+BW_REF(void*,					g_storm_blit_chain,		0x006D5E14);
+BW_REF(void*,					g_storm_update_region,	0x006D5E18);
+
+// Surface descriptor list walked by 0041D470 (skipped if head <= 0; set to ~0x51A338 by 004FD460).
+BW_REF(s32,						g_surface_descriptors,	0x0051A33C);
+
+// Message-log console layout, sized at game start by init_screen_text_layout (0048CE90,
+// reimplemented in hooks/display/screen_text.cpp) and read when drawing and marking refresh bounds.
+BW_REF(u16,					g_text_area_y,			0x0064096C);
+BW_REF(u16,					g_text_line_height,		0x00640B20);
+BW_REF(u8,						g_text_line_first,		0x00640B58);
+
+// Screen text slot buffers drawn by 0048CF60, 0xDA bytes each. Slots 0-10 form the scrolling
+// message ring, 11 is a top-right line vanilla never populates, and 12 is draw_out_text_left.
+BW_ARRAY(char, 13 * 0xDA,		g_text_slot_buffers,	0x00640B60);
+
+// GRP blitter destination bounds (0040AAE0 targets scratch buffer; screen blitters target screen).
+BW_REF(u8*,						g_overlay_end,			0x0050CED9);
+BW_REF(u32,						g_overlay_width,		0x0050CECD);
+BW_REF(u32,						g_overlay_height,		0x0050CED1);
+BW_REF(u32,						g_overlay_row_step,		0x0050CEC5);
+BW_REF(s32,						g_blit_row_width,		0x0050CEF0);	// row width passed here for 0040C253 / 0040C2BD
 typedef void(__stdcall* DrawGameProc)(graphics::Bitmap* surface, Bounds* bounds);
 static DrawGameProc const		g_old_draw_game_proc = (DrawGameProc)0x004BD580;
+
+// Game layer draw proc operand in 004BD630; patched by draw_hook.cpp, so read dynamically instead of stock 004BD580.
+BW_REF(DrawGameProc,			g_draw_game_proc,		0x004BD68D);
 BW_REF(u32,                     g_current_font_color,	0x006CE0C0);
 BW_REF(u8,                      g_font_spacing,         0x006CE0C4);
 BW_REF(Box16,                   g_draw_text,            0x006CE0C8);/*
-BW_DATA(u16*,					g_draw_text_left,		0x006CE0C8);
-BW_DATA(u16*,					g_draw_text_top,		0x006CE0CA);
-BW_DATA(u16*,					g_draw_text_right,		0x006CE0CC);
-BW_DATA(u16*,					g_draw_text_bottom,		0x006CE0CE);*/
+BW_DATA(u16*,						g_draw_text_left,		0x006CE0C8);
+BW_DATA(u16*,						g_draw_text_top,		0x006CE0CA);
+BW_DATA(u16*,						g_draw_text_right,		0x006CE0CC);
+BW_DATA(u16*,						g_draw_text_bottom,		0x006CE0CE);*/
+// Extra spacing added to the font height for one line's advance; set to 3 by set_font_handle
+// and varied by other dialog text contexts.
+BW_REF(u8,                      g_line_spacing,         0x006CE0D4);
 BW_REF(u32,                     g_saved_font_color,		0x006CE0E8);
+// Height of the font table selected by set_font_handle, read from its byte 7.
+BW_REF(u8,                      g_current_font_height,  0x006CE111);
 
 // Array used in multiplayer to randomize factions used by unit.get_faction_color() and player.get_faction_color()
 // Max index is PLAYABLE_PLAYER_COUNT-1
@@ -1027,8 +1138,11 @@ BW_DATA(InputProcsFunc**,		right_click_proc,		0x006556F0);
 BW_REF(u16,						g_minimap_cursor,		0x006556FC);
 BW_DATA(RECT*,					g_minimap_rect,			0x00512D00);
 
+// Command card bounds tested by 00484620; static rect must be republished when card moves (see publish_command_card_rect).
+BW_REF(RECT,					g_command_card_rect,	0x005136CC);
+
 // For process_right_click_action
-BW_DATA(u16*,		is_unit_in_point_x_pos,			0x006509CC);
+BW_DATA(u16*,			is_unit_in_point_x_pos,			0x006509CC);
 BW_DATA(u16*,		is_unit_in_point_y_pos,			0x006509CE);
 
 // For input_game_right_mouse_click
@@ -1071,7 +1185,6 @@ BW_REF(GrpHead*,		g_cmdbtns_grp,              0x0068C1C0);
 
 // For draw_all_minimap_boxes
 BW_DATA(Bitmap**,		g_current_surface,			0x006CF4A8);
-BW_DATA(Bitmap*,		g_minimap_surface_2,		0x0059C194);
 BW_DATA(u32*,			g_minimap_unit_box_count,	0x0059C2B8);
 
 // For execute_trigger_conditions
@@ -1082,6 +1195,8 @@ BW_ARRAY(s32, 101,		g_music_volume_table,				0x005008EC);	// Music percent (0-10
 BW_DATA(s32*,			g_big_volume_array,					0x005008F0);
 
 BW_DATA(u32*,			g_game_speed_replay_modifiers,		0x005124D8);
+// Drift threshold (3 ticks per speed); game_loop_top resyncs its tick clock if drift exceeds this.
+BW_ARRAY(const u32,	7,	g_tick_resync_threshold_ms,		0x005124F4);
 
 // For play_yes_unit_responses
 BW_REF(Unit*,			g_last_response_unit,		0x00640874);
@@ -1178,14 +1293,14 @@ BW_DATA(b32*,				g_is_double_clicking,			0x0066FF58);
 // For assign_player_names
 BW_DATA(u32*,				g_score_screen_player_count,	0x0059A0E0);
 
-// For find_best_cargo_return_to_target
-BW_DATA(Box16*,				g_full_map_pixel_dimensions,	0x006284A0);
+// For find_best_cargo_return_to_target (published by 0049BB90)
+BW_REF(Box16,				g_full_map_pixel_dimensions,	0x006284A0);
 
 // For draw_unit_box
 BW_DATA(Bitmap*,			g_minimap_surface,					0x0059C18C);
 BW_DATA(Bitmap*,			g_minimap_surface_fog,				0x0059C194);
-BW_DATA(void**,				g_minimap_vision_CB,				0x0059C188);
 BW_DATA(void**,				g_minimap_surface_CB,				0x0059C1A0);
+BW_REF(u8,					g_minimap_surface_changed,			0x0059CB58);
 BW_DATA(u16*,				g_ping_zoom_div,					0x0059CC68);
 BW_DATA(u16*,				g_ping_zoom_lshift,					0x0059C1B0);
 BW_REF(u16,					g_map_width,						0x0059CC74);
@@ -1310,7 +1425,7 @@ BW_DATA(NetPlayer*,         g_net_players,                  0x0066FE20);
 BW_REF(char,                g_unk_sprite_related,           0x0048E2FD);
 
 typedef int (__fastcall MinimapVisionCallback)();
-BW_DATA(MinimapVisionCallback*, g_minimap_vision_callback,	0x0059C188);
+BW_REF(MinimapVisionCallback*, g_minimap_vision_callback,	0x0059C188);
 
 BW_DATA(u8*,  g_replay_cmd_buffer,  0x006552B0);
 BW_DATA(u8*,  g_replay_cmd_players, 0x006554D8);
@@ -1333,6 +1448,10 @@ BW_REF(const u16,   g_map_tileset,                  0x0057F1DC);
 
 BW_REF(GrpHead*,    g_wwire_image_buffer_ptr,       0x0068C204);
 
+// Storm allocation source filenames for memory leak logging.
+BW_DATA(const char*, g_stormsource_mask_cpp, 0x00504534);  //"mask.cpp"
+BW_DATA(const char*, g_stormsource_sight_cpp, 0x005056D0); //"sight.cpp"
+
 //-------- Format strings used by Starcraft implementations of printf --------//
 
 BW_DATA(const char*, FORMATSTRING_TEXT_SPACE_TEXT, 0x00503614); //"%s %s"
@@ -1353,6 +1472,9 @@ BW_REF(GameData,        g_game_data,            0x005967f8);
 BW_REF(u32,             g_selected_snp,         0x006d5a28);
 BW_REF(s32,             g_glue_background_id,   0x0050E064);
 BW_REF(u16,             g_tileset_id,           0x0057f1dc);
+// Tileset color-cycling range specs walked by 004C99C0: [8] nonzero marks cycling ranges,
+// each a (lo, hi) pair at +9/+10 stepping 8, ending at the zero terminator byte.
+BW_ARRAY(const u8*, 8, g_tileset_cycle_specs, 0x005127dc);
 BW_REF(char,            g_player_name,          0x0057ee9c);
 BW_REF(char,            g_bnet_player_name,     0x0057f094);
 BW_REF(GameTypeList*,   g_game_type_list,       0x0051a270);
@@ -1368,7 +1490,7 @@ BW_REF(SPIFunctions*,       g_spi_functions,        0x1505e620);
 //-------- end storm.dll --------//
 
 BW_REF(bw::Dialog*, g_connect_bin, 0x006d5a24);
-BW_REF(BinDlg*, g_login_bin, 0x005999c4);
+BW_REF(bw::Dialog*, g_login_bin, 0x005999c4);
 BW_REF(bw::Dialog*, g_join_bin, 0x00599a80);
 BW_REF(bw::Dialog*, g_chat_bin, 0x006d5a30);
 BW_REF(BinDlg*, g_minimap_bin, 0x0059cb5c);
@@ -1379,15 +1501,33 @@ BW_REF(DialogFadeInfo, g_dialog_fade_info, 0x006cef50);
 // For register_functions_and_background and change_menu
 BW_REF(u32, g_menu_z_index, 0x0051c4b8);
 BW_REF(BinDlg*, g_current_menu_dlg, 0x0051c418);
+// Head of the active-root dialog chain: generic_dialog_interact (00418F0D InitChildren)
+// head-inserts every initialized root via next, in reverse load order. Input dispatch
+// (00419FD0) and destruction walk this chain — never treat a root's next as tree-local.
 BW_REF(BinDlg*, g_current_main_dlg, 0x006d5e34);
 BW_REF(Bitmap, g_background, 0x0051c000);
 BW_REF(Palette, g_background_palette, 0x0051c008);
 BW_REF(Palette, g_init_palette, 0x005994e0);
 BW_ARRAY(MenuBackground, 27, g_menu_backgrounds, 0x004ffad4);
 
+// Target fade palette; 0041E5C0 blends g_display_palette toward this (004DB060 copies g_init_palette here initially).
+BW_REF(Palette, g_target_palette, 0x006ceb40);
+
 // Final palette pushed to SDrawUpdatePalette after applying all effects
 BW_REF(Palette, g_display_palette, 0x006ce320);
 BW_REF(Palette, g_dialog_transition_palette, 0x006d05b0);
+
+// For translucent_fx_blit (00416F30 replacement): PCX-effects blend shade and
+// its render_bitmap mode-5 alternates
+BW_REF(u8, g_current_palette_index, 0x006d05a4);
+BW_REF(u8, g_combobox_palette, 0x006d0c50);
+BW_REF(u32, g_fx_blend_alt_palette, 0x006d5eb8);
+
+// Palette index that blends over the background for the current theme
+// (tEffect.pcx, cached by load_dialog_palettes); 0051A194 is the mode-5
+// alternate - black in-game, giving the uniform darkening
+BW_REF(u8, g_translucent_index, 0x0051a18c);
+BW_REF(u8, g_translucent_index_alt, 0x0051a194);
 
 // For console_index override
 BW_REF(u8, g_console_nation_id, 0x0057f1b0);

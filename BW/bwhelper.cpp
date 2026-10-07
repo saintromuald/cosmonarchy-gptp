@@ -6019,6 +6019,16 @@ namespace helper {
         }
     }
 
+    void get_color_handle(u16 color) {
+        const u32 func_address = 0x0041F610;
+        _asm {
+            PUSHAD
+            MOV AX, color
+            CALL func_address
+            POPAD
+        }
+    }
+
     void set_font_handle(u32* font) {
         const u32 func_address = 0x0041FB30;
 
@@ -6456,6 +6466,16 @@ namespace helper {
         const u32 func_address = 0x00459770;
         __asm {
             PUSHAD
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void invalidate_dialog_region(RECT* rect) {
+        const u32 func_address = 0x0041C200;
+        __asm {
+            PUSHAD
+            MOV EAX, rect
             CALL func_address
             POPAD
         }
@@ -13337,7 +13357,7 @@ namespace helper {
         }
     }
 
-    void initialize_dialog(u32(__fastcall* function)(BinDlg*, DialogEvent*), BinDlg* dialog) {
+    void initialize_dialog(BinDlg* dialog, u32(__fastcall* function)(BinDlg*, DialogEvent*)) {
         const u32 func_address = 0x00419D20;
         __asm {
             PUSHAD
@@ -14608,6 +14628,114 @@ namespace helper {
         return result;
     }
 
+    void init_sight_values(u32 count, u32* table, u32 tile_width) {
+        const u32 func_address = 0x0042AD60;
+        __asm {
+            PUSHAD
+            PUSH tile_width
+            MOV ECX, table
+            MOV EAX, count
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void blit_bitmap_with_flags(const Box16* clip, Bitmap* bitmap, s32 source_x, s32 source_y, u32 flags) {
+        const u32 func_address = 0x004EF440;
+        __asm {
+            PUSHAD
+            PUSH flags
+            PUSH source_y
+            PUSH source_x
+            PUSH bitmap
+            MOV ECX, clip
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void present_rect(const s32* rect) {
+        const u32 func_address = 0x0041D3A0;
+        __asm {
+            PUSHAD
+            MOV ESI, rect
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void call_layer_update(void* proc, graphics::Bitmap* surface, void* clip) {
+        __asm {
+            PUSHAD
+            PUSH clip
+            PUSH surface
+            XOR EDX, EDX
+            XOR ECX, ECX
+            MOV EAX, proc
+            CALL EAX
+            POPAD
+        }
+    }
+
+    u32 register_shutdown_proc(u32 proc) {
+        const u32 func_address = 0x004F6100;
+        static s32 result;
+        __asm {
+            PUSHAD
+            MOV EBX, proc
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return u32(result);
+    }
+
+    u32 load_sfx_data(u32 dest, u32 filename) {
+        const u32 func_address = 0x004D2E80;
+        static s32 result;
+        __asm {
+            PUSHAD
+            PUSH filename
+            MOV EAX, dest
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return u32(result);
+    }
+
+    u32 load_sfx_table(u32 entry_count, u32 entry_table, u32 type_count, u32 type_table, u32 sound_files, u32 loader) {
+        const u32 func_address = 0x00415CC0;
+        static s32 result;
+        __asm {
+            PUSHAD
+            PUSH loader
+            PUSH sound_files
+            PUSH type_table
+            MOV EAX, entry_count
+            MOV ECX, entry_table
+            MOV EDX, type_count
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return u32(result);
+    }
+
+    u32 init_directsound(void* error_buffer, u32 window) {
+        const u32 func_address = 0x004BCB70;
+        static s32 result;
+        __asm {
+            PUSHAD
+            PUSH window
+            MOV EAX, error_buffer
+            CALL func_address
+            MOV result, EAX
+            POPAD
+        }
+        return u32(result);
+    }
+
     Image* make_cloaked(u8 param, Sprite* sprite, u8 status, u8 timer) {
         const u32 func_address = 0x00497FD0;
         static Image* result;
@@ -15044,14 +15172,14 @@ namespace helper {
         }
     }
 
-    u16 create_context_tooltip(s32 height, s32 width, char* text) {
+    u16 create_context_tooltip(s32 x, s32 y, char* text) {
         const u32 func_address = 0x00481510;
         static u16 result;
         __asm {
             PUSHAD
             PUSH text
-            PUSH width
-            MOV EAX, height
+            PUSH y
+            MOV EAX, x
             CALL func_address
             MOV result, AX
             POPAD

@@ -4,6 +4,7 @@
 #include "systems/triggers/trigger_system.h"
 #include "config.h"
 #include "hooks/psi_field.h"
+#include "systems/display/display.h"
 
 bool unit_is_owned_by_current_player_new(Unit* unit) {
     if (!g_is_in_replay && !g_globals->players[g_local_nation_id].witness_mode) {
@@ -238,8 +239,8 @@ namespace hooks {
                     // locate surrounding units for unit_list
                     local_temp_box16_structure.left = g_move_to_x;
                     local_temp_box16_structure.top = g_move_to_y;
-                    local_temp_box16_structure.right = g_move_to_x + 640;
-                    local_temp_box16_structure.bottom = g_move_to_y + 400;
+                    local_temp_box16_structure.right = g_move_to_x + g_display.world_width();
+                    local_temp_box16_structure.bottom = g_move_to_y + g_display.world_height();
                     units_in_bounds = helper::get_all_units_in_bounds(&local_temp_box16_structure);
                     sorted_list_length = sort_all_units(clicked_unit, local_temp_array_1, units_in_bounds);
 
@@ -271,8 +272,8 @@ namespace hooks {
                     // prepare to locate surrounding units for unit_list
                     local_temp_box16_structure.left = g_move_to_x;
                     local_temp_box16_structure.top = g_move_to_y;
-                    local_temp_box16_structure.right = g_move_to_x + 640;
-                    local_temp_box16_structure.bottom = g_move_to_y + 400;
+                    local_temp_box16_structure.right = g_move_to_x + g_display.world_width();
+                    local_temp_box16_structure.bottom = g_move_to_y + g_display.world_height();
 
                     // save existing unit_list to a temporary array
                     for (s32 i = 0; i < SelectionCap; i++) {

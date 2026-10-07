@@ -2,6 +2,8 @@
 #include "BW/structures.h"
 
 inline u8 g_tfontgame_image_data[328]; // Larger tfont.pcx buffer to fit the new colors.
+// Per-slot ring message colors: written by print via set_display_text_color, read by the
+// screen text draw (screen_text.cpp).
 inline u16 display_text_color[11];
 namespace hooks {
     void display_establishing_shot();														// 004D9200, hooked by X405
@@ -36,7 +38,6 @@ namespace hooks {
     void minimap_dlg_Create_patch_A5242();
     void getColourID_new();
     void set_display_text_color();
-    void get_display_text_color();
 
     // Preview minimap with UMS
     void preview_minimap_patch_EF066();

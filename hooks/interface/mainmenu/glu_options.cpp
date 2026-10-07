@@ -23,9 +23,9 @@
 
 #include <magic_enum/magic_enum.hpp>
 
+static constexpr auto TabCount = 5;
 static constexpr auto TabHorizontalOffset = 99;
-static constexpr auto TabHorizontalStart = 232;
-static constexpr auto TabCount = 4;
+static constexpr auto TabHorizontalStart = 1908 - (TabCount * TabHorizontalOffset);
 
 static constexpr auto CheckboxHeight = 20;
 static constexpr auto ComboboxHeight = 20;
@@ -360,19 +360,25 @@ GluOptions::GluOptions()
     const char hotkey_color = static_cast<char>(LobbyTextColor::YellowGreen);
     const char revert_color = static_cast<char>(LobbyTextColor::Revert);
 
-    image(DialogBounds::from_xywh(0, 0, 640, 480), "glue\\dynamic\\fullscreen_tabs.pcx")->translucent();
-    m_cancel_button = lightup_button(DialogBounds::from_xywh(481, 429, 130, 34),
+    image(DialogBounds::from_xywh(0, 0, 1920, 1080), "glue\\dynamic\\fullscreen_tabs.pcx")->translucent();
+    m_cancel_button = lightup_button(DialogBounds::from_xywh(1761, 1029, 130, 34),
         std::format("{}C{}ancel", hotkey_color, revert_color))->enable_hotkey('c')->set_cancel();
-    m_ok_button = lightup_button(DialogBounds::from_xywh(262, 429, 204, 34),
+    m_ok_button = lightup_button(DialogBounds::from_xywh(1542, 1029, 204, 34),
         std::format("Apply {}O{}ptions", hotkey_color, revert_color))->enable_hotkey('o')->set_default();
 
-    m_misc_tab_button    = lightup_button(DialogBounds::from_xywh(236, 16, 86, 24),
+    auto tab_index = 0;
+    auto button_x = [&tab_index]() {
+        auto x = TabHorizontalStart + 4 + (tab_index * TabHorizontalOffset);
+        tab_index++;
+        return x;
+    };
+    m_misc_tab_button    = lightup_button(DialogBounds::from_xywh(button_x(), 16, 86, 24),
         std::format("{}M{}isc", hotkey_color, revert_color))->enable_hotkey('m');
-    m_ui_tab_button      = lightup_button(DialogBounds::from_xywh(335, 16, 86, 24),
+    m_ui_tab_button      = lightup_button(DialogBounds::from_xywh(button_x(), 16, 86, 24),
         std::format("{}U{}i", hotkey_color, revert_color))->enable_hotkey('u');
-    m_color_tab_button   = lightup_button(DialogBounds::from_xywh(434, 16, 86, 24), 
+    m_color_tab_button   = lightup_button(DialogBounds::from_xywh(button_x(), 16, 86, 24),
         std::format("Co{}l{}or", hotkey_color, revert_color))->enable_hotkey('l');
-    m_audio_tab_button = lightup_button(DialogBounds::from_xywh(533, 16, 86, 24),
+    m_audio_tab_button = lightup_button(DialogBounds::from_xywh(button_x(), 16, 86, 24),
         std::format("{}A{}udio", hotkey_color, revert_color))->enable_hotkey('a');
 
     m_misc_tab    = make_misc_tab();
@@ -460,8 +466,6 @@ ui::Group* GluOptions::make_misc_tab() {
     cursor.pad_vertical();
 
     options_label(tab, cursor, "Launch Settings");
-    linked_checkbox(tab, cursor, "Disable WMode Prompt", m_config.disable_wmode_prompt);
-    linked_checkbox(tab, cursor, "Prefer WMode", m_config.prefer_wmode);
     linked_checkbox(tab, cursor, "Suppress Windows Key", m_config.suppress_windows_key);
     cursor.pad_vertical();
 
@@ -469,6 +473,8 @@ ui::Group* GluOptions::make_misc_tab() {
     linked_checkbox(tab, cursor, "Celebrations", m_config.celebrations_enabled);
     linked_checkbox(tab, cursor, "Flash Window on Lobby Join", m_config.flash_window_lobby_join)
         ->tooltip("Flashes the window when a player joins even if Cosmonarchy is in the background");
+    linked_checkbox(tab, cursor, "Allow World Zoom", m_config.world_zoom)
+        ->tooltip("Enable zooming with mouse scroll wheel");
     cursor.pad_vertical();
 
     options_label(tab, cursor, "Replays");

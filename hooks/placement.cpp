@@ -1,15 +1,37 @@
 #include "placement.h"
+#include "display/mouse.h"
+#include "systems/display/display.h"
+#include "graphics/Bitmap.h"
 #include "data_ext.h"
 #include <hooks/limits/sfx_extender.h>
 
 namespace hooks {
-    s32 init_placement_box_pos(s32 unused, v2u16* placement_pos) { // 0048D660
-        if (g_mouse->x < 0 || g_mouse->x >= 640 ||
-            g_mouse->y < 0 || g_mouse->y >= 400) {
+    // Placement layer update proc; clips layer bitmap against world viewport and blits to screen (replaces hardcoded 640x400 with world_width/height).
+    void __stdcall draw_placement_layer(graphics::Bitmap* surface, Bounds* clip) { // 0048D5C0
+        Bounds rect;
+        rect.left = clip->left < 0 ? 0 : clip->left;
+        rect.top = clip->top < 0 ? 0 : clip->top;
+        rect.right = s16(clip->left + s32(g_display.world_width()) + rect.left - 1);
+        rect.bottom = s16(clip->top + s32(g_display.world_height()) + rect.top - 1);
+
+        rect.width = s16(surface->width);
+        rect.height = s16(surface->height);
+
+        const s32 x = clip->left > 0 ? 0 : -s32(clip->left);
+        const s32 y = clip->top > 0 ? 0 : -s32(clip->top);
+        FxnDrawIconData icon{surface->width, surface->height, surface->data};
+        helper::bw_print_icon(&rect, &icon, x, y);
+    }
+
+    s32 init_placement_box_pos(v2u16* placement_pos) { // 0048D660
+        // g_world_cursor is the zoom-mapped camera-relative position — the space
+        // the tile math expects; raw g_mouse is unmapped surface space.
+        v2s32 pos = g_world_cursor;
+        if (pos.x < 0 || pos.x >= g_display.world_width() ||
+            pos.y < 0 || pos.y >= g_display.world_height()) {
             return 0;
         }
 
-        v2s32 pos = *g_mouse;
         v2u16 dims = units_dat::building_dimensions[g_place_building_unit_id];
         pos.x -= dims.x / 2;
         pos.y -= dims.y / 2;
@@ -21,13 +43,12 @@ namespace hooks {
         return 1;
     }
 
-    u8 draw_placement_box(v2u16 unused) { // 0048DDC0
-        v2u16 placement_pos = unused;
+    u8 draw_placement_box() { // 0048DDC0
         u8 result = g_is_placing_building;
         if (!result) {
             return result;
         }
-        unused.x = g_mouse->y;
+        v2u16 placement_pos = {};
         if (helper::init_placement_box_pos(&placement_pos)) {
             g_place_building_message_id = helper::update_placement_state_for_placement_box();
             helper::refresh_layers_3_and_4();

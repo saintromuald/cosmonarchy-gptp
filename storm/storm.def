@@ -65,12 +65,18 @@ EXPORTS
     SFileReadFile@20               @269 NONAME
     SFileSetFilePointer@16         @271 NONAME
 
+    ; ---- SBlt ----
+    SBltROP3@32                    @313 NONAME
+
     ; ---- SBmp ----
     SBmpDecodeImage@36             @321 NONAME
     SBmpLoadImage@28               @323 NONAME
     SBmpAllocLoadImage@32          @325 NONAME
 
     ; ---- SDraw ----
+    SDrawLockSurface@20            @350 NONAME
+    SDrawRealizePalette            @354 NONAME
+    SDrawUnlockSurface@16          @356 NONAME
     SDrawUpdatePalette@16          @357 NONAME
 
     ; ---- SMem ----
@@ -81,6 +87,14 @@ EXPORTS
     SRegLoadValue@16               @423 NONAME
 
     ; ---- STrans ----
+    STransBltUsingMask@20         @432 NONAME
+    STransDelete@4                @434 NONAME
+    STransDuplicate@8             @436 NONAME
+    STransIntersectDirtyArray@16  @437 NONAME
+    STransInvertMask@8            @438 NONAME
+    STransSetDirtyArrayInfo@16    @440 NONAME
+    STransCombineMasks@24         @443 NONAME
+
     STransCreateE@28               @445 NONAME
 
     ; ---- SVid ----

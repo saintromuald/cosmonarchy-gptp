@@ -2,6 +2,7 @@
 #include "hooks/snp.h"
 #include "glu_campaign.h"
 #include "glu_options.h"
+#include "glu_chat.h"
 
 static void update_window() {
     if (!g_main_window) return;

@@ -4,6 +4,7 @@
 #include "BW/enumerations.h"
 #include "magic_enum/magic_enum.hpp"
 #include "systems/audio/music_system.h"
+#include "systems/ui/widgets.h"
 
 namespace {
 static std::unique_ptr<GluJoinCrownlinkContext> g_context;
@@ -240,10 +241,10 @@ u32 GluJoinCrownlinkContext::on_activate(bw::Dialog* dialog, DialogEvent* event)
             return 1;
         } break;
         case GluJoinControls::LobbyPasswordSet: {
-            auto disallowed_chars = g_string_empty;
-            char password[password_max_length + 5]{};
-            if (helper::glu_modal_string_prompt("Enter a new password", password, password_max_length, disallowed_chars) && password[0]) {
-                update_password(password);
+            std::string new_password;
+            if (ui::modal_string_prompt("Enter a new password", new_password)) {
+                if (new_password.size() >= password_max_length) new_password.resize(password_max_length);
+                update_password(new_password.c_str());
             }
             return 1;
         } break;

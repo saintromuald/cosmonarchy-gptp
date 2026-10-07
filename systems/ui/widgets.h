@@ -109,6 +109,12 @@ public:
     Widget* on_check_toggle(std::move_only_function<void(Widget&, u8, bool)> callback);
     Widget* on_row_hover(std::move_only_function<void(Widget&, u8)> callback);
 
+    // Custom draw function replacing the control type's default draw. The callback
+    // runs in the dialog repaint pass (0x0041C080): the target is the parent
+    // container's surface and coordinates are parent-relative, matching the
+    // widget's bounds - the same context bw_print_xy / draw_box already use.
+    Widget* on_draw(std::move_only_function<void(Widget&)> callback);
+
     // Non-Builder methods
     void set_text(std::string text);
     const std::string& text() const { return m_text; };
@@ -181,12 +187,15 @@ private:
     Widget() = default;
     Widget(DialogBounds bounds, DialogControlType type, u16 index);
 
+    static void __fastcall draw_forward(bw::Dialog* dialog, DialogEvent* event, u32 user, void* draw_context);
+
 private:
     Group* m_group = nullptr;
     bw::Dialog m_dialog;
     std::string m_text; // Display text or image path
     std::deque<std::string> m_strings; // For listbox and combobox
     Callbacks m_callbacks;
+    std::move_only_function<void(Widget&)> m_draw_callback; // Replaces the default draw when set
     u8 m_row_padding = 0; // Extra per-row pixels for listbox/combobox
     std::unique_ptr<Tooltip> m_tooltip; // Optional; nullptr = no tooltip
     u16 m_tooltip_delay_ms = 300;
@@ -344,7 +353,6 @@ private:
 
 class Hud : public Group {
 public:
-    Hud(DialogBounds bounds);
     ~Hud() override;
 
     Hud(const Hud&) = delete;
@@ -356,12 +364,41 @@ public:
     void hide();
     bool is_hidden() const;
 
+    // The container dialog that owns the HUD's compositing surface
+    bw::Dialog* dialog() const { return m_main->dialog(); };
+
     bool passthrough_mouse() const override { return true; }
     bool passthrough_keyboard() const override { return true; }
 
 protected:
+    // Flags select the compositing style; see OverlayHud
+    Hud(DialogBounds bounds, DialogFlags::Enum flags);
+
+    // Links the dialog into the game's list and fires the InitChildren/Create events.
+    // The derived class must add its children first: vanilla's Create handler walks
+    // them to pick the initial keyboard focus
     void initialize();
+
+    virtual void on_initialized() = 0;
+    virtual void on_show() {}
+    virtual void on_hide() {}
 };
+
+// Composited against the world in the game screen buffer (ReverseDialogDirection):
+// the world presents through the container, child widgets draw over it, and the
+// vanilla in-game repaint pass (FUN_0041C7B0) keeps it fresh when the world
+// changes underneath. Clicks reach the map unless a child widget claims them.
+class OverlayHud : public Hud {
+public:
+    explicit OverlayHud(DialogBounds bounds);
+
+protected:
+    void on_initialized() override;
+};
+
+// True for dialogs created by this framework (their interaction function is the
+// widget event forwarder), e.g. to skip bin-dialog bounds fixups in vanilla init
+bool is_widget_dialog(const bw::Dialog* dialog);
 
 bool modal_ok_cancel(std::string_view prompt);
 void modal_ok(std::string_view prompt);
