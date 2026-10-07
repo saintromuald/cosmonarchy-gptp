@@ -8,8 +8,8 @@
 #define NOMINMAX
 #include <windows.h>
 
-// Vanilla cursor hotspot convention: 63 minus the frame offset.
-constexpr s32 CursorHotspotBase = 63;
+// Cursor center location in grp to offset the sprite draw
+constexpr s32 CursorHotspotBase = 126;
 
 struct CursorKey {
     const GrpFile* grp = nullptr;
