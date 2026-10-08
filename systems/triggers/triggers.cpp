@@ -1043,7 +1043,7 @@ Registry g_triggers = Registry()
         // buffers are sized for the full FOV, and this action commonly runs on
         // the first frame (CM maps assign witness slots via trigger).
         if (trigger_player == g_local_nation_id) {
-            hooks::refresh_display_role();
+            display::refresh_display_role();
         }
         if (new_value && g_elapsed_time_frames == 0 && trigger_player == g_local_nation_id) {
             u32 first_player = 0;

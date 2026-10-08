@@ -46,6 +46,13 @@ struct Anchor {
     v2s32 world;
 };
 
+// Half-open pixel span [begin, end); empty when it covers nothing.
+struct PixelSpan {
+    u16 begin = 0;
+    u16 end = 0;
+    bool empty() const { return begin >= end; }
+};
+
 } // zoom
 
 class WorldZoom {
@@ -63,6 +70,16 @@ public:
     // awaits handoff (the 100% landing frame presents 1:1 but must still
     // release the anchor), or the world is magnified.
     bool needs_transform() const;
+    bool transition_running() const { return m_current_units != m_target_units; }
+    bool anchor_active() const { return m_anchor.active; }
+
+    // Output span covering the absolute world pixel range; empty outside the crop.
+    zoom::PixelSpan surface_span_for_world_x(s32 world_begin, s32 world_end) const;
+    zoom::PixelSpan surface_span_for_world_y(s32 world_begin, s32 world_end) const;
+
+    // World span sampled by the output pixel range; the inverse of the map above.
+    zoom::PixelSpan world_span_for_surface_x(s32 surface_begin, s32 surface_end) const;
+    zoom::PixelSpan world_span_for_surface_y(s32 surface_begin, s32 surface_end) const;
 
     u32 percent() const;
 
@@ -83,8 +100,12 @@ public:
     u16 visible_width() const;
     u16 visible_height() const;
 
-    // Resamples world rectangle using precomputed lookups via scratch buffer.
-    void scale_world(u8* surface);
+    // Resamples the world buffer's crop onto the destination surface.
+    void scale_world(u8* destination, const u8* world, s32 world_pitch);
+
+    // Resamples only the surface grid's dirty cells from the world buffer: the
+    // partial-frame counterpart of scale_world, driven by the propagated marks.
+    void scale_world_region(u8* destination, const u8* world, s32 world_pitch);
 
 private:
     u32 floor_units() const;
@@ -92,6 +113,8 @@ private:
     u32 source_extent(u32 output_extent) const;
     void advance_transition(u32 now);
     void rebuild_lookup();
+    void resample_rect(u8* destination, const u8* world, s32 world_pitch,
+        u32 out_left, u32 out_top, u32 out_right, u32 out_bottom);
 
     u32 m_current_units = zoom::BaseUnits;
     u32 m_transition_start_units = zoom::BaseUnits;

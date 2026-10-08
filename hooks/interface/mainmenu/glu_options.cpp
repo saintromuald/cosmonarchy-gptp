@@ -613,6 +613,8 @@ ui::Group* GluOptions::make_ui_tab() {
     linked_checkbox(tab, cursor, "Extended Camera Hotkeys", m_config.extended_camera_hotkeys);
     linked_checkbox(tab, cursor, "Show Timer", m_config.show_timer);
     linked_checkbox(tab, cursor, "Show APM", m_config.show_apm);
+    linked_checkbox(tab, cursor, "Show Performance Stats", m_config.show_perf_stats)
+        ->tooltip("On-screen tick/present timings, loop load, and dirty-cell coverage");
     linked_checkbox(tab, cursor, "Always Show Ext. Tooltips", m_config.always_show_extended_tooltips);
     cursor.pad_vertical();
 

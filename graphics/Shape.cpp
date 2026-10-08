@@ -105,6 +105,9 @@ void Shape::set_filled_circle(s32 x, s32 y, s32 radius, ColorId color, CoordType
 //-------- Drawing --------//
 
 void Shape::draw() const {
+	auto* const target = (graphics::Bitmap*)*g_current_surface;
+	if (!target) return;
+
 	v2s32 p1 = this->p1, p2 = this->p2;
 	switch (this->coordType) {
 		case ON_SCREEN:
@@ -130,43 +133,43 @@ void Shape::draw() const {
 		case Text: {
 			// TODO: Add ability to change font count
 			const char* string = g_graphics.get_string_from_index(this->stringIndex).c_str();
-			g_game_screen_buffer->blitString(string, p1.x, p1.y, this->fontSize);
+			target->blitString(string, p1.x, p1.y, this->fontSize);
 		} break;
 
 		case DOT:
-			g_game_screen_buffer->draw_dot(p1.x, p1.y, this->color);
+			target->draw_dot(p1.x, p1.y, this->color);
 			break;
 
 		case LINE:
-			g_game_screen_buffer->draw_line(p1.x, p1.y, p2.x, p2.y, this->color);
+			target->draw_line(p1.x, p1.y, p2.x, p2.y, this->color);
 			break;
 
 		case BOX:
-			g_game_screen_buffer->draw_box(p1.x, p1.y, p2.x, p2.y, this->color);
+			target->draw_box(p1.x, p1.y, p2.x, p2.y, this->color);
 			break;
 
 		case CIRCLE:
-			g_game_screen_buffer->draw_circle(p1.x, p1.y, this->radius, this->color);
+			target->draw_circle(p1.x, p1.y, this->radius, this->color);
 			break;
 
 		case FILLED_BOX:
-			g_game_screen_buffer->draw_filled_box(p1.x, p1.y, p2.x, p2.y, this->color);
+			target->draw_filled_box(p1.x, p1.y, p2.x, p2.y, this->color);
 			break;
 
 		case FILLED_CIRCLE:
-			g_game_screen_buffer->draw_filled_circle(p1.x, p1.y, this->radius, this->color);
+			target->draw_filled_circle(p1.x, p1.y, this->radius, this->color);
 			break;
 
 		case ELLIPSE:
-			g_game_screen_buffer->draw_ellipse(p1.x, p1.y, p2.x, p2.y, this->color);
+			target->draw_ellipse(p1.x, p1.y, p2.x, p2.y, this->color);
 			break;
 
 		case DOTTED_LINE:
-			g_game_screen_buffer->draw_dotted_line(p1.x, p1.y, p2.x, p2.y, this->color);
+			target->draw_dotted_line(p1.x, p1.y, p2.x, p2.y, this->color);
 			break;
 
 		case DOTTED_ELLIPSE:
-			g_game_screen_buffer->draw_dotted_elipse(p1.x, p1.y, p2.x, p2.y, this->color);
+			target->draw_dotted_elipse(p1.x, p1.y, p2.x, p2.y, this->color);
 			break;
 
 		default:

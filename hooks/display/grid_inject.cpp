@@ -42,6 +42,35 @@ void __declspec(naked) mark_rect_cells_wrapper() {
     }
 }
 
+// 0041E0D0's register convention (eax = left, ecx = top, edx = bottom, [esp+4] = right),
+// patched over vanilla callers that pass world-pixel rects: the placement layer
+// marks (0048D9A0/0048E310) and the drag-select box marks (0046EEB0/0046EEF0/0046EFA0).
+// Those rects are world content drawn before the scale and belong on the
+// world-phase grid, not the surface grid.
+void __declspec(naked) mark_world_rect_wrapper() {
+    static s32 left;
+    static s32 top;
+    static s32 right;
+    static s32 bottom;
+    __asm {
+        PUSH EBP
+        MOV EBP, ESP
+        MOV left, EAX
+        MOV top, ECX
+        MOV bottom, EDX
+        MOV EAX, [EBP + 0x08]
+        MOV right, EAX
+        PUSHAD
+    }
+    hooks::mark_world_rect(left, top, right, bottom);
+    __asm {
+        POPAD
+        MOV ESP, EBP
+        POP EBP
+        RETN 0x04
+    }
+}
+
 // 0045CC90(eax = rect) -> non-zero when rectangle clipped away to nothing.
 void __declspec(naked) clip_rect_to_world_wrapper() {
     static s32* rect;
@@ -98,6 +127,14 @@ void inject_grid_hooks() {
     jump_patch(mark_rect_wrapper, 0x0041E0D0);
     jump_patch(present_frame, 0x0041E280);
     jump_patch(mark_rect_cells_wrapper, 0x0042D280);
+    call_patch(mark_world_rect_wrapper, 0x0048D9DB);
+    call_patch(mark_world_rect_wrapper, 0x0048DA1A);
+    call_patch(mark_world_rect_wrapper, 0x0048E367);
+    call_patch(mark_world_rect_wrapper, 0x0048E3AB);
+    call_patch(mark_world_rect_wrapper, 0x0046EED6);
+    call_patch(mark_world_rect_wrapper, 0x0046EF1B);
+    call_patch(mark_world_rect_wrapper, 0x0046EF97);
+    call_patch(mark_world_rect_wrapper, 0x0046EFC6);
     jump_patch(clip_rect_to_world_wrapper, 0x0045CC90);
     jump_patch(draw_box, 0x004E1D20);
     jump_patch(expire_text_line_wrapper, 0x0048CB80);

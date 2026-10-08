@@ -1,4 +1,5 @@
 #include "refresh.h"
+#include "grid.h"
 #include "../../BW/bwdata.h"
 #include "../../graphics/Bitmap.h"
 
@@ -71,14 +72,15 @@ void apply_edge_fade(s32 top, s32 bottom, s32 left, s32 right, s32 seam) {
     }
 
     const s32 pitch = screen_pitch();
-    const s32 width = right - left;
-    u8* dest_row = g_game_screen_buffer->data + top * pitch + left;
+    const s32 fade_width = right - left;
+    auto* const target = (graphics::Bitmap*)*g_current_surface;
+    u8* dest_row = target->data + top * pitch + left;
 
     for (s32 y = top; y < bottom; ++y) {
         const s32 depth = y - band_top;
         const s32 level = std::max(EdgeFadeLightest - (EdgeFadeLightest - EdgeFadeDarkest) * depth / (EdgeFadeRows - 1), 1);
         const u8* remap = dark_pcx_image_map->index[level];
-        for (s32 x = 0; x < width; ++x) {
+        for (s32 x = 0; x < fade_width; ++x) {
             dest_row[x] = remap[dest_row[x]];
         }
         dest_row += pitch;
@@ -106,7 +108,7 @@ void __cdecl apply_fog(s32 top, s32 bottom, s32 left, s32 right) {
     }
 
     const s32 pitch = screen_pitch();
-    const s32 vis_stride = s32(g_display.vision_stride());
+    const u32 vis_stride = s32(g_display.vision_stride());
 
     // Sub-tile scroll offsets select starting visibility row and column within fog vision buffer.
     const s32 sub_x = (g_move_to_x >> 3) & 3;
@@ -114,7 +116,8 @@ void __cdecl apply_fog(s32 top, s32 bottom, s32 left, s32 right) {
 
     const u8* vis_row = g_fog_vision + sub_x + (sub_y + (top >> 3)) * vis_stride
                         + (left >> 3) + vis_stride;
-    u8* dest_row = g_game_screen_buffer->data + top * pitch + left;
+    auto* const target = (graphics::Bitmap*)*g_current_surface;
+    u8* dest_row = target->data + top * pitch + left;
 
     u32 tile_rows = (u32(bottom - top - 1) >> 3) + 1;
     while (tile_rows--) {
@@ -159,9 +162,9 @@ void __cdecl refresh_dirty_cells(u32 refresh_all) {
     }
 
     // Fog remaps in place, so only marked dirty cells are re-fogged.
-    const s32 stride = g_display.grid_cols();
+    const s32 stride = display::world_phase_stride();
     for (s32 y = 0; y < height; y += cell) {
-        const u8* row = g_display.grid() + (y / cell) * stride;
+        const u8* row = display::world_phase_cells() + (y / cell) * stride;
         s32 x = 0;
         while (x < width) {
             if (!row[x / cell]) {

@@ -131,6 +131,11 @@ namespace helper {
     BW_FUNC(0x004A5EF0, s32 __cdecl, get_music_volume_centibels);   // Master music volume in DS centibels
     BW_FUNC(0x004BC320, void __cdecl, sound_update_volumes);        // Reimplemented in music_hooks; applies g_options_list volumes
 
+    // Graphics init (004DB060) and teardown (004DA310) callees.
+    BW_FUNC(0x00480C20, void __cdecl, pre_graphics_init);
+    BW_FUNC(0x0041D930, void __cdecl, ddraw_init);
+    BW_FUNC(0x0041D8B0, void __cdecl, ddraw_shutdown);
+
     // Register-convention vanilla calls used by the graphics/sound init path.
     u32 register_shutdown_proc(u32 proc);                              // 004F6100, proc in EBX
     u32 load_sfx_data(u32 dest, u32 filename);                         // 004D2E80, dest in EAX

@@ -664,7 +664,7 @@ namespace hooks {
                 u8* dest = &surf_buff[row * surf_w];
                 dest[0] = (u8)color;
                 dest[width - 1] = (u8)color;
-            } while (--row);
+            } while (--row >= 0); // height == 1 must stop at row 0; --row alone spins on negative row
         }
     }
 

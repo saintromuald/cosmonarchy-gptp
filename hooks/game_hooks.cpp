@@ -663,7 +663,7 @@ namespace hooks {
         // assigned (CM maps assign witnesses via a first-frame trigger). Buffers
         // are allocated for the full FOV extent, so growing the world extent here
         // is safe.
-        refresh_display_role();
+        display::refresh_display_role();
 
 #ifdef CM_DEBUG
         helper::play_sound_global(SoundId::Misc_Buzz_wav_1);
@@ -962,7 +962,9 @@ namespace hooks {
             g_active_game_mode->on_tick();
         }
 
-        bw::refresh_screen();
+        // No per-tick full-screen refresh: it forced every present to redraw and
+        // rescale everything, defeating the dirty-cell system. World changes mark
+        // their own cells (images, fog, placement), and shape draws drive want_refresh.
 
         // Needed for extended tooltips
         static bool last_shift = 0;

@@ -1,5 +1,6 @@
 #include "frame_pacing.h"
 #include "grid.h"
+#include "perf_tracker.h"
 #include "../../BW/bwhelper.h"
 #include "../../config.h"
 
@@ -50,12 +51,14 @@ u32 monotonic_us() {
 
 u32 g_last_present_us;
 
-// World changes present immediately; UI/mouse invalidations are rate-limited to redraw_interval_us.
-bool should_present(bool world_changed, u32 now_us) {
-    if (world_changed) {
+// Tick presents are immediate; scroll steps and UI/mouse invalidations coalesce at
+// redraw_interval_us. Scroll steps fire every ScrollStepMs (faster than refresh), so
+// without the cap the full present pipeline runs up to 100x/sec while scrolling.
+bool should_present(bool tick_present, bool world_changed, u32 now_us) {
+    if (tick_present) {
         return true;
     }
-    return now_us - g_last_present_us >= redraw_interval_us() && hooks::has_pending_draw();
+    return now_us - g_last_present_us >= redraw_interval_us() && (world_changed || display::has_pending_draw());
 }
 
 // Milliseconds until next action (tick or scroll clock, capped at ScrollStepMs + 1).
@@ -66,7 +69,7 @@ u32 ms_until_due(u32 now_ms, bool tick_declined) {
     }
     const s32 until_scroll_step = s32(ScrollStepMs + 1 - (g_last_scroll_step_ms_negated + now_ms));
     s32 wait_ms = std::min(until_tick, std::max(until_scroll_step, 0));
-    if (hooks::has_pending_draw()) {
+    if (display::has_pending_draw()) {
         const s32 until_present_us = s32(g_last_present_us + redraw_interval_us() - monotonic_us());
         wait_ms = std::min(wait_ms, std::max((until_present_us + 999) / 1000, 0));
     }
@@ -93,6 +96,7 @@ void __cdecl game_loop_top() {
 
     while (g_game_active) {
         sleep_until_due(ms_until_due(GetTickCount(), tick_declined));
+        const u64 busy_start = perf::now_us();
 
         helper::pump_messages(3);
         const u32 now_ms = GetTickCount();
@@ -117,21 +121,31 @@ void __cdecl game_loop_top() {
 
         // Advances game tick; polls at DeclinedTickPollMs if tick declined (e.g. paused replay or turn not arrived).
         tick_declined = false;
+        bool tick_present = false;
         if (s32(now_ms - g_next_tick_ms) >= 0) {
+            const u64 tick_start = perf::now_us();
             const b32 ticked = helper::run_game_tick(0);
+            perf::record_tick(u32(perf::now_us() - tick_start));
             const bool still_due = s32(now_ms - g_next_tick_ms) >= 0;
             tick_declined = still_due && !ticked;
-            world_changed |= ticked || !still_due;
+            tick_present = ticked || !still_due;
+            world_changed |= tick_present;
         }
 
         helper::update_hud_info();
 
         const u32 now_us = monotonic_us();
-        if (should_present(world_changed, now_us)) {
+        if (should_present(tick_present, world_changed, now_us)) {
             g_wants_redraw = 0;
             g_last_present_us = now_us;
+            const perf::PresentReason reason = tick_present ? perf::PresentReason::Tick
+                : world_changed ? perf::PresentReason::Scroll : perf::PresentReason::Ui;
+            const u64 present_start = perf::now_us();
             helper::refresh_region();
+            perf::record_present(u32(perf::now_us() - present_start), reason);
         }
+
+        perf::record_busy(perf::now_us() - busy_start);
     }
 }
 

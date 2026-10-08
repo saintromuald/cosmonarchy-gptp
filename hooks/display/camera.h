@@ -4,7 +4,7 @@
 namespace hooks {
 
 // Re-derives scroll clamps from the current world extent and zoom; called
-// wherever the display role is (re)applied (see refresh_display_role) and
+// wherever the display role is (re)applied (see display::refresh_display_role) and
 // whenever a zoom transition moves the console overscroll allowance.
 void update_scroll_limits();
 

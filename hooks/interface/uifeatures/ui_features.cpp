@@ -3,6 +3,7 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
+#include <cstring>
 #include <Windows.h>
 #include "config.h"
 #include "systems/triggers/trigger_objectives.h"
@@ -12,6 +13,8 @@
 #include "systems/triggers/trigger_system.h"
 #include "hooks/interface/minimap.h"
 #include "hooks/display/mouse.h"
+#include "hooks/display/grid.h"
+#include "hooks/display/perf_tracker.h"
 #include "Game.h"
 #include "hooks/interface/weapon_armor_tooltip.h"
 #include "hooks/snp.h"
@@ -127,6 +130,47 @@ namespace hooks {
             u32 apm = g_local_apm_counter.action_count / (ActionSampleTime / 60.0);
             sprintf_s(buffer, "APM: %u", apm);
             draw_ui_text(buffer, TextColor::Green);
+        }
+
+        if (g_config.show_perf_stats) {
+            const perf::Window& window = perf::last_window();
+            const s32 text_left = g_ui_text_pos.x;
+            const s32 text_top = g_ui_text_pos.y;
+            char lines[3][64] = {};
+
+            char* pos = lines[0];
+            s32 size = sizeof(lines[0]);
+            appendf(&pos, &size, "tick %u.%ums pres %u.%ums (max %u.%u/%u.%u)",
+                window.tick_avg_us / 1000, window.tick_avg_us / 100 % 10,
+                window.present_avg_us / 1000, window.present_avg_us / 100 % 10,
+                window.tick_max_us / 1000, window.tick_max_us / 100 % 10,
+                window.present_max_us / 1000, window.present_max_us / 100 % 10);
+
+            pos = lines[1];
+            size = sizeof(lines[1]);
+            appendf(&pos, &size, "res %u.%ums blt %u.%ums busy %u%% dirty %u%%",
+                window.resample_avg_us / 1000, window.resample_avg_us / 100 % 10,
+                window.blit_avg_us / 1000, window.blit_avg_us / 100 % 10,
+                window.busy_percent, window.dirty_percent);
+
+            pos = lines[2];
+            size = sizeof(lines[2]);
+            appendf(&pos, &size, "presents %u/s (tick %u scroll %u ui %u)",
+                window.present_count, window.present_tick, window.present_scroll, window.present_ui);
+
+            // At rest nothing else marks the readout's cells; mark only when the text
+            // changed so updates reach the primary without forcing extra presents.
+            static char previous[3][64] = {};
+            const bool changed = std::memcmp(previous, lines, sizeof(lines)) != 0;
+            if (changed) {
+                std::memcpy(previous, lines, sizeof(lines));
+            }
+            for (const char* line : lines) {
+                draw_ui_text(line, TextColor::Green);
+            }
+            if (changed) {
+                mark_rect(text_left, text_top, text_left + 300, g_ui_text_pos.y - 1);
+            }
         }
 
         for (const auto& [key, objective] : g_objectives) {

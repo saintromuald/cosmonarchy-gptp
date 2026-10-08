@@ -1,4 +1,5 @@
 #include "mouse.h"
+#include "grid.h"
 #include "../../BW/bwdata.h"
 #include "../../BW/bwhelper.h"
 #include "../../systems/display/display.h"
@@ -271,6 +272,12 @@ void begin_middle_drag_cursor(v2s32 grab_point) {
 
 void end_middle_drag_cursor() {
     warp_cursor(g_middle_drag_grab);
+
+    // The drag graphic composited into the surface outlives the drag; mark its rect
+    // so the next present resamples the world back under it.
+    const Layer& cursor = g_screen_layers->mouse;
+    mark_rect(s16(cursor.left), s16(cursor.top),
+        s16(cursor.left) + s16(cursor.width) - 1, s16(cursor.top) + s16(cursor.height) - 1);
 
     g_middle_drag_cursor = false;
     g_screen_layers->mouse.buffers = 0;

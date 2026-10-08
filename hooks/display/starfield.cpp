@@ -2,6 +2,7 @@
 
 #include "../../BW/bwdata.h"
 #include "../../systems/display/display.h"
+#include "grid.h"
 
 #include <algorithm>
 
@@ -39,8 +40,8 @@ struct StarEntry {
 // need redrawing.
 bool star_cells_dirty(s32 x, s32 y, s32 width, s32 height) {
     const s32 cell = s32(g_display.cell_size());
-    const s32 stride = s32(g_display.grid_cols());
-    const u8* grid = g_display.grid();
+    const s32 stride = display::world_phase_stride();
+    const u8* grid = display::world_phase_cells();
     const s32 left = x / cell;
     const s32 right = (x + width - 1) / cell;
     const s32 top = y / cell * stride;
@@ -77,7 +78,8 @@ void draw_star(const StarSprite& sprite, s32 x, s32 y, bool skip_clean) {
     }
 
     const s32 pitch = s32(g_display.surface_width());
-    u8* dest = g_game_screen_buffer->data + y * pitch + x;
+    auto* const target = (graphics::Bitmap*)*g_current_surface;
+    u8* dest = target->data + y * pitch + x;
     for (s32 row = 0; row < height; ++row) {
         const u8* src_row = src + row * s32(sprite.width);
         u8* dest_row = dest + row * pitch;
