@@ -20,6 +20,7 @@
 #include "hooks/interface/uifeatures/hotkeys.h"
 #include "systems/audio/audio_system.h"
 #include "systems/display/display.h"
+#include "hooks/display/grid.h"
 #include "hooks/unit_stats/weapon_range.h"
 
 #define NOMINMAX
@@ -972,8 +973,8 @@ u32 get_unit_overlay_adjustment(Unit* const unit) {
 }
 
 void refresh_screen(s32 left, s32 top, s32 right, s32 bottom) {
-    const s32 cols = g_display.grid_cols();
-    const s32 rows = g_display.grid_rows();
+    const s32 cols = display::world_phase_cols();
+    const s32 rows = display::world_phase_rows();
     const s32 cell = s32(g_display.cell_size());
 
     // Vanilla shifted here, which floors; truncating division lets negative
@@ -1007,12 +1008,18 @@ void refresh_screen(s32 left, s32 top, s32 right, s32 bottom) {
     bottom = std::min(bottom, rows - 1);
 
     for (s32 y = top; y <= bottom; ++y) {
-        memset(&g_display.grid()[cols * y + left], 1, right - left + 1);
+        memset(&display::world_phase_cells()[cols * y + left], 1, right - left + 1);
     }
 }
 
 void refresh_screen() {
-    memset(g_display.grid(), 1, g_display.grid_bytes());
+    // Full-world refreshes mark the world grid while zoom presents
+    // The i==2 propagation rescales them onto the surface. At 100% the surface grid is the world grid
+    if (display::world_grid_active()) {
+        display::fill_world_grid(1);
+    } else {
+        memset(g_display.grid(), 1, g_display.grid_bytes());
+    }
 }
 
 void refresh_console() { // 004C36C0

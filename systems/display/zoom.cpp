@@ -1,5 +1,6 @@
 #include "zoom.h"
 #include "display.h"
+#include "../hooks/display/grid.h"
 #include "../../config.h"
 #include "../../BW/bwdata.h"
 #include "../../graphics/expand.h"
@@ -312,8 +313,117 @@ v2s32 WorldZoom::camera_for_visible_origin(v2s32 origin) const {
     };
 }
 
-void WorldZoom::scale_world(u8* surface) {
-    if (!magnified() || !m_lookup_valid || !surface || m_scratch.empty()) {
+// The lookup is monotonic non-decreasing, so the output pixels covering a world
+// range are the contiguous span whose source columns fall inside it.
+zoom::PixelSpan WorldZoom::surface_span_for_world_x(s32 world_begin, s32 world_end) const {
+    zoom::PixelSpan span;
+    if (!magnified() || !m_lookup_valid) {
+        // World pixels are surface pixels at 100%.
+        world_begin = std::max(world_begin, 0);
+        world_end = std::min(world_end, s32(g_display.display_width()));
+        if (world_begin >= world_end) {
+            return span;
+        }
+        span.begin = u16(world_begin);
+        span.end = u16(world_end);
+        return span;
+    }
+
+    const s32 crop_begin = world_begin - s32(m_crop.left);
+    const s32 crop_end = world_end - s32(m_crop.left);
+    if (crop_end <= 0 || crop_begin >= s32(m_crop.width)) {
+        return span;
+    }
+
+    const u16* const first = m_x_lookup.data();
+    const u16* const last = m_x_lookup.data() + g_display.display_width();
+    const u16* begin_pixel = std::lower_bound(first, last, u16(std::max(crop_begin, 0)));
+    const u16* end_pixel = std::lower_bound(first, last, u16(std::min(crop_end, s32(m_crop.width))));
+    span.begin = u16(begin_pixel - first);
+    span.end = u16(end_pixel - first);
+    return span;
+}
+
+zoom::PixelSpan WorldZoom::surface_span_for_world_y(s32 world_begin, s32 world_end) const {
+    zoom::PixelSpan span;
+    if (!magnified() || !m_lookup_valid) {
+        world_begin = std::max(world_begin, 0);
+        world_end = std::min(world_end, s32(g_display.display_height()));
+        if (world_begin >= world_end) {
+            return span;
+        }
+        span.begin = u16(world_begin);
+        span.end = u16(world_end);
+        return span;
+    }
+
+    const s32 crop_begin = world_begin - s32(m_crop.top);
+    const s32 crop_end = world_end - s32(m_crop.top);
+    if (crop_end <= 0 || crop_begin >= s32(m_crop.height)) {
+        return span;
+    }
+
+    const u16* const first = m_y_lookup.data();
+    const u16* const last = m_y_lookup.data() + g_display.display_height();
+    const u16* begin_pixel = std::lower_bound(first, last, u16(std::max(crop_begin, 0)));
+    const u16* end_pixel = std::lower_bound(first, last, u16(std::min(crop_end, s32(m_crop.height))));
+    span.begin = u16(begin_pixel - first);
+    span.end = u16(end_pixel - first);
+    return span;
+}
+
+// Output pixels sample source columns via the same monotonic lookup, so the
+// world range an output range reads is the lookup range at its edges.
+zoom::PixelSpan WorldZoom::world_span_for_surface_x(s32 surface_begin, s32 surface_end) const {
+    zoom::PixelSpan span;
+    if (!magnified() || !m_lookup_valid) {
+        surface_begin = std::max(surface_begin, 0);
+        surface_end = std::min(surface_end, s32(g_display.display_width()));
+        if (surface_begin >= surface_end) {
+            return span;
+        }
+        span.begin = u16(surface_begin);
+        span.end = u16(surface_end);
+        return span;
+    }
+
+    const s32 width = s32(g_display.display_width());
+    surface_begin = std::clamp(surface_begin, 0, width - 1);
+    surface_end = std::clamp(surface_end, 0, width);
+    if (surface_begin >= surface_end) {
+        return span;
+    }
+    span.begin = u16(s32(m_crop.left) + m_x_lookup[surface_begin]);
+    span.end = u16(s32(m_crop.left) + m_x_lookup[surface_end - 1] + 1);
+    return span;
+}
+
+zoom::PixelSpan WorldZoom::world_span_for_surface_y(s32 surface_begin, s32 surface_end) const {
+    zoom::PixelSpan span;
+    if (!magnified() || !m_lookup_valid) {
+        surface_begin = std::max(surface_begin, 0);
+        surface_end = std::min(surface_end, s32(g_display.display_height()));
+        if (surface_begin >= surface_end) {
+            return span;
+        }
+        span.begin = u16(surface_begin);
+        span.end = u16(surface_end);
+        return span;
+    }
+
+    const s32 height = s32(g_display.display_height());
+    surface_begin = std::clamp(surface_begin, 0, height - 1);
+    surface_end = std::clamp(surface_end, 0, height);
+    if (surface_begin >= surface_end) {
+        return span;
+    }
+    span.begin = u16(s32(m_crop.top) + m_y_lookup[surface_begin]);
+    span.end = u16(s32(m_crop.top) + m_y_lookup[surface_end - 1] + 1);
+    return span;
+}
+
+void WorldZoom::scale_world(u8* destination, const u8* world, s32 world_pitch) {
+    if (!magnified() || !m_lookup_valid || !destination || !world || m_scratch.empty()) {
         return;
     }
 
@@ -323,25 +433,78 @@ void WorldZoom::scale_world(u8* surface) {
     const u32 width = m_crop.width;
     const u32 height = m_crop.height;
 
+    // Stage the crop contiguously; the integer fast paths expand from a packed source.
     for (u32 y = 0; y < height; ++y) {
-        std::copy_n(surface + size_t(m_crop.top + y) * pitch + m_crop.left, width, m_scratch.data() + size_t(y) * width);
+        std::copy_n(world + size_t(m_crop.top + y) * world_pitch + m_crop.left, width, m_scratch.data() + size_t(y) * width);
     }
 
     // Integer fast paths: exact 2x/3x magnification is a byte/row expansion.
     if (width * 2 == output_width && height * 2 == output_height) {
-        graphics::expand_integer<2>(m_scratch.data(), surface, pitch, width, height);
+        graphics::expand_integer<2>(m_scratch.data(), destination, pitch, width, height);
         return;
     }
     if (width * 3 == output_width && height * 3 == output_height) {
-        graphics::expand_integer<3>(m_scratch.data(), surface, pitch, width, height);
+        graphics::expand_integer<3>(m_scratch.data(), destination, pitch, width, height);
         return;
     }
 
     for (u32 y = 0; y < output_height; ++y) {
         const u8* source_row = m_scratch.data() + size_t(m_y_lookup[y]) * width;
-        u8* destination_row = surface + size_t(y) * pitch;
+        u8* destination_row = destination + size_t(y) * pitch;
         for (u32 x = 0; x < output_width; ++x) {
             destination_row[x] = source_row[m_x_lookup[x]];
+        }
+    }
+}
+
+// Writes one output rect; the same lookup indexing as the full resample, reading
+// the crop straight out of the world buffer.
+void WorldZoom::resample_rect(u8* destination, const u8* world, s32 world_pitch,
+    u32 out_left, u32 out_top, u32 out_right, u32 out_bottom) {
+    const u32 pitch = g_display.surface_width();
+    for (u32 y = out_top; y < out_bottom; ++y) {
+        const u8* source_row = world + size_t(m_crop.top + m_y_lookup[y]) * world_pitch + m_crop.left;
+        u8* destination_row = destination + size_t(y) * pitch + out_left;
+        for (u32 x = 0; x < out_right - out_left; ++x) {
+            destination_row[x] = source_row[m_x_lookup[out_left + x]];
+        }
+    }
+}
+
+// Resamples the exact output span of each marked world cell. Driving from the world
+// grid (the cells that were actually reprocessed) rather than the surface grid keeps
+// vanilla's invariant - presentation only reads content that was blitted+fogged this
+// frame. Whole-surface-cell resampling at non-integer magnifications sampled past the
+// marked world cells into unmarked ones, presenting stale content and sprite-redraw
+// spills at the edges of updated regions.
+void WorldZoom::scale_world_region(u8* destination, const u8* world, s32 world_pitch) {
+    if (!magnified() || !m_lookup_valid || !destination || !world) {
+        return;
+    }
+
+    const u32 cell = g_display.cell_size();
+    const u32 cols = u32(display::world_phase_cols());
+    const u32 rows = u32(display::world_phase_rows());
+    const u8* cells = display::world_phase_cells();
+    const u32 world_width = g_display.world_width();
+    const u32 world_height = g_display.world_height();
+
+    for (u32 row = 0; row < rows; ++row) {
+        for (u32 col = 0; col < cols; ++col) {
+            if (!cells[row * cols + col]) {
+                continue;
+            }
+            const u32 world_left = col * cell;
+            const u32 world_top = row * cell;
+            const u32 world_right = std::min(world_left + cell, world_width);
+            const u32 world_bottom = std::min(world_top + cell, world_height);
+
+            const zoom::PixelSpan span_x = surface_span_for_world_x(s32(world_left), s32(world_right));
+            const zoom::PixelSpan span_y = surface_span_for_world_y(s32(world_top), s32(world_bottom));
+            if (span_x.empty() || span_y.empty()) {
+                continue;
+            }
+            resample_rect(destination, world, world_pitch, span_x.begin, span_y.begin, span_x.end, span_y.end);
         }
     }
 }

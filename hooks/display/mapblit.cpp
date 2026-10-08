@@ -28,8 +28,9 @@ void __cdecl blit_map_rows(s32 src_offset, s32 rows, const u8* src, u8* dest) {
     const s32 width = g_blit_row_width;
     const s32 src_step = map_pitch - width;
 
-    // Step matches g_game_screen_buffer pitch rather than hardcoded 640.
-    const s32 dest_step = s32(g_game_screen_buffer->width) - width;
+    // Steps by the target pitch (the world buffer while magnified shares the
+    // surface width, so world-phase addressing never changes).
+    const s32 dest_step = s32(g_display.surface_width()) - width;
 
     for (s32 row = 0; row < rows; ++row) {
         s32 remaining = width;
@@ -71,7 +72,9 @@ void __cdecl blit_map_cell_row(s32 y, s32 x, s32 width, s32 src_offset) {
 
     g_blit_row_width = width;
 
-    auto dest = g_game_screen_buffer->data + x + y * s32(g_game_screen_buffer->width);
+    // The world phase's draw target: the world buffer while magnified, the screen at 100%.
+    auto* const target = (graphics::Bitmap*)*g_current_surface;
+    auto dest = target->data + x + y * s32(target->width);
     auto src = g_game_map_data_for_blit + src_offset;
     blit_map_rows(src_offset, rows, src, dest);
 }
@@ -90,7 +93,8 @@ void __cdecl blit_map_viewport() {
         offset -= map_size;
     }
 
-    blit_map_rows(offset, rows, g_game_map_data_for_blit + offset, g_game_screen_buffer->data);
+    auto* const target = (graphics::Bitmap*)*g_current_surface;
+    blit_map_rows(offset, rows, g_game_map_data_for_blit + offset, target->data);
 }
 
 } // hooks

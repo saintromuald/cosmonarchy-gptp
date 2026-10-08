@@ -396,6 +396,7 @@
     <ClCompile Include="hooks\display\camera_inject.cpp" />
     <ClCompile Include="hooks\display\frame_pacing.cpp" />
     <ClCompile Include="hooks\display\frame_pacing_inject.cpp" />
+    <ClCompile Include="hooks\display\perf_tracker.cpp" />
     <ClCompile Include="utility\RegConfig.cpp" />
     <ClCompile Include="req_table.cpp" />
     <ClCompile Include="BW\extender\TileHeight_extender.cpp" />
@@ -810,6 +811,7 @@
     <ClInclude Include="hooks\display\mouse.h" />
     <ClInclude Include="hooks\display\camera.h" />
     <ClInclude Include="hooks\display\frame_pacing.h" />
+    <ClInclude Include="hooks\display\perf_tracker.h" />
     <ClInclude Include="include\yaml-cpp\depthguard.h" />
     <ClInclude Include="include\yaml-cpp\noexcept.h" />
     <ClInclude Include="include\yaml-cpp\src\collectionstack.h" />

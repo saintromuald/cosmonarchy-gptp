@@ -6,6 +6,7 @@
 #include "../../systems/graphics/translucency.h"
 #include "../../storm/storm.h"
 
+#include <algorithm>
 #include <cstddef>
 
 namespace {
@@ -33,11 +34,20 @@ void __cdecl blit_rect(const s32* rect) { // 0041D3A0
 
     const s32 left = rect[0];
     const s32 top = rect[1];
-    const s32 right = rect[2];
-    const s32 bottom = rect[3];
+    const s32 width = rect[2] - left;
+    const s32 height = rect[3] - top;
     const s32 src_pitch = g_display.surface_width();
 
-    SBltROP3((u8*)dest + top * dest_pitch + left, g_game_screen_buffer->data + top * src_pitch + left, right - left, bottom - top, dest_pitch, src_pitch, nullptr, 0xCC0020);
+    // Direct row copy: the SBltROP3 executor stages rows through a scratch capped near
+    // 640px (the same limitation translucent_fx_blit replaces), which 1920-wide rects
+    // can't rely on, and a plain copy is cheaper than the ROP dispatch anyway.
+    auto out = (u8*)dest + size_t(top) * dest_pitch + left;
+    auto in = g_game_screen_buffer->data + size_t(top) * src_pitch + left;
+    for (s32 row = 0; row < height; ++row) {
+        std::copy_n(in, width, out);
+        out += dest_pitch;
+        in += src_pitch;
+    }
 
     SDrawUnlockSurface(0, dest, 1, (void*)rect);
 }

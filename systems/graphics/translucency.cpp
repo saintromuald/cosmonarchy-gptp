@@ -4,6 +4,9 @@
 
 #include <array>
 
+#define NOMINMAX
+#include <Windows.h>
+
 namespace graphics {
 namespace {
 
@@ -40,6 +43,7 @@ std::array<u8, 256> g_row_slots[2]{};
 
 struct RowCache {
     u32 palette_hash = 0;
+    u32 validated_ms = 0;
     u8 tint = 0;
     ui::PalettePreserve mask = ui::PalettePreserve::None;
     bool built = false;
@@ -86,18 +90,22 @@ void build_translucency_row(u8* row, const Palette& palette, u32 weight,
 
 namespace {
 
+// g_init_palette only changes on tileset/menu background loads, but the full-palette
+// hash guarding those events ran on every translucent blit. Validating at most once
+// per tick millisecond keeps a load detectable within one frame at frame-rate cadence.
 const u8* cached_translucency_row(int slot, u8 tint) {
     RowCache& cache = g_row_cache[slot];
-    const u32 hash = palette_rgb_hash(g_init_palette);
-    if (!cache.built || hash != cache.palette_hash || tint != cache.tint
-        || g_translucency_preserve != cache.mask) {
+    const u32 now_ms = GetTickCount();
+    if (!cache.built || tint != cache.tint || g_translucency_preserve != cache.mask
+        || (now_ms != cache.validated_ms && palette_rgb_hash(g_init_palette) != cache.palette_hash)) {
         build_translucency_row(g_row_slots[slot].data(), g_init_palette, TranslucencyWeight, tint,
             g_translucency_preserve, slot != 0);
-        cache.palette_hash = hash;
+        cache.palette_hash = palette_rgb_hash(g_init_palette);
         cache.tint = tint;
         cache.mask = g_translucency_preserve;
         cache.built = true;
     }
+    cache.validated_ms = now_ms;
     return g_row_slots[slot].data();
 }
 

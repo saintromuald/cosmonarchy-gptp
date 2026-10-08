@@ -1,5 +1,6 @@
 #include "fog.h"
 #include "sprites.h"
+#include "grid.h"
 #include "../../BW/bwdata.h"
 #include "../../BW/bwhelper.h"
 #include "../../storm/storm.h"
@@ -208,7 +209,7 @@ void __cdecl mark_fog_changes() {
                 }
 
                 // 1-tile margin to cover adjacent blurred neighbors.
-                helper::bw_refresh(x - tile, y + 2 * tile - 1, y - tile, x + run + tile - 1);
+                hooks::mark_world_rect(x - tile, y - tile, x + run + tile - 1, y + 2 * tile - 1);
                 x += run - tile;
             }
 

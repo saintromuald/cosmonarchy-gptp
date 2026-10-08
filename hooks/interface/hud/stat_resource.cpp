@@ -13,6 +13,8 @@
 #include "systems/display/hud_layout.h"
 #include "systems/triggers/trigger_system.h"
 
+#include <charconv>
+
 namespace {
 namespace layout {
 constexpr s16 ContainerWidth  = 1280;
@@ -85,6 +87,14 @@ void set_text_if_changed(ui::Widget* widget, std::string_view text) {
     if (widget->text() != text) {
         widget->set_text(std::string(text));
     }
+}
+
+// The per-tick updates compare before writing, but std::format allocated on every
+// call; formatting into a stack buffer keeps them allocation-free.
+template <typename T>
+std::string_view format_int(char (&buffer)[12], T value) {
+    char* end = std::to_chars(buffer, buffer + sizeof(buffer), value).ptr;
+    return {buffer, size_t(end - buffer)};
 }
 } // namespace
 
@@ -275,7 +285,11 @@ void StatResource::draw_player_stats(u32 row_index, u32 player, bool use_player_
     }
 
     ensure_visible(row.supply);
-    set_text_if_changed(row.supply, std::format("{}/{}", workers, men));
+    char supply_text[12];
+    char* supply_end = std::to_chars(supply_text, supply_text + sizeof(supply_text), workers).ptr;
+    *supply_end++ = '/';
+    supply_end = std::to_chars(supply_end, supply_text + sizeof(supply_text), men).ptr;
+    set_text_if_changed(row.supply, {supply_text, size_t(supply_end - supply_text)});
 
     ensure_visible(row.gas);
     update_displayed_resource(row.gas, g_displayed_gas[player], resources->gas[player]);
@@ -288,7 +302,10 @@ void StatResource::draw_player_stats(u32 row_index, u32 player, bool use_player_
         const u16 display_value = g_player_table[player].type == PlayerType::Human
             ? u16(g_player_apm_counter[player].action_count / (ActionSampleTime / 60.0))
             : 0x8000; // Computers show "CPU"
-        set_text_if_changed(row.apm, display_value & 0x8000 ? "CPU" : std::format("{}", display_value));
+        char apm_text[12];
+        set_text_if_changed(row.apm, display_value & 0x8000
+            ? std::string_view("CPU")
+            : format_int(apm_text, display_value));
     } else {
         hide_if_visible(row.apm);
     }
@@ -311,7 +328,8 @@ void StatResource::draw_player_stats(u32 row_index, u32 player, bool use_player_
             ui::Widget* widget = row.production[slot];
             ensure_visible(widget);
             row.production_type[slot] = g_production.types[player][slot];
-            set_text_if_changed(widget, std::format("{}", g_production.counts[player][slot]));
+            char count_text[12];
+            set_text_if_changed(widget, format_int(count_text, g_production.counts[player][slot]));
             widget->invalidate();
             production_cursor -= layout::ProductionPitch;
             active_slots = slot + 1;
@@ -352,7 +370,8 @@ void StatResource::update_displayed_resource(ui::Widget* widget, s32& displayed,
     if (difference) {
         displayed += g_elapsed_time_frames > 1 ? (((difference > 0) * 2) - 1) + (difference / 16) : difference;
     }
-    set_text_if_changed(widget, std::format("{}", displayed));
+    char text[12];
+    set_text_if_changed(widget, format_int(text, displayed));
 }
 
 // --------------------------------

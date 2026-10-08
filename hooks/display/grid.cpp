@@ -1,4 +1,6 @@
 #include "grid.h"
+#include "perf_tracker.h"
+#include "framebuffer.h"
 #include "../../BW/bwdata.h"
 #include "../../BW/bwhelper.h"
 #include "../../systems/display/frame_overlay.h"
@@ -37,17 +39,16 @@ u8* cell_at(s32 x, s32 y) {
 }
 
 void mark_cells(u8* out, s32 count) {
-    for (s32 i = 0; i < count; ++i) {
-        out[i] = 1;
-    }
+    std::fill_n(out, count, u8(1));
 }
 
 void fill_grid(u8 value) {
-    auto cells = g_display.grid();
-    const u32 count = g_display.grid_bytes();
-    for (u32 i = 0; i < count; ++i) {
-        cells[i] = value;
-    }
+    std::fill_n(g_display.grid(), g_display.grid_bytes(), value);
+}
+
+u32 count_dirty_cells() {
+    const u8* cells = g_display.grid();
+    return u32(std::count_if(cells, cells + g_display.grid_bytes(), [](u8 cell) { return cell != 0; }));
 }
 
 Layers& g_layers = *g_screen_layers;
@@ -57,7 +58,92 @@ u8& layer_flags(Layer& layer) {
     return *((u8*)&layer + 1);
 }
 
+// World-phase dirty grid: world-lattice marks from image updates, fog changes,
+// and placement erases while the zoom transform presents. At 100% the surface
+// grid is the world grid (identical lattices) and the routing below is inert.
+u8 g_world_grid[display::GridCapacity] = {};
+
+// Set by the fade branch so flush_region keeps its world-grid fill for the next
+// frame's rebuild (fade frames run no walk to consume it first).
+bool g_world_grid_preserved = false;
+
+s32 world_grid_cols() {
+    return s32(display::cells_across(g_display.world_width(), g_display.cell_size()));
+}
+
+s32 world_grid_rows() {
+    return s32(display::cells_across(g_display.world_height(), g_display.cell_size()));
+}
+
 } // namespace
+
+namespace display {
+
+// World-phase dirty-cell view helpers: the world grid while zoom presents, the
+// surface grid otherwise (identical lattices at 100%).
+bool world_grid_active() {
+    return g_zoom.needs_transform() && g_layers.game.buffers;
+}
+
+void fill_world_grid(u8 value) {
+    std::fill_n(g_world_grid, u32(world_grid_cols()) * u32(world_grid_rows()), value);
+}
+
+u8* world_phase_cells() {
+    return world_grid_active() ? g_world_grid : g_display.grid();
+}
+
+s32 world_phase_stride() {
+    return world_grid_active() ? world_grid_cols() : s32(g_display.grid_cols());
+}
+
+s32 world_phase_cols() {
+    return world_grid_active() ? world_grid_cols() : s32(g_display.grid_cols());
+}
+
+s32 world_phase_rows() {
+    return world_grid_active() ? world_grid_rows() : s32(g_display.grid_rows());
+}
+
+bool has_pending_draw() {
+    if (g_wants_redraw || g_full_redraw || g_repaint_pending || g_dialog_refresh_region) {
+        return true;
+    }
+    for (s32 i = 7; i >= 1; --i) {
+        Layer& layer = (&g_layers.mouse)[i];
+        if (layer.buffers && (layer_flags(layer) & 7)) {
+            return true;
+        }
+    }
+    const u8* cells = g_display.grid();
+    if (std::any_of(cells, cells + g_display.grid_bytes(), [](u8 cell) { return cell != 0; })) {
+        return true;
+    }
+    if (world_grid_active()) {
+        const u32 world_count = u32(world_grid_cols()) * u32(world_grid_rows());
+        if (std::any_of(g_world_grid, g_world_grid + world_count, [](u8 cell) { return cell != 0; })) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Re-resolves the replay/witness role and reapplies everything derived from it:
+// the zoom floor (and with it the world extent), the GRP clip immediates, the
+// camera centering immediates, the game layer geometry, and the scroll clamps.
+// Safe at any frame — every extent-sized buffer allocates for the full FOV, so
+// role changes only move logical bounds. Called at game start and from the
+// witness_mode trigger action, which can flip the local player's role at any
+// time (CM maps assign witnesses via a first-frame trigger).
+void refresh_display_role() {
+    apply_display_role();
+    hooks::patch_image_clip();
+    hooks::patch_camera_center_immediates();
+    hooks::init_game_layer();
+    hooks::update_scroll_limits();
+}
+
+} // display
 
 namespace hooks {
 // 0041D710: Checks window draw state and marks all cells if repaint is pending.
@@ -75,6 +161,7 @@ s32 __cdecl begin_frame() {
 
     SDrawRealizePalette();
     fill_grid(1);
+    display::fill_world_grid(1);
     helper::redraw_main_dialog();
     g_repaint_pending = 0;
     return 1;
@@ -139,6 +226,52 @@ void __cdecl mark_rect(s32 left, s32 top, s32 right, s32 bottom) {
     }
 }
 
+// Marks the world-phase grid over the rect (world pixels): the world grid while
+// zoom presents, the surface grid otherwise, where world pixels are surface pixels.
+void mark_world_rect(s32 left, s32 top, s32 right, s32 bottom) {
+    if (!display::world_grid_active()) {
+        mark_rect(left, top, right, bottom);
+        return;
+    }
+
+    const s32 width = s32(g_display.world_width());
+    const s32 height = s32(g_display.world_height());
+    if (left < 0) {
+        left = 0;
+    } else if (left >= width) {
+        return;
+    }
+    if (right < 0) {
+        return;
+    }
+    if (right > width - 1) {
+        right = width - 1;
+    }
+    if (top < 0) {
+        top = 0;
+    } else if (top >= height) {
+        return;
+    }
+    if (bottom < 0) {
+        return;
+    }
+    if (bottom > height - 1) {
+        bottom = height - 1;
+    }
+
+    const s32 stride = world_grid_cols();
+    const s32 first_col = cell_of(left);
+    const s32 first_row = cell_of(top);
+    const s32 last_row = cell_of(bottom);
+    const s32 cols = cell_of(right) - first_col + 1;
+
+    u8* row = g_world_grid + first_row * stride + first_col;
+    for (s32 y = first_row; y <= last_row; ++y) {
+        mark_cells(row, cols);
+        row += stride;
+    }
+}
+
 // 004E1D20: Fills surface rectangle with draw color; guards against null surface buffer.
 void __stdcall draw_box(s32 x, s32 y, s32 box_w, s32 box_h) {
     const s32 rows = s32(u16(box_h));
@@ -157,9 +290,7 @@ void __stdcall draw_box(s32 x, s32 y, s32 box_w, s32 box_h) {
 
     for (s32 row = 0; row < rows; ++row) {
         u8* out = dest->buffer + s32(s16(y + row)) * pitch + s32(s16(x));
-        for (s32 i = 0; i < cols; ++i) {
-            out[i] = color;
-        }
+        std::fill_n(out, cols, color);
     }
 }
 
@@ -181,24 +312,26 @@ u32 __cdecl clip_rect_to_world(s32* rect) {
 }
 
 // 0042D280(esi = rect): marks cells in rect, rewriting rect into cell coordinates.
-// Clamps cell_ceil to grid bounds to prevent writes beyond the 1200-byte grid.
+// Clamps cell indices to the phase lattice to prevent writes beyond the grid;
+// raw image rects can carry negative edges (sprites off the surface top/left).
 void __cdecl mark_rect_cells(s32* rect) {
-    const s32 first_col = cell_of(rect[0]);
-    const s32 first_row = cell_of(rect[1]);
-    const s32 last_col = std::min(cell_ceil(rect[2]), s32(g_display.grid_cols()) - 1);
-    const s32 last_row = std::min(cell_ceil(rect[3]), s32(g_display.grid_rows()) - 1);
+    const s32 first_col = std::max(cell_of(rect[0]), 0);
+    const s32 first_row = std::max(cell_of(rect[1]), 0);
+    const s32 last_col = std::min(cell_ceil(rect[2]), display::world_phase_cols() - 1);
+    const s32 last_row = std::min(cell_ceil(rect[3]), display::world_phase_rows() - 1);
 
     rect[0] = first_col;
     rect[1] = first_row;
     rect[2] = last_col;
     rect[3] = last_row;
 
+    const s32 stride = display::world_phase_stride();
     const s32 cols = last_col - first_col + 1;
-    auto row = cell_at(first_col, first_row);
+    u8* row = display::world_phase_cells() + first_row * stride + first_col;
     while (rect[1] <= last_row) {
         ++rect[1];
         mark_cells(row, cols);
-        row += grid_stride();
+        row += stride;
     }
 
     // Post-increments rect[1] past the last marked row to match vanilla behavior.
@@ -215,14 +348,15 @@ u32 __cdecl object_is_dirty(const u8* object) {
     const s32 cols = cell_of(*(const s16*)(object + 0x28) + left - 1) - first_col + 1;
     const s32 rows = cell_of(*(const s16*)(object + 0x2A) + top - 1) - first_row + 1;
 
-    auto row = (const u8*)cell_at(first_col, first_row);
+    const s32 stride = display::world_phase_stride();
+    const u8* row = display::world_phase_cells() + first_row * stride + first_col;
     for (s32 y = 0; y < rows; ++y) {
         for (s32 x = 0; x < cols; ++x) {
             if (row[x]) {
                 return 1;
             }
         }
-        row += grid_stride();
+        row += stride;
     }
     return 0;
 }
@@ -276,10 +410,104 @@ void __cdecl flush_region() {
     if (!g_storm_blit_chain || !g_storm_update_region) {
         return;
     }
+
+    // Coverage of the surface grid as this present is about to consume it, after
+    // every fill and mark the frame made.
+    perf::record_dirty_cells(count_dirty_cells(), g_display.grid_bytes());
+
+    const u64 blit_start = perf::now_us();
     STransDelete(g_storm_update_region);
     STransIntersectDirtyArray(g_storm_blit_chain, g_display.grid(), 3, &g_storm_update_region);
     helper::present_screen();
     fill_grid(0);
+    if (!g_world_grid_preserved) {
+        display::fill_world_grid(0);
+    }
+    g_world_grid_preserved = false;
+    perf::record_blit(u32(perf::now_us() - blit_start));
+}
+
+// rect_is_dirty's world-phase counterpart: any dirty cell under the world-pixel rect.
+u8 world_rect_is_dirty(s32 left, s32 top, s32 right, s32 bottom) {
+    const s32 first_col = cell_of(left);
+    const s32 first_row = cell_of(top);
+    const s32 last_row = cell_of(bottom - 1);
+    const s32 cols = cell_of(right - 1) - first_col + 1;
+
+    const s32 stride = display::world_phase_stride();
+    const u8* row = display::world_phase_cells() + first_row * stride + first_col;
+    for (s32 y = first_row; y <= last_row; ++y) {
+        for (s32 x = 0; x < cols; ++x) {
+            if (row[x]) {
+                return 1;
+            }
+        }
+        row += stride;
+    }
+    return 0;
+}
+
+// Maps dirty world cells through the crop/lookup onto surface cells, so the world
+// phase's marks drive the resample, present, and HUD invalidation the way the
+// single grid does at 100% (where both lattices are the same buffer).
+void propagate_world_cells() {
+    const s32 cell = s32(g_display.cell_size());
+    const s32 cols = world_grid_cols();
+    const s32 rows = world_grid_rows();
+    const s32 world_width = s32(g_display.world_width());
+    const s32 world_height = s32(g_display.world_height());
+
+    for (s32 row = 0; row < rows; ++row) {
+        const u8* row_cells = g_world_grid + row * cols;
+        for (s32 col = 0; col < cols; ++col) {
+            if (!row_cells[col]) {
+                continue;
+            }
+            const s32 left = col * cell;
+            const s32 top = row * cell;
+            const s32 right = std::min(left + cell, world_width);
+            const s32 bottom = std::min(top + cell, world_height);
+
+            const zoom::PixelSpan span_x = g_zoom.surface_span_for_world_x(left, right);
+            const zoom::PixelSpan span_y = g_zoom.surface_span_for_world_y(top, bottom);
+            if (span_x.empty() || span_y.empty()) {
+                continue;
+            }
+            mark_rect(span_x.begin, span_y.begin, span_x.end - 1, span_y.end - 1);
+        }
+    }
+}
+
+// The inverse of the propagation: surface marks made outside the world phase
+// (dialog updates, text expiry, cursor rects) still need world content restored
+// beneath them. Marks the world cells each dirty surface cell samples so the
+// world phase re-blits them from the ring buffer before the resample reads the
+// crop - the crop region on the surface holds the previous frame's magnified
+// output otherwise, not world pixels.
+void back_propagate_surface_cells() {
+    const s32 cell = s32(g_display.cell_size());
+    const s32 cols = s32(g_display.grid_cols());
+    const s32 rows = s32(g_display.grid_rows());
+    const u8* cells = g_display.grid();
+
+    for (s32 row = 0; row < rows; ++row) {
+        for (s32 col = 0; col < cols; ++col) {
+            if (!cells[row * cols + col]) {
+                continue;
+            }
+            const s32 out_left = col * cell;
+            const s32 out_top = row * cell;
+            const s32 out_right = std::min(out_left + cell, s32(g_display.surface_width()));
+            const s32 out_bottom = std::min(out_top + cell, s32(g_display.surface_height()));
+
+            const zoom::PixelSpan span_x = g_zoom.world_span_for_surface_x(out_left, out_right);
+            const zoom::PixelSpan span_y = g_zoom.world_span_for_surface_y(out_top, out_bottom);
+            if (span_x.empty() || span_y.empty()) {
+                continue;
+            }
+            mark_world_rect(span_x.begin, span_y.begin, span_x.end - 1, span_y.end - 1);
+        }
+    }
 }
 
 // 0041E280: Composites dirty layers to screen surface, builds Storm update region, and presents.
@@ -296,17 +524,29 @@ void __cdecl present_frame() {
     const s32 width = s32(g_display.surface_width());
     const s32 height = s32(g_display.surface_height());
 
-    *g_current_surface = (Bitmap*)g_game_screen_buffer;
-
     if (g_full_redraw) {
+        *g_current_surface = (Bitmap*)g_game_screen_buffer;
         auto data = g_game_screen_buffer->data;
         std::fill_n(data, size_t(g_game_screen_buffer->width) * g_game_screen_buffer->height, 0);
         s32 rect[4] = { 0, 0, width, height };
         helper::present_rect(rect);
+        // The full-screen present copied every pixel already; clearing the grid keeps the
+        // flush below from re-copying them through the storm mask.
+        fill_grid(0);
+        // The black wipe invalidated the world content; full-fill so the next frame rebuilds it.
+        display::fill_world_grid(1);
+        g_world_grid_preserved = true;
     } else {
         hooks::update_world_cursor();
 
         const bool zoom_frame = g_zoom.needs_transform() && g_layers.game.buffers;
+
+        // While magnified, the world layers composite into the dedicated world buffer
+        // and the i==2 resample copies the crop onto the screen surface; at 100% the
+        // world layers draw straight onto the screen as before.
+        *g_current_surface = zoom_frame ? (Bitmap*)&g_world_surface : (Bitmap*)g_game_screen_buffer;
+
+        bool zoom_full = false;
         if (zoom_frame) {
             g_zoom.update_transform();
 
@@ -327,8 +567,47 @@ void __cdecl present_frame() {
                 update_scroll_limits();
             }
 
-            // Dirties full grid so entire zoomed world rectangle is rescaled and presented.
-            fill_grid(1);
+            // Full-world frames fill both grids: a running transition or anchor,
+            // camera motion, a zoom percent change, or a vanilla full-world request
+            // (game layer flag bit 0 - set on scroll, camera jumps, vision flips)
+            // moves content everywhere, so the whole crop rescales. At rest the
+            // tick's world marks drive the frame instead: they propagate onto
+            // surface cells and only those are rescaled and presented.
+            static v2s32 presented_camera = v2s32{ -1, -1 };
+            static u32 presented_percent = 0;
+            const v2s32 current_camera{ g_move_to_x, g_move_to_y };
+            zoom_full = g_zoom.transition_running()
+                || g_zoom.anchor_active()
+                || (layer_flags(g_layers.game) & 1) != 0
+                || current_camera != presented_camera
+                || g_zoom.percent() != presented_percent;
+            presented_camera = current_camera;
+            presented_percent = g_zoom.percent();
+
+            if (zoom_full || g_frame_overlay.registered()) {
+                zoom_full = true;
+                fill_grid(1);
+                display::fill_world_grid(1);
+            } else {
+                back_propagate_surface_cells();
+
+                // High world-mark coverage makes a full-frame reprocess cheaper than many
+                // rect passes - and the full resample may only run on fully reprocessed
+                // content: presenting unmarked cells would surface stale sprite-draw
+                // content (bright flashes in fog) as flicker whenever coverage crosses
+                // the threshold. Promote to a full frame *before* the walk so everything
+                // gets blitted+fogged first.
+                const u32 world_cells = u32(world_grid_cols()) * u32(world_grid_rows());
+                u32 world_marks = 0;
+                for (u32 i = 0; i < world_cells; ++i) {
+                    world_marks += g_world_grid[i] != 0;
+                }
+                if (world_marks * 5 >= world_cells * 3) {
+                    zoom_full = true;
+                    fill_grid(1);
+                    display::fill_world_grid(1);
+                }
+            }
         }
 
         // Dirty the full grid while an overlay is registered to clear previous overlay pixels.
@@ -336,8 +615,10 @@ void __cdecl present_frame() {
             fill_grid(1);
         }
 
-        // 0041CA00 frees dialog refresh regions at frame end; invalidate dirty dialogs before layer updates.
-        if (g_hud_manager) {
+        // 0041CA00 frees dialog refresh regions at frame end; invalidate dirty dialogs before
+        // layer updates. Unzoomed frames keep the original pre-walk position so 100% behavior
+        // is unchanged; zoomed frames invalidate from the i==2 slot after the propagation.
+        if (!zoom_frame && g_hud_manager) {
             g_hud_manager->invalidate_dirty_dialogs();
         }
 
@@ -346,14 +627,39 @@ void __cdecl present_frame() {
         for (s32 i = 7; i >= 1; --i) {
             Layer& layer = (&g_layers.mouse)[i];
 
-            // Scale world layer between world layers (i > 2) and UI layers (HUD/tooltips).
-            if (zoom_frame && i == 2) {
-                g_zoom.scale_world(g_game_screen_buffer->data);
+            // Between the world layers (i > 2) and the UI layers: map this frame's world
+            // marks - tick-time marks plus the walk's own fog and sprite-erase marks -
+            // onto surface cells, then invalidate dialogs over changed world, then
+            // resample the marked output before the HUD draws on top. 0041CA00 frees
+            // dialog refresh regions at frame end, so this stays ahead of the dialog
+            // layer updates at i <= 2 below.
+            if (i == 2) {
+                // Back to the screen surface for the resample and everything drawn on top.
+                *g_current_surface = (Bitmap*)g_game_screen_buffer;
 
-                // Draw unscaled screen-space text and shapes (message log, objectives, custom shapes).
-                if (g_zoom.magnified()) {
-                    hooks::draw_deferred_screen_text();
-                    hooks::draw_deferred_shapes();
+                if (zoom_frame && !zoom_full) {
+                    propagate_world_cells();
+                }
+                if (zoom_frame && g_hud_manager) {
+                    g_hud_manager->invalidate_dirty_dialogs();
+                }
+                if (zoom_frame) {
+                    const u64 resample_start = perf::now_us();
+                    if (zoom_full) {
+                        g_zoom.scale_world(g_game_screen_buffer->data, g_world_surface.data, s32(g_world_surface.width));
+                    } else {
+                        const u32 dirty = count_dirty_cells();
+                        if (dirty) {
+                            g_zoom.scale_world_region(g_game_screen_buffer->data, g_world_surface.data, s32(g_world_surface.width));
+                        }
+                    }
+                    perf::record_resample(u32(perf::now_us() - resample_start));
+
+                    // Draw unscaled screen-space text and shapes (message log, objectives, custom shapes).
+                    if (g_zoom.magnified()) {
+                        hooks::draw_deferred_screen_text();
+                        hooks::draw_deferred_shapes();
+                    }
                 }
             }
 
@@ -371,7 +677,11 @@ void __cdecl present_frame() {
 
             u8& flags = layer_flags(layer);
             if (!(flags & 0x21)) {
-                if (rect_is_dirty(layer.left, layer.top, layer.left + layer.width, layer.top + layer.height)) {
+                // World layers (3-7) check the world-phase view; UI layers the surface grid.
+                const u8 dirty = (i >= 3)
+                    ? world_rect_is_dirty(layer.left, layer.top, layer.left + layer.width, layer.top + layer.height)
+                    : rect_is_dirty(layer.left, layer.top, layer.left + layer.width, layer.top + layer.height);
+                if (dirty) {
                     flags |= 4;
                 } else if (!(flags & 2)) {
                     continue;
@@ -401,20 +711,6 @@ void __cdecl present_frame() {
     *g_current_surface = nullptr;
 }
 
-bool has_pending_draw() {
-    if (g_wants_redraw || g_full_redraw || g_repaint_pending || g_dialog_refresh_region) {
-        return true;
-    }
-    for (s32 i = 7; i >= 1; --i) {
-        Layer& layer = (&g_layers.mouse)[i];
-        if (layer.buffers && (layer_flags(layer) & 7)) {
-            return true;
-        }
-    }
-    const u8* cells = g_display.grid();
-    return std::any_of(cells, cells + g_display.grid_bytes(), [](u8 cell) { return cell != 0; });
-}
-
 void __cdecl refresh_world_cells() {
     const s32 cell = s32(g_display.cell_size());
     const s32 view_width = s32(g_display.world_width());
@@ -426,19 +722,22 @@ void __cdecl refresh_world_cells() {
     // Viewport top-left byte offset in world scratch ring buffer.
     s32 offset = s32((u32(g_move_to_y) * u32(scratch_pitch) + u32(g_move_to_x)) % u32(scratch_size));
 
+    const s32 stride = display::world_phase_stride();
+    const u8* grid_base = display::world_phase_cells();
     for (s32 y = 0; y < view_height; y += cell) {
-        auto row = (const u8*)cell_at(0, y / cell);
+        auto row = grid_base + (y / cell) * stride;
         s32 col = 0;
         while (col < cols) {
             if (offset >= scratch_size) {
                 offset -= scratch_size;
             }
             if (row[col] == 1) {
-                // Span includes one extra cell to match vanilla span/offset stepping.
+                // Exact dirty-run coverage: the resample can sample any world-buffer pixel
+                // (output cells straddle world cells at non-integer magnifications), so
+                // unlike vanilla's screen blit this must not write the one extra cell
+                // past the run - that cell would sit unfogged with nothing to re-fog it.
                 s32 run = 1;
-                s32 scan = col;
-                while (col + run < cols && row[scan]) {
-                    ++scan;
+                while (col + run < cols && row[col + run]) {
                     ++run;
                 }
 
@@ -486,6 +785,7 @@ void __cdecl init_game_layer() {
     game.p_update = g_draw_game_proc;
 
     fill_grid(1);
+    display::fill_world_grid(1);
 
     // 0041E1E0: inlined dirty marking for dialog and building placement layers.
     for (s32 i = 3; i <= 5; ++i) {
@@ -493,21 +793,6 @@ void __cdecl init_game_layer() {
         layer_flags(layer) |= 1;
         mark_rect(s16(layer.left), s16(layer.top), s16(layer.left) + s16(layer.width) - 1, s16(layer.top) + s16(layer.height) - 1);
     }
-}
-
-// Re-resolves the replay/witness role and reapplies everything derived from it:
-// the zoom floor (and with it the world extent), the GRP clip immediates, the
-// camera centering immediates, the game layer geometry, and the scroll clamps.
-// Safe at any frame — every extent-sized buffer allocates for the full FOV, so
-// role changes only move logical bounds. Called at game start and from the
-// witness_mode trigger action, which can flip the local player's role at any
-// time (CM maps assign witnesses via a first-frame trigger).
-void refresh_display_role() {
-    apply_display_role();
-    patch_image_clip();
-    patch_camera_center_immediates();
-    init_game_layer();
-    update_scroll_limits();
 }
 
 } // hooks

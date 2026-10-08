@@ -25,6 +25,7 @@ struct Config {
     bool extended_camera_hotkeys = true;
     bool show_timer = true;
     bool show_apm = true;
+    bool show_perf_stats = false;
     bool always_show_extended_tooltips = false;
     bool suppress_windows_key = false;
 

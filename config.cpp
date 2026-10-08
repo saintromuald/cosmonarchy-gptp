@@ -80,6 +80,7 @@ void load_config() {
     load_field(yaml, "extended-camera-hotkeys", g_config.extended_camera_hotkeys);
     load_field(yaml, "show-timer", g_config.show_timer);
     load_field(yaml, "show-apm", g_config.show_apm);
+    load_field(yaml, "show-perf-stats", g_config.show_perf_stats);
     load_field(yaml, "always-show-extended-tooltips", g_config.always_show_extended_tooltips);
     load_field(yaml, "suppress-windows-key", g_config.suppress_windows_key);
 
@@ -226,6 +227,7 @@ void save_config() {
     write_field(yaml, "extended-camera-hotkeys", g_config.extended_camera_hotkeys);
     write_field(yaml, "show-timer", g_config.show_timer);
     write_field(yaml, "show-apm", g_config.show_apm);
+    write_field(yaml, "show-perf-stats", g_config.show_perf_stats);
     write_field(yaml, "always-show-extended-tooltips", g_config.always_show_extended_tooltips);
     write_field(yaml, "suppress-windows-key", g_config.suppress_windows_key);
     yaml << YAML::Newline << YAML::Newline;

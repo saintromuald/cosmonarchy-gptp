@@ -16,12 +16,17 @@ void clear_errors() {
 
 void draw_error_messages() {
 #ifndef NDEBUG
+	auto* const target = (graphics::Bitmap*)*g_current_surface;
+	if (!target) {
+		return;
+	}
+
 	if (g_error_flags & ERR_UNKNOWN_SHAPE) {
-		g_game_screen_buffer->blitString("Error: Unknown shape found.", 10, 70, 2);
+		target->blitString("Error: Unknown shape found.", 10, 70, 2);
 	}
 
 	if (g_error_flags & ERR_UNKNOWN_COORD_TYPE) {
-		g_game_screen_buffer->blitString("Error: Unknown coordinate flingy_id found.", 10, 100, 2);
+		target->blitString("Error: Unknown coordinate flingy_id found.", 10, 100, 2);
 	}
 #endif
 }

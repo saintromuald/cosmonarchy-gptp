@@ -8,26 +8,16 @@
 
 namespace {
 
-u16 cells_across(u16 pixels, u16 cell) {
-    return u16((u32(pixels) + cell - 1) / cell);
-}
-
 // Smallest power-of-two cell size whose grid fits within 1200 bytes (required by Storm 440).
 u16 resolve_cell(u16 width, u16 height) {
     u16 cell = display::MinCellSize;
-    while (u32(cells_across(width, cell)) * u32(cells_across(height, cell)) > display::GridCapacity) {
+    while (u32(display::cells_across(width, cell)) * u32(display::cells_across(height, cell)) > display::GridCapacity) {
         cell = u16(cell * 2);
     }
     return cell;
 }
 
 } // namespace
-
-// Scratch buffer axis: viewport rounded up to terrain tiles, plus one tile margin for sub-tile scrolling.
-u32 display::map_axis(u16 view) {
-    const u32 tiles = (u32(view) + display::TileSize - 1) / display::TileSize;
-    return (tiles + 1) * display::TileSize;
-}
 
 bool display::window_is_focused() {
     return g_main_window && GetForegroundWindow() == g_main_window;
@@ -37,57 +27,34 @@ void DisplayGeometry::init() {
     m_surface_width = display::SurfaceWidth;
     m_surface_height = display::SurfaceHeight;
     m_cell_size = resolve_cell(m_surface_width, m_surface_height);
+    m_grid_cols = display::cells_across(m_surface_width, m_cell_size);
+    m_grid_rows = display::cells_across(m_surface_height, m_cell_size);
     set_min_zoom_percent(zoom::PlayerMinPercent);
-}
-
-u16 DisplayGeometry::surface_width() const {
-    return m_surface_width;
-}
-
-u16 DisplayGeometry::surface_height() const {
-    return m_surface_height;
 }
 
 // The rendered world extent: display / zoom floor, dword-aligned. Matches the
 // zoom crop extent exactly at the floor (source_extent's rounding), so the crop
 // never exceeds the buffer.
-u16 DisplayGeometry::fov_width() const {
-    const s32 extent = s32(u64(display_width()) * 10000 / (u64(m_min_zoom_percent) * 100));
-    return u16(std::clamp(align_down(extent, 4), 4, s32(display_width())));
-}
-
-u16 DisplayGeometry::fov_height() const {
-    const s32 extent = s32(u64(display_height()) * 10000 / (u64(m_min_zoom_percent) * 100));
-    return u16(std::clamp(align_down(extent, 4), 4, s32(display_height())));
-}
-
-u16 DisplayGeometry::world_width() const {
-    return fov_width();
-}
-
-u16 DisplayGeometry::world_height() const {
-    return fov_height();
+void DisplayGeometry::recompute_world_extents() {
+    const s32 world_width = s32(u64(m_surface_width) * 10000 / (u64(m_min_zoom_percent) * 100));
+    const s32 world_height = s32(u64(m_surface_height) * 10000 / (u64(m_min_zoom_percent) * 100));
+    m_world_width = u16(std::clamp(align_down(world_width, 4), 4, s32(m_surface_width)));
+    m_world_height = u16(std::clamp(align_down(world_height, 4), 4, s32(m_surface_height)));
+    m_map_pitch = display::map_axis(m_world_width);
+    m_map_rows = display::map_axis(m_world_height);
+    m_map_size = m_map_pitch * m_map_rows;
+    m_map_tile_cols = u16(m_map_pitch / display::TileSize);
+    m_map_tile_rows = u16(m_map_rows / display::TileSize);
 }
 
 bool DisplayGeometry::is_widescreen() const {
     return m_surface_width != display::LegacyWidth || m_surface_height != display::LegacyHeight;
 }
 
-u16 DisplayGeometry::display_width() const {
-    return m_surface_width;
-}
-
-u16 DisplayGeometry::display_height() const {
-    return surface_height();
-}
-
 // The role's zoom floor in percent; sets the rendered world extent (display / floor).
-u16 DisplayGeometry::min_zoom_percent() const {
-    return u16(m_min_zoom_percent);
-}
-
 void DisplayGeometry::set_min_zoom_percent(u32 percent) {
     m_min_zoom_percent = std::clamp(percent, u32(display::MinZoomPercent), u32(zoom::MaxPercent));
+    recompute_world_extents();
 }
 
 u16 DisplayGeometry::center_offset_x() const {
@@ -132,42 +99,6 @@ u16 DisplayGeometry::cursor_max_y() const {
 
 u8* DisplayGeometry::grid() const {
     return g_refresh_regions;
-}
-
-u16 DisplayGeometry::cell_size() const {
-    return m_cell_size;
-}
-
-u16 DisplayGeometry::grid_cols() const {
-    return cells_across(m_surface_width, m_cell_size);
-}
-
-u16 DisplayGeometry::grid_rows() const {
-    return cells_across(m_surface_height, m_cell_size);
-}
-
-u32 DisplayGeometry::grid_bytes() const {
-    return u32(grid_cols()) * u32(grid_rows());
-}
-
-u32 DisplayGeometry::map_pitch() const {
-    return display::map_axis(world_width());
-}
-
-u32 DisplayGeometry::map_rows() const {
-    return display::map_axis(world_height());
-}
-
-u32 DisplayGeometry::map_size() const {
-    return map_pitch() * map_rows();
-}
-
-u16 DisplayGeometry::map_tile_cols() const {
-    return u16(map_pitch() / display::TileSize);
-}
-
-u16 DisplayGeometry::map_tile_rows() const {
-    return u16(map_rows() / display::TileSize);
 }
 
 u16 DisplayGeometry::mask_stride() const {
