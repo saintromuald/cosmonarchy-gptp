@@ -1,5 +1,8 @@
 #pragma once
+#include "BW/api.h"
+
 #include <algorithm>
+#include <functional>
 #include <iostream>
 #include <list>
 #include <string>

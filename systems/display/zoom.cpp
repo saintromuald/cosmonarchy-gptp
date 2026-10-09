@@ -138,11 +138,16 @@ u32 WorldZoom::ceiling_units() const {
     return zoom::MaxPercent * 100;
 }
 
+u32 WorldZoom::default_units() const {
+    return std::clamp(zoom::DefaultPercent * 100, floor_units(), ceiling_units());
+}
+
 void WorldZoom::init() {
     m_current_units = zoom::BaseUnits;
     m_transition_start_units = m_current_units;
     m_target_units = m_current_units;
     m_transition_start_tick = GetTickCount();
+    m_last_adjusted_tick = 0;
     m_anchor = {};
     m_lookup_valid = false;
 
@@ -152,11 +157,12 @@ void WorldZoom::init() {
 }
 
 void WorldZoom::begin_game() {
-    const u32 units = std::clamp(zoom::DefaultPercent * 100, floor_units(), ceiling_units());
+    const u32 units = default_units();
     m_current_units = units;
     m_transition_start_units = units;
     m_target_units = units;
     m_transition_start_tick = GetTickCount();
+    m_last_adjusted_tick = 0;
     m_anchor = {};
     m_lookup_valid = false;
 }
@@ -175,6 +181,12 @@ bool WorldZoom::needs_transform() const {
 
 u32 WorldZoom::percent() const {
     return (m_current_units + 50) / 100;
+}
+
+// Maps engine 100%-300% to 50%-150% (200% is player default)
+u32 WorldZoom::player_percent() const {
+    const u32 default_units = zoom::DefaultPercent * 100;
+    return (m_current_units * 100 + default_units / 2) / default_units;
 }
 
 void WorldZoom::update_transform(bool advance_animation) {
@@ -237,18 +249,7 @@ v2s32 WorldZoom::surface_to_world_offset(v2s32 surface_point) const {
     return { s32(m_crop.left) + s32(m_x_lookup[x]), s32(m_crop.top) + s32(m_y_lookup[y]) };
 }
 
-bool WorldZoom::adjust_by_wheel(s32 notches, v2s32 surface_point) {
-    if (!enabled() || notches == 0) {
-        return false;
-    }
-
-    const s64 stepped = s64(m_target_units) + s64(notches) * zoom::StepUnits;
-    const u32 clamped = u32(std::clamp<s64>(stepped, floor_units(), ceiling_units()));
-    const u32 target = detent_target(m_target_units, clamped);
-    if (target == m_target_units) {
-        return true;
-    }
-
+void WorldZoom::begin_transition(u32 target, v2s32 surface_point) {
     const v2s32 surface = {
         std::clamp(surface_point.x, 0, s32(g_display.display_width()) - 1),
         std::clamp(surface_point.y, 0, s32(g_display.display_height()) - 1),
@@ -263,6 +264,37 @@ bool WorldZoom::adjust_by_wheel(s32 notches, v2s32 surface_point) {
     m_transition_start_units = m_current_units;
     m_target_units = target;
     m_transition_start_tick = GetTickCount();
+}
+
+bool WorldZoom::adjust_by_wheel(s32 notches, v2s32 surface_point) {
+    if (!enabled() || notches == 0) {
+        return false;
+    }
+
+    m_last_adjusted_tick = GetTickCount();
+
+    const s64 stepped = s64(m_target_units) + s64(notches) * zoom::StepUnits;
+    const u32 clamped = u32(std::clamp<s64>(stepped, floor_units(), ceiling_units()));
+    const u32 target = detent_target(m_target_units, clamped);
+    if (target == m_target_units) {
+        return true;
+    }
+    begin_transition(target, surface_point);
+    return true;
+}
+
+bool WorldZoom::reset_to_default(v2s32 surface_point) {
+    if (!enabled()) {
+        return false;
+    }
+
+    m_last_adjusted_tick = GetTickCount();
+
+    const u32 target = default_units();
+    if (target == m_target_units) {
+        return true;
+    }
+    begin_transition(target, surface_point);
     return true;
 }
 
@@ -311,6 +343,13 @@ v2s32 WorldZoom::camera_for_visible_origin(v2s32 origin) const {
         s32(camera_for_origin(origin.x, world_width, m_crop.width, (world_width - m_crop.width) / 2, max_camera_x())),
         s32(camera_for_origin(origin.y, world_height, m_crop.height, (world_height - m_crop.height) / 2, max_camera_y())),
     };
+}
+
+v2s32 WorldZoom::camera_for_center(v2s32 point) const {
+    return camera_for_visible_origin({
+        point.x - s32(visible_width()) / 2,
+        point.y - s32(visible_height()) / 2,
+    });
 }
 
 // The lookup is monotonic non-decreasing, so the output pixels covering a world

@@ -162,8 +162,8 @@ namespace hooks {
 		if (g_multiplayer_mode) {
 			*g_cheat_state &= ~(CheatFlags::BlackSheepWall + CheatFlags::WarAintWhatItUsedToBe);
 		}
-		if (!((*g_game_layer).has_been_refreshed & 1)) {
-			(*g_game_layer).unk |= 1;
+		if ((g_screen_layers.game.flags & LayerFlags::NeedsRefresh) == LayerFlags::None) {
+			g_screen_layers.game.flags |= LayerFlags::Marked;
 		}
 		if (!(*g_cheat_state & (CheatFlags::BlackSheepWall + CheatFlags::WarAintWhatItUsedToBe))) {
 			helper::refresh_layer_5();

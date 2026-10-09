@@ -55,6 +55,8 @@ private:
 // mask at the dialog's current bounds. Run after placing a root dialog.
 void refresh_dialog_backdrop(bw::Dialog* dialog);
 
+bool hud_covers(s32 x, s32 y);
+
 class StatResource;
 
 class HudManager {

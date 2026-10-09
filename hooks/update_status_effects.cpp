@@ -237,7 +237,7 @@ namespace hooks {
 		Image* overlay = bw::get_powerup_overlay(sprite);
 		if (overlay) {
 			if (!(overlay->flags & ImageFlags::Invisible)) {
-				if (!(g_game_layer->has_been_refreshed & 1)) {
+				if ((g_screen_layers.game.flags & LayerFlags::NeedsRefresh) == LayerFlags::None) {
 					helper::refresh_image(overlay);
 				}
 				overlay->flags |= ImageFlags::Invisible;

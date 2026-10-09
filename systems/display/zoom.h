@@ -83,14 +83,23 @@ public:
 
     u32 percent() const;
 
+    // Maps engine 100%-300% to 50%-150% (200% is player default)
+    u32 player_percent() const;
+    // GetTickCount of the last zoom input
+    u32 last_adjusted_tick() const { return m_last_adjusted_tick; }
+
     void update_transform(bool advance_animation = true);
     bool adjust_by_wheel(s32 notches, v2s32 surface_point);
+    bool reset_to_default(v2s32 surface_point);
     bool resolve_camera_anchor(v2s32* adjusted);
 
     // Camera position that places the visible crop's top-left at the given world
     // point — the inverse of the edge-aware crop slide, for the minimap
     // click-to-jump. Returns the point unchanged when the world is not magnified.
     v2s32 camera_for_visible_origin(v2s32 origin) const;
+
+    // Camera position that centers the given world point in the visible crop
+    v2s32 camera_for_center(v2s32 point) const;
 
     // Converts surface coordinate to magnified world coordinate relative to camera.
     v2s32 surface_to_world_offset(v2s32 surface_point) const;
@@ -110,7 +119,9 @@ public:
 private:
     u32 floor_units() const;
     u32 ceiling_units() const;
+    u32 default_units() const;
     u32 source_extent(u32 output_extent) const;
+    void begin_transition(u32 target, v2s32 surface_point);
     void advance_transition(u32 now);
     void rebuild_lookup();
     void resample_rect(u8* destination, const u8* world, s32 world_pitch,
@@ -120,6 +131,7 @@ private:
     u32 m_transition_start_units = zoom::BaseUnits;
     u32 m_target_units = zoom::BaseUnits;
     u32 m_transition_start_tick = 0;
+    u32 m_last_adjusted_tick = 0;
 
     zoom::Crop m_crop;
     zoom::Anchor m_anchor;

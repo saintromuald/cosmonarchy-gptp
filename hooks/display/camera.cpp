@@ -3,14 +3,15 @@
 
 #include <algorithm>
 
-// Center-view callers subtract half-viewport before calling move_screen (0049C440):
-// - 004E6020: Centre on unit (immediates re-applied per role, camera_inject.cpp)
+// Center-view callers subtract half-viewport before calling move_screen (0049C440).
+// Zoom-aware callers invert the edge-aware crop slide via g_zoom.
+// - 004E6020: Ctrl+C / portrait centering (hooks::move_screen_to_unit, ui_features.cpp)
 // - 004C6E68: Center View trigger action (immediates re-applied per role, camera_inject.cpp)
 // - 0045E3A3: Remember last event position (immediates re-applied per role, camera_inject.cpp)
 // - 00484460: Middle mouse drag (ui_features.cpp)
 // - 004A4D61: Minimap click and drag (minimap.cpp)
-// - 004967E0: Control group centering (hotkeys.cpp)
-// - bw::move_camera / bw::move_screen_to_unit: read display::center_offset_* directly
+// - 004967E0: Control group centering (ControlGroup::center_camera, structures.cpp)
+// - bw::move_camera: g_zoom.camera_for_center
 //
 // 0049BB90: Sets scroll clamps (g_move_to_x_max, g_move_to_y_max) from map size at load time.
 namespace hooks {

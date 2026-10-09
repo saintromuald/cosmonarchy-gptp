@@ -3,6 +3,8 @@
 #include <string_view>
 #include <type_traits>
 
+#include <magic_enum/magic_enum.hpp>
+
 // Convert a PascalCase/camelCase enum name to snake_case (e.g. "ReadyRoom" -> "ready_room")
 std::string enum_name_to_snake_case(std::string_view name);
 

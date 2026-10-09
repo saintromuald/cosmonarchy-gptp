@@ -176,6 +176,10 @@ void inject_mouse_hooks() {
     jump_patch(refresh_cursor, 0x004BE120);
     jump_patch(cursor_refresh, 0x004BE060);
     jump_patch(refresh_cursor_0, 0x004BE0B0);
+
+    // 0041C987: jz -> jmp. 0041C810 (dialog control present)
+    // Prevent the software cursor from restoring last MMB drag as extra on-screen cursor
+    memory_patch(0x0041C987, u8(0xEB));
     jump_patch(show_os_cursor_wrapper, 0x004D1750);
     call_patch(center_cursor_on_launch_wrapper, 0x004E087A, 38);
     call_patch(center_cursor_on_game_start_wrapper, 0x004D996B, 10);

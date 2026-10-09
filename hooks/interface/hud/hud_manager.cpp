@@ -158,6 +158,12 @@ void HudManager::show() {
     refresh_whole_surface();
 }
 
+bool hud_covers(s32 x, s32 y) {
+    return g_hud_surface
+        && g_hud_surface->surface
+        && STransIsPixelInMask(g_hud_surface->surface, x, y) != 0;
+}
+
 void HudManager::apply_visibility(bool visible) {
     auto update_position = [visible](bw::Dialog* bindlg, DialogBounds& saved, DialogFlags::Enum& saved_flags, s16 dx, s16 dy) {
         if (!bindlg) return;

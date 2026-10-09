@@ -6,41 +6,28 @@
 #include <BW/api.h>
 #include <BW/ExtendSightLimit.h>
 #include "psi_field.h"
-#include <cstdio>
 #include "hooks/interface/uifeatures/hotkeys.h"
 #include "hooks/interface/uifeatures/ui_features.h"
-#include "hooks/interface/hpbars/hpbars.h"
-#include "utils/captivating_claws.h"
 #include "hooks/cosmonarchy_finder.h"
 #include "globals.h"
-#include "target_related.h"
-#include "hooks/orders/ai/ai_orders.h"
 #include "hooks/weapons/weapon_cooldown.h"
-#include "hooks/weapons/weapon_fire.h"
 #include "logger.h"
-#include "limits/sfx_extender.h"
 #include "hooks/weapons/weapon_spellhit.h"
 #include "unit_search.h"
-#include "player_color.h"
-#include "unit_ai.h"
 #include "tactical_ai.h"
 #include "threshold.h"
 #include "ai_layouts.h"
 #include "systems/triggers/trigger_system.h"
 #include "systems/triggers/trigger_parser.h"
-#include "graphics/Bitmap.h"
 #include "data_ext.h"
 #include "config.h"
-#include "color_palette.h"
 #include "custom_ai.h"
 #include "BW\UnitFinder.h"
 #include "hooks/interface/buttonsets.h"
 #include "weapons/weapon_fire.h"
 #include "harvest.h"
-#include <time.h>
 #include "hooks/weapons/weapon_damage.h"
 #include "selection_extender.h"
-#include "hooks/interface/weapon_armor_tooltip.h"
 #include "hooks/update_unit_sight.h"
 #include "hooks/orders/larva_creep_spawn.h"
 #include "Discord.h"
@@ -284,7 +271,7 @@ namespace hooks {
     }
 
     static void draw_transport_ui() {
-        v2u16 start_pos = {179, 346};
+        v2u16 start_pos = {360, 845};
         v2u16 pos = start_pos;
 
         if (g_game->m_transport_ui_unit) {

@@ -2,12 +2,22 @@
 #include "../../types.h"
 #include "common.h"
 
+#include <magic_enum/magic_enum_all.hpp>
+using namespace magic_enum::bitwise_operators;
+
 namespace graphics { struct Bitmap; }
+
+enum class LayerFlags : u8 {
+    None         = 0,
+    NeedsRefresh = 0x01, // full redraw requested; image updates skip their own marking while it is set
+    Marked       = 0x02, // update owed even if the cells read clean (mark_rect_cells, fog, reveal cheats)
+    CellsDirty   = 0x04, // the present walk found dirty cells under the layer
+    AlwaysUpdate = 0x20, // the update runs on every present; only the dialog layer sets this
+};
 
 struct Layer {
 /*00*/  u8  buffers;
-/*01*/  u8  has_been_refreshed  : 1;
-/*01*/  u8  unk					: 7;
+/*01*/  LayerFlags flags;
 /*02*/  u16 left;
 /*04*/  u16 top;
 /*06*/  u16 width;

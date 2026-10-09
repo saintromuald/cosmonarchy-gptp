@@ -671,7 +671,7 @@ namespace hooks {
         jump_patch(draw_show_hide_terrain_context_wrapper, 0x004A4C40, 0);
         jump_patch(draw_cancel_unit_context_wrapper,	   0x00457B10, 4);
         jump_patch(statdata_mouseover_interact_wrapper,    0x00457CE0, 1);
-    //  jump_patch(move_screen_to_unit_wrapper,            0x004E6020, 3); // Working, but disabled to use memory patches instead. -Pr0nogo
+        jump_patch(move_screen_to_unit_wrapper,            0x004E6020, 3);
         jump_patch(get_color_id_wrapper,                   0x0049B0E0, 2);
         jump_patch(draw_minimap_unit_box_2,                0x004A47B0, 4);
 

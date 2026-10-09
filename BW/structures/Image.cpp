@@ -24,7 +24,7 @@ void Image::play_iscript_animation(IscriptAnimation::Enum animation) {
 
 //should be equivalent to helper::image_destructor @ 0x004D4CE0 with ESI = sprite
 void Image::free() {
-	if (!(g_screen_layers->game.has_been_refreshed)) {
+	if ((g_screen_layers.game.flags & LayerFlags::NeedsRefresh) == LayerFlags::None) {
 		// should be equivalent to a call to refreshImage @ 0x004970A0 with EAX = this
 		bw::refresh_screen(this->screen_pos.x, this->screen_pos.y, this->screen_pos.x + this->grp_size.right, this->screen_pos.y + this->grp_size.bottom);
 	}

@@ -6,6 +6,7 @@
 #include <hooks/limits/sfx_extender.h>
 #include "systems/audio/audio_system.h"
 #include "systems/display/display.h"
+#include "systems/display/zoom.h"
 
 namespace hooks {
     // Hooked to allow more unit ids to have "annoyed" lines.
@@ -300,12 +301,12 @@ namespace hooks {
         g_use_quiet_sounds = 0;
     }
 
-    // 0048E8D0(ecx = world x, eax = world y) -> 0..99. Attenuates volume from 99 to 0 linearly over 512px outside viewport.
+    // 0048E8D0(ecx = world x, eax = world y) -> 0..99. Attenuates volume from 99 to 0 linearly over 512px outside the zoom crop
     s32 get_sfx_volume_from_screen_distance(s32 x, s32 y) { // 0048E8D0
-        const s32 left = s32(g_move_to_x);
-        const s32 top = s32(g_move_to_y);
-        const s32 right = left + s32(g_display.world_width());
-        const s32 bottom = top + s32(g_display.world_height());
+        const s32 left = s32(g_move_to_x) + g_zoom.source_left();
+        const s32 top = s32(g_move_to_y) + g_zoom.source_top();
+        const s32 right = left + g_zoom.visible_width();
+        const s32 bottom = top + g_zoom.visible_height();
 
         s32 distance = 0;
         if (x < left) {
@@ -323,15 +324,11 @@ namespace hooks {
         return volume < 0 ? 0 : volume;
     }
 
-    // 0048E850(eax = world x) -> -10000..10000. Stereo pan based on tile distance from viewport acoustic center.
+    // 0048E850(eax = world x) -> -10000..10000. Stereo pan based on tile distance from the zoom crop's center
     s32 get_sfx_pan_from_screen_distance(s32 x) { // 0048E850
-        const s32 centre = s32(g_move_to_tile_x) + s32(g_display.world_width() / (2 * display::TileSize));
-        s32 tiles = x / s32(display::TileSize) - centre;
-
-        const bool is_left = tiles < 0;
-        if (is_left) {
-            tiles = -tiles;
-        }
+        const s32 centre = s32(g_move_to_x) + g_zoom.source_left() + g_zoom.visible_width() / 2;
+        const bool is_left = x < centre;
+        s32 tiles = (is_left ? centre - x : x - centre) / s32(display::TileSize);
 
         s32 pan = 0;
         if (tiles > 80) {
