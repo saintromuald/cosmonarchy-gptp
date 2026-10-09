@@ -19,7 +19,7 @@ u32 surface_bytes() {
 namespace hooks {
 // 0041E050. Clears the layer table and dirty grid, and resets screen buffer dimensions.
 void __cdecl init_screen_state() {
-    *g_screen_layers = Layers{};
+    g_screen_layers = Layers{};
 
     auto cells = g_display.grid();
     for (u32 i = 0; i < g_display.grid_bytes(); ++i) {

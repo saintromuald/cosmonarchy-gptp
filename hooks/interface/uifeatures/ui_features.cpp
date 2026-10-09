@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <cstring>
+#include <format>
 #include <Windows.h>
 #include "config.h"
 #include "systems/triggers/trigger_objectives.h"
@@ -22,6 +23,7 @@
 #include "hooks/race_randomization.h"
 #include "storm/storm.h"
 #include "systems/display/display.h"
+#include "systems/display/zoom.h"
 #include "CM/cm_ids.h"
 
 static s32* const g_fonts = (s32*)0x006CE0F4;
@@ -194,6 +196,45 @@ namespace hooks {
                 draw_ui_text(buffer, TextColor::Green);
             }
         }
+
+        constexpr u32 ZoomIndicatorMs = 500;
+        constexpr s32 ZoomIndicatorOffsetX = 16;
+        constexpr s32 ZoomIndicatorOffsetY = 3;
+        constexpr s32 ZoomIndicatorWidth = 64;
+
+        static bool indicator_shown = false;
+        static s32 indicator_left = 0;
+        static s32 indicator_top = 0;
+        static std::string indicator_text;
+
+        std::string text;
+        s32 left = 0;
+        s32 top = 0;
+        const bool visible = GetTickCount() - g_zoom.last_adjusted_tick() < ZoomIndicatorMs;
+        if (visible) {
+            text = std::format("{}%", g_zoom.player_percent());
+            left = std::clamp(g_mouse->x + ZoomIndicatorOffsetX, 0, s32(g_display.display_width()) - ZoomIndicatorWidth);
+            top = std::clamp(g_mouse->y + ZoomIndicatorOffsetY, 0, s32(g_display.display_height()) - s32(UiTextHeight));
+        }
+
+        const bool text_changed = text != indicator_text;
+        const bool moved = visible && (left != indicator_left || top != indicator_top);
+
+        if (indicator_shown && (moved || text_changed || !visible)) {
+            mark_rect(indicator_left, indicator_top, indicator_left + ZoomIndicatorWidth, indicator_top + s32(UiTextHeight));
+        }
+        if (visible) {
+            draw_text(text.c_str(), u32(left), u32(top), u32(ZoomIndicatorWidth), UiTextHeight * 4, TextColor::White);
+            if (moved || text_changed || !indicator_shown) {
+                mark_rect(left, top, left + ZoomIndicatorWidth, top + s32(UiTextHeight));
+            }
+        }
+        if (text_changed) {
+            indicator_text = text;
+        }
+        indicator_left = left;
+        indicator_top = top;
+        indicator_shown = visible;
     }
 
     void queue_game_command(u8* data, u32 size) {
@@ -536,6 +577,10 @@ namespace hooks {
         if (helper::is_outside_of_game_screen(g_world_cursor.x, g_world_cursor.y) || !PtInRect(g_cursor_limit_rect, *(POINT*)g_mouse)) {
             return CursorType_Normal;
         }
+
+        if (hud_covers(g_mouse->x, g_mouse->y)) {
+            return CursorType_Normal;
+        }
         if (*g_is_drag_selecting) {
             return CursorType_DragSelect;
         }
@@ -770,6 +815,17 @@ namespace hooks {
     static MiddleDrag g_middle_drag;
 
     char input_mmb_down(DialogEvent* event) {
+        // Disallow dragging when F10 menu is open
+        if (g_popup_dialog) {
+            return 0;
+        }
+
+        // Ctrl+MMB resets zoom (view center held fixed, unlike the cursor-anchored wheel).
+        const bool control_held = GetKeyState(VK_CONTROL) & (1 << 15);
+        if (control_held && g_zoom.reset_to_default({ g_display.display_width() / 2, g_display.display_height() / 2 })) {
+            return 0;
+        }
+
         g_disable_mouse_scroll = true;
 
         g_middle_drag = MiddleDrag{ .mouse_origin = *g_mouse, .camera = { f32(g_move_to_x), f32(g_move_to_y) } };
@@ -1065,11 +1121,11 @@ namespace hooks {
         }
     }
 
-    // Hooked to make movement smoother. -Pr0nogo
-    // Uninjected (patched via immediates in initialize.cpp); offsets camera by viewport center instead of 320x140.
+    // 004E6020: Ctrl+C and portrait-click centering. camera_for_center inverts
+    // the edge-aware crop slide, so the unit lands mid-screen at every zoom level.
     void move_screen_to_unit(Unit* unit) { // 004E6020
-        v2u16 pos(unit->position.x - g_display.center_offset_x(), unit->position.y - g_display.center_offset_y());
-        helper::move_screen(pos);
+        const v2s32 camera = g_zoom.camera_for_center({ unit->sprite->position.x, unit->sprite->position.y });
+        helper::move_screen({ u16(std::max<s32>(camera.x, 0)), u16(std::max<s32>(camera.y, 0)) });
     }
 
     // Hooked to improve shift-tab functionality. -Pr0nogo

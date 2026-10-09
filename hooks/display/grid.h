@@ -28,7 +28,7 @@ void refresh_display_role();
 
 // Is there anything for the next present_frame to draw: a pointer move, a
 // window repaint, a dialog asking for one, a layer asked to run, or a cell the
-// world marked. Bit 5 of a layer's flags is left out - it means the layer runs
+// world marked. LayerFlags::AlwaysUpdate is left out - it means the layer runs
 // on every present, not that it has something new.
 bool has_pending_draw();
 

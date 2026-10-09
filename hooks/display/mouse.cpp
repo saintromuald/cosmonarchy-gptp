@@ -238,12 +238,12 @@ void __cdecl refresh_cursor() {
 
 // 004BE060 / 004BE0B0: Toggles software cursor via mouse layer buffers flag.
 void __cdecl cursor_refresh() {
-    g_screen_layers->mouse.buffers = 1;
+    g_screen_layers.mouse.buffers = 1;
     refresh_cursor();
 }
 
 void __cdecl refresh_cursor_0() {
-    g_screen_layers->mouse.buffers = 0;
+    g_screen_layers.mouse.buffers = 0;
 }
 
 void begin_middle_drag_cursor(v2s32 grab_point) {
@@ -256,12 +256,12 @@ void begin_middle_drag_cursor(v2s32 grab_point) {
         g_current_cursor = grp;
         g_current_cursor_id = MiddleDragCursorId;
         g_cursor_frame_index = 0;
-        g_screen_layers->mouse.left = u16(grab_point.x - (CursorHotspotBase - s32(frame.x)));
-        g_screen_layers->mouse.top = u16(grab_point.y - (CursorHotspotBase - s32(frame.y)));
-        g_screen_layers->mouse.width = frame.w;
-        g_screen_layers->mouse.height = frame.h;
-        g_screen_layers->mouse.p_update = helper::mouse_layer_draw;
-        g_screen_layers->mouse.buffers = 1;
+        g_screen_layers.mouse.left = u16(grab_point.x - (CursorHotspotBase - s32(frame.x)));
+        g_screen_layers.mouse.top = u16(grab_point.y - (CursorHotspotBase - s32(frame.y)));
+        g_screen_layers.mouse.width = frame.w;
+        g_screen_layers.mouse.height = frame.h;
+        g_screen_layers.mouse.p_update = helper::mouse_layer_draw;
+        g_screen_layers.mouse.buffers = 1;
     }
 
     g_middle_drag_grab = grab_point;
@@ -275,12 +275,12 @@ void end_middle_drag_cursor() {
 
     // The drag graphic composited into the surface outlives the drag; mark its rect
     // so the next present resamples the world back under it.
-    const Layer& cursor = g_screen_layers->mouse;
+    const Layer& cursor = g_screen_layers.mouse;
     mark_rect(s16(cursor.left), s16(cursor.top),
         s16(cursor.left) + s16(cursor.width) - 1, s16(cursor.top) + s16(cursor.height) - 1);
 
     g_middle_drag_cursor = false;
-    g_screen_layers->mouse.buffers = 0;
+    g_screen_layers.mouse.buffers = 0;
     g_current_cursor_id = ~0u;
     g_wants_redraw = 1;
 }

@@ -26,7 +26,7 @@ constexpr s16 RowHeight = 32;
 
 // Column widths, right to left
 constexpr s16 RightInset    = 6;
-constexpr s16 SupplyWidth   = 70;
+constexpr s16 SupplyWidth   = 100;
 constexpr s16 GasWidth      = 100;
 constexpr s16 MineralsWidth = 100;
 constexpr s16 ApmWidth      = 60;

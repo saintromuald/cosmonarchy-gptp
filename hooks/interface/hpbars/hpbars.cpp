@@ -56,7 +56,7 @@ namespace hooks {
 
 	// Hooked to allow showing all HP bars. -Pr0nogo
 	void remove_healthbar(Image* image) { // 004D5030
-		if (!(*g_game_layer).has_been_refreshed) {
+		if ((g_screen_layers.game.flags & LayerFlags::NeedsRefresh) == LayerFlags::None) {
 			helper::refresh_image(image);
 		}
 		Sprite* sprite = image->parent_sprite;

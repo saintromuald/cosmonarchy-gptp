@@ -51,13 +51,6 @@ u32 count_dirty_cells() {
     return u32(std::count_if(cells, cells + g_display.grid_bytes(), [](u8 cell) { return cell != 0; }));
 }
 
-Layers& g_layers = *g_screen_layers;
-
-// Layer flags byte at offset +1; tests bits beyond bit 0.
-u8& layer_flags(Layer& layer) {
-    return *((u8*)&layer + 1);
-}
-
 // World-phase dirty grid: world-lattice marks from image updates, fog changes,
 // and placement erases while the zoom transform presents. At 100% the surface
 // grid is the world grid (identical lattices) and the routing below is inert.
@@ -82,7 +75,7 @@ namespace display {
 // World-phase dirty-cell view helpers: the world grid while zoom presents, the
 // surface grid otherwise (identical lattices at 100%).
 bool world_grid_active() {
-    return g_zoom.needs_transform() && g_layers.game.buffers;
+    return g_zoom.needs_transform() && g_screen_layers.game.buffers;
 }
 
 void fill_world_grid(u8 value) {
@@ -110,8 +103,8 @@ bool has_pending_draw() {
         return true;
     }
     for (s32 i = 7; i >= 1; --i) {
-        Layer& layer = (&g_layers.mouse)[i];
-        if (layer.buffers && (layer_flags(layer) & 7)) {
+        Layer& layer = (&g_screen_layers.mouse)[i];
+        if (layer.buffers && (layer.flags & (LayerFlags::NeedsRefresh | LayerFlags::Marked | LayerFlags::CellsDirty)) != LayerFlags::None) {
             return true;
         }
     }
@@ -336,7 +329,7 @@ void __cdecl mark_rect_cells(s32* rect) {
 
     // Post-increments rect[1] past the last marked row to match vanilla behavior.
     ++rect[1];
-    layer_flags(g_layers.game) |= 2;
+    g_screen_layers.game.flags |= LayerFlags::Marked;
 }
 
 // 00497000(eax = object): returns 1 if any cell under object rect (four s16 at +0x20) is dirty.
@@ -451,11 +444,11 @@ u8 world_rect_is_dirty(s32 left, s32 top, s32 right, s32 bottom) {
 // phase's marks drive the resample, present, and HUD invalidation the way the
 // single grid does at 100% (where both lattices are the same buffer).
 void propagate_world_cells() {
-    const s32 cell = s32(g_display.cell_size());
-    const s32 cols = world_grid_cols();
-    const s32 rows = world_grid_rows();
-    const s32 world_width = s32(g_display.world_width());
-    const s32 world_height = s32(g_display.world_height());
+    const auto cell = s32(g_display.cell_size());
+    const auto cols = world_grid_cols();
+    const auto rows = world_grid_rows();
+    const auto world_width = s32(g_display.world_width());
+    const auto world_height = s32(g_display.world_height());
 
     for (s32 row = 0; row < rows; ++row) {
         const u8* row_cells = g_world_grid + row * cols;
@@ -539,7 +532,7 @@ void __cdecl present_frame() {
     } else {
         hooks::update_world_cursor();
 
-        const bool zoom_frame = g_zoom.needs_transform() && g_layers.game.buffers;
+        const bool zoom_frame = g_zoom.needs_transform() && g_screen_layers.game.buffers;
 
         // While magnified, the world layers composite into the dedicated world buffer
         // and the i==2 resample copies the crop onto the screen surface; at 100% the
@@ -569,7 +562,7 @@ void __cdecl present_frame() {
 
             // Full-world frames fill both grids: a running transition or anchor,
             // camera motion, a zoom percent change, or a vanilla full-world request
-            // (game layer flag bit 0 - set on scroll, camera jumps, vision flips)
+            // (NeedsRefresh on the game layer - set on scroll, camera jumps, vision flips)
             // moves content everywhere, so the whole crop rescales. At rest the
             // tick's world marks drive the frame instead: they propagate onto
             // surface cells and only those are rescaled and presented.
@@ -578,7 +571,7 @@ void __cdecl present_frame() {
             const v2s32 current_camera{ g_move_to_x, g_move_to_y };
             zoom_full = g_zoom.transition_running()
                 || g_zoom.anchor_active()
-                || (layer_flags(g_layers.game) & 1) != 0
+                || (g_screen_layers.game.flags & LayerFlags::NeedsRefresh) != LayerFlags::None
                 || current_camera != presented_camera
                 || g_zoom.percent() != presented_percent;
             presented_camera = current_camera;
@@ -625,7 +618,7 @@ void __cdecl present_frame() {
         // Walk the eight slots in draw order (bottom-up); the spares at 7/6 are
         // never populated, and the mouse layer (index 0) is drawn separately below.
         for (s32 i = 7; i >= 1; --i) {
-            Layer& layer = (&g_layers.mouse)[i];
+            Layer& layer = (&g_screen_layers.mouse)[i];
 
             // Between the world layers (i > 2) and the UI layers: map this frame's world
             // marks - tick-time marks plus the walk's own fog and sprite-erase marks -
@@ -675,25 +668,24 @@ void __cdecl present_frame() {
             clip.width = s16(width);
             clip.height = s16(height);
 
-            u8& flags = layer_flags(layer);
-            if (!(flags & 0x21)) {
+            if ((layer.flags & (LayerFlags::NeedsRefresh | LayerFlags::AlwaysUpdate)) == LayerFlags::None) {
                 // World layers (3-7) check the world-phase view; UI layers the surface grid.
                 const u8 dirty = (i >= 3)
                     ? world_rect_is_dirty(layer.left, layer.top, layer.left + layer.width, layer.top + layer.height)
                     : rect_is_dirty(layer.left, layer.top, layer.left + layer.width, layer.top + layer.height);
                 if (dirty) {
-                    flags |= 4;
-                } else if (!(flags & 2)) {
+                    layer.flags |= LayerFlags::CellsDirty;
+                } else if ((layer.flags & LayerFlags::Marked) == LayerFlags::None) {
                     continue;
                 }
             }
 
             helper::call_layer_update((void*)layer.p_update, layer.p_surface, &clip);
-            flags &= 0xF8;
+            layer.flags &= ~(LayerFlags::NeedsRefresh | LayerFlags::Marked | LayerFlags::CellsDirty);
         }
 
-        if (hooks::g_middle_drag_cursor && g_layers.mouse.buffers && g_layers.mouse.p_update) {
-            Layer& cursor = g_layers.mouse;
+        if (hooks::g_middle_drag_cursor && g_screen_layers.mouse.buffers && g_screen_layers.mouse.p_update) {
+            Layer& cursor = g_screen_layers.mouse;
             Bounds clip;
             clip.left = s16(-s32(cursor.left));
             clip.top = s16(-s32(cursor.top));
@@ -773,8 +765,8 @@ void __cdecl init_game_layer() {
     // 960x540 rect rejected every click beyond the top-left quarter at 2x).
     SetRect(g_cursor_limit_rect, 0, 0, s32(g_display.display_width()) - 1, s32(g_display.display_height()) - 1);
 
-    Layer& game = g_layers.game;
-    layer_flags(game) = 0;
+    Layer& game = g_screen_layers.game;
+    game.flags = LayerFlags::None;
     game.left = 0;
     game.top = 0;
     game.width = u16(view_width);
@@ -789,8 +781,8 @@ void __cdecl init_game_layer() {
 
     // 0041E1E0: inlined dirty marking for dialog and building placement layers.
     for (s32 i = 3; i <= 5; ++i) {
-        Layer& layer = (&g_layers.mouse)[i];
-        layer_flags(layer) |= 1;
+        Layer& layer = (&g_screen_layers.mouse)[i];
+        layer.flags |= LayerFlags::NeedsRefresh;
         mark_rect(s16(layer.left), s16(layer.top), s16(layer.left) + s16(layer.width) - 1, s16(layer.top) + s16(layer.height) - 1);
     }
 }

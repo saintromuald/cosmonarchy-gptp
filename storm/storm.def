@@ -93,6 +93,7 @@ EXPORTS
     STransIntersectDirtyArray@16  @437 NONAME
     STransInvertMask@8            @438 NONAME
     STransSetDirtyArrayInfo@16    @440 NONAME
+    STransIsPixelInMask@12        @442 NONAME
     STransCombineMasks@24         @443 NONAME
 
     STransCreateE@28               @445 NONAME

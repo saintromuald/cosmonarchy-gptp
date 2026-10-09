@@ -82,12 +82,13 @@ __declspec(dllimport) b32   __stdcall SRegLoadValue(const char* key_name, const 
 
 // ---- STrans ----
 // Names match storm_sdk's ordinal map; masks are the handles STransCreateE produces.
-__declspec(dllimport) b32   __stdcall STransBltUsingMask(void* destination, const void* source, s32 pitch, s32 width, void* mask);   // 432
-__declspec(dllimport) b32   __stdcall STransDelete(void* mask);                                                                        // 434
+__declspec(dllimport) b32   __stdcall STransBltUsingMask(void* destination, const void* source, s32 pitch, s32 width, void* mask);    // 432
+__declspec(dllimport) b32   __stdcall STransDelete(void* mask);                                                                       // 434
 __declspec(dllimport) b32   __stdcall STransDuplicate(void* mask, void** out_mask);                                                   // 436
 __declspec(dllimport) b32   __stdcall STransIntersectDirtyArray(void* mask, const u8* dirty_grid, u8 dirty_bits, void** out_mask);    // 437
-__declspec(dllimport) b32   __stdcall STransInvertMask(void* mask, void** out_mask);                                                   // 438
+__declspec(dllimport) b32   __stdcall STransInvertMask(void* mask, void** out_mask);                                                  // 438
 __declspec(dllimport) b32   __stdcall STransSetDirtyArrayInfo(s32 width, s32 height, s32 cell_width, s32 cell_height);                // 440
+__declspec(dllimport) b32   __stdcall STransIsPixelInMask(void* mask, s32 x, s32 y);                                                  // 442
 __declspec(dllimport) b32   __stdcall STransCombineMasks(void* base_mask, void* other_mask, s32 x, s32 y, u32 mode, void** out_mask); // 443
 
 __declspec(dllimport) b32   __stdcall STransCreateE(u8* bitmap_buffer, u32 width, u32 height, u32 color_depth, u32 unknown1, u32 unknown2, void** surface);

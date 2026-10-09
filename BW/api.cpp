@@ -20,6 +20,7 @@
 #include "hooks/interface/uifeatures/hotkeys.h"
 #include "systems/audio/audio_system.h"
 #include "systems/display/display.h"
+#include "systems/display/zoom.h"
 #include "hooks/display/grid.h"
 #include "hooks/unit_stats/weapon_range.h"
 
@@ -2870,19 +2871,8 @@ PlayerColorCode get_player_color_code(u32 player, bool use_green_for_self) {
 }
 
 void move_camera(v2u16 pos) {
-    const u16 half_width = g_display.center_offset_x();
-    const u16 half_height = g_display.center_offset_y();
-    if (pos.x >= half_width) {
-        pos.x -= half_width;
-    } else {
-        pos.x = 0;
-    }
-    if (pos.y >= half_height) {
-        pos.y -= half_height;
-    } else {
-        pos.y = 0;
-    }
-    helper::move_screen(pos);
+    const v2s32 camera = g_zoom.camera_for_center({ pos.x, pos.y });
+    helper::move_screen({ u16(std::max<s32>(camera.x, 0)), u16(std::max<s32>(camera.y, 0)) });
 }
 
 Quad quad_from_line(v2u16 from, v2u16 to, fp32 line_width) {

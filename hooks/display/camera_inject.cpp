@@ -28,14 +28,6 @@ void patch_camera_last_event_position() {
     memory_patch(0x0045E3B8, u32(0) - u32(g_display.center_offset_y()));  // add eax, -200
 }
 
-// 004E6020: Ctrl+C follow camera (smooth-follow rewrite; the surrounding
-// encoding is patched in initialize.cpp); patches 004E602D (`sub eax, 0x140`)
-// and 004E6033 (`sub ecx, 0xc8`).
-void patch_follow_camera_center() {
-    memory_patch(0x004E602D, u32(g_display.center_offset_x())); // sub eax, 0x140
-    memory_patch(0x004E6033, u32(g_display.center_offset_y())); // sub ecx, 0xc8
-}
-
 } // namespace
 
 namespace hooks {
@@ -43,7 +35,6 @@ namespace hooks {
 void patch_camera_center_immediates() {
     patch_camera_trigger_center_view();
     patch_camera_last_event_position();
-    patch_follow_camera_center();
 }
 
 void inject_camera_hooks() {

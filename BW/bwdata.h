@@ -934,7 +934,7 @@ namespace graphics {
 BW_DATA(graphics::Font**,		font_base,				0x006CE0F4);
 BW_DATA(graphics::Bitmap*,		g_game_screen_buffer,	0x006CEFF0);
 BW_DATA(u8*,					g_refresh_regions,		0x006CEFF8); // 1200 dirty cells; the cell size follows the surface, see g_display.cell_size()
-BW_DATA(Layers*,				g_screen_layers,		0x006CEF50);
+BW_REF(Layers,					g_screen_layers,		0x006CEF50);
 BW_REF(u32,						g_graphics_ready,		0x006D5DF8);	// set once init has completed
 // Storm region for dialog repaints; created by 0041C200, freed/nulled by 0041CA00 (null = none pending).
 BW_REF(u32,						g_dialog_refresh_region,	0x006D5E2C);
@@ -1242,7 +1242,6 @@ BW_DATA(u32*,			g_current_hash_offset,				0x0063FD28);
 BW_DATA(ControlGroupPlayerArray*, control_group_array,		ccmu_extender.new_saved_selections);
 
 // For remove_healthbar
-BW_DATA(Layer*,			g_game_layer,						0x006CEFB4);
 BW_DATA(Image**,		g_first_free_healthbar,				0x0057EB6C);
 BW_DATA(Image**,		g_last_free_healthbar,				0x005254B8);
 
@@ -1385,7 +1384,7 @@ BW_DATA(u32*,				g_unk_portrait,						0x0068AC60);
 // BW_REF(u32, g_big_music_volume, 0x006D5BB8);        // Replaced by MusicSystem
 
 // For ignoring inputs in menu
-BW_DATA(BinDlg**,			g_popup_dialog,                     0x006D5BF4);
+BW_REF(bw::Dialog*,			g_popup_dialog,                     0x006D5BF4);
 BW_DATA(u8*,				g_chat_message_type,                0x0068C144);
 
 // For play_addon_detach_sound

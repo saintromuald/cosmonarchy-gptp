@@ -623,7 +623,7 @@ u32 Widget::handle_event(DialogEvent* event) {
                 }
             } break;
             case DialogUserType_SetSelectionIndex: {
-                if (m_callbacks.on_selection) m_callbacks.on_selection(*this, event->param);
+                if (m_callbacks.on_selection && event->param != 0xFFFF) m_callbacks.on_selection(*this, event->param);
             } break;
             case DialogUserType_MouseEnter: {
                 if (auto* controller = tooltip_controller_for(*this)) controller->on_mouse_enter(this);

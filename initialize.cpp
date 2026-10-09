@@ -750,16 +750,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     memory_patch(0x0046AB5C, (u8)1);
     memory_patch(0x0046AB94, (u8)1);
 
-    // Make following units with Ctrl+C smoother
-    // 004E6020 replaces tile-quantized 10x6 subtraction with pixel-exact center_offset_x/y
-    // subtraction off unit position for smooth camera following without tile-snapping.
-    // The half-viewport immediates (004E602D / 004E6033) are applied and re-applied per
-    // role by patch_camera_center_immediates (camera_inject.cpp).
-    memory_patch(0x004E6027, (u16)0x0F14);     // MOVSX EAX, word ptr [ESI + 0x14]; MOVSX...
-    memory_patch(0x004E6029, (u32)0x2D164EBF); // ...ECX, word ptr [ESI + 0x16]; SUB EAX, ...
-    memory_patch(0x004E6031, (u16)0xE981);     // SUB ECX, ...
-    memory_patch(0x004E6037, (u16)0xE95E);     // POP ESI; JMP...
-    memory_patch(0x004E6039, (u32)0xFFFB6403); // ...0x0049C440;
     // DarkenedFantasies, end
 
     // Pr0nogo, start
