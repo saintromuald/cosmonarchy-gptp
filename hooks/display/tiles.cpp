@@ -168,7 +168,9 @@ void update_single_tile(s32 tile_x, s32 tile_y, u32 mode, u16 tile_id, const voi
     const u32 classes = ((u32(group.flags) & 0xFFFA) << 16) | g_megatile_classes[group.tiles[tile_id & 0xF]];
     u32 new_flags = *tile_flags_entry;
     new_flags ^= (classes ^ new_flags) & 0x450000;
-    new_flags &= ~0x10000;
+    if (new_flags & 0x10000) {
+        new_flags &= ~0x40000;
+    }
     if ((new_flags & 0x450000) == 0) {
         new_flags |= 0x40000;
     }
