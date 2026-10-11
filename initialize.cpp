@@ -236,6 +236,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
     load_config();
     g_display.init();
+    g_dirty_cell_grids.init();
     g_zoom.init();
     run_wmode(g_config.disable_wmode_prompt, g_config.prefer_wmode);
     // StarCraft.exe version check

@@ -77,17 +77,7 @@ void HudManager::install_replay() {
 }
 
 HudManager::~HudManager() {
-    if (m_hidden && g_hud_surface && m_saved_hud_mask) {
-        g_hud_surface->surface = m_saved_hud_mask;
-        m_saved_hud_mask = nullptr;
-    }
     unload_all();
-
-    // STransCreateE handles are released via STransDelete (storm 434, matching 0041D5A0) after unload_all.
-    if (m_transparent_mask) {
-        STransDelete(m_transparent_mask);
-        m_transparent_mask = nullptr;
-    }
 }
 
 void HudManager::change(std::string_view name) {
@@ -124,22 +114,8 @@ void HudManager::set_view_mode(HudViewMode mode) {
 
 void HudManager::hide() {
     if (m_hidden) return;
-
-    if (g_hud_surface) {
-        if (!m_transparent_mask) {
-            // Sized to full surface because the mask sizes Storm's blit chain; a narrower mask clips world blits.
-            const u32 width = g_display.surface_width();
-            const u32 height = g_display.surface_height();
-            auto zeros = std::make_unique<u8[]>(size_t(width) * height);
-            STransCreateE(zeros.get(), width, height, 8, 0, 0x1000000, &m_transparent_mask);
-            if (!m_transparent_mask) return;
-        }
-        m_saved_hud_mask = g_hud_surface->surface;
-        g_hud_surface->surface = m_transparent_mask;
-        helper::hud_update_surface_masks();
-    }
-
     m_hidden = true;
+
     apply_visibility(false);
     refresh_whole_surface();
 }
@@ -148,20 +124,20 @@ void HudManager::show() {
     if (!m_hidden) return;
     m_hidden = false;
 
-    if (g_hud_surface && m_saved_hud_mask) {
-        g_hud_surface->surface = m_saved_hud_mask;
-        m_saved_hud_mask = nullptr;
-        helper::hud_update_surface_masks();
-    }
-
     apply_visibility(true);
     refresh_whole_surface();
 }
 
-bool hud_covers(s32 x, s32 y) {
-    return g_hud_surface
-        && g_hud_surface->surface
-        && STransIsPixelInMask(g_hud_surface->surface, x, y) != 0;
+bool HudManager::covers(s32 x, s32 y) const {
+    if (m_hidden || !m_loaded) {
+        return false;
+    }
+    const auto width = s32(g_display.surface_width());
+    const auto height = s32(g_display.surface_height());
+    if (x < 0 || y < 0 || x >= width || y >= height) {
+        return false;
+    }
+    return m_mask[size_t(y) * width + x] != 0;
 }
 
 void HudManager::apply_visibility(bool visible) {
@@ -384,10 +360,7 @@ void HudManager::unload_all() {
 
     helper::reset_status_screen_area();
 
-    if (g_hud_surface) {
-        helper::hud_destroy_top_surface(g_hud_surface);
-        g_hud_surface = nullptr;
-    }
+    m_loaded = false;
 }
 
 // Unload only the elements needed to change the hud
@@ -419,10 +392,7 @@ void HudManager::unload_hud_unique() {
     free_bitmap(g_cmdbuttons_progressbar_empty);
     free_bitmap(g_cmdbuttons_progressbar_full);
 
-    if (g_hud_surface) {
-        helper::hud_destroy_top_surface(g_hud_surface);
-        g_hud_surface = nullptr;
-    }
+    m_loaded = false;
 }
 
 void HudManager::reset_ui_state() {
@@ -490,49 +460,6 @@ static void hud_find_vertical_bounds(Bitmap* hud) {
     if (g_hud_last_content_row < height) {
         g_hud_last_content_row = height;
     }
-}
-
-static SurfaceContext* hud_create_surface(u32 offset_x, u32 offset_y, Bitmap* bitmap) {
-    void* surface_handle;
-    SurfaceContext* surface_out{};
-
-    STransCreateE(bitmap->buffer, bitmap->width, bitmap->height, 8, 0, 0x1000000, &surface_handle);
-
-    auto* surface_node = static_cast<SurfaceContext*>(SMemAlloc(sizeof(SurfaceContext), "", 0, '\b'));
-    if (surface_node) {
-        surface_node->next = nullptr;
-        surface_node->prev = nullptr;
-        surface_out = surface_node;
-    } else {
-        surface_node = reinterpret_cast<SurfaceContext*>(&g_surface_list_head);
-    }
-
-    if (surface_node->next) {
-        surface_node->next->prev = surface_node->prev;
-        if (surface_node->prev) {
-            surface_node->prev->next = surface_node->next;
-        }
-        surface_node->next = nullptr;
-        surface_node->prev = nullptr;
-    }
-
-    surface_node->next = g_surface_list_head;
-    if (g_surface_list_head) {
-        surface_node->prev = g_surface_list_head->prev;
-        g_surface_list_head->prev = surface_out;
-    }
-    g_surface_list_head = surface_node;
-
-    if (surface_out) {
-        surface_out->surface = surface_handle;
-        surface_out->left = offset_x;
-        surface_out->top = offset_y;
-        surface_out->right = offset_x + bitmap->width;
-        surface_out->bottom = offset_y + bitmap->height;
-    }
-
-    helper::hud_update_surface_masks();
-    return surface_out;
 }
 
 // Updates g_command_card_rect (005136CC) tested by 00484620 PtInRect to reset buttonsets on right click.
@@ -651,7 +578,7 @@ void HudManager::finish_hud_image() {
     stamp_hud_dialogs_into_mask();
 
     hud_find_vertical_bounds(&g_hud_image);
-    g_hud_surface = hud_create_surface(0, 0, &g_hud_image);
+    m_loaded = true;
 
     // Detach g_hud_image buffer; storage is owned by m_mask.
     g_hud_image.buffer = nullptr;

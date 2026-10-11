@@ -933,7 +933,7 @@ namespace graphics {
 }
 BW_DATA(graphics::Font**,		font_base,				0x006CE0F4);
 BW_DATA(graphics::Bitmap*,		g_game_screen_buffer,	0x006CEFF0);
-BW_DATA(u8*,					g_refresh_regions,		0x006CEFF8); // 1200 dirty cells; the cell size follows the surface, see g_display.cell_size()
+//BW_DATA(u8*,					g_refresh_regions,		0x006CEFF8); // replaced by g_dirty_cell_grids.surface (16px heap grid)
 BW_REF(Layers,					g_screen_layers,		0x006CEF50);
 BW_REF(u32,						g_graphics_ready,		0x006D5DF8);	// set once init has completed
 // Storm region for dialog repaints; created by 0041C200, freed/nulled by 0041CA00 (null = none pending).
@@ -946,12 +946,12 @@ BW_REF(const u8,				g_full_redraw,			0x0051A0E9);
 BW_ARRAY(u32,			0x20,	g_graphics_state,		0x006CE2A0);
 BW_REF(const u8,				g_sound_disabled,		0x006D11D0);
 
-// Storm blit chain and update region rebuilt by 0041D470; region passed as storm 432 context.
-BW_REF(void*,					g_storm_blit_chain,		0x006D5E14);
-BW_REF(void*,					g_storm_update_region,	0x006D5E18);
+// Storm blit chain and update region of the retired masked present. Replaced by HudManager::present_protection
+//BW_REF(void*,					g_storm_blit_chain,		0x006D5E14);
+//BW_REF(void*,					g_storm_update_region,	0x006D5E18);
 
-// Surface descriptor list walked by 0041D470 (skipped if head <= 0; set to ~0x51A338 by 004FD460).
-BW_REF(s32,						g_surface_descriptors,	0x0051A33C);
+// Surface descriptor list of the retired masked present.
+//BW_REF(s32,						g_surface_descriptors,	0x0051A33C);
 
 // Message-log console layout, sized at game start by init_screen_text_layout (0048CE90,
 // reimplemented in hooks/display/screen_text.cpp) and read when drawing and marking refresh bounds.
@@ -1551,9 +1551,9 @@ BW_REF(b32, g_low_memory_load_graphic, 0x006d1210);
 // Used for trimming the console image in FUN_004d114
 BW_REF(u32, g_hud_first_content_row, 0x00596b6c);
 BW_REF(u32, g_hud_last_content_row, 0x00596b74);
-BW_REF(SurfaceContext*, g_surface_list_head, 0x0051a338);
+//BW_REF(SurfaceContext*, g_surface_list_head, 0x0051a338); // retired with the masked present
 BW_REF(Bitmap, g_hud_image, 0x00597240);
-BW_REF(SurfaceContext*, g_hud_surface, 0x00597238);
+//BW_REF(SurfaceContext*, g_hud_surface, 0x00597238); // replaced by HudManager::loaded()
 
 // For load_statfluf_mouse_regions
 BW_ARRAY(MousePixelmaskRegion, 6, g_statfluf_mouse_regions_z, 0x005152a8);

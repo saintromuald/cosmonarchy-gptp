@@ -21,10 +21,7 @@ namespace hooks {
 void __cdecl init_screen_state() {
     g_screen_layers = Layers{};
 
-    auto cells = g_display.grid();
-    for (u32 i = 0; i < g_display.grid_bytes(); ++i) {
-        cells[i] = 0;
-    }
+    std::fill_n(g_dirty_cell_grids.surface.get(), g_display.grid_bytes(), 0);
 
     g_game_screen_buffer->width = g_display.surface_width();
     g_game_screen_buffer->height = g_display.surface_height();

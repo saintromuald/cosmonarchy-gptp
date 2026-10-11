@@ -86,18 +86,6 @@ EXPORTS
     ; ---- SReg ----
     SRegLoadValue@16               @423 NONAME
 
-    ; ---- STrans ----
-    STransBltUsingMask@20         @432 NONAME
-    STransDelete@4                @434 NONAME
-    STransDuplicate@8             @436 NONAME
-    STransIntersectDirtyArray@16  @437 NONAME
-    STransInvertMask@8            @438 NONAME
-    STransSetDirtyArrayInfo@16    @440 NONAME
-    STransIsPixelInMask@12        @442 NONAME
-    STransCombineMasks@24         @443 NONAME
-
-    STransCreateE@28               @445 NONAME
-
     ; ---- SVid ----
     SVidInitialize@4               @453 NONAME
     SVidPlayEnd@4                  @458 NONAME

@@ -4,8 +4,13 @@
 namespace hooks {
 
 void __cdecl blit_rect(const s32* rect);  // 0041D3A0
-void __cdecl blit_screen();               // 0041D420
-s32 __cdecl surface_setup();              // 0041D470
+
+// Presents marked surface cells to the primary as plain rect copies, replacing
+// the storm masked blit (fresh mask allocation and RLE intersection every
+// frame). Runs split around protection pixels, which HUD art and dialogs own on
+// the primary; protection is the surface-sized ownership mask (see
+// HudManager::present_protection) or null to present everything marked.
+void present_dirty_cells(const u8* protection);
 
 // Plain colorkey copy (palette index 0 skipped), the replacement body for the
 // 00416ED0 detour. Storm's fx path stages through the 006D053C scratch, which

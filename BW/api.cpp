@@ -1009,7 +1009,7 @@ void refresh_screen(s32 left, s32 top, s32 right, s32 bottom) {
     bottom = std::min(bottom, rows - 1);
 
     for (s32 y = top; y <= bottom; ++y) {
-        memset(&display::world_phase_cells()[cols * y + left], 1, right - left + 1);
+        std::fill_n(&display::world_phase_cells()[cols * y + left], right - left + 1, u8(1));
     }
 }
 
@@ -1019,7 +1019,7 @@ void refresh_screen() {
     if (display::world_grid_active()) {
         display::fill_world_grid(1);
     } else {
-        memset(g_display.grid(), 1, g_display.grid_bytes());
+        std::fill_n(g_dirty_cell_grids.surface.get(), g_display.grid_bytes(), u8(1));
     }
 }
 

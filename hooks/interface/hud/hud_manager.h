@@ -55,8 +55,6 @@ private:
 // mask at the dialog's current bounds. Run after placing a root dialog.
 void refresh_dialog_backdrop(bw::Dialog* dialog);
 
-bool hud_covers(s32 x, s32 y);
-
 class StatResource;
 
 class HudManager {
@@ -105,6 +103,12 @@ public:
     // Repaints HUD dialogs dirtied by world rendering; called once per frame from present_frame.
     void invalidate_dirty_dialogs();
 
+    // Exclude HUD art + dialog mask from game present. Nonzero = HUD owned pixel
+    const u8* present_protection() const { return m_hidden ? nullptr : m_mask.data(); }
+
+    bool covers(s32 x, s32 y) const;
+    bool loaded() const { return m_loaded; }
+
     const Config& current() const;
     std::string_view current_name() const { return m_current_name; }
     const ConfigMap& available() const { return m_configs; }
@@ -148,6 +152,7 @@ private:
     const Config* m_current = nullptr;
     std::string m_current_name;
     bool m_hidden = false;
+    bool m_loaded = false;
     HudViewMode m_view_mode = HudViewMode::Visible;
     bool m_hotkey_enabled = true;
     std::vector<StatflufDialog> m_statfluf_dialogs;
@@ -158,13 +163,9 @@ private:
     // Number of frames to force full HUD repaints after placement. See invalidate_dirty_dialogs.
     u32 m_forced_repaints = 0;
 
-    // Surface-sized HUD art mask (loaded art bottom-anchored); read by STransCreateE
-    // and 004C35F0. See HudManager::load_hud_image.
+    // Surface-sized HUD art + dialog mask, bottom-anchored: nonzero = HUD owned
+    // pixel. 004C35F0 reads it via g_hud_image for dialog backdrops.
     std::vector<u8> m_mask;
-
-    // While hidden we swap masks
-    void* m_transparent_mask = nullptr;
-    void* m_saved_hud_mask = nullptr;
 
     // Original bounds + flags of dialogs we reposition (rather than hide)
     // in the hidden view mode. Captured on hide, restored on show

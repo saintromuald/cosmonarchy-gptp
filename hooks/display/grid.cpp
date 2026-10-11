@@ -1,4 +1,5 @@
 #include "grid.h"
+#include "blit.h"
 #include "perf_tracker.h"
 #include "framebuffer.h"
 #include "../../BW/bwdata.h"
@@ -16,8 +17,9 @@
 
 #include <algorithm>
 
-// 1200-byte dirty cell grid at 0x006CEFF8. 0041E280 builds Storm update regions from it.
-// Cell size varies dynamically via g_display.cell_size() so the lattice fits the fixed buffer.
+// Dirty-cell lattices live in g_dirty_cell_grids (16px cells)
+// Surface marks frive the present (0041E280), world marks the zoom resample
+// At 100% the lattices are identical and the world-grid routing below is inert
 namespace {
 
 s32 cell_of(s32 pixel) {
@@ -35,7 +37,7 @@ s32 grid_stride() {
 }
 
 u8* cell_at(s32 x, s32 y) {
-    return g_display.grid() + y * grid_stride() + x;
+    return g_dirty_cell_grids.surface.get() + y * grid_stride() + x;
 }
 
 void mark_cells(u8* out, s32 count) {
@@ -43,18 +45,13 @@ void mark_cells(u8* out, s32 count) {
 }
 
 void fill_grid(u8 value) {
-    std::fill_n(g_display.grid(), g_display.grid_bytes(), value);
+    std::fill_n(g_dirty_cell_grids.surface.get(), g_display.grid_bytes(), value);
 }
 
 u32 count_dirty_cells() {
-    const u8* cells = g_display.grid();
+    const u8* cells = g_dirty_cell_grids.surface.get();
     return u32(std::count_if(cells, cells + g_display.grid_bytes(), [](u8 cell) { return cell != 0; }));
 }
-
-// World-phase dirty grid: world-lattice marks from image updates, fog changes,
-// and placement erases while the zoom transform presents. At 100% the surface
-// grid is the world grid (identical lattices) and the routing below is inert.
-u8 g_world_grid[display::GridCapacity] = {};
 
 // Set by the fade branch so flush_region keeps its world-grid fill for the next
 // frame's rebuild (fade frames run no walk to consume it first).
@@ -79,11 +76,11 @@ bool world_grid_active() {
 }
 
 void fill_world_grid(u8 value) {
-    std::fill_n(g_world_grid, u32(world_grid_cols()) * u32(world_grid_rows()), value);
+    std::fill_n(g_dirty_cell_grids.world.get(), u32(world_grid_cols()) * u32(world_grid_rows()), value);
 }
 
 u8* world_phase_cells() {
-    return world_grid_active() ? g_world_grid : g_display.grid();
+    return world_grid_active() ? g_dirty_cell_grids.world.get() : g_dirty_cell_grids.surface.get();
 }
 
 s32 world_phase_stride() {
@@ -108,13 +105,14 @@ bool has_pending_draw() {
             return true;
         }
     }
-    const u8* cells = g_display.grid();
+    const u8* cells = g_dirty_cell_grids.surface.get();
     if (std::any_of(cells, cells + g_display.grid_bytes(), [](u8 cell) { return cell != 0; })) {
         return true;
     }
     if (world_grid_active()) {
+        const u8* world = g_dirty_cell_grids.world.get();
         const u32 world_count = u32(world_grid_cols()) * u32(world_grid_rows());
-        if (std::any_of(g_world_grid, g_world_grid + world_count, [](u8 cell) { return cell != 0; })) {
+        if (std::any_of(world, world + world_count, [](u8 cell) { return cell != 0; })) {
             return true;
         }
     }
@@ -258,7 +256,7 @@ void mark_world_rect(s32 left, s32 top, s32 right, s32 bottom) {
     const s32 last_row = cell_of(bottom);
     const s32 cols = cell_of(right) - first_col + 1;
 
-    u8* row = g_world_grid + first_row * stride + first_col;
+    u8* row = g_dirty_cell_grids.world.get() + first_row * stride + first_col;
     for (s32 y = first_row; y <= last_row; ++y) {
         mark_cells(row, cols);
         row += stride;
@@ -398,9 +396,10 @@ void __cdecl expire_text_line(u32 index) {
     mark_rect(MessageLogLeft, offset + MessageLogTop, MessageLogRight, s32(g_text_area_y) + offset + MessageLogTop);
 }
 
-// 0041E000: Builds Storm update region from marked cells, presents screen, and clears grid.
+// 0041E000: Presents marked surface cells to the primary and clears both grids.
 void __cdecl flush_region() {
-    if (!g_storm_blit_chain || !g_storm_update_region) {
+    // The gameplay present runs only while a HUD is loaded; menus present through their own dialog paths.
+    if (!g_hud_manager || !g_hud_manager->loaded()) {
         return;
     }
 
@@ -409,9 +408,7 @@ void __cdecl flush_region() {
     perf::record_dirty_cells(count_dirty_cells(), g_display.grid_bytes());
 
     const u64 blit_start = perf::now_us();
-    STransDelete(g_storm_update_region);
-    STransIntersectDirtyArray(g_storm_blit_chain, g_display.grid(), 3, &g_storm_update_region);
-    helper::present_screen();
+    present_dirty_cells(g_hud_manager ? g_hud_manager->present_protection() : nullptr);
     fill_grid(0);
     if (!g_world_grid_preserved) {
         display::fill_world_grid(0);
@@ -451,7 +448,7 @@ void propagate_world_cells() {
     const auto world_height = s32(g_display.world_height());
 
     for (s32 row = 0; row < rows; ++row) {
-        const u8* row_cells = g_world_grid + row * cols;
+        const u8* row_cells = g_dirty_cell_grids.world.get() + row * cols;
         for (s32 col = 0; col < cols; ++col) {
             if (!row_cells[col]) {
                 continue;
@@ -481,7 +478,7 @@ void back_propagate_surface_cells() {
     const s32 cell = s32(g_display.cell_size());
     const s32 cols = s32(g_display.grid_cols());
     const s32 rows = s32(g_display.grid_rows());
-    const u8* cells = g_display.grid();
+    const u8* cells = g_dirty_cell_grids.surface.get();
 
     for (s32 row = 0; row < rows; ++row) {
         for (s32 col = 0; col < cols; ++col) {
@@ -593,7 +590,7 @@ void __cdecl present_frame() {
                 const u32 world_cells = u32(world_grid_cols()) * u32(world_grid_rows());
                 u32 world_marks = 0;
                 for (u32 i = 0; i < world_cells; ++i) {
-                    world_marks += g_world_grid[i] != 0;
+                    world_marks += g_dirty_cell_grids.world[i] != 0;
                 }
                 if (world_marks * 5 >= world_cells * 3) {
                     zoom_full = true;
