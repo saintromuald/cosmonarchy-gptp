@@ -1,6 +1,8 @@
 #pragma once
 #include "../../types.h"
 
+#include <memory>
+
 namespace display {
 
 constexpr u16 LegacyWidth = 640;
@@ -23,7 +25,6 @@ constexpr u16 TileSize = 32;
 // magnification.
 constexpr u16 BottomConsoleBandPx = 200;
 
-constexpr u32 GridCapacity = 1200;
 constexpr u16 MinCellSize = 16;
 
 constexpr u16 MaxWidth = 1920;
@@ -31,10 +32,14 @@ constexpr u16 MaxHeight = 1200;
 
 constexpr u32 LegacyMapSize = 0x49800;
 
-// Cells needed to cover pixels, rounded up per Storm 440.
+// Cells needed to cover pixels, rounded up
 constexpr u16 cells_across(u16 pixels, u16 cell) {
     return u16((u32(pixels) + cell - 1) / cell);
 }
+
+// Dirty-cell budget resized so the fixed 1920x1080 surface keeps 16px cells
+constexpr u32 GridCapacity = u32(cells_across(SurfaceWidth, MinCellSize))
+    * u32(cells_across(SurfaceHeight, MinCellSize));
 
 // Scratch buffer axis: viewport rounded up to terrain tiles, plus one tile margin for sub-tile scrolling.
 constexpr u32 map_axis(u16 view) {
@@ -88,13 +93,10 @@ public:
     u16 cursor_max_x() const;
     u16 cursor_max_y() const;
 
-    // 1200-byte dirty-cell grid at 006CEFF8 cleared by 0041E280.
-    u8* grid() const;
-
-    // Dirty-cell size (power of two, required by Storm 440; 16px for 640x480, 32px for 1280x720).
+    // Dirty-cell size (16px resolve_cell coarsens only if the surface outgrows GridCapacity).
     u16 cell_size() const { return m_cell_size; }
 
-    // Cell counts rounded up per Storm 440.
+    // Cell counts rounded up per axis.
     u16 grid_cols() const { return m_grid_cols; }
     u16 grid_rows() const { return m_grid_rows; }
     u32 grid_bytes() const { return u32(m_grid_cols) * m_grid_rows; }
@@ -148,6 +150,14 @@ private:
 };
 
 inline DisplayGeometry g_display;
+
+struct DirtyCellGrids {
+    std::unique_ptr<u8[]> surface;
+    std::unique_ptr<u8[]> world;
+    void init();
+};
+
+inline DirtyCellGrids g_dirty_cell_grids;
 
 // Resolves the replay/witness role, applies its zoom floor to the display
 // geometry (and with it the rendered world extent), and resets the zoom to the

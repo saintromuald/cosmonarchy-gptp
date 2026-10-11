@@ -106,7 +106,6 @@ namespace helper {
     BW_FUNC(0x00450a60, u32 __fastcall, chat_race_combobox_interact, BinDlg* dialog, DialogEvent* event);
 
     // Hud functions
-    BW_FUNC(0x0041d470, void __stdcall, hud_update_surface_masks);
     BW_FUNC(0x00456ef0, void __cdecl,   unload_statdata_bar);   // destroys statdata dialog + progressbar buffers
     BW_FUNC(0x00458cf0, void __cdecl,   unload_buttonset);      // destroys buttonset dialog + cmdbtns.grp + cmdicons.grp
     BW_FUNC(0x0045e710, void __cdecl,   unload_statport);       // stops portrait video, destroys portrait dialog, frees portdata
@@ -157,7 +156,6 @@ namespace helper {
     // Dialog bitmap blit; the clip arrives in ECX (__thiscall).
     void blit_bitmap_with_flags(const Box16* clip, Bitmap* bitmap, s32 source_x, s32 source_y, u32 flags);  // 004EF440
     BW_FUNC(0x0041C780, void __cdecl, redraw_main_dialog);
-    BW_FUNC(0x0041D420, void __cdecl, present_screen);
 
     // Generic modal text entry with custom prompt
     BW_FUNC(0x004b6e50, BOOL __stdcall, glu_modal_string_prompt, const char* prompt, char* output, u32 output_size, const char* disallowed_chars);
@@ -171,7 +169,6 @@ namespace helper {
 
     BW_FUNC(0x0045B850, void __stdcall, aiscript_cases, AiScript* script);
     
-    void hud_destroy_top_surface(SurfaceContext* surface);  // 0041d5a0
     void glu_create(bool multiplayer); // 004af6d0
 
     bool has_money_can_make(Unit* builder, u32 unit_to_build);

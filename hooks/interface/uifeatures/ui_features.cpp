@@ -578,7 +578,7 @@ namespace hooks {
             return CursorType_Normal;
         }
 
-        if (hud_covers(g_mouse->x, g_mouse->y)) {
+        if (g_hud_manager && g_hud_manager->covers(g_mouse->x, g_mouse->y)) {
             return CursorType_Normal;
         }
         if (*g_is_drag_selecting) {

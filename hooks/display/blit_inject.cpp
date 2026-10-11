@@ -95,9 +95,7 @@ void __declspec(naked) translucent_fx_blit_wrapper() {
 namespace hooks {
 
 void inject_blit_hooks() {
-    jump_patch(surface_setup, 0x0041D470);
     jump_patch(blit_rect_wrapper, 0x0041D3A0);
-    jump_patch(blit_screen, 0x0041D420);
     // The 00416ED0 prologue (PUSH EBP; MOV EBP,ESP; PUSH ESI; MOV ESI,[EBP+8])
     // is 7 bytes, so the 5-byte jump orphans the last two bytes of MOV ESI,[EBP+8]
     jump_patch(fx_colorkey_blit_wrapper, 0x00416ED0, 2);

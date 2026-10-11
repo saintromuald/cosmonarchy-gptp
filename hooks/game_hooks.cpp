@@ -271,7 +271,7 @@ namespace hooks {
     }
 
     static void draw_transport_ui() {
-        v2u16 start_pos = {360, 845};
+        v2u16 start_pos = {460, 800};
         v2u16 pos = start_pos;
 
         if (g_game->m_transport_ui_unit) {

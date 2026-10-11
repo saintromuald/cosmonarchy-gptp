@@ -16263,16 +16263,6 @@ namespace helper {
         }
     }
 
-    void hud_destroy_top_surface(SurfaceContext* surface) {
-        const u32 func_address = 0x0041d5a0;
-        __asm {
-            PUSHAD
-            MOV EAX, surface
-            CALL func_address
-            POPAD
-        }
-    }
-
     bool can_enter_nydus(Unit* unit, Unit* nydus) {
         const u32 func_address = 0x004E8C20;
         static b32 result;

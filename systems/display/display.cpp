@@ -8,7 +8,7 @@
 
 namespace {
 
-// Smallest power-of-two cell size whose grid fits within 1200 bytes (required by Storm 440).
+// Smallest power-of-two cell size whose grid fits within GridCapacity bytes.
 u16 resolve_cell(u16 width, u16 height) {
     u16 cell = display::MinCellSize;
     while (u32(display::cells_across(width, cell)) * u32(display::cells_across(height, cell)) > display::GridCapacity) {
@@ -97,10 +97,6 @@ u16 DisplayGeometry::cursor_max_y() const {
     return u16(surface_height() - 1);
 }
 
-u8* DisplayGeometry::grid() const {
-    return g_refresh_regions;
-}
-
 u16 DisplayGeometry::mask_stride() const {
     return u16(map_tile_cols() + 3);
 }
@@ -135,6 +131,11 @@ u32 DisplayGeometry::full_vision_bytes() const {
     const u32 cols = display::map_axis(display_width()) / display::TileSize;
     const u32 rows = display::map_axis(display_height()) / display::TileSize;
     return (cols + 1) * 4 * (rows + 1) * 4;
+}
+
+void DirtyCellGrids::init() {
+    surface = std::make_unique<u8[]>(g_display.grid_bytes());
+    world = std::make_unique<u8[]>(g_display.grid_bytes());
 }
 
 void apply_display_role() {
