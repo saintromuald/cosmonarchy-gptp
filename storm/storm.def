@@ -1,0 +1,92 @@
+; storm.def
+;
+; Naming conventions (MSVC x86, as written *without* the leading
+; underscore that lib.exe will add):
+;   * __cdecl functions   -> plain name, no @N suffix
+;   * __stdcall functions -> plain name + @<sizeof(args) in bytes>
+;
+; For __stdcall arg-byte counting, every pointer/int/BYTE/WORD is 4
+;
+; This file is consumed by lib.exe to build storm.lib.
+;
+; ---------------------------------------------------------------------------
+;
+; Building storm.lib manually (from a Developer Command Prompt for VS):
+;
+; Build storm.lib manually from a developer command prompt for VS (or calling lib.exe):
+;     lib /nologo /def:storm.def /machine:x86 /out:storm.lib
+;
+; ---------------------------------------------------------------------------
+; Wiring it into another Visual Studio C++ project:
+;
+; 1) Drop this file and storm.h somewhere in your project and add storm.h <ClInclude>
+;
+; 2) Add a Target that runs lib.exe before Link. Example:
+;
+;      <Target Name="BuildStormLib"
+;              BeforeTargets="Link"
+;              Inputs="$(ProjectDir)storm\storm.def"
+;              Outputs="$(OutDir)storm.lib">
+;        <MakeDir Directories="$(OutDir)" />
+;        <Exec Command="lib.exe /nologo /def:&quot;$(ProjectDir)storm\storm.def&quot; /machine:x86 /out:&quot;$(OutDir)storm.lib&quot;" />
+;      </Target>
+;
+; 3) Add `storm.lib` to <Link><AdditionalDependencies> and `$(OutDir)` to
+;    <Link><AdditionalLibraryDirectories> for every configuration.
+;
+; See BuildStormLib in GPTP.vcxproj for a working example.
+; ---------------------------------------------------------------------------
+
+LIBRARY storm
+
+EXPORTS
+    ; ---- SNet ----
+    SNetDestroy@0                  @102 NONAME
+    SNetEnumProviders@8            @105 NONAME
+    SNetGetGameInfo@16             @107 NONAME
+    SNetGetPlayerName@12           @113 NONAME
+    SNetGetProviderCaps@4          @114 NONAME
+    SNetGetTurnsInTransit@4        @115 NONAME
+    SNetSendMessage@12             @127 NONAME
+    SNetEnumGamesEx@16             @133 NONAME
+    SNetSendServerChatCommand@4    @134 NONAME
+    SNetGetLeaguePlayerName@8      @146 NONAME
+
+    ; ---- SFile ----
+    SFileCloseArchive@4            @252 NONAME
+    SFileCloseFile@4               @253 NONAME
+    SFileDdaBeginEx@28             @255 NONAME
+    SFileDdaEnd@4                  @257 NONAME
+    SFileDdaInitialize@4           @260 NONAME
+    SFileGetFileSize@8             @265 NONAME
+    SFileOpenArchive@16            @266 NONAME
+    SFileOpenFile@8                @267 NONAME
+    SFileOpenFileEx@16             @268 NONAME
+    SFileReadFile@20               @269 NONAME
+
+    ; ---- SBmp ----
+    SBmpDecodeImage@36             @321 NONAME
+    SBmpLoadImage@28               @323 NONAME
+    SBmpAllocLoadImage@32          @325 NONAME
+
+    ; ---- SDraw ----
+    SDrawUpdatePalette@16          @357 NONAME
+
+    ; ---- SMem ----
+    SMemAlloc@16                   @401 NONAME
+    SMemFree@16                    @403 NONAME
+
+    ; ---- SReg ----
+    SRegLoadValue@16               @423 NONAME
+
+    ; ---- STrans ----
+    STransCreateE@28               @445 NONAME
+
+    ; ---- SVid ----
+    SVidInitialize@4               @453 NONAME
+    SVidPlayEnd@4                  @458 NONAME
+
+    ; ---- SErr ----
+    SErrGetErrorStr@12             @462 NONAME
+    SErrGetLastError@0             @463 NONAME
+    SErrSetLastError@4             @465 NONAME

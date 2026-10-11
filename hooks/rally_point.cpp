@@ -1,0 +1,643 @@
+#include "rally_point.h"
+#include "../BW/api.h"
+#include "globals.h"
+#include "hooks/audiovisuals/sfxhooks.h"
+
+namespace hooks {
+	void move_to_rally(Unit* unit, Target rally) {
+		if (rally.unit) {
+			if (bw::is_allied_to(unit->player, rally.unit->player)) {
+				unit->order_to(OrderId::Follow, rally.unit);
+			} else {
+				unit->order_to(OrderId::AttackUnit, rally.unit);
+			}
+		} else {
+			unit->order_to(OrderId::Move, rally.pt.x, rally.pt.y);
+		}
+	}
+
+	// Orders newly-produced units to rally, based upon the properties of the building that produced it.
+	// @param  unit      The unit that needs to receive rally orders.
+	// @param  factory   The unit (building) that created the given unit.
+	// Identical to sub_466F50 @ 00466F50
+	void order_new_unit_to_rally(Unit* unit, Unit* factory) {
+		// Egg rally
+		if (unit) {
+			if ((!unit->rally.unit || (unit->rally.unit != unit && unit->rally.unit != factory))
+			&&  (unit->rally.pt.x != 0 || unit->rally.pt.y != 0)) {
+				move_to_rally(unit, unit->rally);
+				unit->rally = {};
+				return;
+			}
+		}
+		// Do nothing if the rally target is the factory itself or the rally target position is 0
+		if (factory && factory->is_factory()
+		&& (!factory->rally.unit || (factory->rally.unit != unit && factory->rally.unit != factory))
+		&&  (factory->rally.pt.x != 0 || factory->rally.pt.y != 0))
+		{
+			move_to_rally(unit, factory->rally);
+
+			// Delayed rally is required for psi providers
+			if (unit_id_is_psi_provider(unit->id)) {
+				auto& unit_ext = unit->ext();
+				unit->rally = factory->rally;
+				unit_ext.timers[TimerDelayedRally] = 4;
+			}
+		}
+	}
+
+	// Called when the player sets the rally point on the inside.
+	void set_rally_position(Unit* unit, u16 x, u16 y) {
+		unit->rally.unit = 0;
+		unit->rally.pt.x = x;
+		unit->rally.pt.y = y;
+	}
+
+	// Called when the player sets the rally point on a unit.
+	void set_rally_unit(Unit* unit, Unit* target) {
+		if (!target) {
+			target = unit;
+		}
+		unit->rally.unit = target;
+		unit->rally.pt.x = target->get_x();
+		unit->rally.pt.y = target->get_y();
+	}
+
+	// Hooked to allow rally for morphing Larvosks - Pr0nogo
+	// Possible downstream effect: need to clear rally for the Cagrant if the morph cancelled / regressed?
+	u32 btnscond_rally(u32 unused, u32 player, Unit* unit) { // 00429520
+		*g_last_internal_error = 0;
+		if (orders_dat::req_offset[OrderId::RallyPointToTile] == -1) {
+			helper::parse_orders_dat_requirements();
+		}
+
+		u32 result = 0;
+		if (player == unit->player) {
+			if (unit->is_frozen()) {
+				*g_last_internal_error = 10;
+				result = 0;
+			} else if (unit->status & UnitStatus::Burrowed && !unit_id_is_burrowed_attacker(unit->id)) {
+				*g_last_internal_error = 11;
+				result = 0;
+			} else {
+				if (UnitId::is_terran_worker(static_cast<UnitId::Enum>(unit->id)) && unit->main_order_id == OrderId::ConstructingBuilding
+				||  bw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack
+				||  unit->id == UnitId::ProtossAugur && unit->main_order_id == OrderId::CompletingArchonSummon)
+				{
+					*g_last_internal_error = 8;
+					result = 0;
+				} else {
+					result = orders_dat::req_offset[OrderId::RallyPointToTile];
+					if (orders_dat::req_offset[OrderId::RallyPointToTile]) {
+						if (unit->id == UnitId::ZergCagrantCesiant && unit->build_queue[unit->build_queue_slot] == UnitId::ZergLarvoskCesiant) { // lame
+							result = 1;
+						} else {
+							result = helper::parse_requirement_opcodes(unit, OrderId::RallyPointToTile, player, g_orders_requirement_tree, orders_dat::req_offset[OrderId::RallyPointToTile]);
+						}
+					} else {
+						*g_last_internal_error = 23;
+					}
+				}
+			}
+		} else {
+			*g_last_internal_error = 1;
+			result = 0;
+		}
+		return result;
+	}
+
+	Order* remove_references(Unit* unit, Unit* dying) { // 0049E590
+		if (unit->current_build_unit == dying) {
+			unit->current_build_unit = 0;
+		}
+		if (unit->order_target.unit == dying) {
+			unit->order_target.unit = 0;
+		}
+		if (unit->move_target.unit == dying) {
+			unit->move_target.unit = 0;
+		}
+		if (unit->auto_target_unit == dying) {
+			unit->auto_target_unit = 0;
+		}
+		if (unit->connected_unit == dying) {
+			unit->connected_unit = 0;
+		}
+		if (unit->irradiate_caster == dying) {
+			unit->irradiate_caster = 0;
+		}
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
+			if (unit->worker.target_resource.unit == dying) {
+				unit->worker.target_resource.unit = 0;
+			}
+			if (unit->worker.is_harvesting) {
+				if (unit->worker.harvest_target == dying) {
+					unit->worker.is_harvesting = 0;
+					unit->worker.harvest_target = 0;
+				}
+			}
+		} else if (unit->status & UnitStatus::GroundedBuilding) {
+			if (unit->building.addon == dying) {
+				unit->building.addon = 0;
+			}
+		}
+		if (hooks::unit_can_have_rally(unit)) {
+			UnitExt* unitExt = get_unit_ext(unit);
+			if (unit->rally.unit == dying) {
+				unit->rally.unit = 0;
+				unit->rally.pt.x = dying->sprite->position.x;
+				unit->rally.pt.y = dying->sprite->position.y;
+			}
+		}
+		if (unit->subunit) {
+			if (units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) {
+				remove_references(unit->subunit, dying);
+			}
+		}
+		Order* result = unit->order_queue_head;
+		while (result)
+		{
+			Order* next = result->next;
+			if (result->target.unit == dying) {
+				helper::remove_order_from_unit_queue(result, unit);
+			}
+			result = next;
+		}
+		return 0; // used to return order_id, but it will always be 0. The return value is never used anyways. -Veeq7
+	}
+
+	Unit* right_click_command(u32 x, u32 y, Unit *target, u32 fow_unit_id, char queued) { // 004560D0
+		MovementGroup movement_group = {};
+		movement_group.pos.x = x;
+		movement_group.pos.y = y;
+		helper::prepare_formation_movement(&movement_group, 1);
+		if (target) {
+			fow_unit_id = UnitId::None;
+		} else if (fow_unit_id != UnitId::None) {
+			u32 tile_id = x / 32 + g_map_tile_size->width * (y / 32);
+			if (!((1 << *g_active_nation_id) & (*g_active_tile_array_int)[tile_id])) {
+				target = helper::find_fow_unit(y, x, fow_unit_id);
+				fow_unit_id = UnitId::None;
+			}
+		}
+		*g_unit_iterator_pos = 0;
+		Unit* result = helper::get_next_commanded_unit();
+		u8 order_type;
+		for (Unit* unit = result; result; unit = result) {
+			u16 id = unit->id;
+			if (unit->burrowed_attacker_can_attack()) {
+				order_type = 3;
+			} else {
+				order_type = helper::get_right_click_action_order(unit);
+				if (!order_type) {
+					if (hooks::unit_can_rally(unit)) {
+						order_type = 2;
+					}
+				}
+			}
+			if (unit->is_hallucination()) {
+				if (order_type == 4 || order_type == 5) {
+					order_type = 1;
+				}
+			}
+			unk_order_array[0] = OrderId::Nothing2;
+			u8 right_click_order = helper::get_right_click_order(order_type, unit, x, y, &target, fow_unit_id);
+			if (right_click_order != OrderId::Nothing2) {
+				if (right_click_order == OrderId::RallyPointToVisibleUnit) {
+					if (hooks::unit_can_have_rally(unit)) {
+						Unit* rally_target = target;
+						if (!rally_target) {
+							rally_target = unit;
+						}
+						unit->rally.unit = rally_target;
+						unit->rally.pt.x = rally_target->sprite->position.x;
+						unit->rally.pt.y = rally_target->sprite->position.y;
+					}
+				} else if (unit != target) {
+					if (right_click_order == OrderId::RallyPointToTile) {
+						if (hooks::unit_can_have_rally(unit)) {
+							unit->rally.unit = 0;
+							unit->rally.pt.x = x;
+							unit->rally.pt.y = y;
+						}
+					} else {
+						switch (right_click_order) {
+							case OrderId::Attack1: {
+								Unit* subunit = unit->subunit;
+								if (subunit) {
+									helper::targeted_order_unit(target, unit->subunit, queued != 0, units_dat::attack_unit_order[subunit->id]);
+								}
+								right_click_order = units_dat::attack_unit_order[unit->id];
+							} break;
+							case OrderId::HarvestGas1: {
+								if (unit->get_race() == RaceId::Askosi && target->get_race() == RaceId::Askosi && !target->is_completed()) {
+									right_click_order = OrderId::ConstructingBuilding;
+								}
+							} break;
+							case OrderId::Repair1: {
+								if (unit->get_race() == RaceId::Askosi && unit->is_constructor() && target->is_completed()) {
+									if (!bw::is_allied_to(unit->player, target->player)) {
+										right_click_order = units_dat::attack_unit_order[unit->id];
+									} else {
+										right_click_order = target->is_building() ? OrderId::Move : OrderId::Follow;
+									}
+								}
+							} break;
+							case OrderId::ConstructingBuilding: {
+								if (!unit->get_race() == RaceId::Askosi && unit->is_constructor() && !target->is_completed() && target->get_race() == RaceId::Askosi) {
+									right_click_order = OrderId::Move;
+								}
+							} break;
+						}
+						if (helper::order_is_allowed(unit, right_click_order, *g_active_nation_id) == 1) {
+							if (target) {
+								helper::targeted_order_unit(target, unit, queued != 0, right_click_order);
+								if (unk_order_array[0] != OrderId::Nothing2) {
+									helper::targeted_order_unit(target, unit, queued != 0, unk_order_array[0]);
+								}
+							} else {
+								movement_group.pos.x = x;
+								movement_group.pos.y = y;
+								if (fow_unit_id == UnitId::None) {
+									helper::get_formation_movement_target(unit, &movement_group);
+								} else {
+									movement_group.current_unit_target = movement_group.pos;
+								}
+
+								u16 target_x = movement_group.current_unit_target.x;
+								u16 target_y = movement_group.current_unit_target.y;
+								helper::targeted_order_ground(right_click_order, fow_unit_id, unit, queued != 0, target_x, target_y);
+								if (unk_order_array[0] != OrderId::Nothing2) {
+									helper::targeted_order_ground(unk_order_array[0], fow_unit_id, unit, queued != 0, target_x, target_y);
+								}
+							}
+							unit->user_action_flags |= UserActionFlags_UMStartPath;
+						}
+					}
+				}
+			}
+			result = helper:: get_next_commanded_unit();
+		}
+		return 0;
+	}
+
+	bool unit_can_have_rally(Unit* unit) { // 0047B2E0
+		return units_dat::group_flags[unit->id].is_factory
+			|| unit->id == UnitId::ZergEgg
+			|| unit->id == UnitId::ZergCocoon;
+	}
+
+	bool unit_can_rally(Unit* unit) {
+		if (unit_can_have_rally(unit)) {
+			if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+				return unit->status & UnitStatus::GroundedBuilding;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	// Original functonality for pack/unpack, required to be able to read/save maps and saves properly. DO NOT CHANGE!!!
+	bool unit_can_have_rally_original(Unit* unit) {
+		return unit->id == UnitId::TerranMinistry
+			|| unit->id == UnitId::TerranStockade
+			|| unit->id == UnitId::TerranFulcrum
+			|| unit->id == UnitId::TerranStarport
+			|| unit->id == UnitId::ZergInfestedCommandCenter
+			|| unit->id == UnitId::ZergHachirosk
+			|| unit->id == UnitId::ZergCaphrolosk
+			|| unit->id == UnitId::ZergGathtelosk
+			|| unit->id == UnitId::ProtossNexus
+			|| unit->id == UnitId::ProtossGateway
+			|| unit->id == UnitId::ProtossStargate
+			|| unit->id == UnitId::ProtossLattice;
+	}
+
+	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
+	u32 order_acquire_generic_right_click_unit_proc_2(Unit* unit, u32 x_pos, u16 y_pos, Unit** target, u16 fow_unit_id) { // 00455E00
+		if (unit_can_rally(unit)) {
+			u32 order_id = OrderId::RallyPointToTile;
+			if (*target) {
+				order_id = OrderId::RallyPointToVisibleUnit;
+			}
+			return order_id;
+		}
+		if (unit->is_grounded_building()) {
+			return OrderId::Nothing2;
+		}
+
+		Unit* target_unit = *target;
+		if (!target_unit) {
+			return OrderId::Move;
+		}
+		if (helper::unit_is_active_transport(unit) && helper::is_order_valid(OrderId::Pickup2, unit, 0, target_unit, 0)) {
+			return OrderId::Pickup2;
+		}
+		if (helper::unit_is_active_transport(target_unit) && helper::can_enter_transport(target_unit, unit)) {
+			return OrderId::EnterTransport;
+		}
+		if (target_unit->is_burrowed()) {
+			return OrderId::Move;
+		}
+		// Previously had Matraleth infest code
+		if (unit_id_has_cleric_heal(unit->id)) {
+			return OrderId::HealMove;
+		}
+		return OrderId::Follow;
+	}
+
+	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
+	void process_right_click_action(Unit* unit, u32 order_unit_id, u16 y_pos, u32 x_pos, Unit* target) { // 00455F20
+		target = 0; // it seems like target should always be 0
+
+		Box16 location = {};
+		location.x = x_pos - 96;
+		location.w = x_pos + 96;
+		location.h = y_pos + 96;
+		location.y = y_pos - 96;
+		unk_order_array[0] = 23;
+		*is_unit_in_point_x_pos = x_pos;
+		*is_unit_in_point_y_pos = y_pos;
+		u8 idle_order = helper::get_generic_unit_idle_order(order_unit_id, unit);
+		Unit* unit_in_point = helper::iterate_units_at_location_target_proc_in_point(&location, (void*)0x00487A90, target);
+		u8 right_click_order = helper::get_right_click_order(idle_order, unit, x_pos, y_pos, &unit_in_point, UnitId::None);
+		if (right_click_order == OrderId::Nothing2) {
+			helper::set_resource_target(unit);
+			u32 x_move_target = unit->move_target.pt.x;
+			u32 y_move_target = unit->move_target.pt.y;
+			if (x_move_target != unit->next_target_waypoint.x || y_move_target != unit->next_target_waypoint.y) {
+				unit->next_target_waypoint.x = x_move_target;
+				unit->next_target_waypoint.y = y_move_target;
+			}
+			unit->order_to_idle();
+		} else {
+			if (right_click_order == 8) {
+				right_click_order = units_dat::attack_unit_order[unit->id];
+			}
+			if (helper::order_allowed(unit, right_click_order, unit->player) == 1) {
+				if (right_click_order == OrderId::RallyPointToVisibleUnit) {
+					if (hooks::unit_can_have_rally(unit)) {
+						helper::set_rally_unit(unit_in_point, unit);
+					}
+				} else if (right_click_order == OrderId::RallyPointToTile) {
+					if (hooks::unit_can_have_rally(unit)) {
+						helper::set_rally_position(unit, x_pos, y_pos);
+					}
+				} else {
+					if (unit_in_point) {
+						helper::prepend_order_targeting_unit(unit_in_point, unit, right_click_order);
+					} else {
+						helper::prepend_order_targeting_ground(right_click_order, x_pos, y_pos, unit);
+					}
+					unit->order_to_idle();
+				}
+			}
+		}
+	}
+
+	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
+	u8 get_generic_unit_idle_order(u32 order_unit_id, Unit* unit) { // 00455760
+		if (!unit) {
+			return OrderId::Die;
+		}
+
+		u8 order_id = OrderId::Die;
+		if (unit->burrowed_attacker_can_attack()) {
+			order_id = OrderId::PlayerGuard;
+		} else {
+			u8 right_click_order = units_dat::right_click_action[unit->id];
+			if (!right_click_order && hooks::unit_can_rally(unit)) {
+				right_click_order = OrderId::Guard;
+			}
+			order_id = right_click_order;
+		}
+		if (unit->status & UnitStatus::IsHallucination) {
+			if (order_id == OrderId::TurretGuard || order_id == OrderId::BunkerGuard) {
+				order_id = OrderId::Stop;
+			}
+		}
+		return order_id;
+	}
+
+	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
+	void input_game_right_mouse_click(DialogEvent* dialog_event) { // 004564E0
+		if (!helper::is_outside_of_game_screen(dialog_event->current.x, dialog_event->current.y)) {
+			u8 local_group_owner = local_selection_group_2[0] ? local_selection_group_2[0]->player : 255;
+			if (local_group_owner == g_local_nation_id) {
+				if (*g_active_portrait_unit) {
+					if (helper::unit_is_owned_by_current_player(*g_active_portrait_unit)) {
+						s32 selection_iterator = 0;
+						for (u32 i = 0; i < SelectionCap; ++i) {
+							selection_iterator = i;
+							Unit* selected_unit = g_client_selection_group->unit[i];
+							if (selected_unit) {
+								if (helper::accepts_right_click_commands(selected_unit)) {
+									break;
+								}
+							}
+							if (i == SelectionCap - 1) {
+								return;
+							}
+						}
+						if (selection_iterator < SelectionCap) {
+							u32 find_x = g_move_to_x + dialog_event->current.x;
+							u32 find_y = g_move_to_y + dialog_event->current.y;
+							Unit* unit_at_point = helper::find_unit_at_point(find_x, find_y);
+							if (g_client_selection_count != 1
+							|| *g_active_portrait_unit != unit_at_point
+							|| unit_at_point && hooks::unit_can_rally(unit_at_point)) {
+								u32 i; // :(
+								Unit* unit;
+								if (unit_at_point) {
+									goto exit;
+								}
+								for (i = 0; i < SelectionCap; ++i) {
+									unit = g_client_selection_group->unit[i];
+									if (unit) {
+										if (helper::can_move(unit)) {
+											if (i < SelectionCap) {
+											exit:
+												Thingy* command_thingy = helper::show_command_response(find_x, find_y, unit_at_point);
+												u16 unit_id = UnitId::None;
+												if (command_thingy) {
+													unit_id = command_thingy->unit_id;
+												}
+												helper::cmdact_right_click_order(unit_at_point, find_x, find_y, unit_id, g_is_keycode_used[16]);
+												if (helper::show_right_click_error_if_needed(unit_at_point)) {
+													if ((*g_active_portrait_unit)->has_weapon()) {
+														UnitExt* unit_ext = get_unit_ext(*g_active_portrait_unit);
+														unit_ext->units[UnitResponseTarget] = unit_at_point;
+														hooks::play_yes_unit_response_internal(*g_active_portrait_unit, UnitResponseContext::URC_Target);
+													}
+													else {
+														helper::play_yes_unit_response(*g_active_portrait_unit);
+													}
+												}
+											}
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
+	u32 can_do_targeted_order(Unit* unit, u8 order_id) { // 0049A410
+		if (unit->status & UnitStatus::GroundedBuilding
+		&& (order_id == OrderId::RallyPointToVisibleUnit
+		||  order_id == OrderId::RallyPointToTile
+		||  order_id == OrderId::Rechargeshields2
+		||  order_id == OrderId::BunkerLoad)) {
+			return 1;
+		}
+		if (unit->burrowed_attacker_can_attack()) {
+			return 1;
+		}
+		u8 right_click_order = units_dat::right_click_action[unit->id];
+		if (!right_click_order) {
+			if (hooks::unit_can_have_rally(unit)) {
+				right_click_order = 2;
+			}
+		}
+		return right_click_order != 0;
+	}
+
+	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
+	char get_right_click_action_order(Unit* unit) { // 004E5EA0
+		if (unit->burrowed_attacker_can_attack()) {
+			return 3;
+		}
+
+		// Try fixing right-click orders for landed Terran towers. Unsuccessful for now.
+		if (unit->id == UnitId::TerranWatchdog || unit->id == UnitId::TerranSentinel) {
+			if (unit->is_in_air()) {
+				return 1;
+			}
+			else {
+				return 3;
+			}
+		}
+
+		char right_click_order = units_dat::right_click_action[unit->id];
+		if (!right_click_order) {
+			if (hooks::unit_can_have_rally(unit)) {
+				return 2;
+			}
+		}
+		return right_click_order;
+	}
+
+	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
+	b32 __stdcall btnscond_can_move_special_case(u32 buffer) { // 00428D40 - guessed arg name, unused
+		for (u32 i = 0; i < SelectionCap; ++i) {
+			Unit* unit = g_client_selection_group->unit[i];
+			if (unit) {
+				if (unit->burrowed_attacker_can_attack()) {
+					return true;
+				}
+				if (units_dat::right_click_action[unit->id] || unit->is_grounded_building() && unit_can_rally(unit)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
+	b32 __stdcall btnscond_can_move(u32 buffer) { // 00428DA0
+		char right_click_order = 0;
+		bool another_pass = false;
+		for (u32 i = 0; i < SelectionCap; ++i) {
+			Unit* unit = g_client_selection_group->unit[i];
+			if (!unit) {
+				continue;
+			}
+			if (unit->burrowed_attacker_can_attack()) {
+				continue;
+			}
+			right_click_order = units_dat::right_click_action[unit->id];
+			if (right_click_order) {
+				if (right_click_order == OrderId::PlayerGuard) {
+					continue;
+				}
+				return true;
+			}
+			if (unit_can_rally(unit)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
+	b32 __stdcall btnscond_can_attack(u32 buffer) { // 00428F30
+		for (u32 i = 0; i < SelectionCap; ++i) {
+			Unit* unit = g_client_selection_group->unit[i];
+			if (unit) {
+				if (unit->burrowed_attacker_can_attack() || units_dat::right_click_action[unit->id] || unit_can_rally(unit)) {
+					if (helper::ai_unit_can_attack(unit)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
+	b32 unit_can_move(Unit* unit) { // 00455660
+		u16 right_click_order = units_dat::right_click_action[unit->id];
+		if (unit->burrowed_attacker_can_attack()) {
+			right_click_order = OrderId::PlayerGuard;
+		} else if (!right_click_order) {
+			if (unit_can_rally(unit)) {
+				right_click_order = OrderId::Guard;
+			}
+		}
+		switch (right_click_order) {
+			case 1:
+			case 2:
+			case 4:
+			case 5:
+			case 6: {
+				return true;
+			} break;
+		}
+		return false;
+	}
+
+	// Hooked for right-click rally on eggs and cocoons. -Pr0nogo
+	void drone_build_execute(Unit* unit) { // 0045D2E0
+		bool is_hive_tissue = unit->ext().units[UnitHiveOrgan] != nullptr;
+		if (unit->get_race() == RaceId::Zerg && !is_hive_tissue) {
+			helper::stop_creep_disappearing_at_building(unit);
+		}
+		if (!unit->is_frozen() || unit->is_building()) {
+			if (unit_can_have_rally(unit)) {
+				unit->current_buttonset = UnitId::Buttons_CancelMutationWithRallyPt;
+			} else {
+				unit->current_buttonset = UnitId::Buttons_CancelMutation;
+			}
+		}
+
+		helper::unit_completion_init(unit, 1);
+		u8 main_order_id = unit->main_order_id;
+		unit->hitpoints = is_hive_tissue ? units_dat::max_hitpoints[unit->id] : units_dat::max_hitpoints[unit->id] / 10;
+		unit->user_action_flags |= UserActionFlags_IscriptGoToIdle;
+		if (main_order_id) {
+			while (Order* order = unit->order_queue_tail) {
+				if (!orders_dat::can_be_interrupted[order->order_id] && order->order_id != OrderId::ZergBirth) {
+					break;
+				}
+				helper::remove_order_from_unit_queue(order, unit);
+			}
+			helper::perform_another_order(OrderId::ZergBuildSelf, 0, unit, UnitId::None, {}, 0);
+		}
+		helper::do_next_queued_order(unit);
+		unit->build_queue[unit->build_queue_slot] = UnitId::None;
+	}
+}

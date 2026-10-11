@@ -1,0 +1,122 @@
+#include "give_unit.h"
+#include "globals.h"
+#include <BW/api.h>
+#include "ai_layouts.h"
+
+namespace hooks {
+	// Used in itself, complete_addon, begin_gas_building, GiveAllUnitPropertiesToPlayerAndMakeIdle, removeSubunitOrGasContainer, ai_create_unit, orders_RescuePassive, orders_InfestMine1
+	// Changes would affect all those functions and maybe more
+	void give_unit(Unit* unit, u32 player, u32 count_as_completed) {
+		if (unit->player != player) {
+			helper::remove_unit_ai(unit, 0);
+
+			bool is_morphing = false;
+			if (unit->is_remorphing_building()) {
+				unit->status |= UnitStatus::Completed;
+				is_morphing = true;
+			}
+
+			helper::increment_unit_scores(unit, -1);
+			if (unit->is_completed()) {
+				helper::increment_unit_scores_ex(unit, 0, -1);
+			}
+
+			u32 selection_index = 0;
+			bool is_selected = (unit->sprite->flags & SpriteFlags::Selected) == 1;
+			if (is_selected) {
+				selection_index = unit->sprite->selection_index;
+				helper::destroy_unit_selection(unit);
+			}
+
+			if (unit->player_link.prev) {
+				(unit->player_link.prev)->player_link.next = unit->player_link.next;
+			}
+			if (unit->player_link.next) {
+				(unit->player_link.next)->player_link.prev = unit->player_link.prev;
+			}
+			if (unit == first_player_unit->unit[unit->player]) {
+				first_player_unit->unit[unit->player] = unit->player_link.next;
+			}
+
+			unit->player_link.prev = nullptr;
+			unit->player_link.next = nullptr;
+			unit->player = player;
+
+			// Maybe "if" not needed? -GPTP
+			if (is_selected) {
+				helper::create_unit_selection(unit, selection_index);
+			}
+
+			unit->player_link.prev = nullptr;
+			unit->player_link.next = first_player_unit->unit[player];
+
+			if (first_player_unit->unit[player]) {
+				(first_player_unit->unit[player])->player_link.prev = unit;
+			}
+
+			first_player_unit->unit[player] = unit;
+			helper::increment_unit_scores(unit, 1);
+			if (unit->is_completed()) {
+				helper::increment_unit_scores_ex(unit, count_as_completed, 1);
+			}
+			if (is_morphing) {
+				unit->status &= ~UnitStatus::Completed;
+			}
+
+			helper::recheck_attacks(unit);
+			bw::refresh_console();
+			if (unit->get_race() == RaceId::Protoss && unit->is_grounded_building()) {
+				g_can_update_powered_status = 1;
+			}
+
+			helper::give_ai(unit);
+			if (unit->subunit && unit->subunit->is_subunit()) {
+				give_unit(unit->subunit, player, count_as_completed);
+			}
+			Unit* hive_tissue = unit->ext().units[UnitHiveTissue];
+			if (hive_tissue) {
+				give_unit(hive_tissue, player, count_as_completed);
+			}
+
+			helper::apply_speed_upgrade_from_unit_type(unit);
+
+			/* -- Disabled since Flag ID is used in Cosmonarchy
+			if (units_dat::base_property[unit->id] & UnitProperty::Worker
+				&& unit->worker.powerup
+				&& (unit->worker.powerup)->id == UnitId::Powerup_Flag)
+			{
+				if ((unit->worker.powerup)->player == player || player >= 8)
+				{
+					helper::drop_powerup(unit->worker.powerup); //return the flag to initial position?
+				}
+			}
+			*/
+		}
+	}
+
+	// Hooked to rule out unit AI type issues - Pr0nogo
+	void give_ai(Unit* unit) { // 00463040
+		u32 player = unit->player;
+		if (player < PlayerLimit && g_player_table[player].type == PlayerType::Computer) {
+			if (unit_id_has_cleric_heal(unit->id)) {
+				Unit* free_medic = g_aiscript_controller[player].main_medic;
+				if (!free_medic) {
+					free_medic = unit;
+				}
+			}
+			if (units_dat::computer_ai_internal[unit->id] & 2) { // "Non-military"
+				AiTown* town = bw::get_closest_town(player, unit->position);
+				if (town) {
+					helper::add_worker_structure_ai(unit, town);
+				}
+			} else {
+				auto& unit_ext = unit->ext();
+				if (unit_ext.values[ValueInfested] || unit_ext.values[ValueMindControlPlayer] || unit_ext.values[ValueHijackOriginalPlayer]) {
+					helper::ai_training_simple_military(unit, unit);
+				} else {
+					helper::add_guard_ai_to_unit(unit);
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,51 @@
+#pragma once
+#include "types.h"
+#include "BW/structures/common.h"
+#include "BW/enumerations/UnitId.h"
+
+class Timer {
+public:
+    void start(u32 time);
+    void stop();
+
+    bool started() const;
+    bool running() const;
+    bool elapsed() const;
+
+private:
+    u32 m_end_time = 0;
+};
+
+#define InvalidSample -1
+
+namespace utils {
+
+template <typename GenFunc, typename ScoreFunc>
+std::optional<std::invoke_result_t<GenFunc>> sample_best(GenFunc&& gen_func, ScoreFunc&& score_func, u32 max_samples, u32 max_allowed_fails) {
+    using Result = decltype(gen_func());
+    using Score = decltype(score_func(std::declval<Result>()));
+    std::optional<Result> result{};
+    Score best_score = std::numeric_limits<Score>::min();
+
+    // Since we are unsigned, we treat 0 as termination, and 1 as first try buffer
+    max_allowed_fails += 1;
+    while (max_samples > 0 && max_allowed_fails > 0) {
+        const Result current = gen_func();
+        const Score score = score_func(current);
+        if (score < 0) {
+            max_allowed_fails--;
+            continue;
+        }
+        if (score > best_score) {
+            result = current;
+            best_score = score;
+        }
+        max_samples--;
+    }
+
+    return result;
+}
+
+std::optional<v2u16> pick_random_spawn_point(UnitId::Enum unit_id, u32 samples = 10);
+
+}; // utils

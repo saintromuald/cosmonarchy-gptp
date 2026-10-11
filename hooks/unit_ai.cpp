@@ -1,0 +1,1040 @@
+#include "unit_ai.h"
+#include <BW/api.h>
+#include <BW/structures.h>
+#include <BW/bwdata.h>
+#include "logger.h"
+#include "globals.h"
+#include "ai_layouts.h"
+#include "hooks/orders/ai/ai_orders.h"
+
+namespace hooks {
+	void ai_training_unit(Unit* unit, Unit* parent) { // 004A2830
+		if (g_player_table[unit->player].type != PlayerType::Computer) {
+			return;
+		}
+		if (unit_id_has_cleric_heal(unit->id) && !g_aiscript_controller[unit->player].main_medic) {
+			g_aiscript_controller[unit->player].main_medic = unit;
+		}
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
+			helper::ai_training_worker(unit, parent);
+		} else if (unit->id == UnitId::ZergOvileth) {
+			helper::ai_training_overlord(unit, parent); // replace with hook later
+		} else if (unit->id == UnitId::ZergRilirokor
+				|| unit->id == UnitId::ZergRililisk
+				|| unit->id == UnitId::ProtossArchon
+				|| unit->id == UnitId::ProtossMindTyrant) {
+			// archon and mind tyrant should be moved to ai_trainingnormal, once it's hooked and archon's hardcode is removed
+			hooks::ai_training_simple_military(unit, parent);
+		} else {
+			// So we shouldn't be initializing military AI twice, since it leads to disaster
+			if (unit->status & UnitStatus::IsHallucination) {
+				// Here we readd the hallucination code
+				helper::add_military_ai(bw::get_ai_region(unit->player, bw::get_region_id(unit->position)), unit, true);
+			} else if (!bw::is_conventional_unit_morph_result(unit->id)) {
+				// And we add AI only if it's not a morph result, in which case it should already have AI
+				helper::ai_training_normal(unit, parent);
+			}
+		}
+	}
+
+	// Hooked to add ai_region null check - Pr0nogo
+	void ai_training_simple_military(Unit* unit, Unit* parent) { // 0043E280
+		if (units_dat::base_property[unit->id] & (UnitProperty::Worker | UnitProperty::Building)) {
+			bw::printf("SimpleMilitary on worker or building! ID: %u", (u32)unit->id);
+		}
+		v2u16 position = {};
+		if (AssertSprite(unit->sprite)) {
+			position = unit->sprite->position;
+		} else {
+			position = unit->position;
+		}
+		s32 region_id = bw::get_region_id(position);
+		AiRegion* player_region = g_ai_region_captains[parent->player];
+		if (!player_region) {
+			bw::printf("null region in AI_TrainingBroodling!");
+			return;
+		}
+		AiRegion* region = &player_region[region_id];
+		if (!region) {
+			bw::printf("AI Broodling Bug: Null region!");
+			return;
+		}
+		if (player_region[region_id].state == RegionState::Nothing) {
+			helper::ai_set_region_state(RegionState::ContinueAttackHere, region);
+		}
+		helper::add_military_ai(region, unit, true);
+	}
+
+	// Hooked to investigate crashes - Pr0nogo
+	void ai_training_worker(Unit* unit, Unit* parent) { // 00435700
+		AiTown* town = 0;
+		WorkerAi* parent_ai = (WorkerAi*)parent->unit_ai;
+		if (parent_ai && (parent_ai->type == AiType::Worker || parent_ai->type == AiType::Building)) {
+			town = parent_ai->town;
+		} else {
+			town = bw::get_closest_town(unit->player, unit->position);
+		}
+		if (parent == unit) {
+			helper::ai_remove_from_towns(unit);
+		}
+		if (unit->unit_ai && unit->unit_ai->type != AiType::Building) {
+			helper::remove_unit_ai(unit, false); // Sanity removal for cases when workers have military AI for some reason
+		}
+
+		if (parent == unit) {
+			WorkerAi* unit_ai = (WorkerAi*)unit->unit_ai;
+			if (unit_ai) {
+				AiTown* town = unit_ai->town;
+				if (town && unit_ai->type == AiType::Building) { // type check is new
+					helper::delete_building_ai((BuildingAi*)unit_ai, &town->buildings); // moved within nullcheck for sanity
+					if (town->building_scv == unit) {
+						town->building_scv = 0;
+					}
+					if (town->main_building == unit) {
+						town->main_building = 0;
+					}
+				}
+				unit->unit_ai = 0;
+			}
+		}
+
+		if (town) {
+			helper::add_worker_structure_ai(unit, town);
+		}
+	}
+
+	// Hooked to investigate crashes and remove Archon hardcode - Pr0nogo
+	void ai_training_normal(Unit* new_unit, Unit* parent_unit) { // 00435DB0
+		s16 unit_id = new_unit->id;
+		if (!bw::is_conventional_unit_morph_result(unit_id)) {
+			if (new_unit->status & UnitStatus::IsHallucination) {
+				helper::add_military_ai(&g_ai_region_captains[new_unit->player][bw::get_region_id(new_unit->sprite->position)], new_unit, 1);
+				return;
+			}
+			if (unit_id != UnitId::TerranMorningstar && unit_id != UnitId::ProtossWitness) {
+				BuildingAi* parent_unit_ai = (BuildingAi*)parent_unit->unit_ai;
+				BuildingAi* parent_unit_ai_backup = (BuildingAi*)parent_unit->unit_ai;
+				// DF - Guard type comparison fixes a niche crash when Zerg units playing their birth animation are given to a computer player
+				if (parent_unit_ai && parent_unit_ai->type != AiType::Guard) {
+					s32 queue_slot = 0;
+					if (parent_unit == new_unit) {
+						queue_slot = 0;
+						helper::ai_remove_from_towns(new_unit);
+						BuildingAi* new_unit_ai = (BuildingAi*)new_unit->unit_ai;
+						if (new_unit_ai) {
+							AiTown* new_unit_town = new_unit_ai->town;
+							helper::delete_building_ai(new_unit_ai, &new_unit_town->buildings);
+							if (new_unit_town) {
+								if (new_unit == new_unit_town->building_scv) {
+									new_unit_town->building_scv = 0;
+								}
+								if (new_unit == new_unit_town->main_building) {
+									new_unit_town->main_building = 0;
+								}
+							}
+							parent_unit_ai = parent_unit_ai_backup;
+							new_unit->unit_ai = 0;
+						}
+					} else if (parent_unit->id == unit_id) {
+						queue_slot = 0;
+					} else {
+						queue_slot = (u8)parent_unit->build_queue_slot;
+					}
+					AiRegion* region = (AiRegion*)parent_unit_ai->train_queue_values[queue_slot];
+					if (parent_unit_ai->train_queue_types[queue_slot] == 2) {
+						if (!region->ground_strength_needed) {
+							s16 region_full_air = region->air_strength_full;
+							s16 region_enemy_air = region->air_strength_enemy;
+							region->ground_strength_needed = (u16)new_unit;
+							region->air_strength = region_full_air;
+							region->ground_strength_full = region_enemy_air;
+							new_unit->unit_ai = (UnitAi*)region;
+							return;
+						}
+						parent_unit_ai->train_queue_types[queue_slot] = 1;
+						region = helper::get_ai_region_info_from_unit_loc(new_unit);
+						parent_unit_ai->train_queue_values[queue_slot] = (void*)region;
+					}
+					if (parent_unit_ai->train_queue_types[queue_slot] == 1) {
+						helper::add_military_ai(region, new_unit, 0);
+					} else {
+						helper::add_guard_ai_to_unit(new_unit);
+					}
+				}
+			}
+		}
+	}
+
+	// Hooked because iquare told me to - Pr0nogo
+	void* add_worker_structure_ai(Unit* unit, AiTown* town) { // 00433DD0
+		if (unit->unit_ai) {
+			helper::remove_unit_ai(unit, false);
+		}
+		void* result = 0;
+		if (unit->is_worker()) {
+			if (town->workers.array) {
+				WorkerAi* ai = 0;
+				if (town && town->workers.array) {
+					if (town->workers.array && town->workers.array <= (void*)0x100000) {
+						bw::printf("Corrupted free worker AI array!");
+						return result;
+					}
+					if (town->workers.array && town->workers.array->first_free_worker && town->workers.array->first_free_worker <= (void*)0x100000) {
+						bw::printf("Corrupted first free worker AI!");
+						return result;
+					}
+					if (town->workers.first && town->workers.first <= (void*)0x100000) {
+						bw::printf("Corrupted first active worker AI!");
+						return result;
+					}
+					ai = town->workers.array->first_free_worker; // This nullcheck was added
+				}
+				if (ai) {
+					result = ai;
+					WorkerAi* worker_prev = ai->link.prev;
+					town->workers.array->first_free_worker = ai->link.prev;
+					if (worker_prev) {
+						worker_prev->link.next = 0;
+					}
+					ai->link.next = 0;
+					ai->link.prev = town->workers.first;
+					if (town->workers.first) {
+						town->workers.first->link.next = ai;
+					}
+					town->workers.first = ai;
+					ai->type = 2;
+					ai->parent = unit;
+					ai->town = town;
+					ai->target_resource = 1;
+					ai->last_update_second = *g_elapsed_time_seconds;
+					ai->wait_timer = 0;
+					ai->reassign_count = 0;
+					unit->worker.target_resource.unit = 0;
+					unit->unit_ai = (UnitAi*)ai;
+					++town->worker_count;
+
+					TownLayouts& layouts_town = g_ai_layouts.get_town_layouts(*town);
+					if (unit->id == UnitId::ProtossArtisan) {
+						return result;
+					}
+					auto& unit_ext = unit->ext();
+					if (!town->inited) {
+						town->inited = 1;
+						town->mineral = 0;
+						auto& town_ext = get_town_ext(town);
+						town_ext.gas_buildings_count = 0;
+
+						if (layouts_town.worker_maynard) {
+							layouts_town.worker_maynard--;
+						}
+						v2u16 position = g_ai_layouts.get_ai_town_position(*town);
+						unit_ext.values[ValueAI_WorkerChosenForExpansion] = true;
+						unit_ext.values[ValueAI_WorkerChosenX] = position.x;
+						unit_ext.values[ValueAI_WorkerChosenY] = position.y;
+					} else if (layouts_town.worker_maynard) {
+						layouts_town.worker_maynard--;
+						v2u16 position = g_ai_layouts.get_ai_town_position(*town);
+						unit_ext.values[ValueAI_WorkerChosenForExpansion] = true;
+						unit_ext.values[ValueAI_WorkerChosenX] = position.x;
+						unit_ext.values[ValueAI_WorkerChosenY] = position.y;
+					}
+				}
+			}
+		} else if ((unit->is_building() && unit->id != UnitId::ResourceVespeneRidge && unit->id != UnitId::ResourceVespeneGeyser)
+				 || unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergOcsalLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergOvileth) {
+			BuildingAi* ai = 0;
+			if (town) {
+				if (town->buildings.array && town->buildings.array <= (void*)0x100000) {
+					bw::printf("Corrupted free building AI array!");
+					return result;
+				}
+				if (town->buildings.array && town->buildings.array->first_free_building
+					&& town->buildings.array->first_free_building <= (void*)0x100000) {
+					bw::printf("Corrupted first free building AI!");
+					return result;
+				}
+				if (town->buildings.first && town->buildings.first <= (void*)0x100000) {
+					bw::printf("Corrupted first active building AI!");
+					return result;
+				}
+				ai = helper::create_building_ai(&town->buildings); // This nullcheck was added
+			}
+			if (ai) {
+				result = ai;
+				ai->type = 3;
+				ai->parent = unit;
+				ai->town = town;
+				ai->train_queue_values[0] = 0;
+				ai->train_queue_values[1] = 0;
+				ai->train_queue_values[2] = 0;
+				ai->train_queue_values[3] = 0;
+				ai->train_queue_values[4] = 0;
+				ai->train_queue_types[0] = 0;
+				ai->train_queue_types[1] = 0;
+				ai->train_queue_types[2] = 0;
+				ai->train_queue_types[3] = 0;
+				ai->train_queue_types[4] = 0;
+
+				unit->unit_ai = (UnitAi*)ai;
+				if (unit->id == UnitId::ZergHachirosk || unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergGathtelosk) {
+					if (unit->is_completed()) {
+						unit->order_computer(OrderId::ComputerAI);
+						helper::set_secondary_order(unit, OrderId::SpreadCreep);
+					}
+				}
+
+				if (!(g_aiscript_controller[town->player].ai_flags.is_use_map_settings)
+				||	  unit->status & UnitStatus::GroundedBuilding
+				&&	  unit->id != UnitId::TerranWatchdog
+				&&	  unit->id != UnitId::ZergCagrantCesiant
+				&&	  unit->id != UnitId::ZergSpraithCesiant
+				&&	  unit->id != UnitId::ZergSurkithCesiant
+				&&	  unit->id != UnitId::ZergSkortrithCesiant
+				&&	  unit->id != UnitId::ZergSpirtithCesiant
+				&&	  unit->id != UnitId::ZergNydusCesiant
+				&&	  unit->id != UnitId::ZergKazitrithCesiant
+				&&	  unit->id != UnitId::ProtossPylon
+				&&	  unit->id != UnitId::ProtossWarden
+				&&	 !unit_id_is_garrison(unit->id))
+				{
+					helper::ai_make_guard(town->player, unit);
+				}
+
+				if (!town->inited) {
+					town->inited = 1;
+					town->mineral = 0;
+					auto& town_ext = get_town_ext(town);
+					town_ext.gas_buildings_count = 0;
+				}
+
+				bool is_valid_town_hall = false;
+				switch (g_player_table[unit->player].race) {
+					case RaceId::Terran: {
+						if (unit->id == UnitId::TerranMinistry || unit->id == UnitId::TerranTreasury) {
+							is_valid_town_hall = true;
+						}
+					} break;
+					case RaceId::Protoss: {
+						if (unit->id == UnitId::ProtossNexus) {
+							is_valid_town_hall = true;
+						}
+					} break;
+					case RaceId::Zerg: {
+						if (unit->id == UnitId::ZergHachirosk || unit->id == UnitId::ZergCaphrolosk || unit->id == UnitId::ZergGathtelosk) {
+							is_valid_town_hall = true;
+						}
+					} break;
+					case RaceId::Askosi: {
+						if (unit->id == UnitId::AskosiLandlock || unit->id == UnitId::AskosiBounty) {
+							is_valid_town_hall = true;
+						}
+					} break;
+				}
+
+				if (is_valid_town_hall || helper::unit_is_active_resource_depot(unit)) {
+					if (!town->main_building) {
+						town->main_building = unit;
+					}
+				} else {
+					u32 refinery_id = helper::get_default_refinery_type(unit->player);
+					if (unit->id == refinery_id || unit->id == UnitId::ResourceVespeneRidge	|| unit->id == UnitId::ResourceVespeneGeyser) {
+						auto& town_ext = get_town_ext(town);
+						if (town_ext.gas_buildings_count < GasBuildingsCap) {
+							town_ext.gas_buildings[town_ext.gas_buildings_count++] = unit;
+							sort_gas_buildings(town);
+						}
+						if (town->resarea) {
+							town->resource_units_not_set = 1;
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	// Hooked to rule out AI crashes - Pr0nogo
+	void ai_create_nuke(Unit* silo, Unit* result) { // 0045B7A0 - originally had 3 args; last one was unused
+		if (silo->id == UnitId::TerranAnvil && !silo->building.silo.is_ready) {
+			Unit* nuke = helper::create_unit(UnitId::TerranMorningstar, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->player);
+			if (nuke) {
+				helper::update_unit_stats_and_finish_building(nuke);
+				helper::update_unit_strength_and_apply_default_orders(nuke);
+				helper::hide_unit(nuke);
+				silo->building.silo.nuke = nuke;
+				silo->building.silo.is_ready = 1;
+				nuke->connected_unit = silo;
+				ai_training_unit(nuke, silo);
+			}
+		}
+	}
+
+	// Hooked to investigate improperly-initialized unit AI, and to add functionality. -Pr0nogo
+	void ai_add_military_to_region(AiRegion* ai_region, Unit* unit, u32 must_use_region, void* debug_caller_address) { // 0043DA20
+		if (unit->unit_ai) {
+		//	bw::printf("Attempt to add military AI to a unit with unit_ai (prevented)");
+			helper::remove_unit_ai(unit, false);
+		}
+
+		bool prevent = false;
+		if (units_dat::base_property[unit->id] & UnitProperty::Worker) {
+			bw::printf("Military AI added to worker (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+			prevent = true;
+		} else if (units_dat::base_property[unit->id] & UnitProperty::Building) {
+			bw::printf("Military AI added to building (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+			prevent = true;
+		} else if (units_dat::computer_ai_internal[unit->id] & 2 && !unit_id_is_zerg_egg(unit->id) && unit->id != UnitId::ZergOvileth && unit->id != UnitId::ZergYblyleth) {
+			bw::printf("Military AI added to non military unit (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+			prevent = true;
+		}
+		if (g_player_table[unit->player].type != PlayerType::Computer) {
+			bw::printf("Military AI added to non computer (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+			prevent = true;
+		}
+		if (ai_region->player != unit->player) {
+			bw::printf("Military AI added to wrong player (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+			prevent = true;
+		}
+		if (prevent) {
+			bw::printf("Prevented military add (Player %u %s)! 0x%X", unit->player, unit->get_name(), debug_caller_address);
+			helper::remove_unit_ai(unit, false);
+			bw::give_ai_ex(unit);
+			return;
+		}
+		if (ai_region->state == RegionState::EnemySighted && !must_use_region) {
+			ai_region = bw::get_ai_region(unit->player, bw::get_region_id(unit->sprite->position));
+		}
+		MilitaryAi* military_ai = ai_region->military.array->first_free_military;
+		if (military_ai) {
+			ai_region->military.array->first_free_military = (MilitaryAi*)military_ai->link.prev;
+			if (military_ai->link.prev) {
+				military_ai->link.prev->link.next = 0;
+			}
+			if (military_ai) {
+				military_ai->link.next = 0;
+				military_ai->link.prev = ai_region->military.first;
+				if (ai_region->military.first) {
+					ai_region->military.first->link.next = military_ai;
+				}
+				ai_region->military.first = military_ai;
+				military_ai->type = AiType::Military;
+				military_ai->unit = unit;
+				military_ai->region = ai_region;
+				if (!(unit->status & UnitStatus::InAir)) {
+					++ai_region->ground_unit_count;
+				}
+				unit->unit_ai = (UnitAi*)military_ai;
+				Region* region = bw::get_region(ai_region->region);
+				helper::ai_order_to_destination(unit, unit_id_has_cleric_heal(unit->id) ? OrderId::HealMove : OrderId::AttackMoveComputer,
+					region->region_center_x >> 8, region->region_center_y >> 8);
+				char region_state = ai_region->state;
+				if (region_state == RegionState::PreparingAttack
+					|| region_state == RegionState::PreparingAttackOldUnreachable
+					|| region_state == RegionState::ContinueAttackHere
+					|| region_state == RegionState::Attacking) {
+					helper::ai_assign_region_to_slowest_unit(ai_region);
+				}
+			}
+		}
+	}
+
+	// Hooked to change guard assignments for structures based on AI personality -- Pr0nogo
+	// TODO: Cleanup and make changes
+	void iterate_building_ai(Unit* result, Unit* parent) { // 00435770
+		UnitAi* parentAI;
+		AiTown* parentTown;
+		BuildingAi* removeBuilding;
+		AiTown* removeBuildingTown;
+		Unit* workerUnit;
+		Unit* workerTarget;
+		s32 queueCount;
+		s32 queueCount2;
+		BuildingAi* j;
+		Unit* builderUnit;
+		u32 i;
+		WorkerAi* worker;
+		BuildingAi* building;
+
+		if (g_player_table[(u8)parent->player].type == PlayerType::Computer) {
+			parentAI = (UnitAi*)parent->unit_ai;
+			if (parentAI) {
+				if (parentAI->type == 2) {
+					worker = (WorkerAi*)parentAI;
+					parentTown = worker->town;
+				} else {
+					building = (BuildingAi*)parentAI; // assumed BuildingAi, unlikely to be GuardAi, can't be anything else
+					parentTown = building->town;
+				}
+				if (parent == result) {
+					helper::ai_remove_from_towns(result);
+					removeBuilding = (BuildingAi*)result->unit_ai;
+					if (removeBuilding) {
+						removeBuildingTown = removeBuilding->town;
+						helper::delete_building_ai(removeBuilding, &removeBuildingTown->buildings);
+						if (removeBuildingTown) {
+							if (result == removeBuildingTown->building_scv) {
+								removeBuildingTown->building_scv = 0;
+							}
+							if (result == removeBuildingTown->main_building) {
+								removeBuildingTown->main_building = 0;
+							}
+						}
+						result->unit_ai = 0;
+					}
+				}
+				helper::add_worker_structure_ai(result, parentTown);
+				if (!unit_id_is_garrison(result->id) || *g_elapsed_time_seconds <= 60) {
+					if (result->id == UnitId::TerranWatchdog) {
+						workerUnit = (Unit*)parentTown->workers.first;
+						for (i = 0; workerUnit; i += queueCount) {
+							workerTarget = workerUnit->move_target.unit;
+							if (workerTarget->id == UnitId::TerranWatchdog) {
+								queueCount = 1;
+							} else {
+								queueCount = helper::ai_get_queued_count(workerTarget, UnitId::TerranWatchdog);
+							}
+//							workerUnit = *(u32*)workerUnit; // not sure if this is even necessary, does v8 need to be iterated upon every loop?
+						}
+						for (j = parentTown->buildings.first; j; i += queueCount2) {
+							builderUnit = j->parent;
+							if (builderUnit->id == UnitId::TerranWatchdog) {
+								queueCount2 = 1;
+							} else {
+								queueCount2 = helper::ai_get_queued_count(builderUnit, UnitId::TerranWatchdog);
+							}
+							j = j->link.prev;
+						}
+						if (i >= 4) {
+							helper::prepare_guard_ai(result->sprite->position.y, (u8)result->player, 1, result->sprite->position.x);
+						}
+					}
+				} else {
+					helper::prepare_guard_ai(result->sprite->position.y, (u8)result->player, 5, result->sprite->position.x);
+					helper::prepare_guard_ai(result->sprite->position.y, (u8)result->player, 1, result->sprite->position.x);
+				}
+			}
+		}
+	}
+
+	// Hooked to investigate crashes - Pr0nogo
+	void remove_unit_ai(Unit* unit, UnitAi* unit_ai) { // 004A1E50
+		helper::remove_from_ai_structs(unit, unit_ai);
+		helper::remove_worker_or_building_ai(unit, false);
+		if (unit_ai) {
+			if (unit_ai->type == AiType::Guard) {
+				GuardAi* guard_ai = &unit_ai->guard_ai;
+				guard_ai->parent = 0;
+				if (guard_ai->times_died < 100u) {
+					guard_ai->times_died += 1;
+				}
+			}
+		}
+		helper::ai_remove_cleric(unit);
+		unit->unit_ai = 0;
+	}
+
+	// Hooked to investigate crashes - Pr0nogo
+	void delete_worker_ai(WorkerAi* worker_ai, WorkerAiList* worker_ai_list) { // 00404470
+		if (worker_ai->type != AiType::Worker) {
+			bw::printf("delete_worker_ai called on a non-worker unit AI! Please check the call stack with debugger attached!");
+		}
+		if (worker_ai_list->first == worker_ai) {
+			worker_ai_list->first = worker_ai->link.prev;
+		}
+		if (worker_ai->link.next) {
+			worker_ai->link.next->link.prev = worker_ai->link.prev;
+		}
+		if (worker_ai->link.prev) {
+			worker_ai->link.prev->link.next = worker_ai->link.next;
+		}
+
+		WorkerAiArray* worker_ai_array = worker_ai_list->array;
+		worker_ai->link.next = 0;
+		worker_ai->link.prev = worker_ai_array->first_free_worker;
+		if (worker_ai_array->first_free_worker) {
+			worker_ai_array->first_free_worker->link.next = worker_ai;
+		}
+		worker_ai_array->first_free_worker = worker_ai;
+	}
+
+	// Hooked to resolve a crash - Pr0nogo
+	void delete_building_ai(BuildingAi* building_ai, BuildingAiList* building_ai_list) { // 00404500
+		if (building_ai->type != AiType::Building) {
+			bw::printf("delete_building_ai called on a non-building unit AI! Please check the call stack with debugger attached!");
+		}
+		if (building_ai_list->first == building_ai) {
+			building_ai_list->first = building_ai->link.prev;
+		}
+		if (building_ai->link.next) {
+			building_ai->link.next->link.prev = building_ai->link.prev;
+		}
+		if (building_ai->link.prev) {
+			building_ai->link.prev->link.next = building_ai->link.next;
+		}
+
+		BuildingAiArray* building_ai_array = building_ai_list->array;
+		building_ai->link.next = 0;
+		building_ai->link.prev = building_ai_array->first_free_building;
+		if (building_ai_array->first_free_building) {
+			building_ai_array->first_free_building->link.next = building_ai;
+		}
+		building_ai_array->first_free_building = building_ai;
+	}
+
+	// Hooked to investigate unit AI issues -Veeq7
+	void delete_military_ai(MilitaryAi* military_ai, AiRegion* ai_region) { // 004371D0
+		if (military_ai->type != AiType::Military) {
+			bw::printf("delete_military_ai called on a non-military unit AI! Please check the call stack with debugger attached!");
+		}
+		if (!(military_ai->unit->status & UnitStatus::InAir)) {
+			--ai_region->ground_unit_count;
+		}
+		if (ai_region->military.first == military_ai) {
+			ai_region->military.first = military_ai->link.prev;
+		}
+		if (military_ai->link.next) {
+			military_ai->link.next->link.prev = military_ai->link.prev;
+		}
+		if (military_ai->link.prev) {
+			military_ai->link.prev->link.next = military_ai->link.next;
+		}
+
+		MilitaryAiArray* military_ai_array = ai_region->military.array;
+		military_ai->link.next = 0;
+		military_ai->link.prev = military_ai_array->first_free_military;
+		if (military_ai_array->first_free_military) {
+			military_ai_array->first_free_military->link.next = military_ai;
+		}
+		military_ai_array->first_free_military = military_ai;
+	}
+
+	b32 __stdcall remove_from_ai_structs(Unit* unit, b32 was_killed) { // 00439D60
+		for (u32 player = 0; player < 8; ++player) {
+			if (g_player_table[player].type != PlayerType::Computer) {
+				continue;
+			}
+
+			for (u32 i = 1; i < (*g_sai_paths)->region_count; ++i) {
+				AiRegion* ai_region = bw::get_ai_region(player, i);
+				if (ai_region->air_target == unit) {
+					ai_region->air_target = 0;
+				}
+				if (ai_region->ground_target == unit) {
+					ai_region->ground_target = 0;
+				}
+				if (ai_region->slowest_unit == unit) {
+					ai_region->slowest_unit = 0;
+				}
+				if (ai_region->follow_target == unit) {
+					ai_region->follow_target = 0;
+				}
+			}
+
+			u32 unit_player = unit->player;
+			if (unit_player == 11 && unit->sprite) {
+				unit_player = unit->sprite->player;
+			}
+			if (!bw::is_allied_to(unit->player, player)) {
+				AiRegion* ai_region = bw::get_ai_region(player, bw::get_region_id(unit->position));
+				if (ai_region->ground_strength_needed >= g_ai_strength_ground[unit->id]) {
+					ai_region->ground_strength_needed -= g_ai_strength_ground[unit->id];
+				} else {
+					ai_region->ground_strength_needed = 0;
+				}
+				if (ai_region->air_strength_needed >= g_ai_strength_air[unit->id]) {
+					ai_region->air_strength_needed -= g_ai_strength_air[unit->id];
+				} else {
+					ai_region->air_strength_needed = 0;
+				}
+			}
+		}
+
+		if (!unit->unit_ai || unit->unit_ai->type != AiType::Military) {
+			return false;
+		}
+		
+		MilitaryAi* military_ai = &unit->unit_ai->military_ai;
+		AiRegion* ai_region = military_ai->region;
+		if (ai_region->state == RegionState::PreparingAttack) {
+			helper::remove_from_attack_force(unit->id, unit->player);
+		} else if (was_killed) {
+			if (!bw::is_attack_region(ai_region)) {
+				if (bw::get_region_id(unit->position) != ai_region->region && !helper::ai_has_worker_or_building(ai_region->region, ai_region->player)) {
+					helper::ai_set_region_state(RegionState::EnemySighted, ai_region);
+				}
+			}
+		}
+		helper::delete_military_ai(military_ai, ai_region);
+		return true;
+	}
+
+	// Hooked to add type check - Pr0nogo
+	void remove_worker_or_building_ai(Unit* unit, bool always_building) { // 00434C90
+		helper::ai_remove_from_towns(unit);
+		UnitAi* current_unit_ai = (UnitAi*)unit->unit_ai;
+		if (!current_unit_ai) {
+			return;
+		}
+
+		u16 unit_id = unit->id;
+		u32 base_property = units_dat::base_property[unit_id];
+		AiTown* town = 0;
+		if (current_unit_ai->type == AiType::Building
+			/*always_building
+			|| base_property & UnitProperty::Building && unit_id != UnitId::ResourceVespeneGeyser
+			|| unit_id == UnitId::ZergLarva
+			|| unit_id == UnitId::ZergOcsalLarva
+			|| bw::is_larval_egg(unit)
+			|| bw::unit_id_is_zerg_supply(unit_id))*/) {
+			BuildingAi* building_ai = &current_unit_ai->building_ai;
+			town = building_ai->town;
+			helper::delete_building_ai(building_ai, &town->buildings);
+		} else if (current_unit_ai->type == AiType::Worker
+			/* base_property & UnitProperty::Worker*/) {
+			WorkerAi* worker_ai = &current_unit_ai->worker_ai;
+			town = worker_ai->town;
+			helper::delete_worker_ai(worker_ai, &town->workers);
+			if (base_property & UnitProperty::Worker) {
+				town->worker_count -= 1;
+			}
+		}
+
+		if (town) {
+			if (unit == town->building_scv) {
+				town->building_scv = 0;
+			}
+			if (unit == town->main_building) {
+				town->main_building = 0;
+			}
+			if (!always_building) {
+				helper::delete_ai_town_if_needed(town);
+			}
+		}
+		unit->unit_ai = 0;
+	}
+
+	// Hooked to investigate unit AI corruption. - Pr0nogo
+	void ai_training_overlord(Unit* new_unit, Unit* oldUnit) { // 00435770
+		if (g_player_table[oldUnit->player].type == PlayerType::Computer) {
+			UnitAi* oldUnitAI = (UnitAi*)oldUnit->unit_ai;
+			if (oldUnitAI) {
+				AiTown* old_unit_town;
+				if (oldUnitAI->type == AiType::Worker) {
+					WorkerAi* oldWorkerAi = (WorkerAi*)oldUnit->unit_ai;
+					old_unit_town = oldWorkerAi->town;
+				} else {
+					BuildingAi* oldBuildingAi = (BuildingAi*)oldUnit->unit_ai;
+					old_unit_town = oldBuildingAi->town;
+				}
+
+				if (oldUnit == new_unit) {
+					helper::ai_remove_from_towns(new_unit);
+					UnitAi* newUnitAI = (UnitAi*)new_unit->unit_ai;
+					if (newUnitAI) {
+						BuildingAi* newBuildingAi = (BuildingAi*)new_unit->unit_ai;
+						AiTown* newUnitTown = newBuildingAi->town;
+						delete_building_ai(newBuildingAi, &newUnitTown->buildings);
+						if (newUnitTown) {
+							if (new_unit == newUnitTown->building_scv) {
+								newUnitTown->building_scv = 0;
+							}
+							if (new_unit == newUnitTown->main_building) {
+								newUnitTown->main_building = 0;
+							}
+						}
+						new_unit->unit_ai = 0;
+					}
+				}
+
+				helper::add_worker_structure_ai(new_unit, old_unit_town);
+				u16 new_unit_id = new_unit->id;
+				if (!unit_id_is_garrison(new_unit_id) || *g_elapsed_time_seconds <= 60) {
+					if (new_unit_id == UnitId::TerranWatchdog) {
+						u32 i;
+						BuildingAi* j;
+						s32 queuedCount;
+						Unit* oldFirstTownUnit = (Unit*)old_unit_town->workers.first;
+						for (i = 0; oldFirstTownUnit; i += queuedCount) {
+							Unit* oldFirstTownMoveTarget = oldFirstTownUnit->move_target.unit;
+							if (oldFirstTownMoveTarget->id == UnitId::TerranWatchdog) {
+								queuedCount = 1;
+							} else {
+								queuedCount = helper::ai_get_queued_count(oldFirstTownMoveTarget, UnitId::TerranWatchdog);
+							}
+							oldFirstTownUnit = oldFirstTownUnit->link.prev;
+						}
+
+						Unit* iterateUnit;
+						s32 queuedCount2;
+						for (j = old_unit_town->buildings.first; j; i += queuedCount2) {
+							iterateUnit = j->parent;
+							if (iterateUnit->id == UnitId::TerranWatchdog) {
+								queuedCount2 = 1;
+							} else {
+								queuedCount2 = helper::ai_get_queued_count(iterateUnit, UnitId::TerranWatchdog);
+							}
+							j = j->link.prev;
+						}
+						if (i >= 4) {
+							helper::prepare_guard_ai(new_unit->sprite->position.y, new_unit->player, 1, new_unit->sprite->position.x);
+						}
+					}
+				} else {
+					helper::prepare_guard_ai(new_unit->sprite->position.y, new_unit->player, 5, new_unit->sprite->position.x);
+					helper::prepare_guard_ai(new_unit->sprite->position.y, new_unit->player, 1, new_unit->sprite->position.x);
+				}
+			}
+		}
+	}
+
+	// Hooked in case we need it for Lakizilisk tactical AI
+	void ai_order_lurker_burrow(Unit* unit) { // 0043C230
+		if (unit_id_is_burrowed_attacker(unit->id) && !(unit->status & (UnitStatus::Burrowed | UnitStatus::InBuilding)) && unit->main_order_id != OrderId::Burrow) {
+			helper::issue_order_targeting_nothing(unit, OrderId::Burrow);
+		}
+	}
+	
+	// TODO: Redo this
+	UnitAi* __stdcall find_nearest_military_or_guard_ai(AiRegion *ai_region, u32 a2, u32 a3, u32 x1, u32 y1, u32 a6) {
+		MilitaryAi *result; // eax
+		AiRegion *ai_region_1; // edi
+		Unit *unit; // esi
+		unsigned int distance; // edx
+		MilitaryAi *unit_ai; // ecx
+		char ai_type; // al
+		char region_type; // al
+		AiRegion *unit_ai_region; // ebx
+		__int16 unit_ai_region_id; // di
+		char unit_region_type; // al
+		MilitaryAi *best_ai; // [esp+Ch] [ebp-8h]
+		unsigned int min_distance; // [esp+10h] [ebp-4h]
+
+		ai_region_1 = ai_region;
+		unit = first_player_unit->unit[ai_region->player];
+		result = 0;
+		min_distance = 9999999;
+		best_ai = 0;
+		if (unit) {
+			while (1) {
+				if (!helper::is_valid_for(a3, unit, 0)) {
+					goto next;
+				}
+				distance = bw::distance_between(x1, unit->sprite->position.x, y1, unit->sprite->position.y);
+				if ( distance >= min_distance ) {
+					goto next;
+				}
+				unit_ai = (MilitaryAi*)unit->unit_ai;
+				if (!unit_ai) {
+					goto next;
+				}
+				ai_type = unit_ai->type;
+				if (ai_type != 1) {
+					if (ai_type == 4) {
+						unit_ai_region = unit_ai->region;
+						unit_ai_region_id = unit_ai_region->region;
+						if (unit_ai_region->region != ai_region->region)
+						{
+							if (unit_ai->type != 4 ||
+								(unit_region_type = unit_ai_region->state, unit_region_type != 1) &&
+								unit_region_type != 2 ||
+								g_aiscript_controller[ai_region->player].ai_flags.is_use_map_settings)
+							{
+								if ( (!(unit->status & UnitStatus::InBuilding)
+									|| a2 != 20
+									&& (g_aiscript_controller[unit->player].ai_flags.is_use_map_settings
+										|| helper::region_is_for_attack_prepare(ai_region)))
+									&& (ai_region->state != 7 && !helper::region_is_for_attack_prepare(ai_region) || unit_ai_region_id != a6)
+									&& unit_ai_region->defense_priority < a2 )
+								{
+									best_ai = unit_ai;
+									min_distance = distance;
+								}
+							}
+						}
+						ai_region_1 = ai_region;
+					}
+					goto next;
+				}
+				if (g_aiscript_controller[ai_region_1->player].ai_flags.is_use_map_settings) {
+					if (ai_region_1->air_target == (Unit*)7)
+					{
+						goto next;
+					}
+				} else {
+					region_type = ai_region_1->state;
+					if ( region_type != 8 && region_type != 9 )
+					{
+						goto next;
+					}
+				}
+				best_ai = (MilitaryAi*)unit->unit_ai;
+				min_distance = distance;
+			next:
+				unit = unit->player_link.next;
+				if (!unit) {
+					return (UnitAi*)best_ai;
+				}
+			}
+		}
+		return (UnitAi*)result;
+	}
+
+	BuildingAi* create_building_ai(BuildingAiArray* ai_array) { // 004044C0
+		BuildingAi* result = ai_array->first_free_building;
+		if (!result) {
+			return 0;
+		} else {
+			result->link.next = 0;
+		}
+		result = result->link.next;
+		return result;
+	}
+
+	// Hooked to investigate crashes. -Pr0nogo
+	bool is_valid_for(u32 unit_id, Unit* unit, u32 must_be_active) { // 0043B6D0
+		if (!unit->sprite || !unit->main_order_id) {
+			return false;
+		}
+		u32 arg_unit_id = unit->id;
+		if (units_dat::base_property[unit->id] & UnitProperty::Subunit
+		|| !unit->unit_ai
+		||  unit->id != unit_id && (unit_id != UnitId::TerranPhalanxTankMode
+		||  unit->id != UnitId::TerranPhalanxSiegeMode)
+		||  helper::unit_finished_summon(unit)
+		||  helper::is_threat(0, unit)
+		||  must_be_active && unit->status & UnitStatus::InBuilding)
+		{
+			return false;
+		}
+
+		if (unit->id != UnitId::None) {
+			// TODO: Figure out what this is, offlaod it to cm_ids if needed. -Pr0nogo
+			if (unit->id != UnitId::TerranHarakan && unit->id != UnitId::ZergZethrokor && unit->id != UnitId::ZergHydralisk && unit->id	!= UnitId::ProtossZealot && unit->id != UnitId::ProtossDracadin) {
+				u32 total_life = helper::get_total_hp_plus_shields(unit) / 2;
+				return helper::get_current_hp_plus_shields(unit) >= total_life;
+			}
+		} else if (unit->main_order_id == OrderId::EnterTransport) {
+			return false;
+		}
+		return true;
+	}
+
+	// Hooked to resolve unit AI issues. -Pr0nogo
+	void __stdcall add_guard_ai_to_unit(Unit* unit) { // 00462960
+		if (unit->unit_ai) {
+		//	bw::printf("Attempt to add guard AI to a unit with unit_ai (prevented)");
+			helper::remove_unit_ai(unit, false);
+		}
+
+		u32 player = unit->player;
+		if (g_player_table[player].type != PlayerType::Computer) {
+			return;
+		}
+
+		u32 unit_id = unit->id;
+		if (units_dat::computer_ai_internal[unit_id] & 2) {
+			return;
+		}
+
+		for (GuardAi* guard_ai = g_player_guard_list->player[player].first; guard_ai; guard_ai = guard_ai->link.next) {
+			if (!guard_ai->parent
+				&& guard_ai->unit_id == unit_id
+				&& guard_ai->original_home.x == unit->position.x
+				&& guard_ai->original_home.y == unit->position.y) {
+				guard_ai->parent = unit;
+				guard_ai->original_home = unit->position;
+				guard_ai->current_home = unit->position;
+				guard_ai->times_died = 0;
+				unit->unit_ai = (UnitAi*)guard_ai;
+				return;
+			}
+		}
+
+		GuardAiArray* guard_ai_array = g_player_guard_list->player[player].array;
+		GuardAi* guard_ai = guard_ai_array->first_free_guard;
+		if (!guard_ai) {
+			return;
+		}
+		guard_ai_array->first_free_guard = guard_ai->link.prev;
+		if (guard_ai->link.prev) {
+			guard_ai->link.prev->link.next = 0;
+		}
+		guard_ai->link.next = 0;
+		guard_ai->link.prev = g_player_guard_list->player[player].first;
+		if (g_player_guard_list->player[player].first) {
+			g_player_guard_list->player[player].first->link.next = guard_ai;
+		}
+		g_player_guard_list->player[player].first = guard_ai;
+		guard_ai->type = AiType::Guard;
+		guard_ai->unit_id = unit_id;
+		guard_ai->parent = unit;
+		guard_ai->original_home = unit->position;
+		guard_ai->current_home = unit->position;
+		guard_ai->times_died = 0;
+		unit->unit_ai = (UnitAi*)guard_ai;
+	}
+
+	// Hooked to stop this function from iterating for human players. -Pr0nogo
+	void ai_remove_cleric(Unit* unit) { // 004477C0
+		if (!unit_id_has_cleric_heal(unit->id)) {
+			return;
+		}
+		u32 player = unit->player;
+		if (player > PlayerLimit) {
+			return;
+		}
+		if (g_player_table[player].type != PlayerType::Computer && g_player_table[player].type != PlayerType::ComputerDefeated) {
+			return;
+		}
+
+		Unit* first_cleric = g_aiscript_controller[player].main_medic;
+		if (first_cleric == unit) {
+			Unit* first_unit = first_player_unit->unit[player];
+			g_aiscript_controller[player].main_medic = 0;
+			if (first_unit) {
+				while (!unit_id_has_cleric_heal(first_unit->id)) {
+					first_unit = first_unit->player_link.next;
+					if (!first_unit) {
+						return;
+					}
+				}
+				g_aiscript_controller[player].main_medic = first_unit;
+			}
+		}
+	}
+
+	// Hooked to investigate fixing AI issues. -Pr0nogo
+	AiTown* ai_start_town(u32 player, u16 pos_x, u16 pos_y, u32 resarea) { // 00434220
+		Unit* first_unit = first_player_unit->unit[player];
+		if (!first_unit) {
+			return 0;
+		}
+
+		bool is_first_town = !g_ai_town_list[player].first;
+		if (is_first_town) {
+			helper::ai_delete_guard_needs(player);
+		}
+		AiTown* town = helper::create_ai_town(player, pos_x, pos_y);
+		if (!town) {
+			return 0;
+		}
+
+		town->resarea = resarea;
+		town->resource_units_not_set = resarea != 0;
+
+		for (Unit* unit = first_unit; unit; unit = unit->player_link.next) {
+			if (!unit->is_completed() || !unit->sprite || unit->unit_ai) {
+				continue;
+			}
+			u32 order_id = unit->main_order_id;
+			if (order_id == OrderId::Die || order_id == OrderId::CompletingArchonSummon || order_id == OrderId::ResetCollision1) {
+				continue;
+			}
+			helper::add_worker_structure_ai(unit, town);
+		}
+		if (!g_aiscript_controller[town->player].ai_flags.is_use_map_settings) {
+			helper::do_melee_town_region_fixups(town->position.x, town->position.y, town->player, is_first_town ? 5 : 2);
+			helper::ai_make_chokepoint_region_state_4(town->player, town->position.x, town->position.y);
+		}
+	}
+}

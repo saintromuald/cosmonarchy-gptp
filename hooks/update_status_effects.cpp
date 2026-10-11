@@ -1,0 +1,296 @@
+#include "update_status_effects.h"
+#include <BW/api.h>
+#include <BW/UnitFinder.h>
+#include "hooks/weapons/weapon_spellhit.h"
+#include "hooks/weapons/weapon_damage.h"
+#include "globals.h"
+#include "systems/triggers/trigger_system.h"
+#include "weapons/weapon_damage.h"
+	
+namespace hooks {
+	void do_irradiate_damage(Unit* unit) {
+		unit->damage_with_custom(50.0 * 256.0 / 15.5, -1, unit->irradiate_caster, unit->irradiate_player_id);
+	}
+
+	static bool safety_unburrow_check(Unit* unit, Unit* target) {
+		if (!target->is_grounded_building()) {
+			return false;
+		}
+		if (target == unit) {
+			return false;
+		}
+		if (!helper::do_units_collide(unit, target)) {
+			return false;
+		}
+		if (target->ext().units[UnitHiveOrgan]) {
+			return false;
+		}
+		return true;
+	}
+
+	void update_status_effects(Unit* unit) { // 00492F70
+		auto& unit_ext = unit->ext();
+		if (unit->subunit) {
+			unit->subunit->ext().units[UnitTurretParentLink] = unit;
+		}
+
+		// Decrement Stasis Field timer (and remove effect if 0)
+		if (unit->stasis_timer != 0) {
+			unit->stasis_timer--;
+			if (unit->stasis_timer == 0) {
+				unit->unfreeze();
+				unit->status &= ~UnitStatus::Invincible; // Fixes some units not having this status removed, like Penumbra. Cause of that bug unknown! -Pr0nogo
+			}
+		}
+
+		// Forcibly unburrow units that collide with buildings
+		if (unit->is_burrowed()) {
+			ActiveTile* tile = bw::get_active_tile_at_coords(unit->position.x, unit->position.y);
+			if (tile->currently_occupied) {
+				// TODO: unit search
+				Unit* nearest = bw::UnitFinder::get_nearest_target(
+				unit->get_left() - 16,
+				unit->get_top() - 16,
+				unit->get_right() + 16,
+				unit->get_bottom() + 16,
+				unit, [&](Unit* target) {
+					return safety_unburrow_check(unit, target);
+				});
+				// from Ai_Burrowable
+				if (nearest) {
+					helper::unburrow(unit);
+				}
+			}
+		}
+
+		if (unit->stim_timer != 0) {
+			unit->stim_timer--;
+			if (unit->stim_timer == 0) {
+				unit->update_speed();
+			}
+		}
+
+		// TODO: Why are we updating Vorvrokor / Ovileth speed every frame?
+		if (unit->id == UnitId::ZergVorvrokor || unit->id == UnitId::ZergOvileth) {
+			unit->update_speed();
+		}
+
+		// Decrement Ensnare timer (and remove effect if 0)
+		if (unit->ensnare_timer != 0) {
+			unit->ensnare_timer--;
+			if (unit->ensnare_timer == 0) {
+				unit->remove_overlay(ImageId::EnsnareOverlay_Small, ImageId::EnsnareOverlay_Large);
+				unit->update_speed();
+				unit_ext.values[ValueEnsnareFactor] = 0;
+			}
+		}
+
+		// Decrement Defensive Matrix timer (and remove effect if 0)
+		if (unit->defensive_matrix_timer != 0) {
+			unit->defensive_matrix_timer--;
+			if (unit->defensive_matrix_timer == 0) {
+				unit->reduce_defensive_matrix_hp(unit->defensive_matrix_hp);
+			}
+		}
+
+		// Redraw console and UI elements
+		if (unit == *g_active_portrait_unit) {
+			if (unit->is_valid_caster()) {
+				if (!bw::is_allied_to(g_local_nation_id, unit->player)) {
+					bw::refresh_console();
+				}
+			}
+		}
+
+		// Irradiate ability
+		if (unit->irradiate_timer != 0) {
+			unit->irradiate_timer--;
+			do_irradiate_damage(unit);
+			if (unit->irradiate_timer == 0) {
+				unit->remove_overlay(ImageId::IrradiateNew_Small, ImageId::IrradiateNew_Large);
+				unit->irradiate_caster = 0;
+				unit->irradiate_player_id = 8;
+			}
+		}
+
+		if (unit->lockdown_timer != 0) {
+			unit->lockdown_timer--;
+			if (unit->lockdown_timer == 0) {
+				unit->remove_lockdown();
+			}
+		}
+
+		if (unit->maelstrom_timer != 0) {
+			unit->maelstrom_timer--;
+			if (unit->maelstrom_timer == 0) {
+				unit->remove_maelstrom();
+			}
+		}
+
+		if (unit->plague_timer) {
+			unit->plague_timer--;
+			if (!unit->is_invincible()) {
+				s32 damage = (weapons_dat::damage_amount[WeaponId::Plague] * 256) / 30;
+				if (!unit->plague_timer) {
+					damage += (weapons_dat::damage_amount[WeaponId::Plague] * 256) % 30;
+				}
+				if (damage > 0) {
+					unit->damage_with(WeaponId::Plague, damage);
+				}
+			}
+			if (!unit->plague_timer) {
+				unit->remove_overlay(ImageId::PlagueOverlay_Small, ImageId::PlagueOverlay_Large);
+			}
+		}
+
+		if (unit->id == UnitId::ProtossClarion) {
+			bw::place_clarion_links(unit); // Clears, then places all Clarion links
+		}
+
+		// Vithrilisk - Corrosive Touch - update overlays
+		if (unit_ext.values[ValueCorrosiveTouchStacks] != 0) {
+			// Calculate the appropriate overlay ID
+			u32 acid_overlay_id = get_spores_overlay_id(unit);
+			if (!unit->get_overlay(acid_overlay_id)) {
+				unit->remove_overlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
+				if (unit->subunit) {
+					unit = unit->subunit;
+				}
+				unit->sprite->create_top_overlay(acid_overlay_id);
+			}
+		}
+	}
+
+	void ai_burrower(Unit* unit) { // 004A1340
+		auto& unit_ext = unit->ext();
+		if (unit_ext.values[ValueDisableAutoBurrow]) {
+			return;
+		}
+		if (!(units_dat::base_property[unit->id] & UnitProperty::Burrowable)) {
+			return;
+		}
+		if (unit->is_burrowed() || unit->id == UnitId::ZergDroleth) {
+			return;
+		}
+		if (unit->main_order_id != OrderId::ComputerAI && unit->main_order_id != OrderId::Guard) {
+			return;
+		}
+
+		if (unit->move_target.pt.x == unit->sprite->position.x && unit->move_target.pt.y == unit->sprite->position.y) {
+			// Originally checked for burrow tech in the above conditional.
+			bool can_burrow = true;
+			ActiveTile* tile = bw::get_active_tile_at_coords(unit->position.x, unit->position.y);
+			if (tile->currently_occupied) {
+				Unit* nearest = bw::UnitFinder::get_nearest_target(unit->get_left() - 32, unit->get_top() - 32, unit->get_right() + 32, unit->get_bottom() + 32, unit, [&](Unit* target) {
+					return safety_unburrow_check(unit, target);
+				});
+				if (nearest) {
+					can_burrow = false;
+				}
+			}
+			if (!can_burrow) {
+				return;
+			}
+			if (!unit_id_is_burrowed_attacker(unit->id) && !g_globals->players[unit->player].override_infrastructure_burrow) {
+				auto units = g_unit_search.radial_ex(unit, 10tiles, FilterAlly | FilterBuilding);
+				if (units.count() && !unit_ext.values[ValueOverrideInfrastructureBurrow]) {
+					return; // Disable idle burrowing close to infrastructure
+				}
+			}
+			helper::issue_order_targeting_nothing(unit, OrderId::Burrow);
+		}
+	}
+
+	// Hooked to reveal Lakizilisks like cloaked units. -Pr0nogo
+	bool unit_is_always_detected(Unit* unit) { // 00491810
+		auto& unit_ext = unit->ext();
+		return unit->lockdown_timer
+			|| unit->maelstrom_timer
+			|| unit->irradiate_timer
+			|| unit->ensnare_timer
+			|| unit->stasis_timer
+			|| unit->plague_timer
+			|| unit_ext.timers[TimerApollyoidAdhesive]
+			|| unit_ext.timers[TimerSignify]
+			|| unit_ext.timers[TimerHallucinating]
+			|| unit_ext.timers[TimerDecloakBurrow]
+			|| unit_ext.timers[TimerCorrosiveTouch]
+			|| unit_ext.timers[TimerBoomingBlast]
+			|| unit_ext.timers[TimerAshHeap];
+	}
+
+	// Hooked to disallow lifted Terran structures from being detectors. -Pr0nogo
+	b32 unit_is_clean_detector(Unit* unit) { // 00403430
+		if (!unit->is_detector() || !(unit->status & UnitStatus::Completed)) {
+			return false;
+		}
+		if (!unit->is_building() || (unit->is_building() && !(unit->status & UnitStatus::InAir))) {
+			if (!unit->is_frozen() && !unit->is_blind) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// Hooked to hide new resource overlays when burrowed. -Pr0nogo
+	void refresh_carryable_sprite(Sprite* sprite) { // 00497750 
+		Image* overlay = bw::get_powerup_overlay(sprite);
+		if (overlay) {
+			if (!(overlay->flags & ImageFlags::Invisible)) {
+				if (!(g_game_layer->has_been_refreshed & 1)) {
+					helper::refresh_image(overlay);
+				}
+				overlay->flags |= ImageFlags::Invisible;
+			}
+		}
+	}
+
+	// Hooked to show new resources after unburrowing. -Pr0nogo
+	void update_carryable_sprite_flags(Sprite* sprite) { // 004981B0
+		Image* overlay = bw::get_powerup_overlay(sprite);
+		if (overlay) {
+			if (overlay->flags & ImageFlags::Invisible) {
+				overlay->flags = overlay->flags & 0xFFBF | 1;
+			}
+		}
+	}
+
+	// Hooked to update apply_ensnare argument amount. -Pr0nogo
+	void apply_unit_effects(Unit* unit) { // 00492DA0
+		UnitExt* unit_ext = get_unit_ext(unit);
+		if (unit->defensive_matrix_timer) {
+			helper::apply_defensive_matrix(unit);
+		}
+		if (unit->lockdown_timer) {
+			u32 timer = unit->lockdown_timer;
+			unit->lockdown_timer = 0;
+			helper::apply_lockdown(unit, timer);
+		}
+		if (unit->maelstrom_timer) {
+			u32 timer = unit->maelstrom_timer;
+			unit->maelstrom_timer = 0;
+			helper::apply_maelstrom(unit, timer);
+		}
+		if (unit->irradiate_timer) {
+			helper::apply_irradiate(unit);
+		}
+		if (unit->ensnare_timer) {
+			u32 factor = unit_ext->values[ValueEnsnareFactor];
+			u32 timer = unit->ensnare_timer;
+			unit->ensnare_timer = 0;
+			apply_ensnare_internal(unit, factor);
+			unit->ensnare_timer = timer;
+		}
+		if (unit->stasis_timer) {
+			u32 timer = unit->stasis_timer;
+			unit->stasis_timer = 0;
+			helper::apply_stasis_field (unit, timer);
+		}
+		if (unit->plague_timer) {
+			u32 timer = unit->plague_timer;
+			unit->plague_timer = 0;
+			helper::apply_plague(unit);
+			unit->plague_timer = timer;
+		}
+	}
+}

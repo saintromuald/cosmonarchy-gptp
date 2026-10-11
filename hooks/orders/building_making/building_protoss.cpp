@@ -1,0 +1,200 @@
+#include "building_protoss.h"
+#include "building_modifier.h"
+#include <BW/api.h>
+#include <globals.h>
+#include <hooks/audiovisuals/image_render.h>
+#include <hooks/limits/sfx_extender.h>
+#include "BW/extender/iscript_extender.h"
+
+namespace hooks {
+	void orders_scribe_build(Unit* unit) { // 004E4D00
+		if (unit->unit_ai) {
+			unit->status |= UnitStatus::IsGathering;
+		}
+
+		switch (unit->main_order_state) {
+			case 0: {
+				if (helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y)) {
+					++unit->main_order_state;
+				}
+			} break;
+			case 1: {
+				u32 distance = bw::distance_between(unit->halt.x, unit->halt.y, unit->order_target.pt.x * 256, unit->order_target.pt.y * 256);
+				u32 distance_wanted = get_worker_construction_distance(unit->build_queue[unit->build_queue_slot]);
+
+				if (distance / 256 > distance_wanted) {
+					if (unit->get_movable_state() != MovableState_NotReachedDestination) {
+						helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+					}
+				} else {
+					helper::make_to_hold_position(unit);
+					++unit->main_order_state;
+				}
+			} break;
+			case 2: {
+				if (!(unit->movement_flags & MovementFlags_Accelerating)) {
+					u32 build_id = unit->build_queue[unit->build_queue_slot];
+					bool is_gas_cap = unit_id_is_capped_gas_node(build_id);
+					u32 distance_wanted = get_worker_construction_distance(unit->build_queue[unit->build_queue_slot]);
+
+					if (!helper::is_distance_greater_than_halt_distance(unit, unit->order_target.pt.x, unit->order_target.pt.y, distance_wanted)) {
+						if (unit->get_movable_state() != MovableState_NotReachedDestination) {
+							helper::change_movement_target_move_target_2(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+						}
+					} else {
+						if (helper::start_building(unit)) {
+							bw::decloak_passive_proc(unit);
+							Unit* built_unit;
+
+							if (is_gas_cap) {
+								built_unit = helper::begin_gas_building(unit, build_id);
+							} else {
+								built_unit = helper::create_unit(build_id, unit->order_target.pt.x, unit->order_target.pt.y, unit->player);
+							}
+
+							unit->build_queue[unit->build_queue_slot] = UnitId::None;
+
+							if (built_unit) {
+								spread_debuffs(unit, built_unit);
+								if (bw::unit_has_shields(built_unit)) {
+									built_unit->shields += 3 * 256;
+								}
+
+								built_unit->create_origin = unit->id;
+								built_unit->sprite->player = unit->sprite->player;
+								helper::replace_sprite_images(built_unit->sprite, ImageId::WarpAnchor, 0);
+
+								if (is_gas_cap) {
+									u32 build_image_id = unit_id_is_ridge_refinery(build_id) ? ImageId::VespeneRidge : ImageId::VespeneGeyser;
+									built_unit->sprite->create_underlay(build_image_id, 0, 0, 0);
+								}
+
+								Image* main_grp = built_unit->sprite->main_graphic;
+								main_grp->set_iscript(IscriptAnimation::Init);
+								unit->order_target.unit = built_unit;
+								helper::ai_training_overlord(built_unit, unit);
+								built_unit->order_computer(OrderId::BuildSelf2);
+
+								if (built_unit->id == UnitId::ProtossMonumentOfSin) {
+									replay_witness_event(built_unit, SpectatorEvent_Tech);
+								}
+
+								bw::play_sound(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit);
+								UnitExt& built_unit_ext = built_unit->ext();
+								built_unit_ext.timers[TimerConstructionSFXDelay] = 60;
+								++unit->main_order_state;
+								return;
+							} else {
+								helper::refund_unit_train_cost(build_id, unit->player);
+								helper::display_last_network_error_for_player(unit->player);
+							}
+						}
+						unit->order_to_idle();
+					}
+				}
+			} break;
+			case 3: {
+				Unit* target = unit->order_target.unit;
+				if (!target || !unit_id_is_capped_gas_node(target->id) || unit->order_queue_head) {
+					unit->order_to_idle();
+				} else {
+					unit->order_to(OrderId::CanEnterGasMine, target);
+				}
+				for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
+					image->play_iscript_animation(IscriptAnimation::WalkingToIdle);
+				}
+			} break;
+		}
+	}
+
+	// Protoss self-building
+	void orders_build_self_2(Unit* building) { // 004E4F40
+		switch (building->main_order_state) {
+			case 0: {
+				bool completed = cm::progress_build(building, {
+					.is_constructing = true,
+					.hp_gain = building->build_repair_hp_gain,
+					.shield_gain = building->shield_gain,
+				});
+				if (completed) {
+					for (Image* image = building->sprite->images.head; image; image = image->link.next) {
+						if (image->flags & ImageFlags::UseFullIscript) {
+							image->set_iscript(IscriptAnimation::SpecialState1);
+							helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
+						}
+					}
+
+					bw::play_sound(SoundId::Protoss_SHUTTLE_pshBld03_wav, building);
+					++building->main_order_state;
+				}
+			} break;
+			case 1: {
+				if (building->order_signal & 1) {
+					building->order_signal &= ~1;
+					u8 status = (building->status >> 8) & 3;
+					Sprite* sprite = building->sprite;
+					u8 step0 = sprite->main_graphic->draw_fxn.step0;
+					helper::replace_sprite_images(sprite, sprites_dat::image_id[sprite->id], 0);
+					helper::switch_to_warp_texture(sprite->main_graphic);
+
+					if (status) {
+						make_cloaked(0, sprite, status, step0);
+
+						if (*g_player_visions & building->detection_status) {
+							make_sprite_visible(sprite);
+						}
+					}
+
+					++building->main_order_state;
+
+					if (!(g_is_in_replay) && building->player == g_local_nation_id) {
+						u32 sound_id = bw::get_advisor_sound_from_event_type(building->player, AdvisorEvent_StructureComplete_P);
+						if (helper::play_sound_from_unit(sound_id, building, 1, 99)) {
+							helper::do_unit_event_notification(building, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, sound_id);
+						} else {
+							helper::minimap_ping(building->position.x, building->position.y, 17);
+							helper::do_unit_event_notification(building, 17, sfx_dat::portrait_duration[0] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 1, 0);
+						}
+					}
+
+					if (building->id == UnitId::ProtossMonumentOfSin) {
+						replay_witness_event(building, SpectatorEvent_Tech);
+					}
+				}
+			} break;
+			case 2: {
+				if (building->order_signal & 1) {
+					building->order_signal &= ~1;
+					u8 status = (building->status >> 8) & 3;
+					Sprite* sprite = building->sprite;
+					u8 step0 = sprite->main_graphic->draw_fxn.step0;
+					helper::replace_sprite_images(sprite, sprites_dat::image_id[sprite->id], 0);
+					building->status |= status << 8;
+					sprite->main_graphic->draw_fxn.step0 = step0;
+					helper::update_unit_stats_and_finish_building(building);
+					helper::update_unit_strength(building);
+					helper::check_unstack(building);
+					
+					for (Image* image = sprite->images.head; image; image = image->link.next) {
+						if (image->flags & ImageFlags::UseFullIscript) {
+							image->set_iscript(IscriptAnimation::WarpIn);
+							helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
+						}
+					}
+
+					if (building->status & UnitStatus::Frozen) {
+						for (Image* image = sprite->images.head; image; image = image->link.next) {
+							if (image->flags & ImageFlags::UseFullIscript) {
+								image->set_iscript(IscriptAnimation::Disable);
+								helper::iscript_opcode_cases(image, &image->iscript_header_offset, 0, 0);
+							}							
+						}
+					}
+
+					helper::update_unit_damage_overlay(building);
+					bw::play_sound((SoundId::Enum)units_dat::sound_what_first[building->id], building);
+				}
+			} break;
+		}
+	}
+}

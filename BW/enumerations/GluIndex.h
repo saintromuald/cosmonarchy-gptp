@@ -1,0 +1,289 @@
+#pragma once
+#include "types.h"
+
+enum class GluCustomControls : s16 {
+    MapboxImage = 1,
+    MapStatsImage = 2,
+    CancelButtonImage = 3,
+    OkButtonImage = 4,
+    MapListbox = 5,
+    FolderNameLabel = 6,
+    MapNameLabel = 7,
+    MapDescriptionLabel = 8,
+    HumanSlotsLabel = 9,
+    MapSizeLabel = 10,
+    TilesetLabel = 11,
+    OkButton = 12,
+    CancelButton = 13,
+    SubtypeLabel = 14,
+    SpeedLabel = 15,
+    SpeedSlider = 16,
+    TypeCombobox = 17,
+    SubtypeCombobox = 18,
+    PlayerSlotsImage = 19,
+    PlayerType1 = 20,
+    PlayerType2 = 21,
+    PlayerType3 = 22,
+    PlayerType4 = 23,
+    PlayerType5 = 24,
+    PlayerType6 = 25,
+    PlayerType7 = 26,
+    PlayerType8 = 27,
+    PlayerRace1 = 28,
+    PlayerRace2 = 29,
+    PlayerRace3 = 30,
+    PlayerRace4 = 31,
+    PlayerRace5 = 32,
+    PlayerRace6 = 33,
+    PlayerRace7 = 34,
+    PlayerRace8 = 35,
+    ComputerSlots = 36,
+    HumanSlotsLabel2 = 37
+};
+
+enum class GluExCampgnControls : s16 {
+    BottomLeftImage = 1,
+    BottomRightImage = 3,
+    LoadSavedButton = 5,
+    ProtossCampaignButton = 6,
+    TerranCampaignButton = 7,
+    ZergCampaignButton = 8,
+    CancelButton = 9,
+    PlayCustomButton = 10,
+
+    // Extended Controls
+    LoadReplayButton = 11,
+};
+
+enum class GluTutorialControls : s16 {
+    BottomLeftImage = 1,
+    BottomRightImage = 3,
+    LoadSavedButton = 5,
+    ProtossTutorialButton = 6,
+    TerranTutorialButton = 7,
+    ZergTutorialButton = 8,
+    CancelButton = 9,
+    PlayCustomButton = 10,
+
+    // Extended Controls
+    LoadReplayButton = 11,
+};
+
+enum class GluChatControls : s16 {
+    ChatBoxImage = 1,
+    GameInfoImage = 2,
+    PlayersImage = 3,
+    CancelImage = 4,
+    OkImage = 5,
+    MapPreview = 6,
+    OkButton = 7,
+    CancelButton = 8,
+    SendButton = 9,
+    ChatTextBox = 10,
+    ChatHistoryListbox = 11,
+    GamePasswordLabel = 12,
+    GameTypeLabel = 13,
+    GameTypeValue = 14,
+    MapNameLabel = 15,
+    GamePasswordValue = 16,
+    GameNameValue = 17,
+    GameModeValue = 18,
+    SubtypeOrReplayValue = 19,
+    MapNameValue = 20,
+    MapSizeValue = 21,
+    GameSpeedValue = 22,
+    StartingIn = 23,
+    StartingInValue = 24,
+    ObserversLabel = 25,
+    Observer1Value = 26,
+    Observer2Value = 27,
+    Observer3Value = 28,
+    Observer4Value = 29,
+    Slot1Left = 30,
+    Slot1Right = 31,
+    Slot1Race = 32,
+    Slot1ConnQuality = 33,
+    Slot2Left = 34,
+    Slot2Right = 35,
+    Slot2Race = 36,
+    Slot2ConnQuality = 37,
+    Slot3Left = 38,
+    Slot3Right = 39,
+    Slot3Race = 40,
+    Slot3ConnQuality = 41,
+    Slot4Left = 42,
+    Slot4Right = 43,
+    Slot4Race = 44,
+    Slot4ConnQuality = 45,
+    Slot5Left = 46,
+    Slot5Right = 47,
+    Slot5Race = 48,
+    Slot5ConnQuality = 49,
+    Slot6Left = 50,
+    Slot6Right = 51,
+    Slot6Race = 52,
+    Slot6ConnQuality = 53,
+    Slot7Left = 54,
+    Slot7Right = 55,
+    Slot7Race = 56,
+    Slot7ConnQuality = 57,
+    Slot8Left = 58,
+    Slot8Right = 59,
+    Slot8Race = 60,
+    Slot8ConnQuality = 61,
+    Slot9Left = 62,
+    Slot9Right = 63,
+    Slot9Race = 64,
+    Slot9ConnQuality = 65,
+    Slot10Left = 66,
+    Slot10Right = 67,
+    Slot10Race = 68,
+    Slot10ConnQuality = 69,
+    Slot11Left = 70,
+    Slot11Right = 71,
+    Slot11Race = 72,
+    Slot11ConnQuality = 73,
+    Slot12Left = 74,
+    Slot12Right = 75,
+    Slot12Race = 76,
+    Slot12ConnQuality = 77,
+    StartGame = 556,
+    HostLeft = 557,
+};
+
+#include <magic_enum/magic_enum.hpp>
+
+namespace magic_enum::customize {
+template <>
+struct enum_range<GluChatControls> {
+    static constexpr int min = 0;
+    static constexpr int max = 557;
+};
+}
+
+enum class GluJoinControls : s16 {
+    ListImage = 1,
+    InfoImage = 2,
+    CancelImage = 3,
+    OKImage = 4,
+    GameListBox = 5,
+    Replay = 6,
+    GameTitle = 7,
+    GameType = 8,
+    SubType = 9,
+    MapName = 10,
+    MapSize = 11,
+    GameSpeed = 12,
+    OK = 13,
+    Cancel = 14,
+    Create = 15,
+
+    // Extended Controls
+    CrownLinkStatus = 17,
+    LobbyPasswordLabel = 18,
+    LobbyPasswordSet = 19,
+    LobbyPasswordClear = 20,
+    OtherProviders = 21,
+};
+
+enum class GluMainControls : s16 {
+    SatTailImage = 1,
+    ExitButton = 2,
+    SinglePlayerButton = 3,
+    MultiPlayerButton = 4,
+    EditorButton = 5,
+    IntroImage = 6,
+    CreditImage = 7,
+    WelcomeToButton = 8,
+    CosmonarchyBWButton = 9,
+    VersionLabel = 10,
+    OptionsButton = 11,
+};
+
+enum class GluLoginControls : s16 {
+    CharacterBoxImage = 1,
+    CancelImage = 2,
+    OkImage = 3,
+    OkButton = 4,
+    CancelButton = 5,
+    NewIdButton = 6,
+    DeleteButton = 7,
+    CharacterListbox = 8,
+    RegistryLabel = 9,
+};
+
+enum class GluConnControls : s16 {
+    ConnectionBoxImage = 1,
+    InfoBoxImage = 2,
+    CancelImage = 3,
+    OkImage = 4,
+    ConnectionListbox = 5,
+    ConnectionNameLabel = 6,
+    MaxPlayersLabel = 7,
+    ConnectionDescriptionLabel = 8,
+    OkButton = 9,
+    CancelButton = 10,
+    GatewayImage = 11,
+    GatewayListbox = 12,
+    GatewayInfoLabel = 13,
+    GatewayLabel = 14,
+};
+
+enum class GluOptionsControls : s16 {
+    OK = 5,
+    Cancel = 6,
+    MiscTabButton = 7,
+    UiTabButton = 8,
+    HotkeysTabButton = 9,
+    ColorsTabButton = 10,
+    
+    MiscTabHighlight = 15,
+    UiTabHighlight = 16,
+    HotkeysTabHighlight = 17,
+    ColorsTabHighlight = 18,
+
+    // Misc Tab
+    RandomZCheck = 101,
+    RandomTCheck = 102,
+    RandomPCheck = 103,
+    RandomACheck = 104,
+
+    LaunchDisableWmodePrompt = 110,
+    LaunchWmodePrefer = 111,
+    SupressWindowsKey = 112,
+
+    Celebrations = 120,
+    FlashWindow = 121,
+
+    ReplayAutoSave = 130,
+    ReplaySanitize = 131,
+
+    DebugVerbose = 140,
+    DebugRandoms = 141,
+
+    // UI Tab
+    ExtendedCameraHotkeys = 201,
+    ShowTimer = 202,
+    ShowAPM = 203,
+    AlwaysShowExtendedTooltips = 204,
+
+    ShowReplayProgressBar = 210,
+
+    ShowRallyLines = 220,
+    ShowOrderLines = 221,
+    ShowQueuedOrderLines = 222,
+    ShowUniqueGasOrderLines = 223,
+    ShowAuraCircles = 224,
+    ShowAbilityRanges = 225,
+    AlwaysCondensedSelection = 226,
+    AltForSelectionUi = 227,
+
+    ShowMinimapCameras = 240,
+    AllowMinimapTerrainToggle = 241,
+
+    ShowTeamUi = 250,
+    ShowTeamUiApm = 251,
+    ShowTeamUiNames = 252,
+    ShowTeamUiSelf = 253,
+    ShowGlobalQueue = 254,
+};

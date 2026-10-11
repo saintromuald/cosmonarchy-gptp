@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+  <!--
+    bw::Dialog: use the `type` discriminator to expose the correct
+    payload from each of the three safeunion::Union storage blobs.
+
+    Mapping (see bw::Dialog in BW/structures/ui_structures.h):
+
+      union_data (0x36):
+        DialogBoxDC          -> MenuData
+        OptionButton         -> SelectionButtonData
+        CheckBox             -> SelectionButtonData
+        HorizontalScrollBar  -> SliderData
+        VerticalScrollBar    -> SliderData
+        TextBox              -> TextBoxData
+        ListBox              -> ListOrComboData
+        ComboBox             -> ListOrComboData
+        LightUpButton        -> LightUpButtonData
+
+      union_child (0x42):
+        DialogBoxDC          -> Dialog*
+        ListBox              -> u32*
+        LightUpButton        -> LightUpButtonAnimation*
+
+      union_extra (0x46):
+        ListBox              -> ListOrComboExtra
+        ComboBox             -> ListOrComboExtra
+        LightUpButton        -> LightUpButtonExtra
+  -->
+  <Type Name="bw::Dialog">
+    <DisplayString>{{ type={type,en} index={index} }}</DisplayString>
+
+    <Expand>
+      <Item Name="next">next</Item>
+      <Item Name="bounds">bounds</Item>
+      <Item Name="bitmap">bitmap</Item>
+      <Item Name="text">text,sb</Item>
+      <Item Name="flags">flags</Item>
+      <Item Name="delay_timer">delay_timer</Item>
+      <Item Name="unknown_1e">unknown_1e</Item>
+      <Item Name="index">index</Item>
+      <Item Name="type">type</Item>
+      <Item Name="graphic">graphic</Item>
+      <Item Name="user">user</Item>
+      <Item Name="interaction_function">interaction_function</Item>
+      <Item Name="update_function">update_function</Item>
+      <Item Name="parent">parent</Item>
+
+      <!-- 0x36  union_data -->
+      <Item Name="[data: MenuData]"
+            Condition="type == (DialogControlType)0">
+        *(bw::MenuData*)&amp;union_data
+      </Item>
+      <Item Name="[data: SelectionButtonData]"
+            Condition="type == (DialogControlType)3">
+        *(bw::SelectionButtonData*)&amp;union_data
+      </Item>
+      <Item Name="[data: SelectionButtonData]"
+            Condition="type == (DialogControlType)4">
+        *(bw::SelectionButtonData*)&amp;union_data
+      </Item>
+      <Item Name="[data: SliderData]"
+            Condition="type == (DialogControlType)6">
+        *(bw::SliderData*)&amp;union_data
+      </Item>
+      <Item Name="[data: SliderData]"
+            Condition="type == (DialogControlType)7">
+        *(bw::SliderData*)&amp;union_data
+      </Item>
+      <Item Name="[data: TextBoxData]"
+            Condition="type == (DialogControlType)8">
+        *(bw::TextBoxData*)&amp;union_data
+      </Item>
+      <Item Name="[data: ListOrComboData]"
+            Condition="type == (DialogControlType)12">
+        *(bw::ListOrComboData*)&amp;union_data
+      </Item>
+      <Item Name="[data: ListOrComboData]"
+            Condition="type == (DialogControlType)13">
+        *(bw::ListOrComboData*)&amp;union_data
+      </Item>
+      <Item Name="[data: LightUpButtonData]"
+            Condition="type == (DialogControlType)14">
+        *(bw::LightUpButtonData*)&amp;union_data
+      </Item>
+
+      <!-- 0x42  union_child -->
+      <Item Name="[child: Dialog*]"
+            Condition="type == (DialogControlType)0">
+        *(bw::Dialog**)&amp;union_child
+      </Item>
+      <Item Name="[child: scrollbar u32*]"
+            Condition="type == (DialogControlType)12">
+        *(unsigned int**)&amp;union_child
+      </Item>
+      <Item Name="[child: LightUpButtonAnimation*]"
+            Condition="type == (DialogControlType)14">
+        *(bw::LightUpButtonAnimation**)&amp;union_child
+      </Item>
+
+      <!-- 0x46  union_extra -->
+      <Item Name="[extra: ListOrComboExtra]"
+            Condition="type == (DialogControlType)12">
+        *(bw::ListOrComboExtra*)&amp;union_extra
+      </Item>
+      <Item Name="[extra: ListOrComboExtra]"
+            Condition="type == (DialogControlType)13">
+        *(bw::ListOrComboExtra*)&amp;union_extra
+      </Item>
+      <Item Name="[extra: LightUpButtonExtra]"
+            Condition="type == (DialogControlType)14">
+        *(bw::LightUpButtonExtra*)&amp;union_extra
+      </Item>
+
+      <!-- Raw storage always available for inspection -->
+      <Item Name="[union_data raw]">union_data</Item>
+      <Item Name="[union_child raw]">union_child</Item>
+      <Item Name="[union_extra raw]">union_extra</Item>
+    </Expand>
+  </Type>
+
+  <!--
+    Fallback for safeunion::Union when it appears outside a bw::Dialog
+    context (e.g. as a local). Without the enum discriminator we can't
+    pick a specific type, so just show the raw bytes.
+  -->
+  <Type Name="safeunion::Union&lt;*&gt;">
+    <DisplayString>{{ Union(Size={Size}) }}</DisplayString>
+    <Expand>
+      <ArrayItems>
+        <Size>Size</Size>
+        <ValuePointer>(unsigned char*)data</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+</AutoVisualizer>

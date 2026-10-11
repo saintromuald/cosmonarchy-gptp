@@ -1,0 +1,92 @@
+#pragma once
+#include "dat_limits.h"
+//#include <BW/api.h>
+
+// Signifies the byte after the end of an array
+#define ARRAY_END (s32)0x80000000
+// Used to define references to bwdata.h variables that are modified by DatExt
+#define DATEXT_VAR_REF(type, name) extern type name;
+
+namespace DatExt {
+namespace LoadTable {
+enum {
+    Units_Dat    = 0x00513C30,
+    Weapons_Dat  = 0x00513868,
+    Flingy_Dat   = 0x00515A38,
+    Sprites_Dat  = 0x00513FB8,
+    Images_Dat   = 0x00514010,
+    Upgrades_Dat = 0x005136E0,
+    Techdata_Dat = 0x005137D8,
+    Orders_Dat   = 0x00513EC8,
+    Sfxdata_Dat  = 0x00515498,
+    Portdata_Dat = 0x00513780,
+    Mapdata_Dat  = 0x00512BA0
+};
+} // namespace LoadTable
+
+namespace DatFile {
+enum {
+    Units_Dat,
+    Weapons_Dat,
+    Flingy_Dat,
+    Sprites_Dat,
+    Images_Dat,
+    Upgrades_Dat,
+    Techdata_Dat,
+    Orders_Dat,
+//  Sfxdata_Dat,
+    Portdata_Dat, 
+    Mapdata_Dat,
+    COUNT, 
+};
+} // namespace DatFile
+
+// TBL for extended unit names
+extern StringTbl* g_unit_names_tbl;
+
+// GRP for extended unit icons
+extern GrpHead* g_unit_icons;
+
+// Used in constReplace -- writes a `size`-byte value of `val*factor+add` to the zero-terminated list of pointers in `ptr`
+typedef struct {
+    s32 factor;
+    s32 add;
+    u32 size; // 1, 2, 4
+    u32 ptr[1]; // to make it an array -- zero-terminated list
+} constList;
+
+// Dat patching functions
+bool set_dat_size(DatLoad* datTablePtr, u32 size);
+void extend_data();
+void unload_dat_files();
+
+void load_unit_names_tbl();
+
+// general patching functions
+void dat_table_patch(DatLoad* datTablePtr, s32* list);
+void const_replace(s32* list, u32 val);
+u32 simple_replace(u32* list, u32 val);
+
+void load_unit_icons();
+GrpHead** const get_unit_icons_pointer();
+
+// dat patching functions -- defined in their repective .cpp files to reduce clutter
+void units_dat_do_patch(u32 newCount);
+void units_dat_flingy_expand();
+void weapons_dat_do_patch(u32 newCount);
+void flingy_dat_do_patch(u32 newCount);
+void sprites_dat_do_patch(u32 newCount);
+void images_dat_do_patch(u32 newCount);
+void upgrades_dat_do_patch(u32 newCount);
+void techdata_dat_do_patch(u32 newCount);
+void sfxdata_dat_doPatch(u32 newCount);
+void portdata_dat_do_patch(u32 newCount);
+void orders_dat_do_patch(u32 newCount);
+//void mapdata_dat_doPatch(u32 newCount);
+
+void units_dat_unpatch();
+void sprites_dat_unpatch();
+void images_dat_unpatch();
+void upgrades_dat_unpatch();
+void techdata_dat_unpatch();
+} // namespace DatExt

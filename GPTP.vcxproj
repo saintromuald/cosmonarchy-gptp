@@ -1,0 +1,942 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Fast Debug|Win32">
+      <Configuration>Fast Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}</ProjectGuid>
+    <RootNamespace>GPTP</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v145</PlatformToolset>
+    <EnableUnitySupport>true</EnableUnitySupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+    <EnableUnitySupport>true</EnableUnitySupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+    <EnableUnitySupport>true</EnableUnitySupport>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)_Build\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">$(SolutionDir)_Build\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_tmp\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">_tmp\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)_Build\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_tmp\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <SourcePath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor_modified\;$(VC_SourcePath)</SourcePath>
+    <IncludePath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor\reflect-cpp\include\;$(ProjectDir)\_vendor_modified\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <TargetName>CM-GPTP-Debug</TargetName>
+    <TargetExt>.qdp</TargetExt>
+    <LibraryPath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor_modified\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">
+    <SourcePath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor_modified\;$(VC_SourcePath)</SourcePath>
+    <IncludePath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor\reflect-cpp\include\;$(ProjectDir)\_vendor_modified\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <TargetName>CM-GPTP-FastDebug</TargetName>
+    <TargetExt>.qdp</TargetExt>
+    <LibraryPath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor_modified\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <SourcePath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor_modified\;$(VC_SourcePath)</SourcePath>
+    <IncludePath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor\reflect-cpp\include\;$(ProjectDir)\_vendor_modified\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <TargetName>CM-GPTP-Release</TargetName>
+    <TargetExt>.qdp</TargetExt>
+    <LibraryPath>$(ProjectDir)\_vendor\;$(ProjectDir)\_vendor_modified\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgUseMD>false</VcpkgUseMD>
+    <VcpkgConfiguration>Debug</VcpkgConfiguration>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgUseMD>false</VcpkgUseMD>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgUseMD>false</VcpkgUseMD>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>MA_NO_DEVICE_IO;MA_NO_ENGINE;MA_NO_NODE_GRAPH;MA_NO_RESOURCE_MANAGER;MA_NO_GENERATION;SOL_ALL_SAFETIES_ON;YAML_CPP_STATIC_DEFINE;WIN32_LEAN_AND_MEAN;CM_DEBUG;HYDRA;WINDOWS_IGNORE_PACKING_MISMATCH;WIN32;_DEBUG;_WINDOWS;_USRDLL;GPTP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <MinFilesInUnityFile>1</MinFilesInUnityFile>
+      <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <MinUnityFiles>1</MinUnityFiles>
+      <MaxFilesInUnityFile>
+      </MaxFilesInUnityFile>
+      <FloatingPointModel>Strict</FloatingPointModel>
+      <CombineFilesOnlyFromTheSameFolder>false</CombineFilesOnlyFromTheSameFolder>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>dsound.lib;version.lib;imm32.lib;storm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalLibraryDirectories>$(ProjectDir)\Libs\yaml-cpp\include;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>$(ProjectDir)plugin.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+      <Profile>false</Profile>
+    </Link>
+    <PostBuildEvent>
+      <Command>"$(ProjectDir)post_build_debug.bat"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SOL_ALL_SAFETIES_ON;YAML_CPP_STATIC_DEFINE;WIN32_LEAN_AND_MEAN;CM_DEBUG;HYDRA;WINDOWS_IGNORE_PACKING_MISMATCH;WIN32;_WINDOWS;_USRDLL;GPTP_EXPORTS;MA_NO_DEVICE_IO;MA_NO_ENGINE;MA_NO_NODE_GRAPH;MA_NO_RESOURCE_MANAGER;MA_NO_GENERATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <MinFilesInUnityFile>1</MinFilesInUnityFile>
+      <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <MinUnityFiles>1</MinUnityFiles>
+      <MaxFilesInUnityFile>
+      </MaxFilesInUnityFile>
+      <FloatingPointModel>Strict</FloatingPointModel>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>dsound.lib;version.lib;imm32.lib;storm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalLibraryDirectories>$(ProjectDir)\Libs\yaml-cpp\include;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>$(ProjectDir)plugin.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+      <Profile>false</Profile>
+    </Link>
+    <PostBuildEvent>
+      <Command>"$(ProjectDir)post_build_fastdebug.bat"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SOL_ALL_SAFETIES_ON;YAML_CPP_STATIC_DEFINE;WIN32_LEAN_AND_MEAN;HYDRA;WINDOWS_IGNORE_PACKING_MISMATCH;WIN32;NDEBUG;_WINDOWS;_USRDLL;GPTP_EXPORTS;MA_NO_DEVICE_IO;MA_NO_ENGINE;MA_NO_NODE_GRAPH;MA_NO_RESOURCE_MANAGER;MA_NO_GENERATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <MinFilesInUnityFile>10000</MinFilesInUnityFile>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <MinUnityFiles>1</MinUnityFiles>
+      <MaxFilesInUnityFile>
+      </MaxFilesInUnityFile>
+      <FloatingPointModel>Strict</FloatingPointModel>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>dsound.lib;version.lib;imm32.lib;storm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <ModuleDefinitionFile>$(ProjectDir)plugin.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(ProjectDir)\Libs\yaml-cpp\include;$(OutDir);</AdditionalLibraryDirectories>
+      <Profile>false</Profile>
+    </Link>
+    <PostBuildEvent>
+      <Command>"$(ProjectDir)post_build_release.bat"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Target Name="BuildStormLib" BeforeTargets="Link" Inputs="$(ProjectDir)storm\storm.def" Outputs="$(OutDir)storm.lib">
+    <MakeDir Directories="$(OutDir)" />
+    <Exec Command="lib.exe /nologo /def:&quot;$(ProjectDir)storm\storm.def&quot; /machine:x86 /out:&quot;$(OutDir)storm.lib&quot;" />
+  </Target>
+  <ItemGroup>
+    <None Include="storm\storm.def" />
+    <Natvis Include="bw_dialog.natvis" />
+    <None Include="vcpkg-configuration.json" />
+    <None Include="vcpkg.json" />
+    <None Include="vcpkg.readme" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="aise_signal.cpp" />
+    <ClCompile Include="ai_layouts.cpp" />
+    <ClCompile Include="cosmo_rollback_state.cpp" />
+    <ClCompile Include="bullet_extender.cpp" />
+    <ClCompile Include="BW\bwdata.cpp" />
+    <ClCompile Include="BW\bwhelper.cpp" />
+    <ClCompile Include="BW\rand.cpp" />
+    <ClCompile Include="CampaignManager.cpp" />
+    <ClCompile Include="CM\cm_behaviors.cpp" />
+    <ClCompile Include="CM\cm_ids.cpp" />
+    <ClCompile Include="CM\cm_utils.cpp" />
+    <ClCompile Include="color_palette.cpp" />
+    <ClCompile Include="custom_ai.cpp" />
+    <ClCompile Include="data_ext.cpp" />
+    <ClCompile Include="DatExtend\datext.cpp" />
+    <ClCompile Include="DatExtend\flingy_dat.cpp" />
+    <ClCompile Include="DatExtend\images_dat.cpp" />
+    <ClCompile Include="DatExtend\mapdata_dat.cpp" />
+    <ClCompile Include="DatExtend\orders_dat.cpp" />
+    <ClCompile Include="DatExtend\portdata_dat.cpp" />
+    <ClCompile Include="DatExtend\sfxdata_dat.cpp" />
+    <ClCompile Include="DatExtend\sprites_dat.cpp" />
+    <ClCompile Include="DatExtend\techdata_dat.cpp" />
+    <ClCompile Include="DatExtend\units_dat.cpp" />
+    <ClCompile Include="DatExtend\upgrades_dat.cpp" />
+    <ClCompile Include="DatExtend\weapons_dat.cpp" />
+    <ClCompile Include="Discord.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameModes\TheTurning.cpp" />
+    <ClCompile Include="hooks\audiovisuals\image_render.cpp" />
+    <ClCompile Include="hooks\audiovisuals\image_render_grp.cpp" />
+    <ClCompile Include="hooks\audiovisuals\image_render_inject.cpp" />
+    <ClCompile Include="hooks\campaign.cpp" />
+    <ClCompile Include="hooks\campaign_inject.cpp" />
+    <ClCompile Include="hooks\DatExtend\dat_load.cpp" />
+    <ClCompile Include="hooks\DatExtend\dat_load_inject.cpp" />
+    <ClCompile Include="hooks\grafting\grafting.cpp" />
+    <ClCompile Include="hooks\grafting\grafting_inject.cpp" />
+    <ClCompile Include="hooks\interface\hud\hud_manager.cpp" />
+    <ClCompile Include="hooks\interface\hud\logo_banner.cpp" />
+    <ClCompile Include="hooks\interface\hud\statres.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\custom_glues.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\custom_glues_inject.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glu_campaign.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glu_chat.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glu_connection.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glu_join.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glu_join_crownlink.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glu_login.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glu_main.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glu_options.cpp" />
+    <ClCompile Include="hooks\interface\minimap.cpp" />
+    <ClCompile Include="hooks\interface\minimap_inject.cpp" />
+    <ClCompile Include="hooks\interface\uifeatures\hotkeys.cpp" />
+    <ClCompile Include="hooks\interface\uifeatures\hotkeys_inject.cpp" />
+    <ClCompile Include="hooks\limits\sfx_extender_inject.cpp" />
+    <ClCompile Include="hooks\loading_hook.cpp" />
+    <ClCompile Include="hooks\loading_hook_inject.cpp" />
+    <ClCompile Include="hooks\lobby_command_receive.cpp" />
+    <ClCompile Include="hooks\lobby_command_receive_inject.cpp" />
+    <ClCompile Include="hooks\orders\orders_root.cpp" />
+    <ClCompile Include="hooks\orders\orders_root_inject.cpp" />
+    <ClCompile Include="hooks\race_randomization.cpp" />
+    <ClCompile Include="hooks\race_randomization_inject.cpp" />
+    <ClCompile Include="hooks\replay_hooks.cpp" />
+    <ClCompile Include="hooks\replay_hooks_inject.cpp" />
+    <ClCompile Include="hooks\resarea.cpp" />
+    <ClCompile Include="hooks\resarea_inject.cpp" />
+    <ClCompile Include="hooks\snp_inject.cpp" />
+    <ClCompile Include="hooks\update_unit_sight.cpp" />
+    <ClCompile Include="hooks\update_unit_sight_inject.cpp" />
+    <ClCompile Include="BW\extender\iscript_extender.cpp" />
+    <ClCompile Include="BW\game_runner.cpp" />
+    <ClCompile Include="hooks\fraud_launcher_inject.cpp" />
+    <ClCompile Include="hooks\fraud_launcher.cpp" />
+    <CLCompile Include="BW\characters.cpp" />
+    <CLCompile Include="hooks/snp.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="GameModes\Uprising.cpp" />
+    <ClCompile Include="ReplayKraken.cpp" />
+    <ClCompile Include="systems\scripting\scripting.cpp" />
+    <ClCompile Include="systems\audio\audio_system.cpp" />
+    <ClCompile Include="systems\audio\music_stream.cpp" />
+    <ClCompile Include="systems\audio\audio_decoder.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <IncludeInUnityFile>false</IncludeInUnityFile>
+    </ClCompile>
+    <ClCompile Include="systems\audio\miniaudio_impl.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <IncludeInUnityFile>false</IncludeInUnityFile>
+    </ClCompile>
+
+    <ClCompile Include="systems\ui\palette_fader.cpp" />
+    <ClCompile Include="systems\ui\tooltip.cpp" />
+    <ClCompile Include="systems\ui\widgets.cpp" />
+    <ClCompile Include="systems\triggers\triggers.cpp" />
+    <ClCompile Include="systems\triggers\trigger_system.cpp" />
+    <ClCompile Include="utility\RegConfig.cpp" />
+    <ClCompile Include="req_table.cpp" />
+    <ClCompile Include="BW\extender\TileHeight_extender.cpp" />
+    <ClCompile Include="BW\ExtendSightLimit.cpp" />
+    <ClCompile Include="BW\structures.cpp" />
+    <ClCompile Include="selection_extender.cpp" />
+    <ClCompile Include="systems\triggers\trigger_events.cpp" />
+    <ClCompile Include="systems\triggers\trigger_parser.cpp" />
+    <ClCompile Include="threshold.cpp" />
+    <ClCompile Include="hooks\aiscript\ai_requests.cpp" />
+    <ClCompile Include="hooks\aiscript\ai_requests_inject.cpp" />
+    <ClCompile Include="hooks\orders\building_making\building_modifier.cpp" />
+    <ClCompile Include="config.cpp" />
+    <ClCompile Include="hooks\build_time.cpp" />
+    <ClCompile Include="hooks\build_time_inject.cpp" />
+    <ClCompile Include="globals.cpp" />
+    <ClCompile Include="hooks\audiovisuals\sfxhooks.cpp" />
+    <ClCompile Include="hooks\audiovisuals\sfxhooks_inject.cpp" />
+    <ClCompile Include="hooks\byte_operations_utils.cpp" />
+    <ClCompile Include="hooks\game\file_operations.cpp" />
+    <ClCompile Include="hooks\game\file_operations_inject.cpp" />
+    <ClCompile Include="hooks\cosmonarchy_finder.cpp" />
+    <ClCompile Include="hooks\economic_units.cpp" />
+    <ClCompile Include="hooks\economic_units_inject.cpp" />
+    <ClCompile Include="hooks\tactical_ai.cpp" />
+    <ClCompile Include="hooks\interface\briefing\briefing.cpp" />
+    <ClCompile Include="hooks\interface\briefing\briefing_inject.cpp" />
+    <ClCompile Include="hooks\interface\hpbars\hpbars.cpp" />
+    <ClCompile Include="hooks\interface\hpbars\hpbars_inject.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\lobby.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\lobby_inject.cpp" />
+    <ClCompile Include="hooks\interface\uifeatures\ui_features.cpp" />
+    <ClCompile Include="hooks\interface\uifeatures\ui_features_inject.cpp" />
+    <ClCompile Include="hooks\limits\ccmu_inject.cpp" />
+    <ClCompile Include="hooks\limits\extender.cpp" />
+    <ClCompile Include="hooks\game\creategame.cpp" />
+    <ClCompile Include="hooks\game\creategame_inject.cpp" />
+    <ClCompile Include="hooks\interface\hud\hud.cpp" />
+    <ClCompile Include="hooks\interface\hud\hud_inject.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glucustom.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glucustom_inject.cpp" />
+    <ClCompile Include="hooks\limits\extender_inject.cpp" />
+    <ClCompile Include="hooks\limits\misc_extenders_inject.cpp" />
+    <ClCompile Include="hooks\limits\tbl_extender.cpp" />
+    <ClCompile Include="hooks\maxhp.cpp" />
+    <ClCompile Include="hooks\maxhp_inject.cpp" />
+    <ClCompile Include="hooks\misc\cosmonarchy_specific.cpp" />
+    <ClCompile Include="hooks\misc\cosmonarchy_specific_inject.cpp" />
+    <ClCompile Include="hooks\miss_chance.cpp" />
+    <ClCompile Include="hooks\miss_chance_inject.cpp" />
+    <ClCompile Include="hooks\neutral_related.cpp" />
+    <ClCompile Include="hooks\neutral_related_inject.cpp" />
+    <ClCompile Include="hooks\orders\ai\ai_orders.cpp" />
+    <ClCompile Include="hooks\orders\ai\ai_orders_inject.cpp" />
+    <ClCompile Include="hooks\orders\base_orders\attack_orders.cpp" />
+    <ClCompile Include="hooks\orders\base_orders\attack_orders_inject.cpp" />
+    <ClCompile Include="hooks\interface\btns_cond.cpp" />
+    <ClCompile Include="hooks\interface\btns_cond_inject.cpp" />
+    <ClCompile Include="hooks\orders\building_making\building_zerg.cpp" />
+    <ClCompile Include="hooks\orders\building_making\building_zerg_inject.cpp" />
+    <ClCompile Include="hooks\orders\building_making\building_protoss.cpp" />
+    <ClCompile Include="hooks\orders\building_making\building_protoss_inject.cpp" />
+    <ClCompile Include="hooks\orders\building_making\building_terran.cpp" />
+    <ClCompile Include="hooks\orders\building_making\building_terran_inject.cpp" />
+    <ClCompile Include="hooks\orders\pathfinding.cpp" />
+    <ClCompile Include="hooks\orders\pathfinding_inject.cpp" />
+    <ClCompile Include="hooks\placement.cpp" />
+    <ClCompile Include="hooks\placement_inject.cpp" />
+    <ClCompile Include="hooks\recv_commands\burrow_tech.cpp" />
+    <ClCompile Include="hooks\recv_commands\burrow_tech_inject.cpp" />
+    <ClCompile Include="hooks\interface\buttonsets.cpp" />
+    <ClCompile Include="hooks\interface\buttonsets_inject.cpp" />
+    <ClCompile Include="hooks\orders\spells\cast_order.cpp" />
+    <ClCompile Include="hooks\orders\spells\cast_order_inject.cpp" />
+    <ClCompile Include="hooks\recv_commands\CMDRECV_Build.cpp" />
+    <ClCompile Include="hooks\recv_commands\CMDRECV_Build_inject.cpp" />
+    <ClCompile Include="hooks\recv_commands\CMDRECV_Cancel.cpp" />
+    <ClCompile Include="hooks\recv_commands\CMDRECV_Cancel_inject.cpp" />
+    <ClCompile Include="hooks\recv_commands\CMDRECV_MergeArchon.cpp" />
+    <ClCompile Include="hooks\recv_commands\CMDRECV_MergeArchon_inject.cpp" />
+    <ClCompile Include="hooks\recv_commands\CMDRECV_Morph.cpp" />
+    <ClCompile Include="hooks\recv_commands\CMDRECV_Morph_inject.cpp" />
+    <ClCompile Include="hooks\recv_commands\CMDRECV_SiegeTank.cpp" />
+    <ClCompile Include="hooks\recv_commands\CMDRECV_SiegeTank_inject.cpp" />
+    <ClCompile Include="hooks\recv_commands\CMDRECV_Stop.cpp" />
+    <ClCompile Include="hooks\recv_commands\CMDRECV_Stop_inject.cpp" />
+    <ClCompile Include="configure.cpp" />
+    <ClCompile Include="hooks\create_init_units.cpp" />
+    <ClCompile Include="hooks\create_init_units_inject.cpp" />
+    <ClCompile Include="hooks\orders\base_orders\die_order.cpp" />
+    <ClCompile Include="hooks\orders\base_orders\die_order_inject.cpp" />
+    <ClCompile Include="hooks\orders\enter_nydus.cpp" />
+    <ClCompile Include="hooks\orders\enter_nydus_inject.cpp" />
+    <ClCompile Include="hooks\orders\spells\feedback_spell.cpp" />
+    <ClCompile Include="hooks\orders\spells\feedback_spell_inject.cpp" />
+    <ClCompile Include="hooks\give_unit.cpp" />
+    <ClCompile Include="hooks\give_unit_inject.cpp" />
+    <ClCompile Include="hooks\orders\spells\hallucination_spell.cpp" />
+    <ClCompile Include="hooks\orders\spells\hallucination_spell_inject.cpp" />
+    <ClCompile Include="hooks\requirements\requirements.cpp" />
+    <ClCompile Include="hooks\requirements\requirements_inject.cpp" />
+    <ClCompile Include="hooks\requirements\requirement_parser.cpp" />
+    <ClCompile Include="hooks\target_related.cpp" />
+    <ClCompile Include="hooks\target_related_inject.cpp" />
+    <ClCompile Include="hooks\trap_hooks.cpp" />
+    <ClCompile Include="hooks\trap_hooks_inject.cpp" />
+    <ClCompile Include="hooks\unit_ai.cpp" />
+    <ClCompile Include="hooks\unit_ai_inject.cpp" />
+    <ClCompile Include="hooks\unit_movement.cpp" />
+    <ClCompile Include="hooks\unit_movement_inject.cpp" />
+    <ClCompile Include="hooks\unit_stats\new_requirements.cpp" />
+    <ClCompile Include="hooks\unit_stats\new_requirements_inject.cpp" />
+    <ClCompile Include="hooks\unit_stats\supply_hooks.cpp" />
+    <ClCompile Include="hooks\unit_stats\supply_hooks_inject.cpp" />
+    <ClCompile Include="hooks\use_tech.cpp" />
+    <ClCompile Include="hooks\use_tech_inject.cpp" />
+    <ClCompile Include="hooks\weapon_effect.cpp" />
+    <ClCompile Include="hooks\weapon_effect_inject.cpp" />
+    <ClCompile Include="hook_tools.cpp" />
+    <ClCompile Include="hooks\orders\infestation.cpp" />
+    <ClCompile Include="hooks\orders\infestation_inject.cpp" />
+    <ClCompile Include="hooks\orders\larva_creep_spawn.cpp" />
+    <ClCompile Include="hooks\orders\larva_creep_spawn_inject.cpp" />
+    <ClCompile Include="hooks\orders\liftland.cpp" />
+    <ClCompile Include="hooks\orders\liftland_inject.cpp" />
+    <ClCompile Include="hooks\orders\load_unload_orders.cpp" />
+    <ClCompile Include="hooks\orders\load_unload_orders_inject.cpp" />
+    <ClCompile Include="hooks\load_unload_proc.cpp" />
+    <ClCompile Include="hooks\load_unload_proc_inject.cpp" />
+    <ClCompile Include="initialize.cpp" />
+    <ClCompile Include="logger.cpp" />
+    <ClCompile Include="hooks\orders\building_making\make_nydus_exit.cpp" />
+    <ClCompile Include="hooks\orders\building_making\make_nydus_exit_inject.cpp" />
+    <ClCompile Include="hooks\orders\medic_orders.cpp" />
+    <ClCompile Include="hooks\orders\medic_orders_inject.cpp" />
+    <ClCompile Include="hooks\orders\merge_units.cpp" />
+    <ClCompile Include="hooks\orders\merge_units_inject.cpp" />
+    <ClCompile Include="hooks\orders\spells\mindcontrol_spell.cpp" />
+    <ClCompile Include="hooks\orders\spells\mindcontrol_spell_inject.cpp" />
+    <ClCompile Include="hooks\orders\spells\nuke_orders.cpp" />
+    <ClCompile Include="hooks\orders\spells\nuke_orders_inject.cpp" />
+    <ClCompile Include="player_color.cpp" />
+    <ClCompile Include="BW\structures\Player.cpp" />
+    <ClCompile Include="Plugin.cpp" />
+    <ClCompile Include="plugin_main.cpp" />
+    <ClCompile Include="hooks\orders\spells\recall_spell.cpp" />
+    <ClCompile Include="hooks\orders\spells\recall_spell_inject.cpp" />
+    <ClCompile Include="hooks\recv_commands\receive_command.cpp" />
+    <ClCompile Include="hooks\recv_commands\receive_command_inject.cpp" />
+    <ClCompile Include="hooks\orders\repair_order.cpp" />
+    <ClCompile Include="hooks\orders\repair_order_inject.cpp" />
+    <ClCompile Include="hooks\orders\research_upgrade_orders.cpp" />
+    <ClCompile Include="hooks\orders\research_upgrade_orders_inject.cpp" />
+    <ClCompile Include="hooks\interface\select_larva.cpp" />
+    <ClCompile Include="hooks\interface\select_larva_inject.cpp" />
+    <ClCompile Include="hooks\interface\selection.cpp" />
+    <ClCompile Include="hooks\interface\selection_inject.cpp" />
+    <ClCompile Include="hooks\orders\siege_transform.cpp" />
+    <ClCompile Include="hooks\orders\siege_transform_inject.cpp" />
+    <ClCompile Include="hooks\interface\stats_panel_display.cpp" />
+    <ClCompile Include="hooks\interface\stats_panel_display_inject.cpp" />
+    <ClCompile Include="hooks\orders\base_orders\stopholdpos_orders.cpp" />
+    <ClCompile Include="hooks\orders\base_orders\stopholdpos_orders_inject.cpp" />
+    <ClCompile Include="hooks\recv_commands\train_cmd_receive.cpp" />
+    <ClCompile Include="hooks\recv_commands\train_cmd_receive_inject.cpp" />
+    <ClCompile Include="hooks\orders\unit_making\unit_morph.cpp" />
+    <ClCompile Include="hooks\orders\unit_making\unit_morph_inject.cpp" />
+    <ClCompile Include="hooks\orders\unit_making\unit_train.cpp" />
+    <ClCompile Include="hooks\orders\unit_making\unit_train_inject.cpp" />
+    <ClCompile Include="hooks\utils\unit_utils.cpp" />
+    <ClCompile Include="hooks\utils\unit_utils_inject.cpp" />
+    <ClCompile Include="hooks\interface\wireframe.cpp" />
+    <ClCompile Include="hooks\interface\wireframe_inject.cpp" />
+    <ClCompile Include="hooks\weapons\weapon_spellhit.cpp" />
+    <ClCompile Include="hooks\weapons\weapon_spellhit_inject.cpp" />
+    <ClCompile Include="AI\ai_common.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="BW\api.cpp" />
+    <ClCompile Include="hooks\apply_upgrade_flags.cpp" />
+    <ClCompile Include="hooks\apply_upgrade_flags_inject.cpp" />
+    <ClCompile Include="hooks\unit_stats\armor_bonus.cpp" />
+    <ClCompile Include="hooks\unit_stats\armor_bonus_inject.cpp" />
+    <ClCompile Include="hooks\attack_priority.cpp" />
+    <ClCompile Include="hooks\attack_priority_inject.cpp" />
+    <ClCompile Include="graphics\Bitmap.cpp" />
+    <ClCompile Include="hooks\bunker_hooks.cpp" />
+    <ClCompile Include="hooks\bunker_hooks_inject.cpp" />
+    <ClCompile Include="BW\structures\Image.cpp" />
+    <ClCompile Include="hooks\cloak_nearby_units.cpp" />
+    <ClCompile Include="hooks\cloak_nearby_units_inject.cpp" />
+    <ClCompile Include="hooks\cloak_tech.cpp" />
+    <ClCompile Include="hooks\cloak_tech_inject.cpp" />
+    <ClCompile Include="BW\structures\Sprite.cpp" />
+    <ClCompile Include="BW\structures\Unit.cpp" />
+    <ClCompile Include="AI\spells\dark_swarm.cpp" />
+    <ClCompile Include="AI\spells\defensive_matrix.cpp" />
+    <ClCompile Include="hooks\detector.cpp" />
+    <ClCompile Include="hooks\detector_inject.cpp" />
+    <ClCompile Include="AI\spells\disruption_web.cpp" />
+    <ClCompile Include="graphics\draw_hook.cpp" />
+    <ClCompile Include="AI\spells\emp_shockwave.cpp" />
+    <ClCompile Include="AI\spells\ensnare.cpp" />
+    <ClCompile Include="AI\spells\feedback.cpp" />
+    <ClCompile Include="graphics\Font.cpp" />
+    <ClCompile Include="hooks\game_hooks.cpp" />
+    <ClCompile Include="hooks\game_hooks_inject.cpp" />
+    <ClCompile Include="graphics\graphics.cpp" />
+    <ClCompile Include="graphics\graphics_errors.cpp" />
+    <ClCompile Include="AI\spells\hallucination.cpp" />
+    <ClCompile Include="hooks\harvest.cpp" />
+    <ClCompile Include="hooks\harvest_inject.cpp" />
+    <ClCompile Include="AI\spells\irradiate.cpp" />
+    <ClCompile Include="AI\spells\launch_nuke.cpp" />
+    <ClCompile Include="AI\spells\lockdown.cpp" />
+    <ClCompile Include="AI\spells\maelstrom.cpp" />
+    <ClCompile Include="hooks\unit_stats\max_energy.cpp" />
+    <ClCompile Include="hooks\unit_stats\max_energy_inject.cpp" />
+    <ClCompile Include="AI\spells\mind_control.cpp" />
+    <ClCompile Include="AI\spells\optical_flare.cpp" />
+    <ClCompile Include="AI\spells\parasite.cpp" />
+    <ClCompile Include="AI\spells\plague.cpp" />
+    <ClCompile Include="hooks\psi_field.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="hooks\psi_field_inject.cpp" />
+    <ClCompile Include="hooks\psi_field_util.cpp" />
+    <ClCompile Include="AI\spells\psi_storm.cpp" />
+    <ClCompile Include="hooks\rally_point.cpp" />
+    <ClCompile Include="hooks\rally_point_inject.cpp" />
+    <ClCompile Include="AI\spells\recall.cpp" />
+    <ClCompile Include="hooks\recharge_shields.cpp" />
+    <ClCompile Include="hooks\recharge_shields_inject.cpp" />
+    <ClCompile Include="AI\spells\restoration.cpp" />
+    <ClCompile Include="graphics\Shape.cpp" />
+    <ClCompile Include="hooks\unit_stats\sight_range.cpp" />
+    <ClCompile Include="hooks\unit_stats\sight_range_inject.cpp" />
+    <ClCompile Include="AI\spells\spawn_broodlings.cpp" />
+    <ClCompile Include="AI\spellcasting.cpp" />
+    <ClCompile Include="AI\spellcasting_inject.cpp" />
+    <ClCompile Include="hooks\spider_mine.cpp" />
+    <ClCompile Include="hooks\spider_mine_inject.cpp" />
+    <ClCompile Include="AI\spells\stasis_field.cpp" />
+    <ClCompile Include="hooks\stim_packs.cpp" />
+    <ClCompile Include="hooks\stim_packs_inject.cpp" />
+    <ClCompile Include="hooks\tech_target_check.cpp" />
+    <ClCompile Include="hooks\tech_target_check_inject.cpp" />
+    <ClCompile Include="hooks\transfer_tech_upgrades.cpp" />
+    <ClCompile Include="hooks\transfer_tech_upgrades_inject.cpp" />
+    <ClCompile Include="hooks\unit_destructor_special.cpp" />
+    <ClCompile Include="hooks\unit_speed.cpp" />
+    <ClCompile Include="hooks\unit_speed_inject.cpp" />
+    <ClCompile Include="BW\UnitFinder.cpp" />
+    <ClCompile Include="BW\ui.cpp" />
+    <ClCompile Include="hooks\update_status_effects.cpp" />
+    <ClCompile Include="hooks\update_status_effects_inject.cpp" />
+    <ClCompile Include="hooks\update_unit_state.cpp" />
+    <ClCompile Include="hooks\update_unit_state_inject.cpp" />
+    <ClCompile Include="hooks\interface\weapon_armor_tooltip.cpp" />
+    <ClCompile Include="hooks\interface\weapon_armor_tooltip_inject.cpp" />
+    <ClCompile Include="hooks\weapons\weapon_cooldown.cpp" />
+    <ClCompile Include="hooks\weapons\weapon_cooldown_inject.cpp" />
+    <ClCompile Include="hooks\weapons\weapon_damage.cpp" />
+    <ClCompile Include="hooks\weapons\weapon_damage_inject.cpp" />
+    <ClCompile Include="hooks\weapons\weapon_fire.cpp" />
+    <ClCompile Include="hooks\weapons\weapon_fire_inject.cpp" />
+    <ClCompile Include="hooks\unit_stats\weapon_range.cpp" />
+    <ClCompile Include="hooks\unit_stats\weapon_range_inject.cpp" />
+    <ClCompile Include="AI\spells\yamato_gun.cpp" />
+    <ClCompile Include="systems\triggers\trigger_hooks.cpp" />
+    <ClCompile Include="systems\triggers\trigger_objectives.cpp" />
+    <ClCompile Include="systems\triggers\trigger_recolor.cpp" />
+    <ClCompile Include="systems\triggers\trigger_spawn.cpp" />
+    <ClCompile Include="utility.cpp" />
+    <ClCompile Include="systems\triggers\trigger_vars.cpp" />
+    <ClCompile Include="unit_search.cpp" />
+    <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="Utils\captivating_claws.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="aise_signal.h" />
+    <ClInclude Include="ai_layouts.h" />
+    <ClInclude Include="arena.h" />
+    <ClInclude Include="bullet_extender.h" />
+    <ClInclude Include="bwutils.h" />
+    <ClInclude Include="BW\bwdata.h" />
+    <ClInclude Include="BW\bwhelper.h" />
+    <ClInclude Include="BW\characters.h" />
+    <ClInclude Include="BW\enumerations\GluIndex.h" />
+    <ClInclude Include="BW\extender\iscript_extender.h" />
+    <ClInclude Include="BW\game_runner.h" />
+    <ClInclude Include="BW\rand.h" />
+    <ClInclude Include="BW\structures\ui_structures.h" />
+    <ClInclude Include="CampaignManager.h" />
+    <ClInclude Include="effect_field.h" />
+    <ClInclude Include="hooks\campaign.h" />
+    <ClInclude Include="hooks\interface\hud\hud_manager.h" />
+    <ClInclude Include="hooks\interface\hud\logo_banner.h" />
+    <ClInclude Include="hooks\interface\mainmenu\glu_options.h" />
+    <ClInclude Include="safeunion.h" />
+    <ClInclude Include="systems\scripting\api\ai\ai.h" />
+    <ClInclude Include="systems\scripting\api\ai\attack_wave.h" />
+    <ClInclude Include="systems\scripting\api\ai\defense.h" />
+    <ClInclude Include="systems\scripting\api\ai\module.h" />
+    <ClInclude Include="systems\scripting\api\ai\town.h" />
+    <ClInclude Include="systems\scripting\api\core\control_flow.h" />
+    <ClInclude Include="systems\scripting\api\core\vars.h" />
+    <ClInclude Include="systems\scripting\api\core\prints.h" />
+    <ClInclude Include="systems\scripting\api\core_fwd.h" />
+    <ClInclude Include="systems\scripting\api\core\spatial.h" />
+    <ClInclude Include="scripting\api\core\point.h" />
+    <ClInclude Include="systems\scripting\api\core\time.h" />
+    <ClInclude Include="systems\scripting\api\script_common.h" />
+    <ClInclude Include="systems\scripting\api\core\module.h" />
+    <ClInclude Include="systems\scripting\api\core\player.h" />
+    <ClInclude Include="systems\scripting\api\script_api.h" />
+    <ClInclude Include="systems\scripting\scripting.h" />
+    <ClInclude Include="storm\sfile.h" />
+    <ClInclude Include="storm\storm.h" />
+    <ClInclude Include="storm\smem.hpp" />
+    <ClInclude Include="BW\ui.h" />
+    <ClInclude Include="CM\cm.h" />
+    <ClInclude Include="CM\cm_behaviors.h" />
+    <ClInclude Include="CM\cm_ids.h" />
+    <ClInclude Include="CM\cm_utils.h" />
+    <ClInclude Include="collections.h" />
+    <ClInclude Include="color_palette.h" />
+    <ClInclude Include="config_utils.h" />
+    <ClInclude Include="custom_ai.h" />
+    <ClInclude Include="data_ext.h" />
+    <ClInclude Include="DatExtend\datext.h" />
+    <ClInclude Include="Discord.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameModes\Embraced.h" />
+    <ClInclude Include="GameModes\IGameMode.h" />
+    <ClInclude Include="GameModes\TheTurning.h" />
+    <ClInclude Include="hooks\audiovisuals\image_render.h" />
+    <ClInclude Include="hooks\DatExtend\dat_load.h" />
+    <ClInclude Include="hooks\fraud_launcher.h" />
+    <ClInclude Include="hooks\grafting\button_functions.h" />
+    <ClInclude Include="hooks\grafting\grafting.h" />
+    <ClInclude Include="hooks\interface\console\icon_manager.h" />
+    <ClInclude Include="hooks\interface\mainmenu\custom_glues.h" />
+    <ClInclude Include="hooks\interface\mainmenu\glu_campaign.h" />
+    <ClInclude Include="hooks\interface\mainmenu\glu_chat.h" />
+    <ClInclude Include="hooks\interface\mainmenu\glu_join_crownlink.h" />
+    <ClInclude Include="hooks\interface\minimap.h" />
+    <ClInclude Include="hooks\interface\uifeatures\hotkeys.h" />
+    <ClInclude Include="hooks\limits\sfx_extender.h" />
+    <ClInclude Include="hooks\loading_hook.h" />
+    <ClInclude Include="hooks\lobby_command_receive.h" />
+    <ClInclude Include="hooks\orders\orders_root.h" />
+    <ClInclude Include="DatExtend\dat_limits.h" />
+    <ClInclude Include="hooks\race_randomization.h" />
+    <ClInclude Include="hooks\replay_hooks.h" />
+    <ClInclude Include="hooks\resarea.h" />
+    <ClInclude Include="hooks\update_unit_sight.h" />
+    <ClInclude Include="include\json.hpp" />
+    <ClInclude Include="interpolation.h" />
+    <ClInclude Include="hooks/snp.h" />
+    <ClInclude Include="systems\audio\audio_system.h" />
+    <ClInclude Include="systems\audio\music_stream.h" />
+    <ClInclude Include="systems\audio\audio_decoder.h" />
+    <ClInclude Include="defer.h" />
+    <ClInclude Include="systems\ui\palette_fader.h" />
+    <ClInclude Include="systems\ui\tooltip.h" />
+    <ClInclude Include="systems\ui\widgets.h" />
+    <ClInclude Include="systems\triggers\triggers.h" />
+    <ClInclude Include="systems\triggers\trigger_eval.h" />
+    <ClInclude Include="include\yaml-cpp\depthguard.h" />
+    <ClInclude Include="include\yaml-cpp\noexcept.h" />
+    <ClInclude Include="include\yaml-cpp\src\collectionstack.h" />
+    <ClInclude Include="include\yaml-cpp\src\contrib\graphbuilderadapter.h" />
+    <ClInclude Include="include\yaml-cpp\src\directives.h" />
+    <ClInclude Include="include\yaml-cpp\src\emitterstate.h" />
+    <ClInclude Include="include\yaml-cpp\src\emitterutils.h" />
+    <ClInclude Include="include\yaml-cpp\src\exp.h" />
+    <ClInclude Include="include\yaml-cpp\src\indentation.h" />
+    <ClInclude Include="include\yaml-cpp\src\nodebuilder.h" />
+    <ClInclude Include="include\yaml-cpp\src\nodeevents.h" />
+    <ClInclude Include="include\yaml-cpp\src\ptr_vector.h" />
+    <ClInclude Include="include\yaml-cpp\src\regeximpl.h" />
+    <ClInclude Include="include\yaml-cpp\src\regex_yaml.h" />
+    <ClInclude Include="include\yaml-cpp\src\scanner.h" />
+    <ClInclude Include="include\yaml-cpp\src\scanscalar.h" />
+    <ClInclude Include="include\yaml-cpp\src\scantag.h" />
+    <ClInclude Include="include\yaml-cpp\src\setting.h" />
+    <ClInclude Include="include\yaml-cpp\src\singledocparser.h" />
+    <ClInclude Include="include\yaml-cpp\src\stream.h" />
+    <ClInclude Include="include\yaml-cpp\src\streamcharsource.h" />
+    <ClInclude Include="include\yaml-cpp\src\stringsource.h" />
+    <ClInclude Include="include\yaml-cpp\src\tag.h" />
+    <ClInclude Include="include\yaml-cpp\src\token.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="GameModes\Uprising.h" />
+    <ClInclude Include="systems\triggers\table_edit.h" />
+    <ClInclude Include="ReplayKraken.h" />
+    <ClInclude Include="utility\RegConfig.h" />
+    <ClInclude Include="req_table.h" />
+    <ClInclude Include="BW\enumerations\PortraitId.h" />
+    <ClInclude Include="BW\extender\TileHeight_extender.h" />
+    <ClInclude Include="selection_extender.h" />
+    <ClInclude Include="systems\triggers\trigger_events.h" />
+    <ClInclude Include="systems\triggers\trigger_parser.h" />
+    <ClInclude Include="threshold.h" />
+    <ClInclude Include="hooks\aiscript\ai_requests.h" />
+    <ClInclude Include="hooks\orders\building_making\building_modifier.h" />
+    <ClInclude Include="config.h" />
+    <ClInclude Include="hooks\build_time.h" />
+    <ClInclude Include="globals.h" />
+    <ClInclude Include="hooks\audiovisuals\sfxhooks.h" />
+    <ClInclude Include="hooks\byte_operations_utils.h" />
+    <ClInclude Include="hooks\game\file_operations.h" />
+    <ClInclude Include="hooks\cosmonarchy_finder.h" />
+    <ClInclude Include="hooks\tactical_ai.h" />
+    <ClInclude Include="hooks\interface\briefing\briefing.h" />
+    <ClInclude Include="hooks\interface\hpbars\hpbars.h" />
+    <ClInclude Include="hooks\interface\mainmenu\lobby.h" />
+    <ClInclude Include="hooks\interface\uifeatures\ui_features.h" />
+    <ClInclude Include="hooks\limits\misc_extenders.h" />
+    <ClInclude Include="hooks\neutral_related.h" />
+    <ClInclude Include="hooks\orders\building_making\building_helper.h" />
+    <ClInclude Include="hooks\orders\pathfinding.h" />
+    <ClInclude Include="hooks\placement.h" />
+    <ClInclude Include="hooks\requirements\requirements.h" />
+    <ClInclude Include="hooks\requirements\requirement_parser.h" />
+    <ClInclude Include="hooks\trap_hooks.h" />
+    <ClInclude Include="hooks\unit_ai.h" />
+    <ClInclude Include="hooks\unit_movement.h" />
+    <ClInclude Include="hooks\unit_stats\new_requirements.h" />
+    <ClInclude Include="hooks\unit_stats\supply_hooks.h" />
+    <ClInclude Include="include\yaml-cpp\node\detail\bool_type.h" />
+    <ClInclude Include="player_color.h" />
+    <ClInclude Include="BW\stat_txt_spec.h" />
+    <ClInclude Include="systems\triggers\trigger_hooks.h" />
+    <ClInclude Include="trigger_system\trigger_sound.h" />
+    <ClInclude Include="systems\triggers\trigger_objectives.h" />
+    <ClInclude Include="systems\triggers\trigger_recolor.h" />
+    <ClInclude Include="systems\triggers\trigger_spawn.h" />
+    <ClInclude Include="systems\triggers\trigger_system.h" />
+    <ClInclude Include="utility.h" />
+    <ClInclude Include="systems\triggers\trigger_vars.h" />
+    <ClInclude Include="unit_constants.h" />
+    <ClInclude Include="unit_search.h" />
+    <ClInclude Include="Utils.h" />
+    <ClInclude Include="Utils\captivating_claws.h" />
+    <ClInclude Include="hooks\limits\ccmu.h" />
+    <ClInclude Include="hooks\limits\extender.h" />
+    <ClInclude Include="hooks\economic_units.h" />
+    <ClInclude Include="hooks\game\creategame.h" />
+    <ClInclude Include="hooks\interface\hud\hud.h" />
+    <ClInclude Include="hooks\interface\mainmenu\glucustom.h" />
+    <ClInclude Include="hooks\limits\tbl_extender.h" />
+    <ClInclude Include="hooks\maxhp.h" />
+    <ClInclude Include="hooks\misc\cosmonarchy_specific.h" />
+    <ClInclude Include="hooks\miss_chance.h" />
+    <ClInclude Include="hooks\orders\ai\ai_orders.h" />
+    <ClInclude Include="hooks\orders\spells\recall_spell.h" />
+    <ClInclude Include="hooks\orders\base_orders\attack_orders.h" />
+    <ClInclude Include="hooks\interface\btns_cond.h" />
+    <ClInclude Include="hooks\orders\building_making\building_zerg.h" />
+    <ClInclude Include="hooks\orders\building_making\building_protoss.h" />
+    <ClInclude Include="hooks\orders\building_making\building_terran.h" />
+    <ClInclude Include="hooks\recv_commands\burrow_tech.h" />
+    <ClInclude Include="hooks\interface\buttonsets.h" />
+    <ClInclude Include="hooks\orders\spells\cast_order.h" />
+    <ClInclude Include="hooks\recv_commands\CMDRECV_Build.h" />
+    <ClInclude Include="hooks\recv_commands\CMDRECV_Cancel.h" />
+    <ClInclude Include="hooks\recv_commands\CMDRECV_MergeArchon.h" />
+    <ClInclude Include="hooks\recv_commands\CMDRECV_Morph.h" />
+    <ClInclude Include="hooks\recv_commands\CMDRECV_SiegeTank.h" />
+    <ClInclude Include="hooks\recv_commands\CMDRECV_Stop.h" />
+    <ClInclude Include="hooks\create_init_units.h" />
+    <ClInclude Include="definitions.h" />
+    <ClInclude Include="hooks\orders\base_orders\die_order.h" />
+    <ClInclude Include="hooks\orders\enter_nydus.h" />
+    <ClInclude Include="hooks\orders\spells\feedback_spell.h" />
+    <ClInclude Include="hooks\target_related.h" />
+    <ClInclude Include="hooks\use_tech.h" />
+    <ClInclude Include="hooks\weapon_effect.h" />
+    <ClInclude Include="BW\enumerations\FlingyId.h" />
+    <ClInclude Include="hooks\give_unit.h" />
+    <ClInclude Include="hooks\orders\spells\hallucination_spell.h" />
+    <ClInclude Include="hook_tools.h" />
+    <ClInclude Include="BW\enumerations\IconId.h" />
+    <ClInclude Include="hooks\orders\infestation.h" />
+    <ClInclude Include="hooks\orders\larva_creep_spawn.h" />
+    <ClInclude Include="hooks\orders\liftland.h" />
+    <ClInclude Include="hooks\orders\load_unload_orders.h" />
+    <ClInclude Include="hooks\load_unload_proc.h" />
+    <ClInclude Include="logger.h" />
+    <ClInclude Include="hooks\orders\building_making\make_nydus_exit.h" />
+    <ClInclude Include="hooks\orders\medic_orders.h" />
+    <ClInclude Include="hooks\orders\merge_units.h" />
+    <ClInclude Include="hooks\orders\spells\mindcontrol_spell.h" />
+    <ClInclude Include="MPQDraftPlugin.h" />
+    <ClInclude Include="hooks\orders\spells\nuke_orders.h" />
+    <ClInclude Include="BW\structures\Player.h" />
+    <ClInclude Include="Plugin.h" />
+    <ClInclude Include="hooks\recv_commands\receive_command.h" />
+    <ClInclude Include="hooks\orders\repair_order.h" />
+    <ClInclude Include="hooks\orders\research_upgrade_orders.h" />
+    <ClInclude Include="hooks\interface\select_larva.h" />
+    <ClInclude Include="hooks\interface\selection.h" />
+    <ClInclude Include="hooks\orders\siege_transform.h" />
+    <ClInclude Include="BW\enumerations\SoundId.h" />
+    <ClInclude Include="BW\enumerations\SpriteId.h" />
+    <ClInclude Include="hooks\interface\stats_panel_display.h" />
+    <ClInclude Include="hooks\orders\base_orders\stopholdpos_orders.h" />
+    <ClInclude Include="hooks\recv_commands\train_cmd_receive.h" />
+    <ClInclude Include="types.h" />
+    <ClInclude Include="hooks\orders\unit_making\unit_morph.h" />
+    <ClInclude Include="hooks\orders\unit_making\unit_train.h" />
+    <ClInclude Include="hooks\utils\unit_utils.h" />
+    <ClInclude Include="hooks\interface\wireframe.h" />
+    <ClInclude Include="hooks\weapons\weapon_spellhit.h" />
+    <ClInclude Include="AI\ai_common.h" />
+    <ClInclude Include="BW\api.h" />
+    <ClInclude Include="hooks\apply_upgrade_flags.h" />
+    <ClInclude Include="hooks\unit_stats\armor_bonus.h" />
+    <ClInclude Include="hooks\attack_priority.h" />
+    <ClInclude Include="graphics\Bitmap.h" />
+    <ClInclude Include="hooks\bunker_hooks.h" />
+    <ClInclude Include="BW\structures\Bullet.h" />
+    <ClInclude Include="BW\structures\Image.h" />
+    <ClInclude Include="BW\structures\List.h" />
+    <ClInclude Include="hooks\cloak_nearby_units.h" />
+    <ClInclude Include="hooks\cloak_tech.h" />
+    <ClInclude Include="BW\structures\common.h" />
+    <ClInclude Include="BW\structures\Order.h" />
+    <ClInclude Include="BW\structures\Sprite.h" />
+    <ClInclude Include="BW\structures\Unit.h" />
+    <ClInclude Include="BW\structures\UnitLayout.h" />
+    <ClInclude Include="AI\spells\defensive_matrix.h" />
+    <ClInclude Include="hooks\detector.h" />
+    <ClInclude Include="graphics\draw_hook.h" />
+    <ClInclude Include="BW\enumerations.h" />
+    <ClInclude Include="BW\ExtendSightLimit.h" />
+    <ClInclude Include="graphics\Font.h" />
+    <ClInclude Include="hooks\game_hooks.h" />
+    <ClInclude Include="graphics\graphics.h" />
+    <ClInclude Include="graphics\graphics_errors.h" />
+    <ClInclude Include="hooks\harvest.h" />
+    <ClInclude Include="BW\enumerations\ImageId.h" />
+    <ClInclude Include="BW\structures\Layer.h" />
+    <ClInclude Include="hooks\unit_stats\max_energy.h" />
+    <ClInclude Include="BW\enumerations\OrderId.h" />
+    <ClInclude Include="hooks\psi_field.h" />
+    <ClInclude Include="hooks\rally_point.h" />
+    <ClInclude Include="hooks\recharge_shields.h" />
+    <ClInclude Include="graphics\Shape.h" />
+    <ClInclude Include="hooks\unit_stats\sight_range.h" />
+    <ClInclude Include="AI\spellcasting.h" />
+    <ClInclude Include="AI\spells\spells.h" />
+    <ClInclude Include="hooks\spider_mine.h" />
+    <ClInclude Include="hooks\stim_packs.h" />
+    <ClInclude Include="BW\structures.h" />
+    <ClInclude Include="BW\structures\Target.h" />
+    <ClInclude Include="hooks\tech_target_check.h" />
+    <ClInclude Include="BW\enumerations\TechId.h" />
+    <ClInclude Include="hooks\transfer_tech_upgrades.h" />
+    <ClInclude Include="hooks\unit_destructor_special.h" />
+    <ClInclude Include="hooks\unit_speed.h" />
+    <ClInclude Include="BW\UnitFinder.h" />
+    <ClInclude Include="BW\enumerations\UnitId.h" />
+    <ClInclude Include="hooks\update_status_effects.h" />
+    <ClInclude Include="hooks\update_unit_state.h" />
+    <ClInclude Include="BW\enumerations\UpgradeId.h" />
+    <ClInclude Include="hooks\interface\weapon_armor_tooltip.h" />
+    <ClInclude Include="hooks\weapons\weapon_cooldown.h" />
+    <ClInclude Include="hooks\weapons\weapon_damage.h" />
+    <ClInclude Include="hooks\weapons\weapon_fire.h" />
+    <ClInclude Include="hooks\unit_stats\weapon_range.h" />
+    <ClInclude Include="BW\enumerations\WeaponId.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

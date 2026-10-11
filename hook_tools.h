@@ -1,0 +1,85 @@
+#pragma once
+#include "types.h"
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <memory>
+#include <vector>
+
+// Injects a JMP to [target] at the [position], optionally overwriting [nops]
+// bytes with NOPs.
+//
+// Injects a relative JMP (0xE9) instruction to the [target] address at the
+// given memory [position]. If [nops] is specified, also overwrites additional
+// bytes of memory with NOP (0x90) instructions. While this is technically
+// unnecessary, it is included here for completeness.
+// A hook function for JmpPatch() should usually end with a JMP instruction to
+// where the control of flow should return. This means you can manually control
+// where the function jumps to. Should you wish to merely return to where the
+// was injected, consider using CallPatch().
+//
+// @param  target    The address of the function to jump to.
+// @param  position  The part of memory where the JMP instruction is injected.
+// @param  nops      Optional. The number of additional bytes to write NOPs.
+void jump_patch(const void* target, void* position, u32 nops = 0);
+inline void jump_patch(const void* target, DWORD position, u32 nops = 0) {
+    jump_patch(target, (void*)position, nops);
+}
+
+void nop_patch(const u32 address, u32 number);
+
+// Injects a CALL to [target] at the [position], optionally overwriting [nops]
+// bytes with NOPs.
+//
+// Injects a relative CALL (0xE8) instruction to the [target] address at the
+// given memory [position]. If [nops] is specified, also overwrites additional
+// bytes of memory with NOP (0x90) instructions. This is useful when you are
+// overwriting an instruction sequence that is longer than the count of the CALL
+// instruction (5 bytes).
+// A hook function for CallPatch() should usually end with a RET instruction,
+// which returns the control of flow to where the function was injected. This
+// is preferable when you want to hook a single function to multiple positions,
+// since there is no need to explicitly specify where to JMP back every time.
+//
+// @param  target    The address of the function to call.
+// @param  position  The part of memory where the CALL instruction is injected.
+// @param  nops      Optional. The number of additional bytes to write NOPs.
+void call_patch(const void* target, void* position, u32 nops = 0);
+inline void call_patch(const void* target, DWORD position, u32 nops = 0) {
+    call_patch(target, (void*)position, nops);
+}
+
+// Inject an array of bytes, using the given count.
+void memory_patch(void* const address, const u8* data, const size_t size);
+
+inline void memory_patch(const u32 address, const u8* data, const size_t size) {
+    memory_patch((void*)address, data, size);
+}
+
+template <typename T>
+void memory_patch(const u32 address, const T& data) {
+    memory_patch(address, (u8*)&data, sizeof(T));
+}
+
+// Patches the specified address with the given data using memcpy().
+template <typename T>
+void memory_patch_df(const u32 address, const T& data, unsigned char reps = 0) {
+    if (reps) {
+        u8* const data1 = new u8 [reps * sizeof(T)];
+        for (unsigned int i = 0; i < reps; ++i) {
+            *(T*)(&data1[i * sizeof(T)]) = data;
+        }
+        memory_patch(address, data1, reps * sizeof(T));
+    } else {
+        memory_patch(address, (u8*)&data, sizeof(T));
+    }
+}
+
+void wrapper_patch(const u8* code, u32 len, const u32 position, u32 nops = 0);
+
+struct ByteWrapperMemory {
+    std::vector<std::shared_ptr<u8[]>> wrapper_memory;
+    u8* exec_alloc(u32 len);
+};
+
+extern ByteWrapperMemory wrapper_memory;

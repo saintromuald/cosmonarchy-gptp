@@ -1,0 +1,32 @@
+#pragma once
+#include <hook_tools.h>
+#include <BW/api.h>
+#include <BW/enumerations.h>
+#include <BW/bwdata.h>
+
+namespace hooks {
+	u32 real_top_speed(Flingy* flingy, u32 flingy_id);
+	u16 real_acceleration(Flingy* flingy, u32 flingy_id);
+	bool is_high_templar_conduit(u16 unit_id);
+	u32 weapon_flingy(u32 weapon_id, u8 player);
+	u32 get_flingy_halt_distance(Flingy* flingy);
+	bool is_unused_order(u8 order_id);
+	u32 extend_tech_target_check(u32 orig_result, Unit* caster, Unit* target, u8 techId);
+	bool can_attack_target_end_chunk(Unit* source, u32 target_flags);
+	void create_damage_overlay(Sprite* sprite);
+	bool debug_damage_overlay(Sprite* sprite);
+
+	u32 check_unit_dat_requirements(u8 player, u16 unit_id, Unit* parent);
+	s32 game_loop();																				// 004D94B0
+	Unit* create_unit(u16 unit_id, s32 x, s32 y, s32 player);										// 004A09D0
+	void transform_unit_main(Unit* unit, u32 unit_id);												// 0049F170
+	u8 ignore_iscript_and_go_to_idle(Unit* unit);													// 00476550
+	void turn_unit(Unit* unit, char direction);														// 00495F20
+	void init_damage_overlay_counts();																// 004D5C20
+	void __cdecl create_unit_building_sprite_validity_array();										// 00497110
+	Thingy* create_thingy(u32 sprite_id, v2u16 position, u8 player);								// 00488210
+}
+
+namespace hooks {
+	void inject_cosmonarchy_specific();
+}

@@ -1,0 +1,376 @@
+#include "repair_order.h"
+#include <BW/api.h>
+#include <hooks/rally_point.h>
+#include "globals.h"
+#include "hooks/limits/sfx_extender.h"
+
+namespace hooks {
+	void orders_repair_1(Unit * unit) { // 004673D0
+		Unit* target = unit->order_target.unit;
+		if  (target
+	//	&&   target->hitpoints < units_dat::max_hitpoints[target->id] // Disabled to allow tasking repair on full HP targets
+		&&   target->is_completed()
+		&& !(unit->unit_ai && target->status & UnitStatus::Reacts && target->order_target.unit != unit)
+		&&  !target->is_in_transport()
+		&&  !target->stasis_timer) {
+			switch (unit->main_order_state) {
+				case 0: {
+					s16 repair_info;
+					u32 repair_cost_minerals, repair_cost_vespene;
+					helper::get_repair_info(target, &repair_cost_minerals, &repair_cost_vespene, &repair_info);
+					helper::verify_resources(repair_cost_minerals, repair_cost_vespene, unit->player);
+					unit->worker.repair_resource_loss_timer = 0; // Now used as a toggle for the AlmostBuilt animation to avoid some visual bug, but can probably just use a local bool if necessary.
+					unit->main_order_state++;
+				} // Fallthrough intended
+				case 1: {
+					if (!target->is_completed()) {
+						unit->order_to(OrderId::ConstructingBuilding, target);
+						if (g_is_placing_building && !helper::can_still_place_building()) {
+							helper::refresh_layers_3_and_4();
+							helper::end_building_placement();
+						}
+					} else {
+						if (helper::order_to_move_to_target(unit, target)) {
+							helper::unit_order_move_to_target_unit(unit, target);
+							unit->main_order_state = 6;
+						}
+					}
+					return;
+				} break;
+				case 6: {
+					if (unit->get_movable_state() == MovableState_NotReachedDestination) {
+						helper::move_towards(unit, target);
+						return;
+					}
+					unit->main_order_state++;
+				} break;
+				case 7: {
+					if (!unit->is_target_within_min_range(target, 5)) {
+						unit->main_order_state = 1;
+						return;
+					}
+					helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
+					helper::unit_order_move_to_target_unit(unit, target);
+					if (!helper::is_unit_positions_2_equal(unit)) {
+						u8 current_angle = unit->current_direction_1 - bw::get_angle(unit->sprite->position.x, unit->sprite->position.y, unit->next_target_waypoint.x, unit->next_target_waypoint.y);
+						if (current_angle > 128) {
+							current_angle = 256 - current_angle;
+						}
+						if (current_angle > weapons_dat::attack_angle[unit->get_ground_weapon()]) {
+							break;
+						}
+					}
+					unit->worker.repair_resource_loss_timer++;
+					unit->main_order_state++;
+				} break;
+				case 8: {
+					helper::set_secondary_waypoint(unit, target->sprite->position.x, target->sprite->position.y);
+					helper::unit_order_move_to_target_unit(unit, target);
+
+					if (!unit->is_target_within_min_range(target, 5) || target->main_order_id == OrderId::Liftoff) {
+						unit->sprite->play_iscript_animation(IscriptAnimation::GroundAttackToIdle, true);
+						unit->main_order_state = 1;
+					}
+					if (unit->worker.repair_resource_loss_timer) {
+						UnitExt* unit_ext = &unit->ext();
+						unit_ext->values[ValueWorkerContext] = WorkerContext::Repairing;
+						unit->sprite->play_iscript_animation(IscriptAnimation::AlmostBuilt, true);
+						unit->worker.repair_resource_loss_timer--;
+					}
+				} break;
+				default: {
+				} break;
+			}
+
+			if (target->hitpoints < units_dat::max_hitpoints[target->id] - 128) { // The -128 is to avoid visual issues with HP drains. -Pr0nogo
+				if (target->new_repair_timer) {
+					target->new_repair_timer--;
+				} else {
+					if (!helper::subtract_repair_resources(unit, target)) {
+						unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
+						unit->order_to_idle();
+						return;
+					}
+				}
+				u32 hp_gain = target->build_repair_hp_gain * 0.75; // We repair slower in CM than SC1 due to higher base HP on most units/structures.
+				if (UnitId::has_fusion_sealers(unit)) {
+					hp_gain *= 1.33;
+				}
+				target->heal_hp(hp_gain, unit);
+				if (target->hitpoints < units_dat::max_hitpoints[target->id]) {
+					return;
+				}
+			}
+		}
+
+		// LABEL_43:
+		unit->sprite->play_iscript_animation(IscriptAnimation::WalkingToIdle, true);
+
+		if (unit->order_queue_head || !target) {
+			helper::force_order_done(unit);
+		} else {
+			unit->main_order_state = 1;
+		}
+
+		if (target && !target->is_in_transport()) {
+			target->connected_unit = 0;
+		}
+	}
+
+	// Hooked to allow for general Repair and some other shit - Pr0nogo
+	s32 is_order_valid(char order_id, Unit* unit, s32 unused, Unit* target, s32 bErrorFlag) { // 00474D90
+		s32 unused_result = 0;
+		u16 error_string_id = 0;
+		switch (order_id) {
+			case OrderId::Repair1: {
+				error_string_id = 884;
+				if (!target) {
+					if (bErrorFlag) {
+						*(s16*)bErrorFlag = error_string_id;
+					}
+					return 0;
+				}
+				error_string_id = 883;
+				if (!target->is_completed()) {
+					if (bErrorFlag) {
+						*(s16*)bErrorFlag = error_string_id;
+					}
+					return 0;
+				}
+
+				if (target->is_valid_nydus() && target->hitpoints >= units_dat::max_hitpoints[target->id]) {
+					return 0;
+				}
+				return 1;
+			} break;
+			case OrderId::Harvest1: {
+				if (!target) {
+					return 1;
+				}
+				error_string_id = unit->get_race() + 893;
+				if (target->id == UnitId::ResourceVespeneGeyser) {
+					return 1;
+				}
+				if (!helper::unit_is_resource(target)) {
+					return 0;
+				}
+				error_string_id = 892;
+				if (!(units_dat::base_property[target->id] & UnitProperty::ResourceContainer)) {
+					if (bErrorFlag) {
+						*(s16*)bErrorFlag = error_string_id;
+					}
+					return 0;
+				}
+				error_string_id = 896;
+				if (unit->player != target->player && unit_id_is_capped_gas_node(target->id)) {
+					if (bErrorFlag) {
+						*(s16*)bErrorFlag = error_string_id;
+					}
+					return 0;
+				}
+				return 1;
+			} break;
+			case OrderId::Pickup2: {
+				error_string_id = 890;
+				if (!target || !bw::is_allied_to(target->player, unit->player)) {
+					if (bErrorFlag) {
+						*(s16*)bErrorFlag = error_string_id;
+					}
+					return 0;
+				}
+				if (helper::can_enter_transport(unit, target)) {
+					return 1;
+				}
+				if (units_dat::space_provided[unit->id] >= units_dat::space_required[target->id]) {
+					error_string_id = 891;
+				}
+				if (bErrorFlag) {
+					*(s16*)bErrorFlag = error_string_id;
+				}
+				return 0;
+			} break;
+			case OrderId::HealMove: {
+				if (!target) {
+					return 1;
+				}
+				if (!helper::tech_use_allowed(unit, TechId::Healing, unit->player)) {
+					return 0;
+				}
+				error_string_id = 1325;
+				if (!(target->status & UnitStatus::GroundedBuilding | UnitStatus::InAir) && target->hitpoints < units_dat::max_hitpoints[target->id]) {
+					return 1;
+				}
+				if (bErrorFlag) {
+					*(s16*)bErrorFlag = error_string_id;
+				}
+				return 0;
+			} break;
+			default: {
+				return 1;
+			}
+		}
+		return unused_result;
+	}
+
+	// Hooked to investigate Repair crashes. - Pr0nogo
+	s32 order_allowed(Unit* unit, u16 order_id, s32 player) { // 0046DC20
+		s32 result = 0;
+		*g_last_internal_error = 0;
+		if (order_id != OrderId::None) {
+			if (orders_dat::req_offset[order_id] == -1) {
+				helper::parse_orders_dat_requirements();
+			}
+			if (player == unit->player) {
+				if (order_id == OrderId::RallyPointToVisibleUnit || order_id == OrderId::RallyPointToTile || unit->is_completed()) {
+					if (unit->is_frozen()) {
+						*g_last_internal_error = 10;
+						result = 0;
+					} else if (unit->is_burrowed() && !unit_id_is_burrowed_attacker(unit->id) && order_id != OrderId::Unburrow) {
+						*g_last_internal_error = 11;
+						result = 0;
+					} else {
+						if (UnitId::is_terran_worker(static_cast<UnitId::Enum>(unit->id)) && unit->main_order_id == OrderId::ConstructingBuilding && order_id != OrderId::Stop
+						|| (bw::unit_can_nuke(unit) && unit->main_order_id == OrderId::NukeTrack)
+						||  unit->id == UnitId::ProtossArchon && unit->main_order_id == OrderId::CompletingArchonSummon
+						||  unit->id == UnitId::ProtossMindTyrant && unit->main_order_id == OrderId::CompletingArchonSummon)
+						{
+							*g_last_internal_error = 8;
+							result = 0;
+						} else {
+							if (orders_dat::req_offset[order_id]) {
+								result = helper::parse_requirement_opcodes(unit, order_id, player, g_orders_requirement_tree, orders_dat::req_offset[order_id]);
+							} else {
+								*g_last_internal_error = 23;
+							}
+						}
+					}
+				} else {
+					*g_last_internal_error = 20;
+					result = 0;
+				}
+			} else {
+				*g_last_internal_error = 1;
+				result = 0;
+			}
+		} else {
+			*g_last_internal_error = 15;
+			result = 0;
+		}
+		return result;
+	}
+
+	// Hooked to remove right-click error message on harvesting from geysers. -Pr0nogo
+	s32 show_right_click_error_if_needed(Unit* target) { // 00455A00
+		s32 sfx_id = -1;
+		s32 text_id = -1;
+		Unit** selected_units = &g_client_selection_group->unit[11];
+		Unit** selected_units_2 = &g_client_selection_group->unit[11];
+		do {
+			Unit* unit = *selected_units;
+			if (*selected_units) {
+				u8 action = RightClickActions::NoCommand_AutoAttack;
+				u16 unit_id = unit->id;
+				if (unit->burrowed_attacker_can_attack()) {
+					action = RightClickActions::NoMove_NormalAttack;
+				} else {
+					auto right_click_order = helper::get_right_click_action_order(unit);
+					if (!right_click_order) {
+						if (hooks::unit_can_rally(unit)) {
+							right_click_order = RightClickActions::NormalMove_NoAttack;
+						}
+					}
+					action = right_click_order;
+				}
+
+				bool is_neutral = target && units_dat::base_property[target->id] & UnitProperty::NeutralAccessories;
+				switch (action) {
+					case RightClickActions::NormalMove_NormalAttack: {
+						if (!target || !helper::is_unit_enemy(*g_active_portrait_unit, target) || is_neutral || helper::unit_can_attack_target(target, unit, 1)) {
+							return true;
+						}
+						text_id = 879;
+						sfx_id = unit->get_error_sfx();
+					} break;
+					case RightClickActions::NoMove_NormalAttack: {
+						if (!target || is_neutral) {
+							break;
+						}
+						if (helper::unit_can_attack_target(target, unit, 1)) {
+							if (helper::is_unit_target_out_of_max_range(unit, target)) {
+								text_id = 888;
+							} else {
+								if (!helper::target_is_inside_minimum_range(unit, target)) {
+									return true;
+								}
+								text_id = 889;
+							}
+						} else {
+							text_id = 879;
+						}
+						sfx_id = unit->get_error_sfx();
+					} break;
+					case RightClickActions::Harvest:
+					case RightClickActions::HarvestAndRepair: {
+						if (!target || is_neutral) {
+							return true;
+						}
+						if (target->id != UnitId::ResourceVespeneGeyser && target->id != UnitId::ResourceVespeneRidge) {
+							if (!helper::is_unit_enemy(*g_active_portrait_unit, target) || is_neutral || helper::unit_can_attack_target(target, unit, 1)) {
+								return true;
+							}
+							text_id = 879;
+							sfx_id = unit->get_error_sfx();
+						}
+					} break;
+					default: {
+						return true;
+					} break;
+				}
+			}
+			selected_units = selected_units_2 - 1;
+			--selected_units_2;
+		} while (selected_units_2 >= g_client_selection_group->unit);
+		if (sfx_id != -1) {
+			if (sfx_id) {
+				if (g_options_list->sfx) {
+					s32 sfx_volume = sfx_dat::volume[sfx_id];
+					u32 max_volume = 99;
+					if (sfx_volume >= 99) {
+						if (sfx_volume >= 0) {
+							if (sfx_volume >= 99) {
+								max_volume = sfx_dat::volume[sfx_id];
+							}
+						} else {
+							max_volume = 0;
+						}
+					}
+					if (g_use_quiet_sounds) {
+						max_volume /= 5;
+					}
+					if (max_volume > 10) {
+						helper::play_transmission_from_location(sfx_id, max_volume, 0, 0);
+					}
+				}
+			}
+		}
+		if (text_id != -1) {
+			u32 text_id_zeroed = text_id - 1;
+			if (text_id) {
+				char* text_string = 0;
+				if (text_id_zeroed < g_stat_txt_buffer.get_string_count32()) {
+					text_string = (char*)g_stat_txt_buffer.get_string32(text_id_zeroed + 1);
+				}
+				if (text_string) {
+					if (g_active_player_id == g_local_human_id) {
+						strncpy(draw_out_text_left, text_string, 0xDAu);
+						text_bytes[12] = 4;
+						*unit_stat_update_timer = GetTickCount() + 7000;
+						helper::update_text_display(12);
+					}
+					return false;
+				}
+			}
+		}
+		return false;
+	}
+}

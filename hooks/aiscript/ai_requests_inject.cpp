@@ -1,0 +1,509 @@
+#include "hook_tools.h"
+#include "BW/api.h"
+#include "ai_requests.h"
+
+namespace
+{
+	void __declspec(naked) ai_build_tech_upgrade_wrapper() // 00431F90
+	{
+		static AiTown* town;
+		static s32 method;
+		static s32 amount;
+		static s32 id;
+		static s32 priority;
+		static s32 need;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV method, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV amount, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV id, EAX
+			MOV EAX, [EBP + 0x14]
+			MOV priority, EAX
+			MOV EAX, [EBP + 0x18]
+			MOV need, EAX
+			POP EAX
+			MOV town, ESI
+			PUSHAD
+		}
+		hooks::ai_build_tech_upgrade(town, method, amount, id, priority, need);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 20
+		}
+	}
+
+	void __declspec(naked) ai_progress_build_wrapper() // 00434480
+	{
+		static s32 player;
+		static s32* minerals;
+		static s32* gas;
+		static AiTown* result;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV player, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV minerals, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV gas, EAX
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::ai_progress_build(player, minerals, gas);
+		__asm
+		{
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			MOV EAX, result
+			RETN 0x0C
+		}
+	}
+
+	void __declspec(naked) ai_perform_task_wrapper() { // 004361A0
+		static Unit* unit;
+		static char result;
+		__asm {
+			MOV unit, ECX
+			PUSHAD
+		}
+		result = hooks::ai_perform_task(unit);
+		__asm {
+			POPAD
+			MOVSX EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) ai_plan_do_merge_morph_wrapper() { // 00435F10
+		static char result;
+		static s32 player;
+		static Unit* unit;
+		static s32 boolSomething;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV player, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV unit, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV boolSomething, EAX
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::ai_plan_do_merge_morph(player, unit, boolSomething);
+		__asm {
+			POPAD
+			MOVSX EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0xC
+		}
+	}
+
+	void __declspec(naked) ai_train_defensive_military_wrapper() { // 0043F990
+		static u8 player_id;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV player_id, AL
+			POP EAX
+			PUSHAD
+		}
+		hooks::ai_train_defensive_military(player_id);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
+		}
+	}
+
+	void __declspec(naked) ai_build_wrapper() { // 004323D0
+		static u32 unit_id;
+		static bool need;
+		static u32 count;
+		static AiTown* town;
+		static u8 priority;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV priority, AL
+			POP EAX
+			MOV town, ESI
+			MOV count, EAX
+			MOV need, DL
+			MOV unit_id, ECX
+			PUSHAD
+		}
+		hooks::ai_build(unit_id, need, count, town, priority);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
+		}
+	}
+
+	void __declspec(naked) ai_build_gas_node_wrapper() { // 00433660
+		static AiTown* town;
+		__asm {
+			MOV town, EAX
+			PUSHAD
+		}
+		hooks::ai_build_gas_node(town);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) ai_request_guard_wrapper() { // 00448630
+		static GuardAi* guard_ai;
+		static u32 player_id;
+		__asm {
+			MOV player_id, ECX
+			MOV guard_ai, EAX
+			PUSHAD
+		}
+		hooks::ai_request_guard(guard_ai, player_id);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) ai_region_train_attack_force_wrapper() { // 0043E670
+		static AiRegion* region;
+		__asm {
+			MOV region, EAX
+			PUSHAD
+		}
+		hooks::ai_region_train_attack_force(region);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) ai_add_town_spending_request_wrapper() { // 00448400
+		static u32 player;
+		static u32 priority;
+		static u32 unit_id;
+		static AiRegion* region;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x8]
+			MOV region, EAX
+			POP EAX
+			MOV player, EAX
+			MOV priority, EDI
+			MOV unit_id, ESI
+			PUSHAD
+		}
+		hooks::ai_add_town_spending_request(player, priority, unit_id, region);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
+		}
+	}
+
+	static u32 ai_player_need_priority(u32 unit_id) {
+		if (unit_id_is_tech_tier_structure(unit_id)) {
+			return 140;
+		}
+		if (unit_id_is_tech(unit_id, false)) {
+			return 120;
+		}
+		if (units_dat::group_flags[unit_id].is_factory) {
+			return 110;
+		}
+		if (unit_id_is_tech(unit_id, false)) {
+			return 109;
+		}
+		return 80;
+	}
+
+	void __declspec(naked) ai_player_need_priority_wrapper() { // 0045BE1F
+		static const u32 jmp_address = 0x0045BE26;
+		static u32 priority;
+		static u32 unit_id;
+		__asm {
+			MOV unit_id, ECX
+			PUSHAD
+		}
+		priority = ai_player_need_priority(unit_id);
+		_asm {
+			POPAD
+			PUSH priority
+			MOV EDX, 1
+			JMP jmp_address
+		}
+	}
+
+	void __declspec(naked) ai_update_guard_needs_wrapper() { // 004630C0
+		static u32 player;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV player, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::ai_update_guard_needs(player);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
+	void __declspec(naked) ai_add_spending_request_from_towns_wrapper() { // 00436320
+		static u32 player_id;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV player_id, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::ai_add_spending_request_from_towns(player_id);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
+	void __declspec(naked) pop_spending_request_wrapper() { // 004476D0
+		static u32 player_id;
+		__asm {
+			MOV player_id, EAX
+			PUSHAD
+		}
+		hooks::pop_spending_request(player_id);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) ai_try_progress_spending_queue_worker_wrapper() { // 004348C0
+		static AiTown* town;
+		static Unit* unit;
+		static u32 result;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV town, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV unit, EAX
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::ai_try_progress_spending_queue_worker(town, unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
+
+	void __declspec(naked) ai_add_spending_request_wrapper() { // 00447980
+		static u16 unit_id;
+		static u32 player;
+		static char request_type;
+		static char priority;
+		static void* value;
+		static b32 result;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV priority, AL
+			MOV EAX, [EBP + 0x0C]
+			MOV value, EAX
+			POP EAX
+			MOV unit_id, AX
+			MOV player, EDX
+			MOV request_type, CL
+			PUSHAD
+		}
+		result = hooks::ai_add_spending_request((UnitId::Enum)unit_id, player, request_type, priority, value); // Casts to enum here because it's u16 instead of u32.
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
+
+	void __declspec(naked) ai_make_detector_behavior_wrapper() { // 00435130
+		static Unit* unit;
+		static u32 player;
+		static s32 result;
+		__asm {
+			MOV unit, EAX
+			MOV player, EDI
+			PUSHAD
+		}
+		result = hooks::ai_make_detector_behavior(unit, player);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) has_resources_for_unit_wrapper() { // 004487B0
+		static u16 unit_id;
+		static u32 player;
+		static b32 result;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV player, EAX
+			POP EAX
+			MOV unit_id, CX
+			PUSHAD
+		}
+		result = hooks::has_resources_for_unit(unit_id, player);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
+	void __declspec(naked) ai_make_guard_wrapper() { // 0043A010
+		static u32 player_id;
+		static Unit* unit;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV player_id, EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV unit, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::ai_make_guard(player_id, unit);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
+
+	void __declspec(naked) get_default_refinery_type_wrapper() { // 00435130
+		static u32 result;
+		static u32 player;
+		__asm {
+			MOV player, EAX
+			PUSHAD
+		}
+		result = hooks::get_default_refinery_type(player);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) ai_get_queued_count_wrapper() { // 00466B70
+		static u32 result;
+		static Unit* builder;
+		static u32 unit_id;
+		__asm {
+			MOV builder, ECX
+			MOV unit_id, EDI
+			PUSHAD
+		}
+		result = hooks::ai_get_queued_count(builder, unit_id);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) aiscript_loop_wrapper() { // 0045CBD0
+		__asm {
+			PUSHAD
+		}
+		hooks::aiscript_loop();
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+}
+
+namespace hooks {
+void inject_ai_request_hooks() {
+//	jump_patch(ai_build_tech_upgrade_wrapper,								0x00431F90, 2);
+	jump_patch(ai_progress_build_wrapper,						0x00434480, 1);
+	jump_patch(ai_perform_task_wrapper,						0x004361A0, 0);
+//	jump_patch(ai_plan_do_merge_morph_wrapper,								0x00435F10, 1);
+//	jump_patch(ai_train_defensive_military_wrapper,							0x0043F990, 1);
+	jump_patch(ai_build_wrapper,								0x004323D0, 1);
+	jump_patch(ai_build_gas_node_wrapper,						0x00433660, 1);
+
+	jump_patch(ai_request_guard_wrapper,						0x00448630, 0);
+	jump_patch(ai_region_train_attack_force_wrapper,			0x0043E670,	4);
+	jump_patch(ai_add_town_spending_request_wrapper,			0x00448400, 0);
+
+	jump_patch(ai_player_need_priority_wrapper,				0x0045BE1F, 2);
+	jump_patch(ai_update_guard_needs_wrapper,					0x004630C0, 1);
+	jump_patch(ai_add_spending_request_from_towns_wrapper,	0x00436320, 1);
+	jump_patch(pop_spending_request_wrapper,					0x004476D0, 1);
+//	jump_patch(ai_try_progress_spending_queue_worker_wrapper,				0x004348C0, 1); // This hook is faulty; Enabling it makes AI build unit "Reserved"
+	jump_patch(ai_add_spending_request_wrapper,				0x00447980, 1);
+//	jump_patch(ai_make_detector_behavior_wrapper,							0x00435130, 0);
+	jump_patch(has_resources_for_unit_wrapper,				0x004487B0, 1);
+//	jump_patch(ai_make_guard_wrapper,										0x0043A010, 1);
+	jump_patch(get_default_refinery_type_wrapper,				0x004320D0, 5);
+	jump_patch(ai_get_queued_count_wrapper,					0x00466B70, 3);
+
+	jump_patch(aiscript_loop_wrapper,							0x0045CBD0);
+}
+} // namespace hooks

@@ -1,0 +1,66 @@
+#include "hook_tools.h"
+
+// Injects a relative CALL to [target] at the [position].
+// Original function from BWAPI by Kovarex; Modified by pastelmind
+void call_patch(const void* target, void* position, const u32 nops) {
+    u8* const data = new u8[5 + nops];
+    data[0] = 0xE8; // Relative CALL instruction
+    const u32 address = (u32)target - (u32)position - 5; // Relative address
+    *(u32*)(&data[1]) = address;
+    for (u32 i = 0; i < nops; ++i) {
+        data[5 + i] = 0x90; // NOP instruction
+    }
+    memory_patch(position, data, 5 + nops);
+    delete[] data;
+}
+
+void nop_patch(const u32 address, u32 number) {
+	u8 nop = 0x90;
+	for (s32 i = 0; i < number; i++) {
+		memory_patch((void*)(address + i), &nop, sizeof(u8));
+	}
+}
+
+// Injects a relative JMP to [target] at the [position].
+// Original function from BWAPI by Kovarex; Modified by pastelmind
+void jump_patch(const void* target, void* position, u32 nops) {
+    u8* const data = new u8[5 + nops];
+    data[0] = 0xE9; // Relative JMP instruction
+    const s32 address = (s32)target - (s32)position - 5; // Relative address
+    *(s32*)(&data[1]) = address;
+    for (u32 i = 0; i < nops; ++i) {
+        data[5 + i] = 0x90; // NOP instruction
+    }
+    memory_patch(position, data, 5 + nops);
+    delete[] data;
+}
+
+void wrapper_patch(const u8* code, u32 len, const u32 address, u32 nop) {
+	//function address
+	auto exe = wrapper_memory.exec_alloc(len);
+	if (nop > 0) {
+		nop_patch(address + 0x5, nop);
+	}
+	for (s32 i = 0; i < len; i++) {
+		exe[i] = code[i];
+	}
+	u32 diff = (u32)exe - (address + 0x5);
+	memory_patch(address + 0x1, diff);
+	memory_patch(address, (u8)0xe8);
+}
+
+// Inject an array of bytes, using the given length.
+void memory_patch(void* const address, const u8* data, const size_t size) {
+    DWORD old_prot = 0;
+    VirtualProtect(address, size, PAGE_EXECUTE_READWRITE, &old_prot);
+    memcpy(address, data, size);
+    VirtualProtect(address, size, old_prot, &old_prot);
+}
+
+ByteWrapperMemory wrapper_memory;
+u8* ByteWrapperMemory::exec_alloc(u32 len) {
+    std::shared_ptr<u8[]> wrapper(new u8[len]);
+    wrapper_memory.push_back(wrapper);
+    auto offset = &wrapper[0];
+    return offset;
+}

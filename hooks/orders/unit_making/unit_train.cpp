@@ -1,0 +1,275 @@
+#include "unit_train.h"
+#include <BW/api.h>
+#include "hooks/cosmonarchy_finder.h"
+#include "hooks/orders/spells/hallucination_spell.h"
+#include "hooks/orders/building_making/building_modifier.h"
+#include "globals.h"
+#ifndef TRUE
+#define TRUE 1
+#endif
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+namespace hooks {
+	s32 is_queue_slot_active(Unit* unit, u32 slot) {
+		return unit->build_queue[(slot + unit->build_queue_slot) % 5] != UnitId::None;
+	}
+
+	void secondary_order_train_fighter(Unit* unit) {
+		if (unit->id == UnitId::ProtossSolarion || unit->id == UnitId::ProtossAccantorOld) {
+			if (unit->secondary_order_state == 0 || unit->secondary_order_state == 1) {
+				if (unit->build_queue[unit->build_queue_slot] == UnitId::None) {
+					unit->secondary_order_state = 3;
+					unit->current_build_unit = 0;
+				} else {
+					Unit* built_unit = helper::attempt_train_hatch_unit(unit, unit->build_queue[unit->build_queue_slot], unit->secondary_order_state == 0 ? 1 : 0);
+					unit->current_build_unit = built_unit;
+					if (!built_unit) {
+						unit->secondary_order_state = 1;
+					} else {
+						built_unit->hangar_unit.parent = unit;
+						built_unit->sprite->player = unit->sprite->player;
+						unit->secondary_order_state = 2;
+					}
+				}
+			} else if (unit->secondary_order_state == 2) {
+				Unit* built_unit = unit->current_build_unit;
+				if (built_unit) {
+					u32 hp_gain = helper::progress_build_get_hp_gain(built_unit);
+					cm::progress_build(built_unit, {
+						.builder = unit,
+						.already_ticked = true,
+						.hp_gain = hp_gain,
+					});
+					helper::generic_progress_build(built_unit, hp_gain, false);
+					if (built_unit->status & UnitStatus::Completed) {
+						helper::add_hangar_unit(unit, built_unit);
+						if (unit->status & UnitStatus::IsHallucination) {
+							apply_hallucination(built_unit, unit, unit->remove_timer);
+						}
+						unit->build_queue[unit->build_queue_slot] = UnitId::None;
+						unit->build_queue_slot++;
+
+						if (unit->build_queue_slot >= 5)
+						{
+							unit->build_queue_slot = 0;
+						}
+						bw::refresh_console();
+						unit->current_build_unit = 0;
+						unit->secondary_order_state = 0;
+					}
+				} else {
+					bw::refresh_console();
+					unit->current_build_unit = 0;
+					unit->secondary_order_state = 0;
+				}
+			} else if (unit->secondary_order_state == 3) {
+				if (unit->id == UnitId::ProtossAccantorOld) {
+					unit->secondary_order_state = 4;
+				} else {
+					Unit* in_hangar_child = unit->unit_with_hangar.in_hangar_child;
+					if (in_hangar_child) {
+						s32 hp_steward = units_dat::max_hitpoints[UnitId::ProtossSteward];
+						while (in_hangar_child && in_hangar_child->hitpoints >= hp_steward) {
+							in_hangar_child = in_hangar_child->hangar_unit.hangar_link.next;
+						}
+						if (in_hangar_child) {
+							in_hangar_child->set_hitpoints(in_hangar_child->hitpoints + 128);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// generic unit training function
+	void order_train(Unit* unit) {
+		if (!unit->is_frozen()) {
+			bool jump_to_685D8 = false;
+			if (unit->secondary_order_state <= 1) {
+				if (unit->build_queue[unit->build_queue_slot] == UnitId::None) {
+					unit->set_secondary_order(OrderId::Nothing2);
+					unit->sprite->play_iscript_animation(IscriptAnimation::WorkingToIdle, true);
+				} else {
+					Unit* built_unit = helper::attempt_train_hatch_unit(unit, unit->build_queue[unit->build_queue_slot], unit->secondary_order_state == 0 ? 1 : 0);
+					unit->current_build_unit = built_unit;
+					if (!built_unit) {
+						unit->secondary_order_state = 1;
+					} else {
+						built_unit->sprite->player = unit->sprite->player;
+						if (built_unit->subunit) {
+							built_unit->subunit->sprite->player = unit->sprite->player;
+						}
+						bw::play_work_animation(unit);
+					}
+				}
+			} else if (unit->secondary_order_state == 2) {
+				Unit* built_unit = unit->current_build_unit;
+				if (built_unit) {
+					u32 hp_gain = helper::progress_build_get_hp_gain(built_unit);
+					cm::progress_build(built_unit, {
+						.builder = unit,
+						.already_ticked = true,
+						.hp_gain = hp_gain,
+					});
+					if (helper::generic_progress_build(built_unit, hp_gain, true)) {
+						if (built_unit->is_completed()) {
+							u32 count = 1;
+							Unit* built_units[2] = {built_unit, 0};
+							if (units_dat::base_property[built_unit->id] & UnitProperty::TwoUnitsIn1Egg || game_kind_doubles_units()) {
+								count = 2;
+								built_units[1] = bw::create_unit_in_game(built_unit->id, built_unit->player, built_unit->position.x - 32, built_unit->position.y, unit, true);
+							}
+
+							bool spawn_point_set = false;
+							v2u16 spawn_point = unit->position;
+							if (unit->rally.pt.x || unit->rally.pt.y) {
+								v2u16 new_spawn_point = bw::get_rect_edge_point_towards(unit->position, units_dat::unit_bounds[unit->id], unit->rally.pt);
+								if (new_spawn_point != unit->rally.pt) {
+									if (bw::get_active_tile_at_coords(spawn_point)->ground_height == bw::get_active_tile_at_coords(new_spawn_point)->ground_height) {
+										spawn_point_set = true;
+										spawn_point = new_spawn_point;
+									}
+								}
+							}
+
+							for (u32 i = 0; i < count; i++) {
+								Unit* new_unit = built_units[i];
+								if (new_unit) {
+									spread_debuffs(unit, new_unit);
+									if (spawn_point_set) {
+										bw::move_unit(new_unit, spawn_point.x, spawn_point.y);
+									}
+									helper::ai_training_unit(new_unit, unit);
+									if (built_unit->id == UnitId::TerranMorningstar) {
+										helper::hide_and_disable_unit(new_unit);
+									} else {
+										if (units_dat::group_flags[new_unit->id].is_protoss) {
+											for (Image* image = new_unit->sprite->images.head; image; image = image->link.next) {
+												if (image->flags & ImageFlags::UseFullIscript) {
+													play_image_iscript(image, IscriptAnimation::WarpIn);
+												}
+											}
+										}
+										helper::order_new_unit_to_rally(new_unit, unit);
+									}
+								}
+							}
+							helper::clear_building_ai_queue_slot(unit, unit->build_queue_slot);
+							unit->build_queue[unit->build_queue_slot] = UnitId::None;
+							unit->build_queue_slot = (unit->build_queue_slot + 1) % 5;
+							unit->play_completion_sfx();
+							jump_to_685D8 = true;
+						}
+					} else { // unit was canceled due to lack of space around the building
+						u32 queue_slot = unit->build_queue_slot % 5;
+						if (unit->build_queue[queue_slot] == UnitId::None) {
+							jump_to_685D8 = true;
+						} else {
+							u8 counter = 4;
+							if (unit->current_build_unit) {
+								helper::cancel_unit(unit->current_build_unit);
+							} else if (!units_dat::base_property[unit->build_queue[unit->build_queue_slot % 5]] & UnitProperty::Building) {
+								helper::refund_unit_train_cost(unit->build_queue[unit->build_queue_slot % 5], unit->player);
+							}
+							do {
+								counter--;
+								unit->build_queue[unit->build_queue_slot] = unit->build_queue[(unit->build_queue_slot + 1) % 5];
+								if (unit->unit_ai && *(u8*)((u32)unit->unit_ai + 8) == 3)
+								{
+									*(u8*)((u32)unit->unit_ai + unit->build_queue_slot + 9) = *(u8*)((u32)unit->unit_ai + (unit->build_queue_slot + 1) % 5 + 9);
+									*(u32*)((u32)unit->unit_ai + unit->build_queue_slot * 4 + 0x18) = *(u32*)((u32)unit->unit_ai + ((unit->build_queue_slot + 1) % 5) * 4 + 0x18);
+								}
+							} while (counter != 0);
+							unit->build_queue[(unit->build_queue_slot + 1) % 5] = UnitId::None;
+							jump_to_685D8 = true;
+						}
+					}
+				} else {
+					jump_to_685D8 = true;
+				}
+				if (jump_to_685D8) {
+					bw::refresh_console();
+					unit->current_build_unit = 0;
+					unit->secondary_order_state = 0;
+				}
+			}
+		}
+	}
+
+	char get_max_hangar_space(Unit* unit) { // 004653D0
+		if (unit->id == UnitId::ProtossSolarion) {
+			return 12;
+		}
+		if (unit->id == UnitId::ProtossAccantorOld) {
+			return 1;
+		}
+		return 0;
+	}
+
+	b32 _stdcall button_is_training(Unit* unit) {
+		return unit->build_queue[unit->build_queue_slot % 5] != UnitId::None;
+	}
+
+	// Hooked to try a different approach for Massacre resources. -Pr0nogo
+	void update_unit_stats_and_finish_building(Unit* unit) { // 004A01F0
+		if (unit->remaining_build_time) {
+			unit->hitpoints = units_dat::max_hitpoints[unit->id];
+			unit->shields = units_dat::max_shield_points[unit->id] << 8;
+			unit->remaining_build_time = 0;
+		}
+
+		if (!unit->is_frozen() || unit->is_building() || unit->id == UnitId::None) {
+			auto buttonset = unit->id;
+			auto& unit_ext = unit->ext();
+			if (unit_ext.values[ValueHasButtonsetOverride]) {
+				 buttonset = unit_ext.values[ValueButtonsetOverride];
+			}
+			unit->current_buttonset = buttonset;
+			helper::change_unit_buttonset(unit, buttonset);
+		}
+
+		if (unit->is_grounded_building()) {
+			unit->parasite_flags = 0;
+			unit->is_blind = 0;
+			helper::unit_completion_init(unit, 0);
+			for (Image* image = unit->sprite->images.head; image; image = image->link.next) {
+				play_image_iscript(image, IscriptAnimation::Built);
+			}
+
+			if (!g_is_in_replay && unit->player == g_local_nation_id) {
+				bw::refresh_console();
+			}
+		} else {
+			if (unit->status & UnitStatus::CanTurnAroundToAttack) {
+				u32 start_dir = units_dat::start_direction[unit->id];
+				if (start_dir == 32) {
+					start_dir = bw::rand_between(0, 31);
+				}
+				helper::turn_unit(unit, 8 * start_dir);
+			}
+			// Previously didn't run this helper for traps
+			helper::show_and_enable_unit(unit);
+		}
+	}
+
+	// Hooked to investigate the "upper map bound" fail state for Seraph training. -Pr0nogo
+	Unit* attempt_train_hatch_unit(u16 unit_id, Unit* source, u32 show_error) { // 00468200
+		if (source->is_grounded_building()
+		||  source->id == UnitId::ProtossSolarion
+		||  source->id == UnitId::ProtossAccantorOld
+		||  source->id == UnitId::Hero_Warbringer
+		||  source->id == UnitId::ZergEgg)
+		{
+			if (helper::has_supplies_for_unit(source->player, unit_id, show_error)) {
+				Unit* new_unit = helper::create_unit(unit_id, source->sprite->position.x, source->sprite->position.y, source->player);
+				if (new_unit) {
+					return new_unit;
+				}
+				helper::display_last_network_error_for_player(source->player);
+			}
+		}
+		return 0;
+	}
+}

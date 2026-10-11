@@ -1,0 +1,694 @@
+#include "weapon_spellhit.h"
+#include <BW/api.h>
+#include <BW/UnitFinder.h>
+#include "logger.h"
+#include "globals.h"
+#include <algorithm>
+#include <hooks/byte_operations_utils.h>
+#include <cassert>
+#include "weapon_fire.h"
+#include "hooks/weapons/weapon_spellhit.h"
+#include "hooks/weapons/weapon_damage.h"
+#include "storm/storm.h"
+
+namespace hooks {
+	// Hooked to allow for replacing proc functions - Pr0nogo
+	Unit* iterate_units_at_location_target_proc(Box16* location, Unit*(__fastcall* proc)(Unit*, Unit*), Unit* unit) { // 004E8280
+		Unit** unitsInBounds = helper::get_all_units_in_bounds(location);
+		Unit** unitsInBounds2 = unitsInBounds;
+		Unit* aUnitInBound;
+		if (proc || (aUnitInBound = *unitsInBounds) == 0) {
+			aUnitInBound = *unitsInBounds;
+			if (*unitsInBounds) {
+				do {
+					if (proc(aUnitInBound, unit)) {
+						break;
+					}
+					aUnitInBound = unitsInBounds2[1];
+					++unitsInBounds2;
+				}
+				while (aUnitInBound);
+			}
+		}
+		s32 index = g_temp_units_list_arrays_counts_list_last_index[0] - 1;
+		g_temp_units_list_arrays_counts_list_last_index[0] = index;
+		*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[index];
+		return aUnitInBound;
+	}
+
+	// Hooked to clean up lardcode - Pr0nogo
+	// Seems to be double-called from Maelstrom, no idea why
+	u8 disable_unit(Unit* unit) { // 00492CC0
+		Unit* subunit = unit->subunit;
+		if (subunit) {
+			subunit->status |= UnitStatus::Frozen;
+		}
+		helper::set_resource_target(unit);
+		s16 unit_id = unit->id;
+		if (bw::unit_can_nuke(unit)) {
+			Unit* nuke = unit->connected_unit;
+			if (nuke) {
+				if (nuke->id == UnitId::TerranMorningstar) {
+					unit->connected_unit = 0;
+					nuke->connected_unit = 0;
+				}
+			}
+		}
+		if (UnitId::has_interceptors((UnitId::Enum)unit_id)) {
+			helper::return_all_interceptors(unit);
+		}
+		u8 order_id = unit->main_order_id;
+		if (order_id == OrderId::Repair1 || order_id == OrderId::DroneLand) {
+			unit->main_order_state = 0;
+		}
+		if (!orders_dat::disabling_keeps_target[order_id]) {
+			unit->order_target.unit = 0;
+		}
+		u8 result = helper::ignore_iscript_go_to_idle(unit);
+		Sprite* sprite = unit->sprite;
+		if (sprite->flags & SpriteFlags::Selected) {
+			if (g_client_selection_count > 1) {
+				result = helper::update_building_land_unit_selection(*(u32*)sprite, unit);
+			}
+		}
+		unit->current_buttonset = UnitId::Buttons_Blank;
+		bw::refresh_console();
+		return result;
+	}
+
+	void irradiate_hit(Unit* attacker, v2u16 target, u8 attacking_player_id) {
+	//	iquare_globals.create_effect(EffectId::Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attacking_player_id, attacker);
+	}
+
+	void irradiate_hit_internal(Unit* attacker, v2u16 target, u8 attacking_player_id) {
+		g_iquare_globals->create_effect(EffectId::Irradiate, 10 * 24, { target.x, target.y }, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attacking_player_id, attacker);
+	}
+
+	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	void optical_flare_hit(Unit* unused, u32 attacking_player_id, Bullet* bullet) {
+		if (!bullet) {
+			return;
+		}
+
+		const u32 radius = 2 * 32;
+		helper::play_sound_from_unit(SoundId::Terran_Medic_Miopia1_wav, (Unit*)bullet, 1, 0);
+		bw::UnitFinder(
+			bullet->position.x - radius,
+			bullet->position.y - radius,
+			bullet->position.x + radius,
+			bullet->position.y + radius
+		).for_each([&](Unit* target) {
+			if (!unit_id_is_resource_node(target->id, false)) {
+				UnitExt* target_ext = get_unit_ext(target);
+				target_ext->timers[TimerAuralAssaultBlind] = 2 * 24 + 1;
+			}
+		});
+	}
+
+	// Bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	void restore_hit(Unit* target, Bullet* bullet) {
+		if (target->is_hallucination()) {
+			target->bwfunc_remove();
+		} else {
+			// Create impact overlay
+			bw::restore_func(target);
+		}
+	}
+
+	// Bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	// the timer is reset before this call 2 times out of 3 (with previousLockdownTimer holding the pre-reset value), and the 3rd case, previousLockdownTimer is set to 131 (0x83)
+	void lockdown_hit(Unit* target, u8 timer, Bullet* bullet) {
+		if (!unit_id_is_zerg_egg(target->id) || target->remaining_build_time > 24) {
+			if (target->lockdown_timer == 0) {
+				u32 image_id = ImageId::LockdownField_Small + bw::get_overlay_offset(target->id);
+				Unit* overlay_unit = target->subunit ? target->subunit : target;
+				overlay_unit->sprite->create_top_overlay(image_id, 0, 0, 0);
+			}
+			if (target->lockdown_timer < timer) {
+				target->lockdown_timer = timer;
+			}
+			disable_unit(target);
+		}
+		auto& target_ext = target->ext();
+		target_ext.timers[TimerLobotomySlow] = TerranMine::LobotomyTimer * 2;
+	}
+
+	void weapon_bullet_hit(Bullet* bullet, Unit* target, u32 damage_divisor) { // 00479AE0
+		BulletExt* bullet_ext = get_bullet_ext(bullet);
+		damage_divisor *= bullet_ext->divisor_multiplier;
+		u32 base_damage = helper::get_unit_bullet_damage(bullet, target);
+		if (bullet_ext->damage_override) { // Currently only true for Analogue strikes
+			base_damage = bullet_ext->damage_override;
+		}
+
+		if (bullet->hit_flags & 2) {
+			if (bullet->source_unit) {
+				target->damage_with(bullet_ext->weapon_id, base_damage, bullet->source_unit, bullet->player, bullet->current_direction_1, damage_divisor);
+			} else {
+				helper::attack_overlay_and_notify(bullet->source_unit, target, bullet_ext->weapon_id, bullet->current_direction_1); // no damage, but still ask for retaliation
+			}
+		} else {
+			weapon_damage_current_bullet = bullet;
+			target->damage_with(bullet_ext->weapon_id, base_damage, bullet->source_unit, bullet->player, bullet->current_direction_1, damage_divisor);
+			weapon_damage_current_bullet = 0;
+		}
+	}
+
+	u16 get_unit_width(Unit* unit) {
+		return unit->get_right() - unit->get_left();
+	}
+
+	u16 get_unit_height(Unit* unit) {
+		return unit->get_bottom() - unit->get_top();
+	}
+
+	bool is_in_range(Unit* source, Unit* target, u32 range) {
+		u16 source_x = source->position.x;
+		u16 source_y = source->position.y;
+		u16 target_x = target->position.x;
+		u16 target_y = target->position.y;
+
+		u16 x_diff = abs(source_x - target_x);
+		u16 y_diff = abs(source_y - target_y);
+		u16 x_range = range + get_unit_width(source) / 2 + get_unit_width(target) / 2 + 1;
+		u16 y_range = range + get_unit_height(source) / 2 + get_unit_height(target) / 2 + 1;
+
+		if (x_diff > x_range || y_diff > y_range) {
+			return false;
+		}
+		return true;
+	}
+
+	void iscript_attackmelee(Unit* attacker) { // 00479B40
+		Unit* target = attacker->order_target.unit;
+		if (!target) {
+			return;
+		}
+
+		UnitExt& attacker_ext = attacker->ext();
+		WeaponId::Enum weapon_id = WeaponId::None;
+		if (!unit_id_is_burrowed_attacker(attacker->id) || attacker->burrowed_attacker_can_attack()) {
+			if (target->is_in_air() && units_dat::air_weapon[attacker->id] != WeaponId::None) {
+				weapon_id = (WeaponId::Enum)units_dat::air_weapon[attacker->id];
+			} else {
+				weapon_id = (WeaponId::Enum)units_dat::ground_weapon[attacker->id];
+			}
+		}
+		attacker_ext.values[ValueAI_KitingSignal] += (1 << 8) / weapons_dat::damage_factor[weapon_id] + 1;
+		attacker_ext.values[ValueAI_PreventTargeting] = 0;
+
+		// Previously checked for Hallucination status, but there was no functional difference in the code!
+		// Refactored 15 Sep 2022. -Pr0nogo
+		u32 damage = helper::get_unit_damage_bonus(attacker, weapon_id);
+		damage = ((u16)damage + weapons_dat::damage_amount[weapon_id]) * 256;
+		bool amitosis = attacker_ext.unit_vectors[UnitVectorAdaptiveAmitosis].size();
+		for (u32 i = 0; i < WeaponId::get_custom_melee_factor(weapon_id); i++) {
+			if (attacker_ext.values[ValueDeconstruction]) {
+				bw::do_deconstruction_damage(attacker, weapon_id);
+			}
+			target->damage_with(weapon_id, damage, attacker, attacker->player, attacker->current_direction_1, 1);
+			if (amitosis) {
+				fire_amitosis_weapon(attacker, weapon_id);
+			}
+		}
+
+		// Cloaked units - decloak
+		// We can check for special conditions here if the attacker is not meant to decloak on melee attack. -Pr0nogo
+		bw::decloak_passive_proc(attacker);
+		apply_weapon_cooldown(attacker, weapon_id);
+		bw::play_manual_weaponfire_sound(attacker, weapon_id);
+	}
+
+	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	// In the original code, the parameters are taken from Bullet as:
+	//	attacker from bullet->source_unit
+	//	x and y from bullet->sprite->position
+	void emp_shockwave_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet) {
+		bw::create_and_init_thingy(ImageId::DefensiveMatrixFront_Small, x, y, 11, 19);
+		static u16* const max_box_right_value = (u16*)0x00628450;	// should usually be g_map_tile_size->width * 32
+		static u16* const max_box_bottom_value = (u16*)0x006284B4;	// should usually be g_map_tile_size->height * 32
+
+		// define the base box of effect
+		Box16 aoe = {};
+		aoe.left = (u16)x - weapons_dat::inner_splash_radius[WeaponId::PsiAssault];
+		aoe.right = (u16)x + weapons_dat::inner_splash_radius[WeaponId::PsiAssault];
+		aoe.top = (u16)y - weapons_dat::inner_splash_radius[WeaponId::PsiAssault];
+		aoe.bottom = (u16)y + weapons_dat::inner_splash_radius[WeaponId::PsiAssault];
+
+		// check and fix effect if beyond width of map
+		if (aoe.left < 0) {
+			aoe.left = 0;
+		} else if (aoe.right > *max_box_right_value) {
+			aoe.right = *max_box_right_value;
+		}
+		// check and fix effect if beyond height of map
+		if (aoe.top < 0) {
+			aoe.top = 0;
+		} else if (aoe.bottom > *max_box_bottom_value) {
+			aoe.bottom = *max_box_bottom_value;
+		}
+
+		// find all units in box of effect and pick the first
+		Unit** units_in_aoe = helper::get_all_units_in_bounds(&aoe);
+		Unit* current_unit = *units_in_aoe;
+		while (current_unit) {
+			if (current_unit != attacker // EMP doesn't affect the attacker
+				&& (!attacker || current_unit != attacker->subunit)) {
+				if (current_unit->status & UnitStatus::IsHallucination) {
+					current_unit->bwfunc_remove();
+				} else if (current_unit->stasis_timer == 0) { // don't affect units in stasis
+				//	current_unit->energy -= 100;
+				//	current_unit->shields -= 100;
+					// Disable damage on 15 February 2023 because Irradiate should not EMP anymore (just using it ). -Pr0nogo
+					if (current_unit->sprite->flags & SpriteFlags::Selected && current_unit->sprite) { // Follows original code, though this order of tests doesn't make sense
+						helper::set_all_image_group_flags_palette_11(current_unit->sprite); // redraw the unit
+					}
+				}
+			}
+			units_in_aoe++; // go on next unit of the list (or null)
+			current_unit = *units_in_aoe;
+		}
+		// reload the previous temporary unit list from before the call to get_all_units_in_bounds
+		*g_temp_units_list_arrays_counts_list_last_index = *g_temp_units_list_arrays_counts_list_last_index - 1;
+		*g_temp_units_list_current_array_count = g_temp_units_list_arrays_counts_list[*g_temp_units_list_arrays_counts_list_last_index];
+	}
+
+	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	void corrosive_acid_hit(u32 attacking_player_id, s32 x, s32 y, Bullet* bullet) {
+		Box16 coords = {};
+		coords.left = x - 64;
+		coords.bottom = y + 64;
+		coords.top = y - 64;
+		coords.right = x + 64;
+
+		// IterateUnitsAtLocationTargetProc_CorrosiveAcid(attacking_player_id,&coords);
+		// Originally spreads.
+		if (bullet->attack_target.unit) {
+			auto vec = bw::get_clarion_links(bullet->attack_target.unit);
+			if (vec.size() != 0) {
+				for (auto unit : vec) {
+					helper::apply_corrosive_spores(unit);
+				}
+			} else {
+				helper::apply_corrosive_spores(bullet->attack_target.unit);
+			}
+		}
+	}
+
+	// No bullet because the code normally calling this function loses easily-available information (and getting it the hard way seems overkill)
+	void consume_hit(Unit* attacker, Unit* target) {
+		if (!attacker || !target) {
+			return;
+		}
+
+		if (target && !(target->status & UnitStatus::Invincible) && helper::get_tech_use_error_message(target, TechId::Consume, attacker->player) == 0) { // returning a value != 0 means there was an error
+			helper::increment_unit_death_scores(target, attacker->player);
+			if (!(target->status & UnitStatus::IsHallucination)) {
+				for (Unit* unit : g_unit_search.radial_ex(attacker, 3 * 32, FilterAlly | FilterIncludingSelf)) {
+					unit->heal_hp_then_shields(target->hitpoints, attacker);
+					unit->sprite->create_underlay(ImageId::SmallExplosion_Unused);
+				}
+			}
+			target->bwfunc_remove();
+		}
+	}
+
+	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	void ensnare_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet) { // 004F4830
+		Thingy* ensnare_effect_sprite = helper::create_thingy(SpriteId::Ensnare, x, y, 0);
+		if (ensnare_effect_sprite) {
+			ensnare_effect_sprite->sprite->elevation = 19; // 0x13
+			helper::set_thingy_visibility_flags(ensnare_effect_sprite);
+		}
+		Box16 coords;
+		coords.top = y - 64;
+		coords.right = x + 64;
+		coords.left = x - 64;
+		coords.bottom = y + 64;
+		helper::iterate_units_at_location_target_proc_ensnare(attacker, &coords);
+	}
+
+	s32 ensnare_proc(Unit* target, Unit* attacker) {
+		if (target != attacker && !bw::is_allied_to(attacker->player, target->player)) {
+			if (!(target->status & UnitStatus::Invincible) && !(target->status & UnitStatus::Burrowed)) {
+				UnitExt* unit_ext = get_unit_ext(target);
+				apply_ensnare_internal(target, unit_ext->values[ValueEnsnareFactor]);
+			}
+		}
+		return 0;
+	}
+
+	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	void dark_swarm_hit(s32 x, s32 y, u32 attacking_player_id, Bullet* bullet) {
+		// Adjust location where Dark Swarm will be created if necessary (by modifying coords)
+		v2u16 coords(x, y);
+		helper::fix_target_location(&coords, UnitId::Spell_CarapaceSwarm);
+
+		// The spell is created for player 11 (neutral), not for the owner		
+		Unit* spell_unit = helper::create_unit(UnitId::Spell_CarapaceSwarm, coords.x, coords.y, 11); 
+		if (!spell_unit) {
+			helper::display_last_network_error_for_player(attacking_player_id);
+		} else {
+			spell_unit->status |= UnitStatus::NoCollide;
+			spell_unit->sprite->elevation = 11;
+
+			helper::update_unit_stats_and_finish_building(spell_unit);
+			helper::update_unit_strength(spell_unit);
+			if (spell_unit->remove_timer == 0 || spell_unit->remove_timer > 495) {
+				spell_unit->remove_timer = 495;
+			}
+		}
+	}
+
+	void carapace_swarm_hit_internal(s32 x, s32 y, u32 attacking_player_id, u32 spell_unit_id) {
+		// Adjust location where Dark Swarm will be created if necessary (by modifying coords)
+		v2u16 coords(x, y);
+		helper::fix_target_location(&coords, spell_unit_id);
+
+		// The spell is created for player 11 (neutral), not for the owner		
+		Unit* spell_unit = helper::create_unit(spell_unit_id, coords.x, coords.y, 11);
+		if (!spell_unit) {
+			helper::display_last_network_error_for_player(attacking_player_id);
+		} else {
+			spell_unit->status |= UnitStatus::NoCollide;
+			spell_unit->sprite->elevation = 11;
+
+			helper::update_unit_stats_and_finish_building(spell_unit);
+			helper::update_unit_strength(spell_unit);
+			u32 remove_timer = 495;
+			if (spell_unit_id == UnitId::Spell_CarapaceSwarmSmall) {
+				remove_timer = 116;
+			}
+			if (spell_unit->remove_timer == 0 || spell_unit->remove_timer > remove_timer) {
+				spell_unit->remove_timer = remove_timer;
+			}
+		}
+	}
+
+	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	void broodling_hit(Unit* attacker, Unit* target, Bullet* bullet) {
+		u32 broodlings_to_spawn = 3;
+		ActiveTile* tile = bw::get_active_tile_at_coords(bullet->sprite->position.x, bullet->sprite->position.y);
+		if (tile->has_cagra|| tile->cagra_receding) {
+			broodlings_to_spawn = 5;
+		}
+		v2u16 current = bullet->sprite->position;
+		current.x -= 2;
+		current.y -= 2;
+		while (broodlings_to_spawn > 0) {
+			// Check various conditions before attempting to create Broodspawn
+			if (helper::can_unit_id_fit_at_xy(current.x, current.y, UnitId::ZergRilirokor)) {
+				v2u16 in_pos = current;
+				v2u16 out_pos = {};
+
+				Box16 move_area = {};
+				move_area.left = current.x - 32;
+				move_area.top = current.y - 32;
+				move_area.right = current.x + 32;
+				move_area.bottom = current.y + 32;
+
+				if (bw::check_unit_collision_pos(attacker, &in_pos, &out_pos, &move_area, false, 0)) {
+					current = out_pos;
+				}
+			}
+
+			// Adjust the position to welcome the unit...I think
+			v2u16 pos = current;
+			helper::fix_target_location(&pos, UnitId::ZergRilirokor);
+
+			// Create the broodling
+			Unit* created_broodling = helper::create_unit(UnitId::ZergRilirokor, pos.x, pos.y, attacker->player);
+			UnitExt* broodlingExt = get_unit_ext(created_broodling);
+			broodlingExt->units[UnitBroodlingMother] = attacker;
+
+			if (!created_broodling) {
+				helper::display_last_network_error_for_player(attacker->player);
+			} else {
+				bw::play_sound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, created_broodling);
+
+				// Update various stuff (set hp, set shield...) not finished on create_unit
+				helper::update_unit_stats_and_finish_building(created_broodling);
+				helper::update_unit_strength(created_broodling);
+				u32 timer = 720;
+				if (created_broodling->remove_timer == 0 || created_broodling->remove_timer > timer) {
+					created_broodling->remove_timer = timer;
+				}
+
+				if (attacker->unit_ai) {
+					helper::ai_training_unit(created_broodling, attacker);
+				}
+			}
+
+			current.y += 4;
+			current.x += 4;
+			broodlings_to_spawn--;
+		}
+	}
+
+	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	void plague_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet) {
+		if (attacker) {
+			g_iquare_globals->create_effect(EffectId::IsthrathalethPlagueField, 10 * 32, {(u16)x, (u16)y}, 3 * 32, SpriteId::PlagueField, 5, attacker->player, attacker);
+		}
+		//if (attacker) {
+		//	u32 distance = 64;
+		//	Box16 coords = {};
+		//	coords.left   = x - distance;
+		//	coords.top    = y - distance;
+		//	coords.right  = x + distance;
+		//	coords.bottom = y + distance;
+		//	helper::iterate_units_at_location_target_proc_plague(attacker, &coords);
+		//
+		//	UnitExt* attacker_ext = get_unit_ext(attacker);
+		//	bw::UnitFinder(
+		//		x - distance,
+		//		y - distance,
+		//		x + distance,
+		//		y + distance
+		//	).for_each([&](Unit* unit) {
+		//		if (attacker && attacker_ext->timers[TimerEnsnaringBrood] > 0 && !(units_dat::base_property[unit->id] & UnitProperty::Building)) {
+		//			bw::apply_ensnare(unit);
+		//		}
+		//	});
+		//}
+	}
+
+	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	void maelstrom_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet) {
+		if (attacker) {
+			bw::decloak_passive_proc(attacker);
+		}
+
+		Thingy* maelstrom_effect_sprite = helper::create_thingy(SpriteId::Maelstrom_Hit, x, y, 0);
+		if (maelstrom_effect_sprite) {
+			maelstrom_effect_sprite->sprite->elevation = 17;
+			helper::set_thingy_visibility_flags(maelstrom_effect_sprite);
+		}
+		helper::play_sound_from_unit(SoundId::Protoss_Darchon_Parahit_wav, attacker, 1, 0);
+
+		// TODO: Unit search
+		const u32 radius = 48;
+		bw::UnitFinder(
+			x - radius,
+			y - radius,
+			x + radius,
+			y + radius
+		).for_each([attacker](Unit* unit) {
+			maelstrom_proc(unit, attacker);
+		});
+		avenge_or_ascend_corpses_in_area(bullet->position, 2 * 32, bullet->player);
+	}
+
+	// Hooked to modify maelstrom timer and conditions; however, this hook is not called yet, we may need to hook iterate_units_at_location_target_proc - 004E8280 - Pr0nogo
+	bool maelstrom_proc(Unit* target, Unit* source) { // 004F6760, always returns 0
+		if (target != source && !target->is_invincible() && !target->is_burrowed()) {
+			helper::apply_maelstrom(target, ProtossMindTyrant::MaelstromTimer);
+		}
+		return 0;
+	}
+
+	// No bullet because this function is called in another context without the bullet.
+	void mind_control_hit(Unit* attacker, Unit* target) { // 004F6910
+		bw::decloak_passive_proc(attacker);
+		auto& attacker_ext = attacker->ext();
+		Unit* old_victim = attacker_ext.units[UnitMindTyrantMalefactor];
+		if (old_victim) {
+			clear_maledictus(attacker, old_victim);
+		}
+		auto& target_ext = target->ext();
+		if (!target_ext.units[UnitMindTyrantLink]) { // Revisit
+			target_ext.values[ValueIsMalefactor] = 1;
+			target_ext.units[UnitMindTyrantLink] = attacker;
+			attacker->ext().units[UnitMindTyrantMalefactor] = target;
+		}
+		bw::play_sound(SoundId::Protoss_Darchon_mind_wav, target);
+	}
+
+	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	void stasis_field_hit(Unit* attacker, s32 x, s32 y, Bullet* bullet) {
+		v2u16 position{u16(x), u16(y)};
+		stasis_field_hit_internal(attacker, position, bullet);
+	}
+
+	void stasis_field_hit_internal(Unit* attacker, v2u16 position, Bullet* bullet) {
+		bw::create_and_init_thingy(SpriteId::Stasis_Field_Hit, position.x, position.y, 11, 17);
+		helper::play_sound_at_pos(SoundId::Protoss_ARBITER_PAbCag00_WAV, position, 1, 0);
+		Box16 coords = {};
+		coords.left = position.x - 48;
+		coords.top = position.y - 48;
+		coords.right = position.x + 48;
+		coords.bottom = position.y + 48;
+		helper::iterate_units_at_location_target_proc_stasis_field(attacker, &coords);
+	}
+
+	// Bullet is not normally a part of the function, so if the function is called in an unexpected way, it may not contain the correct value.
+	Unit* create_disruption_web(u32 attacking_player_id, s32 x, s32 y) {
+		return 0; // Reimplemented entirely in Cosmonarchy
+		v2u16 coords;
+		Unit* disruption_web_unit;
+		coords.x = x;
+		coords.y = y;
+
+		// adjust location where Disruption Web will be created if necessary (by modifying coords)
+		helper::fix_target_location(&coords, UnitId::Spell_CarapaceSwarmSmall);
+		disruption_web_unit = helper::create_unit(UnitId::Spell_CarapaceSwarmSmall, coords.x, coords.y, 11);
+		if (!disruption_web_unit) {
+			helper::display_last_network_error_for_player(attacking_player_id);
+		} else {
+			disruption_web_unit->status |= UnitStatus::NoCollide;
+			disruption_web_unit->sprite->elevation = 11;
+			// update various stats (set hp, set shield...) not finished on create_unit
+			helper::update_unit_stats_and_finish_building(disruption_web_unit);
+			helper::update_unit_strength(disruption_web_unit);
+			if (disruption_web_unit->remove_timer == 0 || disruption_web_unit->remove_timer > 360) {
+				disruption_web_unit->remove_timer = 360;
+			}
+		}
+		return disruption_web_unit;
+	}
+
+	void disruption_web_hit(u32 attacking_player_id, s32 x, s32 y, Bullet* bullet) {
+		create_disruption_web(attacking_player_id, x, y);
+	}
+
+	u8 stasis_field_overlay(Unit* unit, u8 timer) { // 004F67B0
+		if (!unit->stasis_timer) {
+			Unit* final_unit = unit->subunit;
+			if (!final_unit) {
+				final_unit = unit;
+			}
+			u16 image_id = ImageId::StasisField_Small + bw::get_overlay_offset(unit->id);
+			unit->sprite->create_overlay(image_id, 0, 0, 0);
+			unit->status |= UnitStatus::Invincible; // remove
+		}
+		if (timer > unit->stasis_timer) {
+			unit->stasis_timer = timer;
+		}
+		return disable_unit(unit);
+	}
+
+	// Hooked to add Nydus handling, except it already existed! - Pr0nogo
+	b32 give_unit_to_player(Unit* unit, u32 player) { // 004C8040
+		if (player == 13) {
+			player = *g_current_trigger_player_id;
+		}
+		if (!(player < 12 ? -(unit != 0) : 0)) {
+			SErrSetLastError(87);
+			return false;
+		}
+		if (unit_id_is_resource_node(unit->id, false) || unit_id_is_hangar_unit((UnitId::Enum)unit->id) || unit->is_addon() || unit->player == player) {
+			return false;
+		}
+		if (helper::unit_is_geyser(unit)) {
+			Unit* hidden_miner = helper::get_hidden_miner(unit);
+			if (hidden_miner) {
+				helper::give_all_unit_properties_to_player(hidden_miner, player);
+			}
+		}
+		helper::give_all_unit_properties_to_player(unit, player);
+		const u32 give_units_proc = 0x004C7CE0;
+		if (helper::unit_is_active_transport(unit)) {
+			helper::iterate_loaded_units(unit, (Unit*(__fastcall*)(Unit*, Unit*))give_units_proc, player);
+		}
+		if (helper::unit_has_hangar(unit)) {
+			helper::for_hangar_units(unit, (Unit*(__fastcall*)(Unit*, Unit*))give_units_proc, player);
+		}
+		if (unit->is_grounded_building()) {
+			Unit* connected_unit = unit->building.addon;
+			if (connected_unit) {
+				helper::give_all_unit_properties_to_player(connected_unit, player);
+			}
+			if (helper::is_constructing_addon(unit)) {
+				Unit* creating_unit = helper::get_creating_unit(unit);
+				helper::give_all_unit_properties_to_player(creating_unit, player);
+			}
+			if (unit->is_valid_nydus()) {
+				Unit* nydus_exit = unit->building.nydus_exit;
+				helper::give_all_unit_properties_to_player(nydus_exit, player);
+			}
+		}
+		return true;
+	}
+
+	// Hooked to investigate Maelstrom double-calling disable_unit. -Pr0nogo
+	void set_maelstrom_timer(Unit* unit, u8 duration) { // 004553F0
+		auto& unit_ext = unit->ext();
+		if (!unit_ext.timers[TimerMindTyrantMaelstromSlow]) {
+			Unit* final_unit = unit->subunit;
+			if (!final_unit) {
+				final_unit = unit;
+			}
+			final_unit->sprite->create_overlay(ImageId::MaelstromOverlay_Small + bw::get_overlay_offset(unit->id), 0, 0, 0);
+		}
+		u32 timer = unit_ext.timers[TimerMindTyrantMaelstromSlow];
+		if (duration > timer) {
+			timer = duration;
+		}
+		unit_ext.timers[TimerMindTyrantMaelstromSlow] = timer;
+	}
+
+	// Hooked to unfreeze subunits too. -Pr0nogo
+	void unfreeze_unit(Unit* unit) { // 004F62D0
+		unit->stasis_timer = 0;
+		if (!(unit->status & UnitStatus::Frozen) && !unit->lockdown_timer && !unit->maelstrom_timer) {
+			helper::change_unit_buttonset(unit, unit->id);
+			bw::refresh_console();
+		}
+		if (!(units_dat::base_property[unit->id] & UnitStatus::Invincible)) {
+			unit->status &= 0xFBFFFFFF;
+		}
+		if (unit->subunit && units_dat::base_property[unit->subunit->id] & UnitProperty::Subunit) { // New
+			unit->subunit->unfreeze();
+		}
+		helper::remove_overlay_range(ImageId::StasisField_Small, ImageId::StasisField_Large, unit);
+	}
+
+	// Hooked to apply to burrowed units. -Pr0nogo
+	void __fastcall plague_proc(Unit* victim, Unit* caster) { // 004F4AF0
+		plague_proc_internal(victim, caster, false);
+	}
+
+	void plague_proc_internal(Unit* victim, Unit* caster, bool from_miasma) {
+		if (!victim->is_invincible()) {
+			apply_plague_internal(victim, from_miasma);
+			if (caster) {
+				unit_was_hit(victim, caster, 1);
+			}
+		}
+	}
+
+	// Hooked to make applying plague more flexible. -Pr0nogo
+	void apply_plague(Unit* unit) { // 004F4550
+		apply_plague_internal(unit, false);
+	}
+
+	void apply_plague_internal(Unit* unit, bool from_miasma) {
+		// Originally didn't apply to burrowed units
+		if (!unit->plague_timer) {
+			u32 overlay_offset = bw::get_overlay_offset(unit->id);
+			Unit* final_unit = unit->subunit ? unit->subunit : unit;
+			final_unit->sprite->create_overlay(ImageId::PlagueOverlay_Small + overlay_offset, 0, 0, 0);
+		}
+		unit->plague_timer = from_miasma ? Plague::MiasmaTimer : Isthrathaleth::PlagueTimer;
+	}
+}

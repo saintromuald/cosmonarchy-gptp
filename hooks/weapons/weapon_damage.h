@@ -1,0 +1,66 @@
+#pragma once
+#include "../../BW/structures/Unit.h"
+#include "../../BW/structures/Bullet.h"
+
+extern Bullet* weapon_damage_current_bullet;
+
+void apply_ensnare_internal(Unit* unit, u32 ensnare_factor, u32 ensnare_timer = Matraleth::EnsnareTimer);
+void apply_corrosive_spores_internal(Unit* unit, u32 timer);
+bool carapace_swarm_blocks_damage(Unit* target, WeaponId::Enum weapon_id, u32 damage_divisor);
+
+namespace hooks {
+    void weapon_damage(
+        s32 damage,
+        Unit* target,
+        WeaponId::Enum weapon_id,
+        Unit* attacker,
+        u8 attacking_player_id,
+        s8 direction,
+        u8 damage_divisor
+    );
+
+    void weapon_damage_custom(
+        s32 damage,
+        Unit* target,
+        u32 armor_pen,
+        Unit* attacker,
+        u8 attacking_player_id,
+        s8 direction,
+        u8 damage_divisor,
+        bool ignore_flat_armor
+    );
+
+    struct WeaponDamageData {
+        s32 damage;
+        s32 shield_reduce_amount;
+        u32 bonus_armor_pen;
+        u8 damage_type;
+        u8 damage_divisor;
+        WeaponId::Enum weapon_id;
+        s8 direction;
+
+        Unit* target;
+        Unit* attacker;
+        u8 attacking_player_id;
+        bool is_phase_link_damage_instance;
+        bool ignore_flat_armor;
+    };
+
+    void weapon_damage_root(WeaponDamageData& data);
+
+    void apply_ensnare(Unit* unit);									// 004F45E0
+    u16 get_spores_overlay_id(Unit* target);
+    s32 apply_corrosive_spores(Unit* target);						// 004F4480
+
+    // Important: this one is patched to do nothing by default (to noop the game code)! Use the latter instead
+    void unit_attack_notify_hook(Unit* unit);						// 0048F230
+    void play_attack_notification(Unit* unit);
+
+    void unit_was_hit(Unit* victim, Unit* attacker, u32 reveal);	// 004795D0
+    u32 ask_for_help(Unit* attacker, Unit* helper);					// 00476E60
+    void react_to_hit(Unit* attacker, Unit* victim);				// 004776C0
+    u32 get_unit_bullet_damage(Unit* victim, Bullet* bullet);		// 0048ACD0
+    u32 get_unit_damage_bonus(Unit* unit, u32 weapon_id);           // 00475EC0
+
+    void inject_weapon_damage_hooks();
+}

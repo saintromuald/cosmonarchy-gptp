@@ -1,0 +1,292 @@
+#include "hooks\economic_units.h"
+
+namespace hooks {
+	u32 get_build_order_from_unit_id(u32 unit_id) {
+		u32 order = 0;
+		switch (unit_id) {
+			case UnitId::TerranMason:
+			case UnitId::TerranTalos:
+			case UnitId::TerranOgunWorkerMode: {
+				order = OrderId::BuildTerran;
+			} break;
+			case UnitId::ZergDroleth:
+			case UnitId::ZergAgrileth:
+			case UnitId::ZergGosvileth: {
+				order = OrderId::DroneStartBuild;
+			} break;
+			case UnitId::ProtossScribe:
+			case UnitId::ProtossAutocort:
+			case UnitId::ProtossPrudence: {
+				order = OrderId::BuildProtoss1;
+			} break;
+		};
+		return order;
+	}
+
+	bool unit_is_correct_townhall(u32 unit_id, u32 cmp_id, Unit* unit) {
+		// This function was originally meant for iquare's custom faction workers.
+		switch (unit_id) {
+			case UnitId::TerranMinistry:	
+			case UnitId::TerranTreasury:	
+			case UnitId::ProtossNexus:
+			case UnitId::ZergHachirosk: {
+				return true;
+			}
+			default: {
+				break;
+			}
+		}
+		return false;
+	}
+
+	bool is_town_center(u32 unit_id) {
+		switch (unit_id) {
+			case UnitId::TerranMinistry:
+			case UnitId::TerranTreasury:
+			case UnitId::ProtossNexus:
+			case UnitId::ZergHachirosk: {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// worker is not used originally in regards of supply, but may be required for custom race support. -iquare
+	bool is_terran_supply(u16 unit_id, Unit* worker) {
+		if (unit_id == UnitId::TerranSupplyDepot) {
+			return true;
+		}
+		return false;
+	}
+
+	// player is not used originally but may be required for custom race support. -iquare
+	u32 get_supply_structure_from_race(u32 race, u8 player) {
+		u32 id = UnitId::None;
+		switch (race) {
+			case RaceId::Terran:  return id = UnitId::TerranSupplyDepot;
+			case RaceId::Protoss: return id = UnitId::ProtossPylon;
+			case RaceId::Zerg:    return id = UnitId::ZergOvileth;
+			default:			  return id = UnitId::ZergOvileth;
+		}
+	}
+
+	// Returns town race judging by main town, first checks if it has buildings assigned
+	u8 get_town_race(AiTown* town) {
+		if (!town) return RaceId::Neutral;
+		if (!town->main_building) return RaceId::Neutral; // can't tell from main town, might want to check from buildings maybe
+		return town->main_building->get_race();
+	}
+
+	// Checks if worker is valid (exists && correct race)
+	bool is_valid_worker(const WorkerAi& worker, u8 raceId) {
+		if (!worker.parent) return false;
+		if (worker.parent->get_race() != raceId) return false;
+		return true;
+	}
+
+	// Checks if town has a free worker of given race
+	// First checks SC's first free worker var; If invalid iterates over all free worker
+	// This was needed since first free worker is sometimes null.
+	bool has_free_worker(AiTown* town, u8 raceId) {
+		for (WorkerAi* worker_ai = town->workers.first; worker_ai; worker_ai = worker_ai->link.prev) {
+			if (is_valid_worker(*worker_ai, raceId)) return true;
+		}
+		return false;
+	}
+
+	// Checks if town is eligible for supply building (correct race && has correct free worker)
+	bool is_town_eligible(AiTown* town, u8 raceId) {
+		if (!town) return false;
+		if (town->in_battle) return false; // We probably don't want supplies to be built in attacked towns. We might want to ommit this condition if it's the only eligable town
+		if (get_town_race(town) != raceId) return false;
+		if (town->main_building->remaining_build_time != 0) return false; // town not finished, nullchecks are in the previous function
+		if (raceId == RaceId::Zerg)
+		{ // Zerg don't need worker for supply building, we could check for larvae instead, but it should be fine
+			return true;
+		}
+		return has_free_worker(town, raceId);
+	}
+
+	// First checks if main town is eligible for supply building
+	// If not then iterates on every player's town and then checks if it's eligible for supply building
+	AiTown* get_first_eligible_town(AiTown* mainTown, u8 player, u8 raceId) {
+		if (mainTown) {
+			if (is_town_eligible(mainTown, raceId)) {
+				return mainTown;
+			}
+		}
+		AiTown* aiTown = g_ai_town_array; // first
+		if (!aiTown) return nullptr; // no AI towns
+		do {
+			if (aiTown->player == player) {
+				if (is_town_eligible(aiTown, raceId)) {
+					return aiTown;
+				}
+			}
+		}
+		while (aiTown = aiTown->next);
+		//bw::printString("Can't find eligible town for supply building!");
+		return nullptr; // couldn't find anything
+	}
+
+	void ai_build_supplies(AiTown* mainTown) { // 00433730
+		u8 player = mainTown->player;
+		u8 race = g_player_table[player].race;
+		if (mainTown) {
+			if (check_supply_need(player, RaceId::Terran)) {
+				AiTown* town = get_first_eligible_town(mainTown, player, RaceId::Terran);
+				if (town) {
+					ai_add_town_spending_request(player, bw::get_supply_remaining(player, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player), (void*)town);
+				}
+			}
+			if (check_supply_need(player, RaceId::Protoss)) {
+				AiTown* town = get_first_eligible_town(mainTown, player, RaceId::Protoss);
+				if (town) {
+					ai_add_town_spending_request(player, bw::get_supply_remaining(player, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player), (void*)town);
+				}
+			}
+			if (check_supply_need(player, RaceId::Zerg)) {
+				AiTown* town = get_first_eligible_town(mainTown, player, RaceId::Zerg);
+				if (town) {
+					ai_add_town_spending_request(player, bw::get_supply_remaining(player, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player), (void*)town);
+				}
+			}
+		}
+	}
+
+	bool check_supply_need(u8 player, u8 race) {
+		u32 checkEcoUnits;
+		s32 supplyRemaining;
+		u32 worker_id = get_racial_worker_id(race);
+		s32 supplyUsedCompare;
+		u8 townHallSupply;
+		u32 supplyUnit = get_supply_structure_from_race(race, player);
+
+		supplyRemaining = helper::get_supplies_remaining(player, worker_id);
+
+		if (race == RaceId::Protoss) {
+			if (helper::ai_has_buildings_needing_power(player)) {
+				return true;
+			}
+		}
+		if (supplyRemaining < 13) {
+			supplyUsedCompare = helper::get_supplies_used(race, player) + 13;
+			townHallSupply = units_dat::supply_provided[get_racial_town_center_id(race)];
+			if (supplyUsedCompare > townHallSupply) {
+				checkEcoUnits = (supplyUsedCompare - townHallSupply) / units_dat::supply_provided[supplyUnit];
+				//farms_timing on, compare ecounits required vs ecounits count
+				if (!(g_aiscript_controller[player].ai_flags.is_farms_notiming_on) && (checkEcoUnits + 1 > helper::ai_count_economy_units(player, supplyUnit))) {
+					return true;
+				}
+				//if max supply, and current supply units (including those under construction) will not satisfy requirement
+				if ((!supplyRemaining) && helper::ai_count_economy_units(player, supplyUnit) * units_dat::supply_provided[supplyUnit] + townHallSupply <= helper::get_supplies_used(race, player))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	u32 orders_is_geyser_cap(Unit* unit) {
+		return unit->is_completed() && unit_id_is_capped_gas_node(unit->id);
+	}
+
+	s32 ai_add_town_spending_request(s32 player, s32 priority, s32 unit_id, void* param) { // 00448400
+		s32 battleTime;
+		s8 race;
+		s32 result;
+		s32 reqType;
+
+		battleTime = g_aiscript_controller[player].previous_building_hit_second;
+		if (!battleTime
+			|| *g_elapsed_time_seconds - battleTime >= 0x1E // in_battle flag? just a coincidence?
+			|| ((race = g_player_table[player].race, race != 1) ? (result = 8 * (race != 0) + 149) : (result = 110),
+				unit_id == result || priority == 140))
+		{
+			if (units_dat::base_property[unit_id] & UnitProperty::Worker)
+			{
+				reqType = 4;
+			}
+			else
+			{
+				reqType = 2 * (units_dat::base_property[unit_id] & UnitProperty::Addon) | 3; // 3 = UnitProperty::Addon + UnitProperty::Building
+			}
+			helper::ai_add_cost_to_needs(unit_id, player, reqType);
+			result = helper::ai_add_spending_request(unit_id, player, reqType, priority, param);
+		}
+		return result;
+	}
+	/*
+	s32 ai_add_spending_request(s16 a1, s32 a2, char a3, char a4, void* a5) { // 00447980
+		char v5; // bl
+		s16 v6; // di
+		s32 v7; // esi
+		s32 result; // eax
+		u8 v9; // al
+		AI_Main* v10; // ecx
+		s32 v11; // esi
+		s32 v12; // edx
+		s32 v13; // edi
+		s32 v14; // [esp+Ch] [ebp-8h]
+
+		v6 = a1;
+		v5 = a3;
+		v7 = a2;
+		switch (a3)
+		{
+		case 1:
+		case 2:
+		case 4:
+		case 8:
+			result = is_ai_allowed_to_build(a2, a1);
+			if (!result)
+				goto LABEL_3;
+			break;
+		default:
+		LABEL_3:
+			v10 = &g_aiscript_controller[v7];
+			v9 = v10->waitForceCount;
+			LOBYTE(v14) = a4;
+			BYTE1(v14) = v5;
+			HIWORD(v14) = v6;
+			if (v9 == 63)
+			{
+				v11 = 62;
+			}
+			else
+			{
+				v11 = v9;
+				v10->waitForceCount = v9 + 1;
+			}
+			*((s32*)&v10->unknown_0x18 + 2 * v11) = v14;
+			result = (v11 - 1) / 2;
+			for (*((s32*)&v10->pTownMain + 2 * v11) = a5; v11 > 0; result = (result - 1) / 2)
+			{
+				if ((unsigned __int8)*(&v10->unknown_0x18 + 8 * v11) <= *(&v10->unknown_0x18 + 8 * result))
+					break;
+				v12 = *((s32*)&v10->unknown_0x18 + 2 * v11);
+				v13 = *((s32*)&v10->pTownMain + 2 * v11);
+				*((s32*)&v10->unknown_0x18 + 2 * v11) = *((s32*)&v10->unknown_0x18 + 2 * result);
+				*((s32*)&v10->pTownMain + 2 * v11) = *((s32*)&v10->pTownMain + 2 * result);
+				v11 = result;
+				*((s32*)&v10->unknown_0x18 + 2 * result) = v12;
+				*((s32*)&v10->pTownMain + 2 * result) = v13;
+			}
+			break;
+		}
+		return result;
+	}*/
+
+	/*   TODO: Worker-related hooks
+	Line 78684: 00434C36  |.  83F8 29       CMP EAX,29
+	Line 80051: 00435A88  |.  83C0 29       ADD EAX,29
+	Line 81026: 0043655E  |.  83C1 29       ADD ECX,29
+	Line 107167: 00447AAE  |.  83C0 29       ADD EAX,29
+	Line 108426: 004488FF  |.  83C0 29       ADD EAX,29
+	Line 211601: 0048DE9C  |.  66:83FA 29    CMP DX,29
+	Line 240222: 004A134E   .  66:837E 64 29 CMP WORD PTR DS:[ESI+64],29
+	Line 285431: 004BFDB6  |.  C645 FC 29    MOV BYTE PTR SS:[EBP-4],29
+	Line 347662: 004E9EC0   >  66:83F9 29    CMP CX,29
+	*/
+}

@@ -1,0 +1,28 @@
+#include "build_time.h"
+#include "BW/api.h"
+#include "BW/UnitFinder.h"
+#include "globals.h"
+
+namespace hooks
+{
+	s32 decrementRemainingBuildTime(Unit* unit) // 0x00466940
+	{
+		UnitExt* unitExt = get_unit_ext(unit);
+
+		if (!unit->remaining_build_time)
+		{
+			return 1;
+		}
+		u16 multiplier = 1;
+		if (bw::is_cheat_enabled(CheatFlags::OperationCwal))
+		{
+			multiplier = 16;
+		}
+		if (unitExt->timers[TimerSireEggBoost] % 2 == 1)
+		{
+			multiplier *= 2;
+		}
+		unit->remaining_build_time -= std::min(multiplier, unit->remaining_build_time);
+		return 0;
+	}
+}

@@ -1,0 +1,145 @@
+#include "TheTurning.h"
+#include "BW/api.h"
+#include "interpolation.h"
+
+#include <ranges>
+
+fp32 TheTurningGameMode::calculate_spawn_time_factor(UnitId::Enum unit_id) const {
+    fp32 factor{1};
+    factor += 0.05fp * (g_elapsed_time_frames / 60secs); // 5% faster spawn every minute
+    factor += 0.01fp * m_spawn_pool_size; // 1% faster for each unit in the pool
+
+    if (unit_id != UnitId::None) {
+        u32 cost = units_dat::mineral_cost[unit_id] + units_dat::vespene_cost[unit_id];
+        if (units_dat::base_property[unit_id] & UnitProperty::TwoUnitsIn1Egg) {
+            cost /= 2;
+        }
+        // factor spawn time relative to 200 combined cost
+        // e.g.
+        //     maverick at 50  is  50/200 = 0.25 = 25%  time = 4x speed
+        //     zealot   at 100 is 100/200 = 0.50 = 50%  time = 2x speed
+        //     shaman   at 200 is 200/200 = 1.00 = 100% time = 1x speed
+        //     minotaur at 650 is 650/200 = 3.25 = 325% time = 0.307x speed
+        factor *= cost / 200.0fp;
+    }
+    
+    factor /= bw::active_player_count(); // times the amount of players
+    return factor;
+}
+
+void TheTurningGameMode::on_init() {
+    m_spawn_timer.start(u32(DefaultSpawnTimer * calculate_spawn_time_factor()));
+    m_wave_timer.start(WaveTimer);
+}
+
+void TheTurningGameMode::on_tick() {
+    if (m_spawn_timer.elapsed()) {
+        if (Unit* unit = spawn()) {
+            m_spawn_timer.start(u32(DefaultSpawnTimer * calculate_spawn_time_factor(UnitId::Enum(unit->id))));
+        }
+    }
+
+    if (m_wave_timer.elapsed()) {
+        m_wave_timer.start(WaveTimer);
+
+        fp32 fraction = utils::map<fp32>(g_elapsed_time_frames, WaveTimer, 5fp * WaveTimer, 0.1fp, 0.6fp);
+        auto units = g_unit_search.all().owned_by(NeutralHostilePlayer).filter_by([](Unit* unit) {
+            UnitExt* unit_ext = get_unit_ext(unit);
+            return !unit_ext->values[ValueTurningAggressiveMode];
+        }).shuffle().take_fraction(fraction);
+
+        for (Unit* unit : units) {
+            UnitExt* unit_ext = get_unit_ext(unit);
+            unit_ext->values[ValueTurningAggressiveMode] = true;
+            unit_ext->timers[TimerTurningAggressiveModeThrottle] = bw::rand_between(0, 3 * 24);
+        }
+    }
+}
+
+void TheTurningGameMode::on_unit_tick(Unit* unit) {
+    if (unit->player != NeutralHostilePlayer) {
+        return;
+    }
+
+    UnitExt* unit_ext = get_unit_ext(unit);
+    Unit* order_target = unit->order_target.unit;
+    if (unit_ext->values[ValueTurningAggressiveMode]) {
+        if (unit->main_order_id == OrderId::AttackUnit) {
+            return;
+        }
+
+        if (!unit_ext->timers[TimerTurningAggressiveModeThrottle]) {
+            unit_ext->timers[TimerTurningAggressiveModeThrottle] = bw::rand_between(5secs, 8secs);
+            if (Unit* target = g_unit_search.all().not_neutral().filter().closest_to(unit->position)) {
+                unit->order_to(OrderId::AttackUnit, target);
+                return;
+            }
+        }
+        if (!unit_ext->timers[TimerTurningRoam]) {
+            const auto target_pos = unit->position.random_polar_point<fp32>(1tiles);
+            unit->order_to(OrderId::Move, target_pos);
+            unit_ext->timers[TimerTurningRoam] = 6;
+        }
+        return;
+    }
+
+    if (unit->main_order_id == OrderId::AttackUnit) {
+        if (!order_target || bw::distance_between(unit->position, order_target->position) > unit->get_sight_range() * 32) {
+            unit->order_to_idle();
+        } else {
+            return;
+        }
+    }
+
+    if (Unit* target = g_unit_search.radial(unit->position, unit->get_sight_range() * 32).not_neutral().filter().sort_by_distance(unit->position).first()) {
+        unit->order_to(OrderId::AttackUnit, target);
+    } else if (!unit_ext->timers[TimerTurningRoam]) {
+        const auto target_pos = unit->position.random_polar_point<fp32>(6tiles);
+        unit->order_to(OrderId::Move, target_pos);
+        unit_ext->timers[TimerTurningRoam] = 6 * 24;
+    }
+    
+}
+
+void TheTurningGameMode::on_unit_death(Unit* unit) {
+    if (unit->player == NeutralHostilePlayer || !(unit->status & UnitStatus::Completed)) {
+        return;
+    }
+    const auto unit_id = static_cast<UnitId::Enum>(unit->id);
+    if (units_dat::base_property[unit_id] & UnitProperty::Building
+        || units_dat::base_property[unit_id] & UnitProperty::Worker
+        || !unit_id_should_give_gas_in_massacre_mode(unit_id)
+        ||  unit_id_is_trap(unit_id)) {
+        return;
+    }
+    
+    m_spawn_pool_size++;
+    if (auto it = std::ranges::find_if(m_spawn_pool, [unit_id](const auto& candidate) { return candidate.unit_id == unit_id; }); it != m_spawn_pool.end()) {
+        it->count++;
+    } else {
+        m_spawn_pool.emplace_back(unit_id, 1);
+    }
+}
+
+Unit* TheTurningGameMode::spawn() {
+    UnitId::Enum unit_id = UnitId::None;
+    u32 rand = bw::rand_between(0, m_spawn_pool_size - 1);
+    for (const auto& candidate : m_spawn_pool) {
+        u32 count = candidate.count;
+        if (count < rand) {
+            unit_id = candidate.unit_id;
+            break;
+        }
+        rand -= count;
+    }
+    if (unit_id == UnitId::None) {
+        return 0;
+    }
+
+    std::optional<v2u16> spawn_position = utils::pick_random_spawn_point(unit_id);
+    if (!spawn_position) {
+        return 0;
+    }
+
+    return spawn_reclaimed_unit(NeutralHostilePlayer, *spawn_position, unit_id);
+}

@@ -1,0 +1,300 @@
+#include "sfxhooks.h"
+#include <BW/api.h>
+#include <BW/structures.h>
+#include <BW/bwdata.h>
+#include <hooks/byte_operations_utils.h>
+#include <hooks/limits/sfx_extender.h>
+#include "systems/audio/audio_system.h"
+
+namespace hooks {
+    // Hooked to allow more unit ids to have "annoyed" lines.
+    // Updated 22 July 2022 to remove "annoyed" lines, as they are now used for "under attack" lines. -Pr0nogo
+    u32 get_unit_response_id(s32 unit_id, s32 last_sound_id) { // 0048EA20
+        return helper::get_random_unit_response(units_dat::sound_what_first[unit_id], units_dat::sound_what_last[unit_id]);
+    }
+    
+    // Hooked to allow for aggressive order unit responses. -Pr0nogo
+    void play_yes_unit_response(Unit* unit) { // 0048F4D0
+        if (!g_use_quiet_sounds) {
+            g_last_response_unit = nullptr;
+            if (!g_is_in_replay && unit && unit->player == g_local_nation_id) { // unit nullcheck is new, resolves rare minimap crash
+                if (!unit->is_frozen()) {
+                    u32 last_rand = g_last_random_sfx_id;
+                    u32 sound_id = helper::get_random_yes_unit_response_local(unit->id);
+                    if (helper::play_sound_from_unit(sound_id, unit, (g_options_list->flags >> 1) & 1, 99)) {
+                        helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[sound_id] + 1000 * (sfx_dat::sound_data[sound_id].duration_ms / 1000), 0, sound_id);
+                    } else {
+                        g_last_random_sfx_id = last_rand;
+                    }
+                }
+            }
+        }
+    }
+
+    // Written for aggressive order unit responses. -Pr0nogo
+    // We should probably remove the context parameter, maybe pass is_aggressive bool or something for less complexity? -Veeq7
+    u32 get_random_yes_unit_response_internal(Unit* unit, UnitResponseContext context) {
+        // Technically this will not work if a unit has attack sounds but no order passive sounds... -Pr0nogo
+        UnitExt* unit_ext = get_unit_ext(unit);
+        bool aggressive_response = false;
+        if (!units_dat::group_flags[unit->id].is_building) { // We might not give a shit about this one anymore tbh
+            switch (context) {
+                case URC_Target: {
+                    if (unit_ext->units[UnitResponseTarget] && helper::unit_is_enemy(unit_ext->units[UnitResponseTarget])) {
+                        aggressive_response = true;
+                    }
+                } break;
+                case URC_OrderId: {
+                    if (bw::order_id_is_aggressive(unit_ext->values[ValueUnitResponseOrder])) {
+                        aggressive_response = true;
+                    }
+                } break;
+            }
+        }
+        if (aggressive_response) {
+            switch (unit->id) {
+                case UnitId::TerranTalos: {
+                    return helper::get_random_unit_response(SoundId::TalosOrderAggressive01, SoundId::TalosOrderAggressive04);
+                } break;
+                case UnitId::TerranHotshot: {
+                    return helper::get_random_unit_response(SoundId::HotshotOrderAggressive01, SoundId::HotshotOrderAggressive04);
+                } break;
+                case UnitId::TerranCyprian: {
+                    return helper::get_random_unit_response(SoundId::CyprianOrderAggressive01, SoundId::CyprianOrderAggressive04);
+                } break;
+                case UnitId::TerranCannibal: {
+                    return helper::get_random_unit_response(SoundId::CannibalOrderAggressive01, SoundId::CannibalOrderAggressive04);
+                } break;
+                case UnitId::TerranSavantEntropyGauntlets:
+                case UnitId::TerranSavantPowerSiphon: {
+                    return helper::get_random_unit_response(SoundId::SavantOrderAggressive01, SoundId::SavantOrderAggressive04);
+                } break;
+                case UnitId::TerranMadcap: {
+                    return helper::get_random_unit_response(SoundId::MadcapOrderAggressive01, SoundId::MadcapOrderAggressive04);
+                } break;
+                case UnitId::TerranHeracles: {
+                    return helper::get_random_unit_response(SoundId::HeraclesOrderAggressive01, SoundId::HeraclesOrderAggressive04);
+                } break;
+                case UnitId::TerranApostle: {
+                    return helper::get_random_unit_response(SoundId::ApostleOrderAggressive01, SoundId::ApostleOrderAggressive04);
+                } break;
+                case UnitId::TerranSiren: {
+                    return helper::get_random_unit_response(SoundId::SirenOrderAggressive01, SoundId::SirenOrderAggressive04);
+                } break;
+                case UnitId::TerranStriga: {
+                    return helper::get_random_unit_response(SoundId::StrigaOrderAggressive01, SoundId::StrigaOrderAggressive04);
+                } break;
+                case UnitId::TerranDilettante: {
+                    return helper::get_random_unit_response(SoundId::DilettanteOrderAggressive01, SoundId::DilettanteOrderAggressive04);
+                } break;
+                case UnitId::TerranSevenstep: {
+                    return helper::get_random_unit_response(SoundId::SevenstepOrderAggressive01, SoundId::SevenstepOrderAggressive04);
+                } break;
+                case UnitId::TerranAspirant: {
+                    return helper::get_random_unit_response(SoundId::AspirantOrderAggressive01, SoundId::AspirantOrderAggressive04);
+                } break;
+                case UnitId::TerranBlackjack: 
+                case UnitId::TerranBlackjackGolden: {
+                    return helper::get_random_unit_response(SoundId::BlackjackAggressive01, SoundId::BlackjackAggressive04);
+                } break;
+                case UnitId::TerranMatadorTankMode: {
+                    return helper::get_random_unit_response(SoundId::MatadorOrderAggressive01, SoundId::MatadorOrderAggressive04);
+                } break;
+                case UnitId::TerranMadrigalImperiosoMode:
+                case UnitId::TerranMadrigalHecatonImperiosoMode: {
+                    return helper::get_random_unit_response(SoundId::MadrigalOrderAggressive01, SoundId::MadrigalOrderAggressive04);
+                } break;
+                case UnitId::TerranRamesses: {
+                    return helper::get_random_unit_response(SoundId::RamessesOrderAggressive01, SoundId::RamessesOrderAggressive04);
+                } break;
+                case UnitId::TerranDurendal: {
+                    return helper::get_random_unit_response(SoundId::DurendalOrderAggressive01, SoundId::DurendalOrderAggressive04);
+                } break;
+                case UnitId::TerranCataphract: {
+                    return helper::get_random_unit_response(SoundId::CataphractOrderAggressive01, SoundId::CataphractOrderAggressive04);
+                } break;
+                case UnitId::TerranTriton: {
+                    return helper::get_random_unit_response(SoundId::TritonOrderAggressive01, SoundId::TritonOrderAggressive04);
+                } break;
+                case UnitId::TerranPaladin: {
+                    return helper::get_random_unit_response(SoundId::PaladinOrderAggressive01, SoundId::PaladinOrderAggressive04);
+                } break;
+                case UnitId::TerranPazuzu: {
+                    return helper::get_random_unit_response(SoundId::PazuzuOrderAggressive01, SoundId::PazuzuOrderAggressive04);
+                } break;
+                case UnitId::TerranAnticthon: {
+                    return helper::get_random_unit_response(SoundId::AnticthonOrderAggressive01, SoundId::AnticthonOrderAggressive04);
+                } break;
+                case UnitId::TerranAion: {
+                    return helper::get_random_unit_response(SoundId::AionOrderAggressive01, SoundId::AionOrderAggressive04);
+                } break;
+                case UnitId::TerranWyvern: {
+                    return helper::get_random_unit_response(SoundId::WyvernOrderAggressive01, SoundId::WyvernOrderAggressive04);
+                } break;
+                case UnitId::TerranSundog: {
+                    return helper::get_random_unit_response(SoundId::SundogOrderAggressive01, SoundId::SundogOrderAggressive04);
+                } break;
+                case UnitId::TerranSalamander: {
+                    return helper::get_random_unit_response(SoundId::SalamanderOrderAggressive01, SoundId::SalamanderOrderAggressive04);
+                } break;
+                case UnitId::TerranAzazel: {
+                    return helper::get_random_unit_response(SoundId::AzazelOrderAggressive01, SoundId::AzazelOrderAggressive04);
+                } break;
+                case UnitId::TerranPhobos: {
+                    return helper::get_random_unit_response(SoundId::PhobosOrderAggressive01, SoundId::PhobosOrderAggressive04);
+                } break;
+                case UnitId::ProtossDracadin:
+                case UnitId::ProtossDracadinOrder: {
+                    return helper::get_random_unit_response(SoundId::DracadinOrderAggressive01, SoundId::DracadinOrderAggressive04);
+                } break;
+                case UnitId::ProtossEcclesiast: {
+                    return helper::get_random_unit_response(SoundId::EcclesiastOrderAggressive01, SoundId::EcclesiastOrderAggressive04);
+                } break;
+                case UnitId::ProtossLegionnaire: {
+                    return helper::get_random_unit_response(SoundId::LegionnaireOrderAggressive01, SoundId::LegionnaireOrderAggressive04);
+                } break;
+                case UnitId::ProtossHierophant: {
+                    return helper::get_random_unit_response(SoundId::HierophantOrderAggressive01, SoundId::HierophantOrderAggressive04);
+                } break;
+                case UnitId::ProtossAmaranth: {
+                    return helper::get_random_unit_response(SoundId::AmaranthOrderAggressive01, SoundId::AmaranthOrderAggressive04);
+                } break;
+                case UnitId::ProtossHerald: {
+                    return helper::get_random_unit_response(SoundId::HeraldOrderAggressive01, SoundId::HeraldOrderAggressive04);
+                } break;
+                case UnitId::ProtossVagrant: {
+                    return helper::get_random_unit_response(SoundId::VagrantOrderAggressive01, SoundId::VagrantOrderAggressive04);
+                } break;
+                case UnitId::ProtossVagrantShade: {
+                    return helper::get_random_unit_response(SoundId::VagrantShadeOrderAggressive01, SoundId::VagrantShadeOrderAggressive04);
+                } break;
+                case UnitId::ProtossPariah: {
+                    return helper::get_random_unit_response(SoundId::PariahOrderAggressive01, SoundId::PariahOrderAggressive04);
+                } break;
+                case UnitId::ProtossPotentate: {
+                    return helper::get_random_unit_response(SoundId::PotentateOrderAggressive01, SoundId::PotentateOrderAggressive04);
+                } break;
+                case UnitId::ProtossSycophant: {
+                    return helper::get_random_unit_response(SoundId::SycophantOrderAggressive01, SoundId::SycophantOrderAggressive04);
+                } break;
+                case UnitId::ProtossOptecton: {
+                    return helper::get_random_unit_response(SoundId::OptectonOrderAggressive01, SoundId::OptectonOrderAggressive04);
+                } break;
+                case UnitId::ProtossPatriarch: {
+                    return helper::get_random_unit_response(SoundId::PatriarchOrderAggressive01, SoundId::PatriarchOrderAggressive04);
+                } break;
+                case UnitId::ProtossGolem: {
+                    return helper::get_random_unit_response(SoundId::GolemOrderAggressive01, SoundId::GolemOrderAggressive02);
+                } break;
+                case UnitId::ProtossEmpress: {
+                    return helper::get_random_unit_response(SoundId::EmpressOrderAggressive01, SoundId::EmpressOrderAggressive04);
+                } break;
+                case UnitId::ProtossMagister: {
+                    return helper::get_random_unit_response(SoundId::MagisterOrderAggressive01, SoundId::MagisterOrderAggressive04);
+                } break;
+                case UnitId::ProtossStarSovereign: {
+                    return helper::get_random_unit_response(SoundId::StarSovereignOrderAggressive01, SoundId::StarSovereignOrderAggressive04);
+                } break;
+                case UnitId::ZergLiiralisk: {
+                    return helper::get_random_unit_response(SoundId::LiiraliskOrderAggressive01, SoundId::LiiraliskOrderAggressive03);
+                } break;
+                case UnitId::AskosiPilgrim: {
+                    return helper::get_random_unit_response(SoundId::PilgrimOrderAggressive01, SoundId::PilgrimOrderAggressive04);
+                } break;
+                case UnitId::AskosiProselyte: {
+                    return helper::get_random_unit_response(SoundId::ProselyteOrderAggressive01, SoundId::ProselyteOrderAggressive04);
+                } break;
+                case UnitId::AskosiMissionary: {
+                    return helper::get_random_unit_response(SoundId::MissionaryOrderAggressive01, SoundId::MissionaryOrderAggressive04);
+                } break;
+                case UnitId::AskosiCardinal: {
+                    return helper::get_random_unit_response(SoundId::CardinalOrderAggressive01, SoundId::CardinalOrderAggressive04);
+                } break;
+                case UnitId::AskosiVicar: {
+                    return helper::get_random_unit_response(SoundId::VicarOrderAggressive01, SoundId::VicarOrderAggressive04);
+                } break;
+                case UnitId::AskosiRove: {
+                    return helper::get_random_unit_response(SoundId::RoveOrderAggressive01, SoundId::RoveOrderAggressive04);
+                } break;
+                case UnitId::AskosiIntendent: {
+                    return helper::get_random_unit_response(SoundId::IntendentOrderAggressive01, SoundId::IntendentOrderAggressive04);
+                } break;
+                case UnitId::AskosiHelion: {
+                    return helper::get_random_unit_response(SoundId::HelionOrderAggressive01, SoundId::HelionOrderAggressive04);
+                } break;
+            }
+        }
+        return get_random_yes_unit_response_local(unit->id);
+    }
+
+    // Written for aggressive order unit responses. -Pr0nogo
+    void play_yes_unit_response_internal(Unit* self, UnitResponseContext context) {
+        if (!g_use_quiet_sounds) {
+            g_last_response_unit = nullptr;
+            if (!g_is_in_replay && self->player == g_local_nation_id) {
+                if (!self->is_frozen()) {
+                    u32 last_rand = g_last_random_sfx_id;
+                    u32 rand_response = get_random_yes_unit_response_internal(self, context);
+                    bool can_play = (g_options_list->flags >> 1) & 1;
+                    if (helper::play_sound_from_unit(rand_response, self, can_play, 99)) {
+                        helper::do_unit_event_notification(self, 17, sfx_dat::portrait_duration[rand_response] + 1000 * (sfx_dat::sound_data[rand_response].duration_ms / 1000), 0, rand_response);
+                    } else {
+                        g_last_random_sfx_id = last_rand;
+                    }
+                }
+            }
+        }
+    }
+
+    // Hooked to allow more unit ids to process passive order unit responses. -Pr0nogo
+    // Can disable injection once the internal version is working.
+    u32 get_random_yes_unit_response_local(u32 unit_id) { // 0048EAB0
+        if (!(units_dat::group_flags[unit_id].is_building)) {
+            u32 yes_first = units_dat::sound_yes_first[unit_id];
+            u32 yes_last = units_dat::sound_yes_last[unit_id];
+            if (yes_first && yes_last) {
+                return helper::get_random_unit_response(yes_first, yes_last);
+            }
+        }
+        return 0;
+    }
+
+    // Hooked to allow more ready unit responses. -Pr0nogo
+    void play_unit_ready_sound(Unit* unit) { // 0048F440
+        if (!g_is_in_replay && unit->player == g_local_nation_id && !g_use_quiet_sounds) {
+            SoundId::Enum ready_sound = UnitId::get_unit_ready_sound(static_cast<UnitId::Enum>(unit->id));
+            if (ready_sound != SoundId::None) {
+                helper::play_sound_from_unit(ready_sound, unit, g_options_list->flags & 1, 99);
+                helper::do_unit_event_notification(unit, 17, sfx_dat::portrait_duration[ready_sound] + 1000 * (sfx_dat::sound_data[ready_sound].duration_ms / 1000), 1, ready_sound);
+            }
+        }
+    }
+
+    // Hooked to use positional audio. -Pr0nogo
+    bool play_sound_from_unit(SoundId::Enum sound_id, Unit* unit, bool play, s32 min_volume) { // 0048ED50
+        if (!sound_id || !g_options_list->sfx || !play || !unit) {
+            return false;
+        }
+        return AudioSystem::instance().play_sound(sound_id, PlaySoundSettings{.position = unit->position, .unit = unit,
+            .min_volume = min_volume, .force_globally = static_cast<bool>(sfx_dat::sound_flags[sound_id] & DatSoundFlags_UnitResponse)});
+    }
+
+    // Hooked to use positional audio. -Pr0nogo
+    void play_sound_at_pos(SoundId::Enum sound_id, v2u16 pos, bool play, s32 min_volume) { // 0048EC10
+        if (!sound_id || !g_options_list->sfx || !play) {
+            return;
+        }
+        AudioSystem::instance().play_sound(sound_id, PlaySoundSettings{.position = pos, .min_volume = min_volume});
+    }
+
+    // Replaces vanilla preload_racial_sound_buffers @ 0x0048FB40
+    // Resets audio globals but skips preloading buffers since AudioSystem owns them
+    void __stdcall reset_race_audio_state(bool unused) { // 0048FB40
+        g_sound_cooldown_1 = 0;
+        g_sound_cooldown_2 = 0;
+        g_last_response_unit = nullptr;
+        g_selection_sound_counter = 0;
+        notify_cooldown = 0;
+        g_use_quiet_sounds = 0;
+    }
+}

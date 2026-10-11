@@ -1,0 +1,853 @@
+#pragma once
+#include "DatExtend/dat_limits.h"
+
+namespace UnitId {
+    enum Enum {
+        // Cosmonarchy \\
+
+    // AI
+    //	Personality											= 105,		// Disruption Field
+    //	Build Order											= 202,		// Dark Swarm
+    //	Build Type											= 85,		// Plasma Shell
+    //	Rush Build Counts									= 177,		// Mineral Field 2
+    //	Greed Build Counts									= 178,		// Mineral Field 3
+    
+    //	Campaign											= 33,		// Scanner Sweep
+    //	Campaign mission									= 208,		// Right Pit Door
+    //	Campaign mission player								= 6,		// Phalanx Turret (Tank Mode)
+    //	Campaign mission dialogue event						= 207,		// Left Pit Door
+
+    // Heroes
+        Ackmed												= 409,
+        Goska												= 500,
+        Stroluum											= 501,
+        Tuzor												= 502,
+        BigInfestedKerrigan                                 = 612,
+        RaynorVulture                                       = 613,
+        DukeMinotaur                                        = 614,
+
+    // Special
+        Omnivale											= 383,
+        TerranLodestoneStandalone							= 387,
+        TerranTrenchfoot    								= 406,      // Grounded Anchor
+        VolatileEgg											= 416,
+        ScenarioUnit1                                       = 524,
+        ScenarioUnit2                                       = 525,
+        ScenarioUnit3                                       = 526,
+        ScenarioUnit4                                       = 527,
+        ScenarioUnit5                                       = 528,
+        ScenarioUnit6                                       = 529,
+        ScenarioUnit7                                       = 530,
+        ScenarioUnit8                                       = 531,
+
+    // Forerunner -- for Marchcrap 2026
+        ForerunnerFerrum                                    = 605,
+        ForerunnerChalyb                                    = 606,
+        ForerunnerCircitor                                  = 607,
+        ForerunnerExigo                                     = 608,
+        ForerunnerAthla                                     = 609,
+        ForerunnerVicere                                    = 610,
+        ForerunnerMachinamentum                             = 611,
+
+    // Neutral
+        TownCenterMarker									= 192,		// Terran Marker
+        ResourceVespeneRidge								= 221,		// Mineral Cluster Type 2
+        ExtRagnasaur                                        = 465,
+        ExtRhynadon                                         = 466,
+        ExtBengalaas                                        = 467,
+        ExtScantid                                          = 468,
+        ExtUrsadon                                          = 469,
+        ExtKakaru                                           = 470,
+        ExtFlag                                             = 471,
+        ExtYoungChrysalis                                   = 472,
+        ExtPsiEmitter                                       = 473,
+        ExtDataDisk                                         = 474,
+        ExtKhaydarinCrystal                                 = 475,
+        ExtUraj                                             = 476,
+        ExtKhalis                                           = 477,
+        ExtMineralChunk1                                    = 478,
+        ExtMineralChunk2                                    = 479,
+        ExtVespeneTerran1                                   = 480,
+        ExtVespeneTerran2                                   = 481,
+        ExtVespeneProtoss1                                  = 482,
+        ExtVespeneProtoss2                                  = 483,
+        ExtVespeneZerg1                                     = 484,
+        ExtVespeneZerg2                                     = 485,
+        ExtBeaconTerran                                     = 486,
+        ExtBeaconProtoss                                    = 487,
+        ExtBeaconZerg                                       = 488,
+
+    // Terran-Unit
+        TerranApostle										= 10,		// Gui Montag
+        TerranShamanSupportMode								= 15,		// Civilian
+        TerranMadcap										= 18,		// Alan Schezar Turret
+        TerranCuirassTankMode								= 19,		// Raynor Vulture
+        TerranTalos											= 20,		// Raynor Marine
+        TerranSalamander									= 22,		// Magellan
+        TerranGorgon										= 23,		// Edmund Duke Tank
+        TerranPhobos										= 24,		// Edmund Duke Tank Turret
+        TerranMadrigalImperiosoMode							= 27,		// Mengsk Battlecruiser
+        TerranCentaur										= 28,		// Hyperion
+        TerranPazuzu										= 49,		// Matriarch Queen
+        TerranPenumbra										= 53,		// Hunter Killer
+        TerranCyclops										= 55,		// Kukulza Mutalisk
+        TerranHeracles										= 77,		// Fenix Zealot
+        TerranWyvern										= 91,		// Cargo Ship
+        TerranCyprian										= 92,		// Mercenary Gunship
+        TerranAzazel										= 98,		// Raszagal Corsair
+        TerranMagnetar										= 118,		// Physics Lab
+        TerranOlympian										= 137,		// Greater Spire
+        TerranAutocrat										= 145,		// Unused Zerg 1
+        TerranStriga										= 148,		// Overmind
+        TerranSiren											= 151,		// Cerebrate
+        TerranPaladin										= 186,		// Ruins
+        TerranSavantEntropyGauntlets						= 187,		// Kyadarin Crystal Formation
+        TerranBlackjack										= 195,		// Terran Beacon
+        TerranClaymore										= 196,		// Protoss Beacon
+        TerranAnticthon										= 211,		// Left Wall Flame Trap
+        TerranSundog										= 253,
+        TerranAncile										= 255,
+        TerranMatadorTankMode								= 256,
+        TerranPegasus										= 261,
+        TerranHippogriff									= 262,
+        TerranOberon										= 263,
+        TerranAion											= 264,
+        TerranRamesses										= 281,
+        TerranDurendal										= 282,
+        TerranCataphract									= 283,
+        TerranDilettante									= 285,
+        TerranSevenstep										= 286,
+        TerranHypnagogue									= 287,
+        TerranArmistice										= 289,
+        TerranPythean										= 290,
+        TerranThespian										= 297,
+        TerranSilvertongue									= 298,
+        TerranEmperor										= 300,
+        TerranJester										= 301,
+        TerranMatadorCinderMode								= 371,
+        TerramCuirassTrenchMode								= 372,
+        TerranMatadorTurretTankMode							= 373,
+        TerranMatadorTurretCinderMode						= 374,
+        TerranLobotomyMine									= 375,
+        TerranWyvernTurret									= 376,
+        TerranShamanVisionaryMode							= 379,
+        TerranMadrigalTurretImperiosoMode					= 380,
+        TerranMadrigalFuriaMode								= 381,
+        TerranMadrigalTurretFuriaMode						= 382,
+        TerranSavantPowerSiphon                             = 428,
+        TerranOgunWorkerMode                                = 494,
+        TerranOgunSmithyMode                                = 497,
+        TerranTriton                                        = 512,
+        TerranTritonTurret                                  = 513,
+
+    // Terran-Unit-Factional
+        TerranCohort										= 50,		// Infested Terran
+        TerranLuminary										= 150,		// Mature Chrysalis
+        TerranAspirant										= 194,		// Zerg Beacon
+        TerranTarasque										= 210,		// Left Wall Missile Trap
+        TerranWendigo										= 275,
+        TerranSouthpaw										= 276,
+        TerranPhiloc										= 328,
+        TerranZergMeleeHybrid								= 349,
+        TerranHotshot										= 395,
+        TerranQilin											= 398,
+        TerranAuriel										= 399,
+        TerranCyclopsFuturist								= 410,
+        TerranHarakanGolden									= 413,
+        TerranPietyWard										= 417,
+        TerranClericFuturist								= 418,
+        TerranBlackjackGolden                               = 431,
+        TerranEidolonNydus                                  = 432,
+        TerranTiangou                                       = 433,
+        TerranTiangouTurret                                 = 434,
+        TerranMaverickFuturist                              = 435,
+        TerranBlackguard                                    = 489,
+        TerranArhaun                                        = 490,
+        TerranArhaunTurret                                  = 491,
+        TerranCannibal                                      = 496,
+        TerranMadrigalHecatonImperiosoMode                  = 504,
+        TerranMadrigalTurretHecatonImperiosoMode            = 505,
+        TerranVultureHecaton                                = 506,
+        TerranTartarusMine                                  = 507,
+        TerranMadrigalHecatonFuriaMode                      = 508,
+        TerranMadrigalTurretHecatonFuriaMode                = 509,
+        TerranValkyrieHecaton                               = 520,
+        TerranQuadriga                                      = 541,
+        TerranSerathiel                                     = 547,
+        TerranGoremast                                      = 567,
+        TerranBroadside                                     = 568,
+        TerranBroadsideTurret                               = 569,
+        TerranVultureUpstart                                = 570,
+        TerranCutlass                                       = 571,
+        TerranCutlassTurret                                 = 572,
+        TerranMaverickUpstart                               = 573,
+        TerranMorrigan                                      = 575,
+        TerranAjax                                          = 576,
+        TerranMaverickGolden                                = 580,
+        TerranShamanUpstartSupport                          = 581,
+        TerranShamanUpstartAdrenaline                       = 582,
+        TerranNuriel                                        = 598,
+        TerranPhoenix                                       = 599,
+        TerranArchbishop                                    = 600,
+        TerranCamazotz                                      = 620,
+        TerranArquebus                                      = 624,
+
+    // Terran-Building
+        TerranVestry										= 119,		// Starbase / Terran Unused 1
+        TerranRotary										= 121,		// Repair Bay / Terran Unused 2
+        TerranDiadem										= 127,		// Ion Cannon
+        TerranGuildhall										= 147,		// Overmind (With Shell)
+        TerranFountainhead									= 163,		// Citadel of Adun
+        TerranQuarry										= 174,		// Protoss Temple
+        TerranTinkerersTower								= 175,		// Xel'Naga Temple
+        TerranHadron										= 189,		// Warp Gate
+        TerranBioticBastion									= 190,		// Psi Disruptor
+        TerranIronFoundry									= 198,		// Terran Flag Beacon
+        TerranCaptaincy										= 199,		// Protoss Flag Beacon
+        TerranScrapyard										= 200,		// Power Generator
+        TerranNaniteAssembly								= 203,		// Floor Missile Trap
+        TerranSentinel										= 209,		// Floor Gun Trap
+        TerranAtelier										= 213,		// Right Wall Flame Trap | unused
+        TerranTreasury										= 215,		// Flag
+        TerranStarpad										= 254,
+        TerranFutureStation									= 257,
+        TerranCestus        								= 259,
+        TerranAerie											= 260,      // unused
+        TerranMantle										= 280,
+        TerranApothecary									= 284,
+        TerranParthenon										= 288,      // unused
+        TerranIronCouncil									= 295,      // unused
+        TerranAmphitheater									= 296,      // unused
+        TerranThroneroom									= 299,      // unused
+        TerranWellbore										= 365,
+        TerranLodestone										= 384,
+        TerranTencendur										= 408,
+        TerranSieve                                         = 419,
+        TerranFacade                                        = 427,
+
+    // Protoss-Unit
+        ProtossManifold										= 16,		// Sarah Kerrigan
+        ProtossArchitect									= 17,		// Alan Schezar
+        ProtossStarSovereign								= 21,		// Tom Kazansky
+        ProtossGladius										= 25,		// Edmund Duke Siege Tank
+        ProtossMagister										= 26,		// Edmund Duke Siege Turret
+        ProtossLegionnaire									= 74,		// Dark Templar Hero
+        ProtossAmaranth										= 75,		// Zeratul Dark Templar
+        ProtossHierophant									= 76,		// Tassadar/Zeratul Archon
+        ProtossAtreus										= 78,		// Fenix Dragoon
+        ProtossEcclesiast									= 79,		// Tassadar Templar
+        ProtossAurora										= 80,		// Mojo Scout
+        ProtossClarion										= 81,		// Warbringer
+        ProtossEmpyrean										= 82,		// Gantrithor
+        ProtossDemiurge										= 86,		// Danimoth
+        ProtossPariah										= 87,		// Aldaris
+        ExtTassadar									        = 88,		// Artanis
+        ProtossSimulacrum									= 89,		// Rhynadon
+        ProtossCharlatan									= 90,		// Bengalaas
+        ProtossExemplar										= 94,		// Kakaru
+        ProtossIdol											= 99,		// Samir Duran
+        ProtossGolem										= 100,		// Alexei Stukov
+        ProtossAugur										= 102,		// Gerard DuGalle
+        ProtossBarghest										= 104,		// Infested Duran
+        ProtossVagrant										= 172,		// Shield Battery
+        ProtossAnthelion									= 179,		// Cave
+        ProtossArtisan										= 182,		// Mining Platform
+        ProtossEmpress										= 183,		// Independent Command Center
+        ProtossHerald										= 265,
+        ProtossEpigraph										= 266,
+        ProtossServitor										= 306,
+        ProtossPositron										= 307,
+        ProtossAnalogue										= 308,
+        ProtossUnar										    = 309,
+        ProtossMaven										= 310,
+        ProtossCloudform									= 311,
+        ProtossVibrance										= 312,
+        ProtossOscilliant									= 313,
+        ProtossPotentate									= 314,
+        ProtossSycophant									= 315,
+        ProtossOptecton										= 316,
+        ProtossPatriarch									= 317,
+        ProtossApostate										= 318,
+        ProtossMonogram										= 348,
+        ProtossVagrantShade									= 351,
+        ProtossAccantor										= 352,		// The new one
+        ProtossVassal										= 360,		// The new one
+        ProtossAutocort                                     = 495,
+
+    // Protoss-Unit-Factional
+        ProtossPrudence										= 184,		// Independent Starport
+        ProtossAdherent										= 400,
+        ProtossExtatus										= 401,
+        ProtossZealotStarbound								= 411,
+        ProtossEcclesiastKhalendric							= 412,
+        ProtossCicatus										= 414,
+        ProtossRenesair                                     = 423,
+        ProtossAshguard                                     = 424,
+        ProtossDracadinOrder                                = 430,
+        ProtossManifoldStarbound                            = 437,
+        ProtossSimulacrumAstral                             = 522,
+        ProtossWarlock                                      = 523,
+        ProtossEcclesiastAstral                             = 574,
+        ProtossPathlight                                    = 601,
+        ProtossSaladius                                     = 602,
+        ProtossGarantis                                     = 603,
+        ProtossSimulacrumKhalendric                         = 621,
+        ProtossIdolKhalendric                               = 622,
+        ProtossVestige                                      = 623,
+        ProtossGladiusOrder                                 = 628,
+
+    // Protoss-Building
+        ProtossAutomatonRegister							= 158,		// Unused Protoss 1
+        ProtossProstrationStage								= 159,		// Observatory
+        ProtossRogueGallery									= 161,		// Unused Protoss 2
+        ProtossArgosy										= 168,		// Stasis Chamber
+        ProtossCrucible										= 201,		// Overmind Cocoon
+        ProtossArdentAuthority								= 220,		// Mineral Chunk Type 1
+        ProtossMonumentOfSin								= 223,		// Protoss Gas Orb Type 2
+        ProtossSanctumOfSorrow								= 225,		// Zerg Gas Sac Type 2
+        ProtossGrandLibrary									= 226,		// Terran Gas Tank Type 1
+        ProtossMatrix										= 252,
+        ProtossStridentStratum								= 278,
+        ProtossAuxiliaryOasis								= 279,
+        ProtossEngram										= 294,
+        ProtossSequesteredIcon								= 304,
+        ProtossUnitaryUnion									= 305,
+        ProtossBulwark										= 331,
+        ProtossHallOfHeretics								= 349,
+        ProtossCedent                                       = 420,
+        ProtossXenolith                                     = 426,
+
+    // Zerg-Unit
+        ZergAlmaksalisk										= 29,		// Norad II
+        ZergGosvileth										= 47,		// Skryling
+        ZergAlkajelisk										= 48,		// Torrasque
+        ZergKalkalisk										= 51,		// Infested Kerrigan
+        ZergEvigrilisk										= 52,		// Unclean One
+        ZergNathrokor										= 54,		// Devouring One
+        ZergGorgrokor										= 56,		// Kukulza Guardian
+        ZergOthstoleth										= 57,		// Yggdrasil
+        ZergRililisk										= 93,		// Scantid
+        ZergQuazilisk										= 95,		// Ragnasaur
+        ZergKeskathalor										= 96,		// Ursadon
+        ZergZoryusthaleth									= 97,		// Lurker Egg
+        ZergLiiralisk										= 112,		// Terran Academy
+        ZergSovroleth										= 123,		// Terran Armory
+        ZergKagralisk										= 126,		// Norad II Crashed Battlecruiser
+        ZergVorvrokor										= 128,		// Uraj
+        ZergBactalisk										= 129,		// Khalis
+        ZergAlaszileth										= 173,		// Khaydarin Crystal Formation
+        ZergIzirokor										= 180,		// Cave-in
+        ZergSkithrokor										= 185,		// Independent Jump Gate
+        ZergAxitrilisk										= 191,		// Zerg Marker
+        ZergKonvilisk										= 217,		// Psi Emitter
+        ZergAkistrokor										= 218,		// Data Disc
+        ZergIroleth											= 222,		// Protoss Gas Orb Type 1
+        ZergZarcavrokor										= 258,
+        ZergTethzorokor										= 267,
+        ZergProtathalor										= 268,
+        ZergVilgorokor										= 269,
+        ZergCikralisk										= 270,
+        ZergTosgrilisk										= 271,
+        ZergGhitorokor										= 272,
+        ZergZobriolisk										= 273,
+        ZergTetcaerokor										= 274,
+        ZergSelkerilisk										= 277,
+        ZergOgroszaleth										= 291,
+        ZergAgrileth										= 302,
+        ZergMortothrokor									= 319,
+        ZergCherbrathalor									= 320,
+        ZergOkrimnilisk										= 321,
+        ZergAlgoztalisk										= 322,
+        ZergElthrazalisk									= 323,
+        ZergBegrothilisk									= 324,
+        ZergOztukrokor										= 325,
+        ZergKethrostalor									= 326,
+        ZergRakzilisk										= 327,
+        ZergOcsalLarva										= 353,
+        ZergAxitriliskWeaponless							= 377,
+        ZergVilgoleth										= 378,
+        ZergSasyrvoleth										= 407,
+        ZergSkryrokor										= 503,
+        ZergMalkothrokor                                    = 548,
+
+    // Zerg-Unit-Factional
+        ZergNathrelisk										= 402,
+        ZergIziralisk										= 403,
+        ZergInzorthrokor                                    = 415,
+        ZergQuazrokor                                       = 422,
+        ZergLakiziliskZorthos                               = 425,
+        ZergHydraliskOrkoti                                 = 436,
+        ZergYblyleth                                        = 438,
+        ZergAzanthrokor                                     = 511,
+        ZergSovrokor                                        = 519,
+        ZergGarvrokor                                       = 521,
+        ZergZethalor                                        = 559,
+        ZergScrylyleth                                      = 560,
+        ZergZoltorokor                                      = 604,
+        ZergRozirokor                                       = 616,
+        ZergAlzurokor                                       = 626,
+        ZergHydrokor                                        = 627,
+
+    // Zerg-Building
+        ZergAxtothAxis										= 130,		// Infested Command Center
+        ZergOthstolOviform									= 152,		// Cerebrate Daggoth
+        ZergTethvithSwamp									= 153,		// Unused Zerg 2
+        ZergAlkagIteth										= 170,		// Arbiter Tribunal
+        ZergIrulentIvoa										= 181,		// Cantina | unused
+        ZergZorkizShroud									= 193,		// Protoss Marker
+        ZergTosvrolHaunt									= 197,		// Zerg Flag Beacon
+        ZergKalkiirLake										= 204,		// Floor Hatch
+        ZergKethrajKeep								        = 212,		// Right Wall Missile Trap
+        ZergLarvoskCesiant									= 216,		// Young Chrysalis
+        ZergGeszkathGrotto									= 219,		// Khaydarin Crystal
+        ZergIrolIris										= 224,		// Zerg Gas Sac Type 1
+        ZergSibraelosk										= 227,		// Morphed from Caphrolosk | Terran Gas Tank Type 2
+        ZergSpirtithCesiant									= 292,		// Morphed from Cagrant Cesiant
+        ZergSkortrithCesiant								= 293,		// Morphed from Surkith Cesiant
+        ZergBegrozithBarrow									= 329,		// Unused
+        ZergChokralChazsal									= 330,		// Morphed from Alkag Iteth
+        ZergNephrilosk										= 350,		// Unused
+        ZergOcsalCesiant									= 354,		// Morphed from Larvosk Cesiant
+        ZergKazitrithCesiant								= 355,		// Morphed from Cagrant Cesiant
+        ZergEzigrisant										= 364,		// Morphed from Excisant
+        ZergVornathPond										= 396,		// Morphed from Quazeth Pool
+        ZergSkibactScab										= 397,		// Morphed from Hydrith Den
+        ZergEskigant                                        = 421,
+        ZergZozarcGorge                                     = 493,      // Morphed from Ulgorg Cavern
+    
+    // Zerg-Building-Factional
+        ZergZytryleth                                       = 619,
+
+    // Askosi-Unit
+        AskosiPilgrim                                       = 439,
+        AskosiProselyte                                     = 443,
+        AskosiDyad                                          = 444,
+        AskosiMissionary                                    = 445,
+        AskosiCardinal                                      = 446,
+        AskosiMimic                                         = 447,
+        AskosiVicar                                         = 448,
+        AskosiRove                                          = 449,
+        AskosiObject                                        = 450,
+        AskosiScepter                                       = 451,
+        AskosiIntendent                                     = 452,
+        AskosiHelion                                        = 453,
+        AskosiEmissary                                      = 454,
+        AskosiInkblot                                       = 455,
+        AskosiTirade                                        = 456,
+        AskosiAvatar                                        = 538,
+        AskosiThaumalogue                                   = 542,
+        AskosiPetract                                       = 543,
+        AskosiCrematorium                                   = 544,
+        AskosiAphorist                                      = 551,
+        AskosiDoronin                                       = 552,
+        AskosiAgonist                                       = 553,
+        AskosiPhontis                                       = 554,
+        AskosiZonguard                                      = 555,
+        AskosiAkreno                                        = 556,
+        AskosiIconoclast                                    = 557,
+        AskosiParaclete                                     = 558,
+        AskosiEyelet                                        = 564,
+        AskosiAuxine                                        = 565,
+        AskosiConstituent                                   = 566,
+        AskosiInsurant                                      = 583,
+        AskosiSilversoul                                    = 584,
+        AskosiGhostwrit                                     = 585,
+        AskosiAzjoran                                       = 586,
+        AskosiElgird                                        = 587,
+        AskosiHistrion                                      = 588,
+        AskosiEgocent                                       = 589,
+        AskosiAlacyne                                       = 590,
+        AskosiBegolor                                       = 591,
+        AskosiLimire                                        = 592,
+        AskosiEndbore                                       = 593,
+        AskosiTortare                                       = 594,
+        AskosiCybrene                                       = 595,
+
+    // Askosi-Building
+        AskosiLandlock                                      = 429,
+        AskosiArch                                          = 457,
+        AskosiGrandstand                                    = 458,
+        AskosiChantry                                       = 459,
+        AskosiRadix                                         = 460,
+        AskosiCipher                                        = 461,
+        AskosiFunction                                      = 462,
+        AskosiGauntlet                                      = 463,
+        AskosiCosmoscope                                    = 464,
+        AskosiBounty                                        = 510,
+        AskosiGrandstandHoldout                             = 532,
+        AskosiGrandstandVision                              = 533,
+        AskosiAbutment                                      = 539,
+        AskosiProscenium                                    = 540,
+        AskosiZylode                                        = 545,
+        AskosiAstrolabe                                     = 546,
+        AskosiPanoply                                       = 550,
+        AskosiBestiary                                      = 561,
+        AskosiConduit                                       = 562,
+        AskosiObelisk                                       = 563,
+        AskosiDorminge                                      = 577,
+        AskosiLotiro                                        = 578,
+        AskosiDomain                                        = 579,
+        AskosiLekrot                                        = 596,
+        AskosiHearthshard                                   = 597,
+
+    // Askosi-Unit-Factional
+        AskosiScralia                                       = 615,
+
+    // Bloodsummon-Unit
+        BloodsummonThrombocyte                              = 617,
+        BloodsummonAcqui                                    = 625,
+        BloodsummonNihilist                                 = 631,
+
+    // Bloodsummon-Building
+        BloodsummonGrimoire                                 = 618,
+
+    // Special-Unit
+        ExtTerranCivilian									= 332,
+        ExtSarahKerrigan									= 333,
+        ExtInfestedKerrigan									= 334,
+        DanielsMason										= 362,
+        SmoochieBoy											= 363,
+
+    // Special-Building
+        ExtCrashedMinotaur									= 335,
+        ExtTerranPsiDisrupter								= 336,
+        ExtTerranPowerGenerator								= 337,
+        ExtZergOvermind										= 338,
+        ExtZergOvermindShell								= 339,
+        ExtZergChrysalis									= 340,
+        ExtZergCerebrate									= 341,
+        ExtZergOvermindCocoon								= 342,
+        ExtKhaydarinFormation								= 343,
+        ExtProtossTemple									= 344,
+        ExtXelNagaTemple									= 345,
+        ExtProtossWarpGate									= 346,
+        ExtStasisChamber                                    = 347,
+        TerranControlNode									= 359,
+        ProtossWarpGateTheFall   						    = 534,
+        ZergCerebrateTheFall       						    = 535,
+        ZergOvermindWithShellTheFall   						= 536,
+        ZergOvermindTheFall   						        = 537,
+
+    // Old enum
+        TerranMaverick										= 0,
+        TerranEidolon										= 1,
+        TerranVulture										= 2,
+        TerranGoliath										= 3,
+        TerranGoliathTurret									= 4,
+        TerranPhalanxTankMode								= 5,
+        TerranPhalanxTankModeTurret							= 6,
+        TerranMason											= 7,
+        TerranWraith										= 8,
+        TerranSeraph										= 9,
+        Hero_GuiMontag										= 10,
+        TerranTrojan										= 11,
+        TerranMinotaur										= 12,
+        TerranSpiderMine									= 13,
+        TerranMorningstar									= 14,
+        TerranCivilian										= 15,
+        Hero_SarahKerrigan									= 16,
+        Hero_AlanSchezar									= 17,
+        Hero_AlanSchezarTurret								= 18,
+        Hero_JimRaynorVulture								= 19,
+        Hero_JimRaynorMarine								= 20,
+        Hero_TomKazansky									= 21,
+        Hero_Magellan										= 22,
+        Hero_EdmundDukeTankMode								= 23,
+        Hero_EdmundDukeTankModeTurret						= 24,
+        Hero_EdmundDukeSiegeMode							= 25,
+        Hero_EdmundDukeSiegeModeTurret						= 26,
+        Hero_ArcturusMengsk									= 27,
+        Hero_Hyperion										= 28,
+        Hero_NoradII										= 29,
+        TerranPhalanxSiegeMode								= 30,
+        TerranPhalanxSiegeModeTurret						= 31,
+        TerranHarakan										= 32,
+        Spell_ScannerSweep									= 33,
+        TerranCleric										= 34,
+        ZergLarva											= 35,
+        ZergEgg												= 36,
+        ZergZethrokor										= 37,
+        ZergHydralisk										= 38,
+        ZergUltrokor										= 39,
+        ZergRilirokor										= 40,
+        ZergDroleth											= 41,
+        ZergOvileth											= 42,
+        ZergMutalisk										= 43,
+        ZergGeszithalor										= 44,
+        ZergMatraleth										= 45,
+        ZergIsthrathaleth									= 46,
+        ZergSkryling										= 47,
+        Hero_Torrasque										= 48,
+        Hero_Matriarch										= 49,
+        ZergInfestedTerran									= 50,
+        Hero_InfestedKerrigan								= 51,
+        Hero_UncleanOne										= 52,
+        Hero_HunterKiller									= 53,
+        Hero_DevouringOne									= 54,
+        Hero_KukulzaMutalisk								= 55,
+        Hero_KukulzaGuardian								= 56,
+        Hero_Yggdrasill										= 57,
+        TerranValkyrie										= 58,
+        ZergCocoon											= 59,
+        ProtossLanifect										= 60,
+        ProtossCabalist										= 61,
+        ZergVithrilisk										= 62,
+        ProtossMindTyrant									= 63,
+        ProtossScribe										= 64,
+        ProtossZealot										= 65,
+        ProtossDracadin										= 66,
+        ProtossCantavis										= 67,
+        ProtossArchon										= 68,
+        ProtossEnvoy										= 69,
+        ProtossPanoptus										= 70,
+        ProtossDidact										= 71,
+        ProtossSolarion										= 72,
+        ProtossSteward										= 73,
+        Hero_DarkTemplar									= 74,
+        Hero_Zeratul										= 75,
+        Hero_TassadarZeratulArchon							= 76,
+        Hero_FenixZealot									= 77,
+        Hero_FenixDragoon									= 78,
+        Hero_Tassadar										= 79,
+        Hero_Mojo											= 80,
+        Hero_Warbringer										= 81,
+        Hero_Gantrithor										= 82,
+        ProtossAccantorOld									= 83,
+        ProtossWitness										= 84,
+        ProtossPlasmaShell									= 85,
+        Hero_Danimoth										= 86,
+        Hero_Aldaris										= 87,
+        Hero_Artanis										= 88,
+        Critter_Rhynadon									= 89,
+        Critter_Bengalaas									= 90,
+        Special_CargoShip									= 91,
+        Special_MercenaryGunship							= 92,
+        Critter_Scantid										= 93,
+        Critter_Kakaru										= 94,
+        Critter_Ragnasaur									= 95,
+        Critter_Ursadon										= 96,
+        ZergLurkerEgg										= 97,
+        Hero_Raszagal										= 98,
+        Hero_SamirDuran										= 99,
+        Hero_AlexeiStukov									= 100,
+        Special_MapRevealer									= 101,
+        Hero_GerardDuGalle									= 102,
+        ZergLakizilisk										= 103,
+        Hero_InfestedDuran									= 104,
+        Spell_CarapaceSwarmSmall							= 105,
+        TerranMinistry										= 106,
+        TerranComsatStation									= 107,
+        TerranAnvil											= 108,
+        TerranSupplyDepot									= 109, // Threshold - unit origin
+        TerranReservoir										= 110,
+        TerranStockade										= 111,
+        TerranAcademy										= 112,
+        TerranFulcrum										= 113,
+        TerranStarport										= 114,
+        TerranCommandment									= 115,
+        TerranDaedala										= 116,
+        TerranCovenant										= 117,
+        TerranPhysicsLab									= 118,
+        UnusedTerran1										= 119,
+        TerranPalladium										= 120,
+        UnusedTerran2										= 121,
+        TerranAtlas											= 122,
+        TerranArmory										= 123,
+        TerranWatchdog										= 124,
+        TerranAnchor										= 125,
+        Special_CrashedNoradII								= 126,
+        Special_IonCannon									= 127,
+        Powerup_UrajCrystal									= 128,
+        Powerup_KhalisCrystal								= 129,
+        ZergInfestedCommandCenter							= 130,
+        ZergHachirosk										= 131,
+        ZergCaphrolosk										= 132,	// Was Lair, morphed from Hachirosk
+        ZergGathtelosk										= 133,	// Was Hive, morphed from Hachirosk
+        ZergNydusCesiant									= 134,
+        ZergHydrithDen										= 135,
+        ZergRakzogthRoost									= 136,
+        ZergGeszithRoost									= 137,
+        ZergMatravilNest									= 138,
+        ZergAlmakisAntre									= 139,
+        ZergUlgorgCavern									= 140,
+        ZergMutathSpire										= 141,
+        ZergQuazethPool										= 142,
+        ZergCagrantCesiant									= 143,
+        ZergSpraithCesiant									= 144,
+        UnusedZerg1											= 145,
+        ZergSurkithCesiant									= 146,
+        Special_OvermindWithShell							= 147,
+        Special_Overmind									= 148,
+        ZergExcisant										= 149,
+        Special_MatureChrysalis								= 150,
+        Special_Cerebrate									= 151,
+        Special_CerebrateDaggoth							= 152,
+        UnusedZerg2											= 153,
+        ProtossNexus										= 154,
+        ProtossLattice										= 155,
+        ProtossPylon										= 156,
+        ProtossAquifer										= 157,
+        UnusedProtoss1										= 158,
+        ProtossMachinistHall								= 159,
+        ProtossGateway										= 160,
+        UnusedProtoss2										= 161,
+        ProtossWarden										= 162,
+        ProtossCitadelofAdun								= 163,
+        ProtossCenotaph										= 164,
+        ProtossAncestralArchives							= 165,
+        ProtossEmbassy										= 166,
+        ProtossStargate										= 167,
+        Special_StasisCellPrison							= 168,
+        ProtossFleetBeacon									= 169,
+        ProtossArbiterTribunal								= 170,
+        ProtossSyntheticSynod								= 171,
+        ProtossShieldBattery								= 172,
+        Special_KhaydarinCrystalForm						= 173,
+        Special_ProtossTemple								= 174,
+        Special_XelNagaTemple								= 175,
+        ResourceMineralField								= 176,
+        ResourceMineralFieldType2							= 177,
+        ResourceMineralFieldType3							= 178,
+        UnusedCave											= 179,
+        UnusedCaveIn										= 180,
+        UnusedCantina										= 181,
+        UnusedMiningPlatform								= 182,
+        UnusedIndependentCommandCenter						= 183,
+        Special_IndependentStarport							= 184,
+        UnusedIndependentJumpGate							= 185,
+        UnusedRuins											= 186,
+        UnusedKhaydarinCrystalFormation						= 187,
+        ResourceVespeneGeyser								= 188,
+        Special_WarpGate									= 189,
+        Special_PsiDisrupter								= 190,
+        UnusedZergMarker									= 191,
+        UnusedTerranMarker									= 192,
+        UnusedProtossMarker									= 193,
+        Special_ZergBeacon									= 194,
+        Special_TerranBeacon								= 195,
+        Special_ProtossBeacon								= 196,
+        Special_ZergFlagBeacon								= 197,
+        Special_TerranFlagBeacon							= 198,
+        Special_ProtossFlagBeacon							= 199,
+        Special_PowerGenerator								= 200,
+        Special_OvermindCocoon								= 201,
+        Spell_CarapaceSwarm									= 202,
+        Special_FloorMissileTrap							= 203,
+        FloorHatch											= 204,
+        Special_UpperLevelDoor								= 205,
+        Special_RightUpperLevelDoor							= 206,
+        Special_PitDoor										= 207,
+        Special_RightPitDoor								= 208,
+        Special_FloorGunTrap								= 209,
+        Special_WallMissileTrap								= 210,
+        Special_WallFlameTrap								= 211,
+        Special_RightWallMissileTrap						= 212,
+        Special_RightWallFlameTrap							= 213,
+        Special_StartLocation								= 214,
+        Powerup_Flag										= 215,
+        Powerup_YoungChrysalis								= 216,
+        Powerup_PsiEmitter									= 217,
+        Powerup_DataDisk									= 218,
+        Powerup_KhaydarinCrystal							= 219,
+        Powerup_MineralClusterType1							= 220,
+        Powerup_MineralClusterType2							= 221,
+        Powerup_ProtossGasOrbType1							= 222,
+        Powerup_ProtossGasOrbType2							= 223,
+        Powerup_ZergGasSacType1								= 224,
+        Powerup_ZergGasSacType2								= 225,
+        Powerup_TerranGasTankType1							= 226,
+        Powerup_TerranGasTankType2							= 227,
+        None												= 228,
+        Count												= UnitsIdLimit,
+        AnyUnit												= 229,
+        Men													= 230,
+        Buildings											= 231,
+        Factories											= 232,
+        TrigMax												= 233,
+  
+    // Buttonsets using unitid beyond Unit::None
+        Buttons_Blank										= 228,
+        Buttons_Cancel										= 229,
+        Buttons_CancelPlaceBuilding							= 230,
+        Buttons_CancelConstruction							= 231,
+        Buttons_CancelConstructionWithRallyPt				= 232,
+        Buttons_CancelMutation								= 233,
+        Buttons_CancelMutationWithRallyPt					= 234,
+        Buttons_CancelInfestation							= 235,
+        Buttons_HatcheryMorphing							= 236,
+        Buttons_CancelNukeStrike							= 237,
+        Buttons_BasicZergBuildings							= 238,
+        Buttons_BasicTerranBuildings						= 239,
+        Buttons_BasicProtossBuildings						= 240,
+        Buttons_AdvancedZergBuildings						= 241,
+        Buttons_AdvancedTerranBuildings						= 242,
+        Buttons_AdvancedProtossBuildings					= 243,
+        Buttons_GroupMixed									= 244,
+        Buttons_GroupWorkers								= 245,
+        Buttons_GroupCloaker								= 246,
+        Buttons_GroupBurrower								= 247,
+        Buttons_ReplayPaused								= 248,
+        Buttons_ReplayPlaying								= 249,
+
+    // Additional buttonset unitids
+        Buttons_SupremeTerranBuildings						= 250,
+        Buttons_SupremeZergBuildings						= 251,
+
+        Buttons_RoboticProtossStructures					= 33,
+        Buttons_StellarProtossStructures					= 205,
+        Buttons_ProfaneProtossStructures					= 14,
+
+        Buttons_LarvaSwarm									= 206,
+        Buttons_LarvaAssault								= 207,
+        Buttons_LarvaControl								= 208,
+        Buttons_LarvaShared									= 101,
+
+        Buttons_OcsalLarvaSwarm								= 356,
+        Buttons_OcsalLarvaAssault							= 357,
+        Buttons_OcsalLarvaControl							= 358,
+
+        Buttons_MixedMasonTraining							= 361,
+
+        Buttons_MixedScribeTraining							= 368,
+        Buttons_MixedRepairmen								= 369,
+
+        Buttons_FactionSelect								= 388,
+        Buttons_FactionSelect1								= 389,
+        Buttons_FactionSelect2								= 390,
+        Buttons_FactionSelect3								= 391,
+        Buttons_FactionSelect4								= 392,
+        Buttons_FactionSelect5								= 393,
+        Buttons_FactionSelect6								= 394,
+
+        // Temporary until all factions are implemented for all races!
+        Buttons_FactionSelectProtoss						= 404,
+        Buttons_FactionSelectZerg							= 405,
+        Buttons_FactionSelectAskosi                         = 632,
+
+        Buttons_BasicAskosiFacilities                       = 440,
+        Buttons_AdvancedAskosiFacilities                    = 441,
+        Buttons_SupremeAskosiFacilities                     = 442,
+
+        Buttons_TerranAddonSubmenu                          = 492,
+
+        Buttons_ZergBasicMutations                          = 498,
+        Buttons_ZergAdvancedMutations                       = 499,
+    };
+}
+
+#include <magic_enum/magic_enum.hpp>
+
+namespace magic_enum::customize {
+template <>
+struct enum_range<UnitId::Enum> {
+    static constexpr int min = 0;
+    static constexpr int max = 499;
+};
+}
+
+namespace magic_enum::customize {
+template <>
+constexpr customize_t enum_type_name<UnitId::Enum>() noexcept {
+    return "UnitId";
+}
+}

@@ -1,0 +1,883 @@
+#include "requirements.h"
+#include "requirement_parser.h"
+#include "BW/structures/Player.h"
+#include <BW/api.h>
+
+namespace hooks
+{
+	s32 parse_requirement_opcodes_logic(Unit* unit, u32 datReqOffset, u16 id, u32 player, u16* datReqBase)
+	{
+		// args:
+		// eax          u32    dat req offset
+		// esi          CUnit* unit
+		// ebp+8  arg1  u16    tech/upg ID
+		// ebp+c  arg2  u32    player
+		// ebp+10 arg3  u16*   dat req script ptr
+
+		bool invalidUnit = false; // janky 'Current Unit Is...' logic variables
+		bool greyButton = true; // greys out the button when reqs aren't met
+		bool unitNotFound = true; // allows "invalid unit" to be set
+
+		bool allowHalluc = false;
+
+		// 'Or' logic tracking
+		u32 success = 0; // Has integer values added to it, but is essentially treated like a boolean
+
+		u16 opcode;
+		u16 unit_id;
+		u16 findopcode; // for upgrade level opcode
+
+		while (datReqBase[datReqOffset] != RequirementOpcodes::EndOfSublist)
+		{
+			opcode = datReqBase[datReqOffset++];
+			switch (opcode)
+			{
+				case RequirementOpcodes::MustBeBroodWar:
+				{
+					if (bw::is_brood_war_mode() == false)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError26;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::CurrentUnitIs:
+				{
+					unit_id = datReqBase[datReqOffset++];
+					if (Player::number_of_completed_units_of_id(unit_id, player) != 0)
+					{
+						greyButton = false;
+					}
+					if (unit->id != unit_id)
+					{
+						if (unitNotFound == false) break;
+						invalidUnit = true;
+						break;
+					}
+					invalidUnit = false;
+					unitNotFound = false;
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::MustHave:
+				{
+					unit_id = datReqBase[datReqOffset++];
+					success += Player::number_of_completed_units_of_id(unit_id, player) + Player::number_of_units_of_id(unit_id, player);
+				}
+					break;
+
+				case RequirementOpcodes::IsTransport:
+				{
+					if (unit->status & UnitStatus::IsHallucination) break;
+					if (unit->id == UnitId::ZergOvileth && UpgradesSc->current_level[unit->player][UpgradeId::VentralSacs] == 0) break;
+					if (units_dat::space_provided[unit->id] == 0) break;
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::MustBeResearched: {
+					if (id == TechId::Burrowing && unit_id_is_burrowed_attacker(unit->id)) {
+						success++;
+						break;
+					}
+					if (bw::has_tech_researched(player, id) == false && bw::is_cheat_enabled(CheatFlags::MedievalMan) == false) {
+						break;
+					}
+					success++;
+				} break;
+
+				case RequirementOpcodes::IsHeroAndEnabled:
+				{
+					if ((units_dat::base_property[unit->id] & UnitProperty::Hero) == 0) break;
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::IsNotTrainingOrMorphing:
+				{
+					if (unit->unit_is_training_or_morphing() || unit->building.tech_id != TechId::None)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError5;
+						return 0;
+					}
+				}
+					// fall through
+				case RequirementOpcodes::IsNotUpgrading:
+				{
+					if (unit->building.upgrade_id != UpgradeId::None)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError5;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::IsNotConstructingAddon:
+				{
+					if (unit->secondary_order_id == OrderId::BuildAddon && (unit->status & UnitStatus::GroundedBuilding) != 0 && unit->current_build_unit != NULL && (unit->current_build_unit->status & UnitStatus::Completed) == 0)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError5;
+						return 0;
+					}
+					if (unit->main_order_id == OrderId::BuildProtoss1 && (unit->status & UnitStatus::GroundedBuilding) != 0 && unit->order_target.unit != NULL && (unit->order_target.unit->status & UnitStatus::Completed) == 0)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError5;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::IsNotResearching:
+				{
+					if (unit->building.tech_id != TechId::None)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError5;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::IsNotLiftedOff: // Is not lifted off
+				{
+					if ((unit->status & UnitStatus::GroundedBuilding) == 0)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError7;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::IsLiftedOff: // Is lifted off
+				{
+					if ((unit->status & UnitStatus::GroundedBuilding) != 0)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError6;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::DoesNotHaveExit: // Does not have exit
+				{
+					if (unit->building.nydus_exit != NULL)
+					{
+						// or unit->building.nuke_missile
+						// or unit->building.nuke
+						// or unit->building.pylonAura
+						// or unit-> Worker - Harvest target unit
+						*g_last_internal_error = InternalErrors::UnitBusyOrIncompatible;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::IsNotBurrowed: // Is not burrowed
+				{
+					if ((unit->status & UnitStatus::Burrowed) != 0 && unit->unit_ai == NULL)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError5;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::IsBurrowed: // Is burrowed
+				{
+					if ((unit->status & UnitStatus::Burrowed) == 0)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError5;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::CanAttack: // Can attack -- duplicate of "Is lifted off"???
+				{
+					if ((unit->status & UnitStatus::GroundedBuilding) != 0)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError19;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::CanSetRallyPoint: // Can set rally point -- duplicate of "Is lifted off"???
+				{
+					if ((unit->status & UnitStatus::GroundedBuilding) == 0)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError19;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::CanMove:
+				{
+					if ((unit->status & UnitStatus::GroundedBuilding) != 0)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError19;
+						return 0;
+					}
+					if ((unit_id_is_burrowed_attacker(unit->id) || (unit->status & UnitStatus::Burrowed) == 0) && units_dat::right_click_action[unit->id] == RightClickActions::NoCommand_AutoAttack)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError19;
+						return 0;
+					}
+					if (unit->get_right_click_action_order() == RightClickActions::NoMove_NormalAttack)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError19;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::HasWeapon:
+				{
+					if (unit->has_weapon() == false)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError19;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::IsSubunit:
+				{
+					if ((units_dat::base_property[unit->id] & UnitProperty::Subunit) == 0)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError19;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::IsFlyingBuilding:
+				{
+					if ((units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding) == 0)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError19;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::IsWorker:
+				{
+					if ((units_dat::base_property[unit->id] & UnitProperty::Worker) == 0)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError19;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::IsPowerup:
+				{
+					if ((units_dat::base_property[unit->id] & UnitProperty::NeutralAccessories) == 0)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError19;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::HasMines:
+				{
+					if (unit->mine_carrier.mine_count == 0)
+					{
+						*g_last_internal_error = InternalErrors::UnitBusyOrIncompatible;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::CanHoldPosition:
+				{
+					if ((!unit_id_is_burrowed_attacker(unit->id) || (unit->status & UnitStatus::Burrowed) == 0)
+					&&    units_dat::right_click_action[unit->id] == RightClickActions::NoCommand_AutoAttack
+					&&  ((unit->status & UnitStatus::GroundedBuilding) == 0 || unit->is_factory() == false))
+					{
+						*g_last_internal_error = InternalErrors::UnitBusyOrIncompatible;
+						return 0;
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::AllowOnHallucinations:
+				{
+					allowHalluc = true;
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::UpgradeLv1Requires:
+				{
+					switch (bw::get_upgrade_level(player, id))
+					{
+						default:
+						{
+							findopcode = RequirementOpcodes::UpgradeLv1Requires;
+						}
+							break;
+						case 2:
+						{
+							findopcode = RequirementOpcodes::UpgradeLv3Requires;
+						}
+							break;
+						case 1:
+						{
+							findopcode = RequirementOpcodes::UpgradeLv2Requires;
+						}
+					}
+					while (opcode != findopcode)
+					{
+						opcode = datReqBase[datReqOffset++];
+					}
+					success++;
+				}
+					break;
+
+				case RequirementOpcodes::Grey:
+				{
+					*g_last_internal_error = InternalErrors::UnknownError21;
+				}
+					return -1;
+
+				case RequirementOpcodes::Blank:
+				{
+					*g_last_internal_error = InternalErrors::MissingRequirement;
+				}
+					return 0;
+
+				default:
+				{
+					// Any invalid opcodes will be read here as unit IDs
+					unit_id = opcode;
+					success += Player::number_of_completed_units_of_id(player, unit_id);
+				}
+			}
+
+			if (datReqBase[datReqOffset] == RequirementOpcodes::Or)
+			{ // Or
+				datReqOffset++;
+				continue; // continue loop without clearing success or applying failure
+			}
+
+			// no button on failure
+			if (invalidUnit == true)
+			{
+				*g_last_internal_error = InternalErrors::UnknownError25;
+				return 0;
+			}
+
+			// grey button on failure
+			if (success == 0 && greyButton == true)
+			{
+				*g_last_internal_error = InternalErrors::UnitBusyOrIncompatible;
+				return -1;
+			}
+
+			greyButton = true;
+			success = 0;
+		}
+
+		// Hides button for hallucinations unless explicitly allowed
+		if ((unit->status & UnitStatus::IsHallucination) != 0 && allowHalluc == false)
+		{
+			*g_last_internal_error = InternalErrors::UnknownError22;
+			return 0;
+		}
+
+		return 1;
+	}
+
+	s8 unit_create_allowed_logic(u16 unit_id, Unit* parent_unit, s32 playerID, u16* unitsDat, u16* requirementsTable)
+	{
+		//DebugOut("unit_create_allowed_logic: untitID %d, creatingUnit %d, playerID %d", unit_id, parent_unit->id, playerID);
+		// TODO map variables and rewrite process accordingly
+		s16 v5;
+		s16 v6;
+		s16 opcodeIndex;
+		u16 currentOpcode; // used to be s16
+		s16 v9;
+		u16 v10;
+		s16 v11;
+		s16 v13;
+		s16 v14;
+		s16 v15 = 0;
+		s16 v16;
+		s16 v17;
+		u8 v18;
+		s16 v19;
+		char v20;
+		s16 v21;
+		s16 v22;
+		s16 v24;
+		DWORD v25;
+		s16 v26;
+		s16 v27;
+		s16 v28;
+		s16 v29;
+
+		opcodeIndex = (s16)unitsDat[unit_id];
+		currentOpcode = requirementsTable[opcodeIndex];
+
+		*g_last_internal_error = InternalErrors::UnknownError0;
+		if (unit_id == UnitId::None)
+		{
+			*g_last_internal_error = InternalErrors::UnknownError16;
+			//DebugOut(">Return NotAllowed");
+			return 0;
+		}
+		if (playerID != parent_unit->player)
+		{
+			*g_last_internal_error = InternalErrors::UnknownError1;
+			//DebugOut(">Return NotAllowed");
+			return 0;
+		}
+		if (!(parent_unit->status & UnitStatus::Completed))
+		{
+			*g_last_internal_error = InternalErrors::UnknownError20;
+			//DebugOut(">Return NotAllowed");
+			return 0;
+		}
+		if (parent_unit->is_frozen())
+		{
+			*g_last_internal_error = InternalErrors::UnitFrozen;
+			//DebugOut(">Return NotAllowed");
+			return 0;
+		}
+		if (!g_unit_availability->available[parent_unit->player][parent_unit->id])
+		{
+			*g_last_internal_error = InternalErrors::UnknownError2;
+			//DebugOut(">Return NotAllowed");
+			return 0;
+		}
+		if (parent_unit->is_queue_slot_active(4))
+		{
+LABEL_86_ERROR_3_RETURN_0:
+			*g_last_internal_error = InternalErrors::UnknownError3;
+			//DebugOut(">Return NotAllowed");
+			return 0;
+		}
+		if (parent_unit->status & UnitStatus::IsHallucination)
+		{
+			*g_last_internal_error = InternalErrors::UnknownError22;
+			//DebugOut(">Return Disallowed");
+			return 0;
+		}
+
+		if (unitsDat[unit_id] == RequirementOpcodes::EndOfSublist)
+		{
+			//DebugOut("EndOfSublist (%d):", currentOpcode);
+			parse_unit_dat_requirements();
+		}
+
+		////DebugOut("opcode index = %d", opcodeIndex);
+		if (unitsDat[unit_id] == 0)
+		{
+LABEL_93_ERROR_23_RETURN_0:
+			*g_last_internal_error = 23;
+			//DebugOut(">Return NotAllowed");
+			return 0;
+		}
+		v27 = 1;
+		v26 = 1;
+		//LOWORD(v8) = requirementsTable[v7];
+		//ByteOperations::SetLowWord(v8, requirements::requirementsTable[v7]);
+
+		v28 = 0;
+		if (currentOpcode == RequirementOpcodes::EndOfSublist)
+		{
+			//DebugOut(">Return Allowed");
+			return 1;
+		}
+LABEL_18_ENTER_MAIN_BODY:
+		////DebugOut("  MAIN_BODY");
+		v9 = 0;
+		v29 = 0;
+		while (2)
+		{
+			////DebugOut("v8 = %d", currentOpcode);
+			switch (currentOpcode)
+			{
+				case RequirementOpcodes::CurrentUnitIs:
+				{
+					u16 nextOpcodeUnitId = requirementsTable[opcodeIndex + 1];
+					//DebugOut("CurrentUnitIs (%d) unit_id = %d:", currentOpcode, nextOpcodeUnitId);
+					////DebugOut("  current unit is = %d", nextOpcodeUnitId);
+					// Weirdly, nextOpcodeUnitId is sometimes still the old opcode value - but only while debugging (or when there's 
+					// an OR statement?) this is causing access violation reading g_completed_unit_counts. Work around this for now by checking unit Ids
+					if (Player::number_of_completed_units_of_id(parent_unit->player, nextOpcodeUnitId) > 0)
+					{
+						v27 = 0;
+					}
+					if (nextOpcodeUnitId == parent_unit->id)
+					{
+						v28 = 0;
+						v26 = 0;
+						v11 = v9 + 1;
+						//DebugOut(">True");
+						goto LABEL_72_NEXT_OPCODE;
+					}
+					if (v26)
+					{
+						v28 = 1;
+					}
+					//DebugOut(">False");
+					goto LABEL_73_PERHAPS_FINAL_CHECK;
+				}
+				case RequirementOpcodes::MustHave:
+				{
+					//DebugOut("MustHave (%d):", currentOpcode);
+					v24 = requirementsTable[opcodeIndex++];
+					v25 = Player::number_of_completed_units_of_id(playerID, currentOpcode) + Player::number_of_units_of_id(playerID, currentOpcode);
+					//DebugOut(">Checking next opcode");
+				}
+					goto LABEL_71_SUM_VALUES;
+				case RequirementOpcodes::MustHaveAddon:
+				{
+					{
+						//DebugOut("MustHaveAddon (%d):", currentOpcode);
+						if (*g_cheat_state & CheatFlags::ModifyThePhaseVariance)
+						{
+							++opcodeIndex;
+							v11 = v9 + 1;
+						}
+						else
+						{
+							Unit* addonUnit = parent_unit->building.addon;
+							if (addonUnit != nullptr)
+							{
+								if (addonUnit != nullptr || (++opcodeIndex, addonUnit->id != requirementsTable[opcodeIndex]))
+								{
+									if (!v28)
+									{
+										*g_last_internal_error = 4;
+									}
+									//DebugOut(">Return Gray");
+									return -1;
+								}
+							}
+							v11 = v9 + 1;
+						}
+						//DebugOut(">True");
+					}
+				}
+					goto LABEL_72_NEXT_OPCODE;
+				case RequirementOpcodes::IsNotLiftedOff:
+				{
+					//DebugOut("IsNotLiftedOff (%d):", currentOpcode);
+					if (!(parent_unit->status & UnitStatus::GroundedBuilding))
+					{
+						*g_last_internal_error = InternalErrors::UnknownError7;
+						//DebugOut(">Return NotAllowed");
+						return 0;
+					}
+					v11 = v9 + 1;
+					//DebugOut(">True");
+				}
+					goto LABEL_72_NEXT_OPCODE;
+				case RequirementOpcodes::IsNotTrainingOrMorphing:
+				{
+					//DebugOut("IsNotTrainingOrMorphing (%d):", currentOpcode);
+					if (parent_unit->unit_is_training_or_morphing() || parent_unit->building.upgrade_id != TechId::None || parent_unit->building.tech_id != UpgradeId::None)
+					{
+						//DebugOut(">False");
+						goto LABEL_87;
+					}
+					++v28;
+					//DebugOut(">True");
+				}
+					goto LABEL_73_PERHAPS_FINAL_CHECK;
+				case RequirementOpcodes::IsNotConstructingAddon:
+				{
+					//DebugOut("IsNotConstructingAddon (%d):", currentOpcode);
+					if (parent_unit->is_constructing_addon() || parent_unit->is_attempting_protoss_build())
+					{
+						//DebugOut(">False");
+						goto LABEL_87;
+					}
+					v11 = v15 + 1;
+					//DebugOut(">True");
+				}
+					goto LABEL_72_NEXT_OPCODE;
+				case RequirementOpcodes::IsNotResearching:
+				{
+					//DebugOut("IsNotResearching (%d):", currentOpcode);
+					if (parent_unit->building.tech_id != TechId::None)
+					{
+						//DebugOut(">False");
+						goto LABEL_87;
+					}
+					v11 = v9 + 1;
+					//DebugOut(">True");
+				}
+					goto LABEL_72_NEXT_OPCODE;
+				case RequirementOpcodes::IsNotUpgrading:
+				{
+					//DebugOut("IsNotUpgrading (%d):", currentOpcode);
+					if (parent_unit->building.upgrade_id != UpgradeId::None)
+					{
+						//DebugOut(">False");
+						goto LABEL_87;
+					}
+					v11 = v9 + 1;
+					//DebugOut(">True");
+				}
+					goto LABEL_72_NEXT_OPCODE;
+				case RequirementOpcodes::IsNotConstructing:
+				{
+					//DebugOut("IsNotConstructing (%d):", currentOpcode);
+					if (UnitId::is_terran_worker(static_cast<UnitId::Enum>(parent_unit->id)) && parent_unit->main_order_id == OrderId::ConstructingBuilding)
+					{
+						//DebugOut(">False");
+						goto LABEL_87;
+					}
+					v11 = v9 + 1;
+					//DebugOut(">True");
+				}
+					goto LABEL_72_NEXT_OPCODE;
+				case RequirementOpcodes::DoesNotHaveAddonAttached:
+				{
+					//DebugOut("DoesNotHaveAddonAttached (%d):", currentOpcode);
+					if (parent_unit->building.addon)
+					{
+						if (!v28)
+						{
+							*g_last_internal_error = InternalErrors::UnknownError4;
+						}
+						//DebugOut(">Return NotAllowed");
+						return 0;
+					}
+					v11 = v9 + 1;
+LABEL_72_NEXT_OPCODE:
+					////DebugOut("  NEXT_OPCODE");
+					v29 = v11;
+LABEL_73_PERHAPS_FINAL_CHECK:
+					//Advance opcode
+					if (requirementsTable[++opcodeIndex] == -255)
+					{
+						//ByteOperations::SetLowWord(currentOpcode, requirementsTable[opcodeIndex]);
+						currentOpcode = requirementsTable[opcodeIndex];
+						v9 = v29;
+						++opcodeIndex;
+						continue;
+					}
+					if (!v29 && v27)
+					{
+						*g_last_internal_error = InternalErrors::UnitBusyOrIncompatible;
+						//DebugOut(">Return Gray");
+						return -1;
+					}
+					//ByteOperations::SetLowWord(currentOpcode, requirementsTable[opcodeIndex]);
+					currentOpcode = requirementsTable[opcodeIndex];
+					v27 = 1;
+					if (currentOpcode != RequirementOpcodes::EndOfSublist)
+					{
+						goto LABEL_18_ENTER_MAIN_BODY;
+					}
+					if (v28)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError25;
+						//DebugOut(">Return Gray");
+						return -1;
+					}
+					//DebugOut(">Return Allowed");
+				}
+					return 1;
+				case RequirementOpcodes::HasHangarSpace:
+				{
+					//DebugOut("HasHangarSpace (%d):", currentOpcode);
+					v18 = -1;
+					v19 = (parent_unit->id == UnitId::ProtossSolarion);
+					if (v19)
+					{
+						v20 = parent_unit->unit_with_hangar.in_hangar_count + parent_unit->get_hangar_train_count();
+					}
+					else
+					{
+						if (!parent_unit->id == UnitId::ProtossAccantorOld)
+						{
+							goto LABEL_51;
+						}
+						v20 = parent_unit->get_hangar_train_count();
+					}
+					v18 = parent_unit->unit_with_hangar.in_hangar_count + v20;
+LABEL_51:
+					if (v18 >= parent_unit->get_max_hangar_space())
+					{
+						//DebugOut(">False");
+						goto LABEL_86_ERROR_3_RETURN_0;
+					}
+					++v29;
+					//DebugOut(">True");
+				}
+					goto LABEL_73_PERHAPS_FINAL_CHECK;
+				case RequirementOpcodes::DoesNotHaveArmedMissile:
+				{
+					//DebugOut("DoesNotHaveArmedMissile (%d):", currentOpcode);
+					if (parent_unit->building.silo.nuke)
+					{
+						//DebugOut(">False");
+						goto LABEL_86_ERROR_3_RETURN_0;
+					}
+					v11 = v9 + 1;
+					//DebugOut(">True");
+				}
+					goto LABEL_72_NEXT_OPCODE;
+				case RequirementOpcodes::IsNotBurrowed:
+				{
+					//DebugOut("IsNotBurrowed (%d):", currentOpcode);
+					if (parent_unit->status & UnitStatus::Burrowed)
+					{
+LABEL_87:
+						*g_last_internal_error = InternalErrors::UnknownError5;
+						//DebugOut(">Return NotAllowed");
+						return 0;
+					}
+					v11 = v9 + 1;
+					//DebugOut(">True");
+				}
+					goto LABEL_72_NEXT_OPCODE;
+				case RequirementOpcodes::Grey:
+				{
+					//DebugOut("Grey (%d):", currentOpcode);
+					*g_last_internal_error = InternalErrors::UnknownError21;
+					//DebugOut(">Return Grey");
+				}
+					return -1;
+				case RequirementOpcodes::Blank:
+				{
+					//DebugOut("Blank (%d):", currentOpcode);
+				}
+					goto LABEL_93_ERROR_23_RETURN_0;
+				case RequirementOpcodes::MustBeBroodWar:
+				{
+					//DebugOut("MustBeBroodWar (%d):", currentOpcode);
+					if (!g_is_brood_war)
+					{
+						*g_last_internal_error = InternalErrors::UnknownError26;
+						//DebugOut(">Return NotAllowed");
+						return 0;
+					}
+					v11 = v9 + 1;
+					//DebugOut(">True");
+				}
+					goto LABEL_72_NEXT_OPCODE;
+				case RequirementOpcodes::IsResearched:
+				{
+					//DebugOut("IsResearched (%d):", currentOpcode);
+					v10 = requirementsTable[opcodeIndex++];
+					if (bw::has_tech_researched(parent_unit->player, v10) && !(*g_cheat_state & CheatFlags::MedievalMan))
+					{
+						*g_last_internal_error = InternalErrors::UnknownError9;
+						//DebugOut(">Return Gray");
+						return -1;
+					}
+					++v29;
+					//DebugOut(">True");
+				}
+					goto LABEL_73_PERHAPS_FINAL_CHECK;
+				case RequirementOpcodes::IsBurrowed:
+				{
+					//DebugOut("IsBurrowed (%d):", currentOpcode);
+					if (!(parent_unit->status & UnitStatus::Burrowed))
+					{
+						*g_last_internal_error = InternalErrors::UnknownError5;
+						//DebugOut(">Return Gray");
+						return -1;
+					}
+					v11 = v9 + 1;
+					//DebugOut(">True");
+				}
+					goto LABEL_72_NEXT_OPCODE;
+				default:
+				{
+					// DebugOut("(Default) number_of_completed_units_of_id (%d)", currentOpcode);
+					if (*g_cheat_state & CheatFlags::ModifyThePhaseVariance)
+					{
+						++v9;
+					}
+					v25 = Player::number_of_completed_units_of_id(playerID, currentOpcode);
+					// DebugOut(">%s", v25 > 0 ? "True" : "False");
+LABEL_71_SUM_VALUES:
+					v11 = v25 + v9;
+				}
+					goto LABEL_72_NEXT_OPCODE;
+			}
+		}
+	}
+
+	s32 parse_requirement_opcodes(Unit* unit, u32 dat_req_offset, u16 id, u32 player, u16* dat_req_base) // 0046D610
+	{
+		if (dat_req_base == requirements::orders && customRequirements::get_order_requirement_overrides()[id] != 0)
+		{
+			dat_req_offset = customRequirements::get_order_requirement_overrides()[id];
+			dat_req_base = customRequirements::get_order_requirement_opcodes();
+		}
+		else if (dat_req_base == requirements::research && customRequirements::get_research_requirement_overrides()[id] != 0)
+		{
+			dat_req_offset = customRequirements::get_research_requirement_overrides()[id];
+			dat_req_base = customRequirements::get_research_requirement_opcodes();
+		}
+		else if (dat_req_base == requirements::tech && customRequirements::get_tech_requirement_overrides()[id] != 0)
+		{
+			dat_req_offset = customRequirements::get_tech_requirement_overrides()[id];
+			dat_req_base = customRequirements::get_tech_requirement_opcodes();
+		}
+		else if (dat_req_base == requirements::upgrade && customRequirements::get_upgrade_requirement_overrides()[id] != 0)
+		{
+			dat_req_offset = customRequirements::get_upgrade_requirement_overrides()[id];
+			dat_req_base = customRequirements::get_upgrade_requirement_opcodes();
+		}
+
+		s32 result = hooks::parse_requirement_opcodes_logic(unit, dat_req_offset, id, player, dat_req_base);
+		return result;
+	}
+
+	s8 unit_create_allowed(u16 unit_id, Unit* parentUnit, s32 playerID) // 0046E1C0
+	{
+		u16* unitsDat = units_dat::requirement_offsets;
+		u16* requirementsTable = requirements::units;
+
+		if (customRequirements::getUnitRequirementOverrides()[unit_id] != 0)
+		{
+			unitsDat = customRequirements::getUnitRequirementOverrides();
+			requirementsTable = customRequirements::getUnitRequirementOpcodes();;
+		}
+
+		return hooks::unit_create_allowed_logic(unit_id, parentUnit, playerID, unitsDat, requirementsTable);
+	}
+
+	void parse_unit_dat_requirements()
+	{
+		const u32 Func_parseUnitDatReqs = 0x0046E100;
+		__asm {
+			PUSHAD
+			CALL Func_parseUnitDatReqs
+			POPAD
+		}
+	}
+}

@@ -1,0 +1,43 @@
+#pragma once
+#include "BW\bwdata.h"
+
+inline bool g_wmode_loaded = false;
+
+struct GameVersion;
+
+struct SyncColorPrefCommand {
+	u8 custom = GameCommand_Custom;
+	u8 type = NewGameCommand::SyncColorPref;
+	u8 player;
+	PlayerColor colors[9];
+
+	SyncColorPrefCommand(u8 player) : player{player} {
+		for (u32 i = 0; i < 9; i++) {
+			colors[i] = PlayerColor::Invalid;
+		}
+	}
+};
+static_assert(sizeof(SyncColorPrefCommand) == 12);
+
+namespace hooks {
+void __cdecl update_minimap_colors();							// 004A3A00
+b32 update_doodad_visibility(Thingy* thingy);					// 00487690
+void game_recv(char* buffer, s32 size, bool as_replay);			// 004865D0
+
+void init_unit(Unit* unit);
+void tick_unit(Unit* unit, bool unit_is_hidden);
+
+void ui_button_click(BinDlg* dialog);
+u32 __cdecl set_ingame_input_procs();							// 00484CC0
+bool game_preinit();
+void game_init_first_frame();
+bool game_end();
+void next_ui_frame();
+bool next_frame();
+void inject_game_hooks();
+
+void initialize_provider_version(GameVersion* version);			// 00472770
+s32 __cdecl network_set_return_menu();							// 004DC5B0
+__declspec(noinline) s32 get_replay_turn_data();				// 004CDFF0
+void replay_loop();												// 004D96C4
+}

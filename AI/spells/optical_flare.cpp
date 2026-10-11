@@ -1,0 +1,49 @@
+#include "spells.h"
+#include <AI/ai_common.h>
+
+//V241 for VS2008
+
+namespace AI
+{
+
+	Unit* find_best_optical_flare_target(Unit* caster, bool isUnderAttack)
+	{
+
+		s32 bounds;
+
+		if (isUnderAttack)
+			bounds = 32 * 9;
+		else
+			bounds = 32 * 32;
+
+		return bw::UnitFinder::get_nearest_target(
+			caster->get_x() - bounds,
+			caster->get_y() - bounds,
+			caster->get_x() + bounds,
+			caster->get_y() + bounds,
+			caster,
+			[&](Unit* target)
+		{
+
+			if (!is_target_worth_hitting(target, caster))
+				return false;
+
+			if (units_dat::base_property[target->id] & UnitProperty::Building)
+				return false;
+
+			if (target->is_blind)
+				return false;
+
+			if (target->can_detect())
+				return true;
+
+			if (target->get_current_life_ingame() > 80)
+				return true;
+
+			return false;
+
+		});
+	}
+
+
+} //AI

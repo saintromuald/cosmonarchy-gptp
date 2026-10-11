@@ -1,0 +1,65 @@
+#include "spells.h"
+#include <AI/ai_common.h>
+#include <globals.h>
+
+//V241 for VS2008
+
+namespace AI
+{
+
+	Unit* find_best_restoration_target(Unit* caster, bool isUnderAttack)
+	{
+
+		s32 bounds = 32 * 32;
+
+		return bw::UnitFinder::get_nearest_target(
+			caster->get_x() - bounds,
+			caster->get_y() - bounds,
+			caster->get_x() + bounds,
+			caster->get_y() + bounds,
+			caster,
+			[&](Unit* target)
+		{
+
+			if (target->player != caster->player)
+				return false;
+
+			if (!bw::can_weapon_target_unit(WeaponId::Restoration, target, caster))
+				return false;
+
+			if (target->get_current_life_ingame() <= 60)
+				return false;
+
+			if (bw::is_debuffed(target))
+				return true;
+
+			return false;
+
+		});
+	}
+
+
+	Unit* find_best_restoration_target_ex(Unit* caster, bool isUnderAttack)
+	{
+
+		if (isUnderAttack)
+			return nullptr;
+
+		return bw::UnitFinder::get_nearest_target(caster, [&](Unit* target)
+		{
+
+			if (target->player != caster->player)
+				return false;
+
+			if (!(target->parasite_flags || target->maelstrom_timer))
+				return false;
+
+			if (!bw::can_weapon_target_unit(WeaponId::Restoration, target, caster))
+				return false;
+
+			return true;
+
+		});
+	}
+
+} //AI

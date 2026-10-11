@@ -1,0 +1,5 @@
+Discord is in _vendor, because we need it dynamically linked, so our static vcpkg configuration won't work
+- We could write a custom triplet so we use dynamic specifically there
+
+Boost int128 is in _vendor, because the newest boost-multiprecision doesn't seem to work with fpm
+- We could try intx instead?

@@ -1,0 +1,1163 @@
+#include "target_related.h"
+#include <BW/api.h>
+#include <BW/structures.h>
+#include <BW/bwdata.h>
+#include <hooks/unit_stats/weapon_range.h>
+#include <globals.h>
+#include "byte_operations_utils.h"
+#include <limits.h>
+#include "hooks/audiovisuals/sfxhooks.h"
+#include "hooks/unit_stats/weapon_range.h"
+
+namespace hooks {
+    bool is_unit_target_out_of_max_range(Unit* unit, Unit* target) { // 00476430
+        if (!helper::is_target_visible(unit, target)) {
+            return true;
+        }
+        Unit* final_unit = unit->subunit;
+        if (!final_unit || !final_unit->is_subunit()) {
+            final_unit = unit;
+        }
+        WeaponId::Enum weapon_id = WeaponId::None;
+        if (target->is_in_air()) {
+            weapon_id = units_dat::air_weapon[final_unit->id];
+        } else if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->burrowed_attacker_can_attack()) {
+            weapon_id = units_dat::ground_weapon[final_unit->id];
+        }
+        if (weapon_id == WeaponId::None) {
+            return false;
+        }
+        u32 max_range = helper::get_unit_max_weapon_range(unit, weapon_id);
+        return !helper::is_target_within_min_movement_range(final_unit, target, max_range);
+    }
+    
+    // Hooked to fix hold position and cliff advantage. -Pr0nogo
+    bool is_unit_in_weapon_range(Unit* target, Unit* attacker) { // 00476870
+        Unit* final_target = target;
+        if (!target) {
+            final_target = attacker->order_target.unit;
+            if (!final_target) {
+                return 1;
+            }
+        }
+        if (!helper::is_target_visible(attacker, final_target)) {
+            return 0;
+        }
+
+        Unit* final_attacker = attacker->subunit;
+        if (!final_attacker || !(units_dat::base_property[final_attacker->id] & UnitProperty::Subunit)) {
+            final_attacker = attacker;
+        }
+
+        WeaponId::Enum weapon_id = WeaponId::None;
+        if (final_target->status & UnitStatus::InAir) {
+            weapon_id = units_dat::air_weapon[final_attacker->id];
+        } else {
+            u32 attacker_id = final_attacker->id;
+            if (!unit_id_is_burrowed_attacker(attacker_id) || final_attacker->burrowed_attacker_can_attack()) {
+                weapon_id = units_dat::ground_weapon[attacker_id];
+            } else {
+                weapon_id = WeaponId::None;
+            }
+        }
+
+        if (weapon_id == WeaponId::None) {
+            return 0;
+        }
+        u32 min_range = weapons_dat::min_range[weapon_id];
+        if (min_range) {
+            if (helper::is_target_within_min_range(final_attacker, min_range, final_target)) {
+                return 0;
+            }
+        }
+        u32 max_range = hooks::get_max_weapon_range(attacker, weapon_id, final_target);
+        return helper::is_target_within_min_movement_range(final_target, final_attacker, max_range);
+    }
+
+    Unit* cmdrecv_hold_position(s8* buffer) { // 004C20C0
+        g_unit_iterator_pos[0] = 0;
+        Unit* result = helper::get_active_player_next_selection();
+        for (Unit* i = result; result; i = result) {
+            u32 unit_id = i->id;
+            u32 order_id = OrderId::HoldPositionNormal;
+            switch (unit_id) {
+                case UnitId::ProtossSolarion: {
+                    order_id = OrderId::HoldPositionSolarion;
+                } break;
+                case UnitId::ProtossAccantorOld: {
+                    order_id = OrderId::HoldPositionReaver;
+                } break;
+                case UnitId::TerranCleric:
+                case UnitId::TerranClericFuturist: {
+                    order_id = OrderId::HoldPositionCleric;
+                } break;
+                case UnitId::ZergSkryrokor: {
+                    order_id = OrderId::HoldPositionSuicide;
+                } break;
+            }
+
+            if (helper::order_allowed(i, order_id, *g_active_nation_id) == 1) {
+                helper::targeted_order(0, UnitId::None, i, 0, 1, buffer[1] != 0, order_id, 0, *g_order_type_4_position, *g_order_type_4_target);
+            }
+            result = helper::get_active_player_next_selection();
+        }
+        return result;
+    }
+
+    // Hooked for the cloak rewrite. - Pr0nogo
+    u32 unit_can_see_cloaked_target(Unit* target, Unit* unit) { // 00401D60
+        return target->status & 0x300 && !((1 << unit->player) & target->detection_status);
+    }
+
+    // Hooked to help with cloak rewrite - Pr0nogo
+    u32 is_unit_visible(Unit* unit) { // 004E5DB0
+        Unit* target = unit->order_target.unit;
+        s32 player = 1 << unit->player;
+        if (!target)
+        {
+            return player & ~(g_active_tile_array[unit->order_target.pt.x / 32 + g_map_tile_size->width * (unit->order_target.pt.y / 32)]->visibility_flags);
+        }
+
+        u32 result = 0;
+        if (unit->status & 0x300)
+        {
+            result = (u8)(player & target->sprite->visibility_status);
+        }
+        return result;
+    }
+
+    void update_unit_visibility(Unit* unit) {
+        if (*player_visions & unit->detection_status) {
+            helper::make_sprite_visible(unit->sprite);
+            Unit* subunit = unit->subunit;
+            if (subunit) {
+                helper::make_sprite_visible(subunit->sprite);
+            }
+        } else {
+            if (unit->sprite->flags & SpriteFlags::Selected)
+            {
+                helper::update_building_land_unit_selection(unit->detection_status, unit);
+            }
+            helper::remove_selection_circle(unit->sprite);
+            helper::make_sprite_invisible(unit->sprite);
+            Unit* subunit = unit->subunit;
+            if (subunit) {
+                helper::make_sprite_invisible(subunit->sprite);
+            }
+        }
+    }
+
+    // Hooked to help with cloak rewrite - Pr0nogo
+    void check_unit_visibility(Unit* unit) { // 00443390
+        if (!AssertSprite(unit->sprite)) {
+            return;
+        }
+        u32 detecting_players = helper::get_detecting_players(unit);
+        if (unit->status & UnitStatus::Burrowed) {
+            Box32 rect = {};
+            rect.left	= unit->get_left()	 - 20;
+            rect.right	= unit->get_right()	 + 20;
+            rect.top	= unit->get_top()	 - 20;
+            rect.bottom = unit->get_bottom() + 20;
+
+            for (Unit* found_unit : g_unit_search.rect(rect)) {
+                if (found_unit->status & UnitStatus::InAir || found_unit->player > PlayerLimit) {
+                    continue;
+                }
+                detecting_players |= (1 << found_unit->player) | player_vision->flags[found_unit->player];
+            }
+        }
+
+        if (unit->detection_status != detecting_players) {
+            if (unit->detection_status == 0x80000000) {
+                unit->detection_status = ~(u8)detecting_players;
+            }
+            u32 delta_flags = unit->detection_status ^ detecting_players;
+            unit->detection_status = detecting_players;
+
+            u32 was_hidden = delta_flags & ~detecting_players;
+            if (was_hidden) {
+                helper::iterate_player_units_something(was_hidden, unit);
+            }
+            if (*player_visions & delta_flags) {
+                update_unit_visibility(unit);
+            }
+        }
+
+    }
+
+    // Hooked to complete the cloak rewrite - Pr0nogo
+    s32 is_unit_cloaking(Unit* unit) { // 004916E0
+        if (unit->is_cloaked) {
+            return 0;
+        }
+
+        s32 redraw = 0;
+        if (*g_first_invisible_unit == unit) {
+            *g_first_invisible_unit = unit->invisible_link.next;
+            redraw = 1;
+        }
+        Unit* previous_invisible_unit = unit->invisible_link.prev;
+        if (previous_invisible_unit) {
+            previous_invisible_unit->invisible_link.next = unit->invisible_link.next;
+            redraw = 1;
+        }
+        Unit* next_invisible_unit = unit->invisible_link.next;
+        if (next_invisible_unit) {
+            next_invisible_unit->invisible_link.prev = unit->invisible_link.prev;
+            redraw = 1;
+        }
+        unit->status &= 0xFFFFF7FF;
+        unit->invisible_link.prev = 0;
+        unit->invisible_link.next = 0;
+        if (redraw) {
+            bw::refresh_console();
+        }
+        return 1;
+    }
+
+    bool unit_can_attack_target(Unit* target, Unit* attacker, int check_detection) { // 00476730
+        if (attacker->is_frozen()
+        || !target
+        || !target->sprite
+    //	|| !AssertSprite(target->sprite)	// Disabled since it is now expected. -Pr0nogo
+        ||  target->status & UnitStatus::Invincible
+        ||  target->sprite->flags & SpriteFlags::Hidden
+        ||  check_detection && helper::unit_can_see_cloaked_target(target, attacker))
+        {
+            return false;
+        }
+
+        if (attacker->is_building() && !attacker->is_grounded_building()) {
+            return false;
+        }
+
+        Unit* final_attacker = attacker;
+        if (helper::unit_is_subunit(attacker->subunit)) {
+            final_attacker = attacker->subunit;
+        }
+
+        if (helper::unit_is_carrier(attacker)) {
+            return true;
+        }
+
+        if (helper::unit_is_reaver(attacker)) {
+            if (!target->is_in_air() && helper::unit_has_path_to_target(attacker, target)) {
+                return true;
+            }
+            return false;
+        }
+
+        // Originally had code related to old infestation, and to disable AI Didact attacks
+
+        // GAME RULE: Ground titanic units can be targeted by edge-only weapons
+        // Doesn't work currently.
+        /*
+        if (units_dat::size_type[target->id] == UnitSize::Titanic) {
+            return units_dat::air_weapon[context->id] != WeaponId::None
+                || units_dat::ground_weapon[context->id] != WeaponId::None;
+        }
+        */
+
+        if (unit_id_is_garrison(attacker->id)) {
+            u32 max_range = 0;
+            for (u32 i = 0; i < TransportCap; ++i) {
+                Unit* cargo_unit = attacker->get_loaded_unit(i);
+                if (cargo_unit) {
+                    WeaponId::Enum weapon = target->status & UnitStatus::InAir ? cargo_unit->get_air_weapon() : cargo_unit->get_ground_weapon();
+                    u32 range = hooks::get_max_weapon_range(attacker, weapon, target);
+                    if (range > max_range) {
+                        max_range = range;
+                    }
+                }
+            }
+
+            if (attacker->is_target_within_min_range(target, max_range)) {
+                return true;
+            }
+            return false;
+        }
+
+        bool air_unit = target->status & UnitStatus::InAir;
+        WeaponId::Enum weapon = air_unit ? final_attacker->get_air_weapon() : final_attacker->get_ground_weapon();
+        if (air_unit && unit_id_has_custom_air_weapon(attacker->id)) {
+            weapon = bw::get_custom_secondary_weapon_from_unit_id(attacker->id);
+        }
+
+        // For stationary attackers
+        if (attacker->status & UnitStatus::GroundedBuilding || attacker->status & UnitStatus::Burrowed || unit_id_is_siege_mode((UnitId::Enum)attacker->id)) {
+            if (!attacker->is_target_within_min_range(target, hooks::get_max_weapon_range(attacker, weapon, target))) {
+                return false;
+            }
+        }
+        return weapon != WeaponId::None;
+    }
+
+    // Hooked to help with the Titanic count game rule. -Pr0nogo
+    // Apparently only runs for Mavericks...
+    void ai_attack_unit(Unit* unit) { // 0043FFD0
+        if (!unit) {
+            return;
+        }
+        if (unit->id != UnitId::TerranMaverick) {
+            return;
+        }
+        Unit* unit_target = unit->order_target.unit;
+        if (!unit_target) {
+            return;
+        }
+
+        s32 cooldown = 0;
+        if (unit->stim_timer) {
+            cooldown = 1;
+        }
+        if (unit->status & UnitStatus::SpeedUpgrade) {
+            ++cooldown;
+        }
+        if (unit->ensnare_timer) {
+            --cooldown;
+        }
+        if (cooldown > 0) {
+            return;
+        }
+
+        s32 unit_hp = units_dat::max_hitpoints[unit->id] >> 8;
+        if (!unit_hp) {
+            unit_hp = (unit->hitpoints + 255) >> 8;
+            if (!unit_hp) {
+                unit_hp = 1;
+            }
+        }
+        if ((unit->hitpoints + 255) * 256 < unit_hp / 3) {
+            return;
+        }
+
+        if (!unit_can_attack_target(unit, unit_target, 1)) {
+            return;
+        }
+        unit_target = unit->order_target.unit;
+        if (!unit_target) {
+            if (helper::tech_use_allowed(unit, 0, unit->player) == 1 && helper::get_current_hp_plus_shields(unit_target) >= 100) {
+                helper::stimpack_proc(unit);
+            }
+            return;
+        }
+        if (!helper::is_target_visible(unit, unit_target)) {
+            return;
+        }
+
+        Unit* final_unit = unit->subunit;
+        if (!final_unit || !(units_dat::base_property[final_unit->id] & UnitProperty::Subunit)) {
+            final_unit = unit;
+        }
+        auto air_weapon = WeaponId::None;
+        if (unit_target->is_in_air()) {
+            air_weapon = units_dat::air_weapon[final_unit->id];
+        } else if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->burrowed_attacker_can_attack()) {
+            air_weapon = units_dat::ground_weapon[final_unit->id];
+        }
+        if (air_weapon != WeaponId::None) {
+            u32 air_min_range = weapons_dat::min_range[air_weapon];
+            if (!air_min_range || !(helper::is_target_within_min_range(final_unit, air_min_range, unit_target))) {
+                s32 air_max_range = weapons_dat::max_range[air_weapon];
+                if (helper::is_target_within_min_movement_range(unit_target, final_unit, air_max_range)) {
+                    if (helper::tech_use_allowed(unit, 0, unit->player) == 1 && helper::get_current_hp_plus_shields(unit_target) >= 100) {
+                        helper::stimpack_proc(unit);
+                    }
+                }
+            }
+        }
+    }
+
+    // Hooked to add nullcheck. -Pr0nogo
+    s32 return_interceptor_if_cannot_attack(Unit* hangar_unit) { // 00465810
+        s32 result = 0;
+        Unit* steward_target = hangar_unit->order_target.unit;
+        if (steward_target && !(steward_target->status & UnitStatus::Invincible) || helper::attack_recent_attacker(hangar_unit)) {
+            Unit* unit_with_hangar = hangar_unit->hangar_unit.parent;
+            steward_target = hangar_unit->order_target.unit;
+            hangar_unit->order_target.pt.x = steward_target->position.x;
+            hangar_unit->order_target.pt.y = steward_target->position.y;
+            if (!unit_with_hangar) {
+                unit_with_hangar = hangar_unit;
+            }
+            if (!unit_with_hangar || helper::is_target_within_min_movement_range(steward_target, unit_with_hangar, 8 * 32)) {
+                result = 1;
+            } else {
+                helper::issue_order_targeting_nothing(hangar_unit, OrderId::Return);
+                result = 0;
+            }
+        } else {
+            u8 steward_order_id = hangar_unit->main_order_id;
+            hangar_unit->user_action_flags |= 1;
+            if (steward_order_id) {
+                while (1) {
+                    Order* order_tail = hangar_unit->order_queue_tail;
+                    if (!order_tail) {
+                        break;
+                    }
+                    if (!orders_dat::can_be_interrupted[order_tail->order_id] && order_tail->order_id != OrderId::Return) {
+                        break;
+                    }
+                    helper::remove_order_from_unit_queue(order_tail, hangar_unit);
+                }
+                helper::perform_another_order(OrderId::Return, 0, hangar_unit, UnitId::None, {}, 0);
+            }
+            helper::do_next_queued_order(hangar_unit);
+            result = 0;
+        }
+        return result;
+    }
+
+    static Box32 get_thingy_box(Thingy* thingy) {
+        Box32 box = {};
+        box.left   = thingy->sprite->position.x - units_dat::unit_bounds[thingy->unit_id].left;
+        box.right  = thingy->sprite->position.x + units_dat::unit_bounds[thingy->unit_id].right;
+        box.top    = thingy->sprite->position.y - units_dat::unit_bounds[thingy->unit_id].top;
+        box.bottom = thingy->sprite->position.y + units_dat::unit_bounds[thingy->unit_id].bottom;
+        return box;
+    }
+
+    // Hooked to fix hit tests on structures in fog of war. -Pr0nogo
+    Thingy* find_fow_target(u32 x_pos, u32 y_pos) { // 00487A10
+        for (Thingy* thingy = *g_first_fow_sprite; thingy; thingy = thingy->next) {
+            if (!helper::unit_is_unselectable(thingy->unit_id)) {
+                Box32 box = get_thingy_box(thingy);
+                if (box.left <= x_pos && x_pos <= box.right
+                &&	box.top  <= y_pos && y_pos <= box.bottom) {
+                    return thingy;
+                }
+            }
+        }
+        return 0;
+    }
+
+    // Hooked to investigate crashes. -Pr0nogo
+    bool is_better_target(Unit* self, Unit* auto_target, Unit* compare_unit) { // 004769D0
+        bool result = 0;
+        if (compare_unit != auto_target) {
+            u32 compare_player = compare_unit->player == 11 ? compare_unit->sprite->player : compare_unit->player;
+            if (!bw::is_allied_to(self->player, compare_player)) {
+                if (!auto_target
+                ||  !helper::unit_can_attack_target(auto_target, self, 1)
+                ||  !helper::is_unit_enemy(self, auto_target)
+                ||   helper::is_unit_in_weapon_range(self, compare_unit) && !helper::is_unit_in_weapon_range(self, auto_target))
+                {
+                    result = 1;
+                }
+            }
+        }
+        return result;
+    }
+
+    // Hooked to allow for aggressive unit responses. -Pr0nogo
+    // Arg sound_offset was cucko'd in IDA, but we don't need the arg anyway since it gets written to before being used in both cases.
+    void do_targeted_order(void* unused, u32 sound_offset, u32 pos_x, u32 pos_y, Unit* target, u32 fow_unit_id) { // 0046F5B0
+        if (!g_is_targeting) {
+            return;
+        }
+        s32 error = 0xFFFF;
+        helper::cancel_target_order();
+        u8 order_id = *g_order_id_obstructed;
+        if (target) {
+            order_id = *g_order_id_unit;
+        } else if (fow_unit_id == UnitId::None) {
+            order_id = *g_order_id_ground;
+        }
+
+        u8 use_weapon = orders_dat::use_weapon_targeting[order_id];
+        WeaponId::Enum weapon_id = orders_dat::order_weapon_id[order_id];
+        u8 tech_id = orders_dat::tech_used[order_id];
+        u32 energy_cost = 0;
+        if (tech_id != TechId::None) {
+            energy_cost = techdata_dat::energy_cost[tech_id] << 8;
+        }
+        if (orders_dat::obscured_order[order_id] == OrderId::None) {
+            fow_unit_id = UnitId::None;
+        }
+
+        u8 can_attack_final = 0;
+        u8 has_enough_energy = 0;
+        u8 can_target_spell = 0;
+        Unit** selected_units = g_client_selection_group->unit;
+        Unit** selected_units_2 = g_client_selection_group->unit;
+
+        while (1) {
+            Unit* unit = selected_units[0];
+            if (unit) {
+                if (!unit->is_frozen()) {
+                    if (!use_weapon) {
+                        if (tech_id == TechId::None) {
+                            if (fow_unit_id == UnitId::None) {
+                                helper::is_order_valid(order_id, unit, target, target, &error);
+                            } else {
+                                helper::can_target_order_on_fow_unit(unit, order_id, fow_unit_id, &error);
+                            }
+                        } else {
+                            if (helper::can_target_spell(tech_id, target, fow_unit_id, unit, pos_x, pos_y, &error)) {
+                                if (unit->has_energy(energy_cost)) {
+                                    has_enough_energy = 1;
+                                    can_target_spell = 1;
+                                }
+                            }
+                        }
+                        goto iterate_selection;
+                    }
+                    if (weapon_id == WeaponId::None) {
+                        if (!target) {
+                            if (helper::unit_can_attack_ground_type(fow_unit_id, unit)) {
+                                can_attack_final = 1;
+                            }
+                            goto iterate_selection;
+                        }
+                        if (helper::get_right_click_action_order(unit) == 3) {
+                            if (is_unit_target_out_of_max_range(unit, target)) {
+                                error = 888;
+                                goto iterate_selection;
+                            }
+                            if (helper::target_is_inside_minimum_range(unit, target)) {
+                                error = 889;
+                                goto iterate_selection;
+                            }
+                        }
+                        can_attack_final = helper::unit_can_attack_target(target, unit, 1);
+                        goto iterate_selection;
+                    }
+                    if (helper::can_weapon_target_unit(weapon_id, target, unit) || fow_unit_id < UnitId::None && ~(units_dat::base_property[fow_unit_id] >> 29) & 1) {
+                        if (unit->has_energy(energy_cost)) {
+                            has_enough_energy = 1;
+                            can_attack_final = 1;
+                        }
+                    }
+                }
+            }
+        iterate_selection:
+            selected_units = selected_units_2 + 1;
+            selected_units_2++;
+            if (selected_units_2 >= &ccmu_extender.new_client_selection_group[SelectionLimit]) {
+                break;
+            }
+        }
+
+        s32 error_type_2 = error;
+        Unit* active_unit = *g_active_portrait_unit;
+        if (!active_unit) {
+            bw::print("target_related.cpp: unit was null when it shouldn't be!");
+            return;
+        }
+        u8 race = active_unit->get_race();
+        if (use_weapon) {
+            if (!can_attack_final || error != 0xFFFF) {
+                helper::get_targeting_error_string(weapon_id, &error, target);
+                helper::display_error_message_id_with_sfx(active_unit->player, error, race + 138);
+                if (weapon_id == WeaponId::None) {
+                    helper::cmdact_target_order(order_id, target, pos_x, pos_y, fow_unit_id, g_is_keycode_used[16]);
+                }
+                return;
+            }
+        check_energy:
+            if (energy_cost && !has_enough_energy) {
+                helper::display_error_message_id_with_sfx(active_unit->player, 864, bw::get_advisor_sound_from_event_type(active_unit->player, AdvisorEvent_NoEnergy));
+                return;
+            }
+        } else {
+            if (energy_cost) {
+                if (!can_target_spell) {
+                    if (error == 0xFFFF) {
+                        error = 876;
+                    }
+                    u16 error_type_1 = error - 1;
+                    const char* error_string_2 = 0;
+                    if (error) {
+                        if (error_type_1 < g_stat_txt_buffer.get_string_count32()) {
+                            error_string_2 = (char*)g_stat_txt_buffer.get_string32(error_type_1 + 1);
+                        } else {
+                            error_string_2 = "";
+                        }
+                    }
+                    helper::get_stat_txt_string(active_unit, *g_active_nation_id, (char*)error_string_2);
+                    return;
+                }
+                error_type_2 = error;
+                goto check_energy;
+            }
+            error_type_2 = error;
+        }
+
+        if (error_type_2 == 0xFFFF) {
+            active_unit->ext().values[ValueUnitResponseOrder] = order_id;
+            hooks::play_yes_unit_response_internal(active_unit, UnitResponseContext::URC_OrderId);
+            helper::cmdact_target_order(order_id, target, pos_x, pos_y, fow_unit_id, g_is_keycode_used[16]);
+        } else {
+            u8 active_player = active_unit->player;
+            u16 error_string_id = error_type_2 - 1;
+            if (error_type_2) {
+                if (error_string_id < g_stat_txt_buffer.get_string_count32()) {
+                    helper::get_stat_txt_string(active_unit, active_player, (char*)g_stat_txt_buffer.get_string32(error_string_id + 1));
+                } else {
+                    helper::get_stat_txt_string(active_unit, active_player, "");
+                }
+            } else {
+                helper::get_stat_txt_string(active_unit, active_player, 0);
+            }
+        }
+    }
+
+    // Hooked to add support for new refineries. -Pr0nogo
+    b32 fow_refinery_check(Unit* self, u16 fow_id) { // 00474500
+        u8 race = self->get_race();
+        switch (race) {
+            case RaceId::Zerg:    return fow_id == UnitId::ZergExcisant || fow_id == UnitId::ZergEzigrisant;
+            case RaceId::Protoss: return fow_id == UnitId::ProtossAquifer;
+            case RaceId::Terran:  return fow_id == UnitId::TerranReservoir || fow_id == UnitId::TerranWellbore;
+        //  case RaceId::Askosi:  return fow_id == UnitId::None; // Not yet implemented
+            default:              return 0;
+        }
+    }
+
+    // Hooked to fix infinite attack range on hold position. -Pr0nogo
+    void pick_new_target_if_needed(Unit* unit) { // 00477510, unused Unit* arg1
+        if (!can_pick_new_target(unit)) {
+            return;
+        }
+        if (unit->status & UnitStatus::AttackMove) {
+            Unit* best_target = 0;
+            s32 best_score = INT_MAX;
+
+            Unit* order_target = unit->order_target.unit;
+            if (order_target) {
+                if (unit->unit_ai && !helper::is_unit_enemy(unit, order_target)) {
+                    return;
+                }
+                if (unit_can_attack_target(order_target, unit, true)) {
+                    if (!helper::cannot_chase_target(unit, order_target)) {
+                        best_target = order_target;
+                        best_score = helper::get_target_priority(unit, order_target);
+                        if (!best_score) {
+                            if (helper::is_unit_in_weapon_range(unit, order_target)) {
+                                return;
+                            }
+                            best_score = (!(unit->status & UnitStatus::Reacts) * 4 + 1) | ((unit->main_order_id == OrderId::HoldPositionNormal) * 4);
+                        }
+                    }
+                }
+            }
+            Unit* auto_target = unit->auto_target_unit;
+            if (auto_target) {
+                if (helper::unit_can_attack_target(auto_target, unit, 1) && helper::is_unit_enemy(unit, unit->auto_target_unit)
+                    && !helper::cannot_chase_target(unit, auto_target))
+                {
+                    s32 auto_target_score = helper::get_target_priority(unit, unit->auto_target_unit);
+                    if (!auto_target_score && !helper::is_unit_in_weapon_range(unit, unit->auto_target_unit)) {
+                        auto_target_score = (!(unit->status & UnitStatus::Reacts) * 4 + 1) | ((unit->main_order_id == OrderId::HoldPositionNormal) * 4);
+                    }
+                    if (auto_target_score < best_score) {
+                        best_target = unit->auto_target_unit;
+                        best_score = auto_target_score;
+                    }
+                } else {
+                    unit->auto_target_unit = 0;
+                }
+            }
+
+            if (!best_target || best_score) {
+                if (unit->unit_ai && helper::ai_update_attack_target(unit, 0, 1, 0)) {
+                    return;
+                }
+                Unit* best_attack_target = helper::find_best_attack_target(unit);
+                if (best_attack_target) {
+                    if (helper::get_target_priority(unit, best_attack_target) < best_score) {
+                        best_target = best_attack_target;
+                    }
+                }
+            }
+
+            if (!best_target || helper::unit_can_attack_target(best_target, unit, true)) {
+                unit->order_target.unit = best_target;
+                Unit* subunit = unit->subunit;
+                if (subunit) {
+                    if (subunit->main_order_id == units_dat::attack_unit_order[subunit->id] || subunit->main_order_id == OrderId::HoldPositionNormal) {
+                        subunit->order_target.unit = best_target;
+                    }
+                }
+            }
+        }
+    }
+
+    // Hooked to make units like the Paladin not turn to face targets after starting their attacks. -Pr0nogo
+    void change_direction_to_move_waypoint(Unit* unit) { // 00495840
+        if (unit->next_movement_waypoint.x == unit->position.x && unit->next_movement_waypoint.y == unit->position.y) {
+            if (unit->next_target_waypoint.x == unit->position.x && unit->next_target_waypoint.y == unit->position.y) {
+                unit->velocity_direction_2 = unit->current_direction_1;
+                helper::set_unit_movement_speed_ex(unit);
+            } else if (unit->id != UnitId::TerranPaladin || !(unit->movement_flags & MovementFlags_StartingAttack)) {
+                unit->velocity_direction_2 = helper::get_direction_from_points(unit->next_target_waypoint.y, unit->position.x, unit->next_target_waypoint.x, unit->position.y);
+                helper::set_unit_movement_speed_ex(unit);
+            }
+        } else {
+            unit->velocity_direction_2 = helper::get_direction_from_points(unit->next_movement_waypoint.y, unit->position.x, unit->next_movement_waypoint.x, unit->position.y);
+            helper::set_unit_movement_speed_ex(unit);
+        }
+    }
+
+    // Hooked to investigate crashes. -Pr0nogo
+    void orders_turret_guard(Unit* unit) { // 004777F0
+        Unit* subunit = unit->subunit;
+        u32 waypoint_y = subunit->next_target_waypoint.y;
+        u32 waypoint_x = subunit->next_target_waypoint.x;
+        if (waypoint_x != unit->next_target_waypoint.x || waypoint_y != unit->next_target_waypoint.y) {
+            unit->next_target_waypoint.x = waypoint_x;
+            unit->next_target_waypoint.y = waypoint_y;
+        }
+        if (!helper::attack_recent_attacker(unit) && !unit->main_order_timer) {
+            u32 unit_id = unit->id;
+            if (units_dat::base_property[unit_id] & UnitProperty::Subunit) {
+                Unit* main_unit = unit->subunit;
+                u32 main_waypoint_y = main_unit->next_target_waypoint.y;
+                u32 main_waypoint_x = main_unit->next_target_waypoint.x;
+                if (main_waypoint_x != unit->next_target_waypoint.x || main_waypoint_y != unit->next_target_waypoint.y) {
+                    unit->next_target_waypoint.x = main_waypoint_x;
+                    unit->next_target_waypoint.y = main_waypoint_y;
+                }
+            }
+            if (helper::get_seek_range(unit)) {
+                Unit* target = helper::find_best_attack_target(unit);
+                if (target) {
+                    helper::order_to_attack_target(unit, target, 1, 0);
+                }
+            }
+        }
+    }
+
+    // Hooked to use non-sprite positions. -Pr0nogo
+    void get_closest_point_of_target(Unit* unit, s32* out_x, s32* out_y) { // 004762C0
+        Unit* target = unit->order_target.unit;
+        u16 target_x = target->position.x;
+        u16 target_y = target->position.y;
+        Box16* target_dims = &units_dat::unit_bounds[target->id];
+
+        s32 new_x = target_x - target_dims->x;
+        s32 new_y = target_y - target_dims->y;
+        s32 new_w = target_x + target_dims->w;
+        s32 new_h = target_y + target_dims->h;
+
+        s32 shift_x = (new_w - new_x) >> 2;
+        s32 shift_y = (new_h - new_y) >> 2;
+        s32 shift_w = new_w - shift_x;
+
+        Box16 acceptable_area = {};
+        acceptable_area.x = shift_x + new_x;
+        acceptable_area.y = shift_y + new_y;
+
+        s32 final_h = new_h - shift_y;
+        v2u16 old_pos(acceptable_area.x + ((shift_w - (s32)acceptable_area.x) / 2), acceptable_area.y + ((final_h - (s32)acceptable_area.y) / 2));
+        v2u16 new_pos(unit->position.x, unit->position.y);
+        if (helper::make_valid_position(&old_pos, &new_pos, &acceptable_area))
+        {
+            *out_x = new_pos.x;
+            *out_y = new_pos.y;
+        } else {
+            *out_x = old_pos.x;
+            *out_y = old_pos.y;
+        }
+    }
+
+    // Hooked to use non-sprite positions. -Pr0nogo
+    Unit* unit_order_move_to_target_reset_order_state(Unit* unit, u8 order_id, Unit* target) { // 00479FA0
+        unit->main_order_id = order_id;
+        unit->order_target.unit = target;
+        if (target) {
+            unit->order_target.pt.x = target->position.x;
+            unit->order_target.pt.y = target->position.y;
+        } else {
+            unit->order_target.pt.y = 0;
+            unit->order_target.pt.x = 0;
+        }
+        unit->main_order_state = 0;
+        unit->order_unit_id = UnitId::None;
+        return unit;
+    }
+
+    // Hooked to use non-sprite positions. -Pr0nogo
+    b32 is_target_within_min_range(Unit* unit, u32 min_range, Unit* target) { // 00430F10
+        u32 pos_x = unit->position.x;
+        u32 pos_y = unit->position.y;
+        s16 bounds_bot = units_dat::unit_bounds[unit->id].h;
+        s16 bounds_top = unit->position.y - units_dat::unit_bounds[unit->id].y;
+        s16 bounds_left = pos_x - units_dat::unit_bounds[unit->id].x;
+        s16 width = units_dat::unit_bounds[unit->id].w;
+        if (unit->is_subunit()) {
+            Unit* parent = unit->subunit;
+            pos_x = parent->position.x;
+            pos_y = parent->position.y;
+            bounds_bot = units_dat::unit_bounds[parent->id].h;
+            Box16* bounds = &units_dat::unit_bounds[parent->id];
+            bounds_top = parent->position.y - bounds->y;
+            bounds_left = pos_x - bounds->x;
+            width = bounds->w;
+        }
+
+        s16 bottom_fin = pos_y + bounds_bot;
+        s16 x_width = pos_x + width;
+        s16 targ_pos_x = target->position.x;
+        s16 targ_pos_y = target->position.y;
+        Box16* target_bounds = &units_dat::unit_bounds[target->id];
+        s16 targ_top = targ_pos_y - target_bounds->y;
+        s16 x_1 = x_width + 1;
+        s16 y_bot = bottom_fin + 1;
+        s16 targ_left = targ_pos_x - target_bounds->x;
+        s16 targ_bottom = targ_pos_y + target_bounds->h + 1;
+        s32 x2 = bounds_left - (signed __int16)(targ_pos_x + target_bounds->w + 1);
+        if (x2 < 0) {
+            x2 = targ_left - x_1;
+            if (x2 < 0) {
+                x2 = 0;
+            }
+        }
+        s32 y2 = bounds_top - targ_bottom;
+        if (y2 < 0) {
+            y2 = targ_top - y_bot;
+            if (y2 < 0) {
+                y2 = 0;
+            }
+        }
+        return min_range >= helper::get_distance_fast(0, x2, 0, y2);
+    }
+
+    // Hooked to protect against nullsprite crashes. -Pr0nogo
+    u32 is_target_visible(Unit* target, Unit* unit) { // 004E5E30
+        s32 player_flag = 1 << unit->player;
+        if (!target || !target->sprite) { // sprite is new
+            ActiveTile* tile = bw::get_active_tile_at_coords(unit->order_target.pt);
+            return player_flag & ~(tile->flags & 0xFF);
+        }
+
+        if (player_id_is_extended(unit->player)) {
+            return true;
+        }
+        if (!(target->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) || player_flag & target->detection_status) {
+            return (u8)(player_flag & target->sprite->visibility_status);
+        }
+    }
+
+    // Hooked to prevent auto acquisition for units with receding mind control effects. -Pr0nogo
+    b32 is_unit_enemy(Unit* self, Unit* target) { // 0047B910
+        // New!
+        if (!unit_should_be_autoattacked_by_player(target, self->player)) {
+            return false;
+        }
+        u8 target_player = target->player;
+        if (target_player == 11) {
+            target_player = target->sprite->player;
+        }
+        return !bw::is_allied_to(self->player, target_player);
+    }
+
+    // Hooked to patch nullsprite crash. -Pr0nogo
+    b32 is_ready_to_attack(Unit* unit, WeaponId::Enum weapon_id) { // 00476640
+        if (unit->movement_flags & MovementFlags_StartingAttack) {
+            return false;
+        }
+
+        Unit* target = unit->order_target.unit;
+        u32 distance = 0;
+        bool should_move_towards_target = false;
+        if (target && target->sprite) { // Sprite is new.
+            distance = helper::get_distance_to_unit(unit, target);
+        } else {
+            distance = helper::get_distance_fast(unit->position.x, unit->order_target.pt.x, unit->position.y, unit->order_target.pt.y);
+        }
+        u32 min_range = weapons_dat::min_range[weapon_id];
+        if ((min_range && distance < min_range) || unit->pathing_flags & PathingFlags_IsStacked) {
+            return false;
+        }
+        u32 range = helper::get_unit_max_weapon_range(unit, weapon_id);
+        if (distance > range) {
+            return false;
+        }
+        if ((unit->next_target_waypoint.x != unit->position.x || unit->next_target_waypoint.y != unit->position.y)
+         && !helper::is_unit_in_attack_angle(unit->next_target_waypoint.x, unit->next_target_waypoint.y, unit, weapon_id))
+        {
+            unit->order_queue_timer = 0;
+            return false;
+        }
+        return true;
+    }
+
+    // Hooked to eventually extend weapon ids past 255.
+    // This is very ugly, will need to be refactored. Initial tests seemed fine. -Pr0nogo
+    Unit* ai_choose_target(Unit** unit_array, u32 player, Unit* unit, u32 region_id, b32 is_ground) { // 00431990
+        u32 unit_id = UnitId::None;
+        s16 unit_region_id = region_id;
+        UnitAi* unit_ai = 0;
+        if (unit) {
+            unit_id = unit->id;
+            unit_region_id = helper::get_region_id(unit->position.x, unit->position.y);
+            unit_ai = unit->unit_ai;
+        }
+
+        Unit* target = *unit_array;
+        Unit* final_unit = 0;
+        Unit* final_target = 0;
+        b32 can_proceed_with_attack = 0;
+        if (!target) {
+            u32 temp = g_temp_units_list_arrays_counts_list_last_index[g_temp_units_list_arrays_counts_list_last_index[0]--];
+            *g_temp_units_list_current_array_count = temp;
+            return final_target;
+        }
+
+        while (1) {
+            if (!helper::should_attack_unit(player, target)) {
+                goto continue_loop;
+            }
+            if (!unit) {
+                goto check_target;
+            }
+            if (unit->is_frozen()) {
+                goto continue_loop;
+            }
+            if (!target) {
+                goto continue_loop;
+            }
+            if (target->is_invincible()) {
+                goto continue_loop;
+            }
+            if (target->sprite->is_hidden()) {
+                goto continue_loop;
+            }
+            if (helper::unit_can_see_cloaked_target(target, unit)) {
+                goto continue_loop;
+            }
+            final_unit = unit->subunit;
+            if (!helper::unit_is_subunit(unit->subunit)) {
+                final_unit = unit;
+            }
+            if (unit->is_carrier()) {
+                goto check_target;
+            }
+            if (unit->is_reaver()) {
+                break;
+            }
+            if (helper::unit_can_infest(unit)) {
+                can_proceed_with_attack = helper::is_infestable_target(target) != 0;
+            } else {
+                if (target->is_in_air()) {
+                    can_proceed_with_attack = final_unit->get_air_weapon() != WeaponId::None;
+                } else {
+                    can_proceed_with_attack = final_unit->get_ground_weapon() != WeaponId::None;
+                }
+            }
+            if (can_proceed_with_attack) {
+                goto check_target;
+            }
+        continue_loop:
+            target = unit_array[1];
+            ++unit_array;
+            if (!target) {
+                u32 temp = g_temp_units_list_arrays_counts_list_last_index[g_temp_units_list_arrays_counts_list_last_index[0]--];
+                *g_temp_units_list_current_array_count = temp;
+                return 0;
+            }
+        }
+        if (target->is_in_air()) {
+            goto continue_loop;
+        }
+        if (!helper::unit_has_path_to_target(unit, target)) {
+            goto continue_loop;
+        }
+    check_target:
+        if (!unit || !unit->is_computer_controlled() || unit->is_in_air() || helper::is_unit_in_weapon_range(target, unit) || !((target->status >> 7) & 1)) {
+            GuardAi* guard_ai = 0;
+            u32 guard_home_x = 0;
+            u32 guard_home_y = 0;
+            s16 region_2 = helper::get_region_id(target->position.x, target->position.y);
+            bool check_target_priority = helper::get_region_id(target->position.x, target->position.y) == unit_region_id || helper::is_target_within_min_range(unit, 288, target);
+            if (unit_ai && unit_ai->type == AiType::Guard) {
+                check_target_priority = false;
+                guard_ai = (GuardAi*)unit_ai;
+                guard_home_x = guard_ai->current_home.x;
+                guard_home_y = guard_ai->current_home.y;
+                if (region_2 == helper::get_region_id(guard_home_x, guard_home_y)) {
+                    check_target_priority = true;
+                }
+                if ((helper::get_distance_fast(target->halt.x, guard_home_x << 8, target->halt.y, guard_home_y << 8) & 0xFFFFFF00) <= 49152 && helper::is_distance_greater_than_halt_distance(unit, guard_home_x, guard_home_y, 192)) {
+                    check_target_priority = true;
+                }
+            }
+            if (check_target_priority) {
+                u32 priority = helper::get_targeting_priority(target, is_ground);
+                if (priority > -1) {
+                    final_target = target;
+                }
+                goto continue_loop;
+            }
+        }
+        goto continue_loop;
+    }
+
+    // Hooked to eventually extend weapon ids past 255. -Pr0nogo
+    WeaponId::Enum get_air_weapon(Unit* unit) { // 00475840
+        return unit->get_air_weapon();
+    }
+
+    // Hooked to eventually extend weapon ids past 255. -Pr0nogo
+    void orders_watch_target(Unit* unit) { // 0047BAB0
+        Unit* target = unit->order_target.unit;
+        if (!target || !unit_can_attack_target(target, unit, 1)) {
+            helper::return_to_idle_at_pos(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+            return;
+        }
+        if (!is_target_visible(target, unit)) {
+            if (helper::get_right_click_action_order(unit) == OrderId::PlayerGuard) {
+                helper::return_to_idle_at_pos(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+            }
+            return;
+        }
+
+        Unit* final_unit = unit->subunit;
+        if (!final_unit || !final_unit->is_subunit()) {
+            final_unit = unit;
+        }
+
+        WeaponId::Enum weapon_id = WeaponId::None;
+        if (target->is_in_air()) {
+            weapon_id = units_dat::air_weapon[final_unit->id];
+        } else {
+            if (!unit_id_is_burrowed_attacker(final_unit->id) || final_unit->burrowed_attacker_can_attack()) {
+                weapon_id = units_dat::ground_weapon[final_unit->id];
+            }
+        }
+        
+        if (weapon_id != WeaponId::None) {
+            return;
+        }
+        u32 min_range = weapons_dat::min_range[weapon_id];
+        if (min_range == 0 || !is_target_within_min_range(final_unit, min_range, target)) {
+            return;
+        }
+        if (helper::is_target_within_min_movement_range(target, final_unit, helper::get_unit_max_weapon_range(unit, weapon_id))) {
+            return;
+        }
+
+        if (helper::get_right_click_action_order(unit) == OrderId::PlayerGuard) {
+            helper::return_to_idle_at_pos(unit, unit->order_target.pt.x, unit->order_target.pt.y);
+        }
+    }
+
+    // Hooked to eventually extend weapon ids past 255. -Pr0nogo
+    bool target_is_inside_minimum_range(Unit* unit, Unit* target) { // 004764D0
+        Unit* final_unit = unit->subunit;
+        if (!final_unit || !final_unit->is_subunit()) {
+            final_unit = unit;
+        }
+
+        u32 weapon_id = WeaponId::None;
+        if (target->is_in_air()) {
+            weapon_id = units_dat::air_weapon[final_unit->id];
+        } else if (unit_id_is_burrowed_attacker(final_unit->id) || final_unit->burrowed_attacker_can_attack()) {
+            weapon_id = units_dat::ground_weapon[final_unit->id];
+        }
+        u32 min_range = weapons_dat::min_range[weapon_id];
+        if (weapon_id != WeaponId::None && min_range) {
+            return helper::is_target_within_min_range(final_unit, min_range, target);
+        }
+        return false;
+    }
+
+    // Hooked to eventually extend weapon ids past 255. -Pr0nogo
+    WeaponId::Enum get_ground_weapon(Unit* unit) { // 00475A90
+        if (unit_id_is_burrowed_attacker(unit->id) && !unit->burrowed_attacker_can_attack()) {
+            return WeaponId::None;
+        }
+        auto weapon_id = units_dat::ground_weapon[unit->id];
+        if (weapon_id != WeaponId::None) {
+            return weapon_id;
+        }
+        Unit* subunit = unit->subunit;
+        if (subunit) {
+            return units_dat::ground_weapon[subunit->id];
+        }
+        return WeaponId::None;
+    }
+
+    // Hooked to investigate crashes. -Pr0nogo
+    void minimap_game_target_order(DialogEvent* event) { // 004A55F0
+        u16 cursor_pos_x = event->current.x;
+        u16 cursor_pos_y = event->current.y;
+        helper::get_minimap_cursor_pos(&cursor_pos_x, &cursor_pos_y);
+        helper::reset_game_input_procs(0);
+        u16 pos_y = cursor_pos_y;
+        u16 pos_x = cursor_pos_x;
+        helper::do_targeted_order(cursor_pos_x, cursor_pos_y, 0, UnitId::None);
+        helper::show_cursor_marker(pos_y, pos_x);
+    }
+
+    // Hooked to extend weapons to u16. -Pr0nogo
+    bool can_weapon_target_unit(WeaponId::Enum weapon_id, Unit* target, Unit* attacker) { // 00475CE0
+        return bw::can_weapon_target_unit(weapon_id, target, attacker);
+    }
+
+    // Hooked to extend weapons to u16. -Pr0nogo
+    void get_targeting_error_string(WeaponId::Enum weapon_id, u32* out_error, Unit* target) { // 0046EFE0
+        if (target && target->is_invincible()) {
+            if (target->stasis_timer) {
+                *out_error = 900; // Units in stasis can't be targeted.
+            } else {
+                *out_error = 897; // Invalid target.
+            }
+            return;
+        }
+        if (*out_error == -1) {
+            *out_error = 879; // Unable to attack target.
+        }
+        if (weapon_id != WeaponId::None) {
+            *out_error = weapons_dat::error_message[weapon_id];
+        }
+    }
+
+    // Hooked to extend weapons to u16. -Pr0nogo
+    bool is_threat(Unit* candidate, Unit* self) { // 00476930
+        Unit* target = candidate;
+        if (!candidate) {
+            target = self->order_target.unit;
+            if (!target) {
+                return false;
+            }
+        }
+        u32 target_player = target->player == 11 ? target->sprite->player : target->player;
+        if (bw::is_allied_to(self->player, target_player)) {
+            return false;
+        }
+        if (target->is_hallucination()) {
+            if (helper::get_current_hp_plus_shields(target) != helper::get_total_hp_plus_shields(target)) {
+                return false;
+            }
+        }
+        if (helper::unit_can_attack_target(self, target, 1)) {
+            return helper::is_unit_target_out_of_max_range(target, self) == 0;
+        }
+        if (target->is_valid_garrison() && helper::is_unit_loaded(target)) {
+            return true;
+        }
+        return false;
+    }
+
+    // Hooked to eventually extend weapon ids past 255. -Pr0nogo
+    bool is_unit_in_attack_angle(s32 pos_x, s32 pos_y, Unit* unit, WeaponId::Enum weapon_id) { // 00475BE0
+        s32 angle = bw::get_angle(unit->position.x, unit->position.y, pos_x, pos_y);
+
+        if (unit_id_is_burrowed_attacker(unit->id)) {
+            unit->current_direction_1 = angle;
+            return true;
+        }
+
+        s32 angle_difference = unit->current_direction_1 - angle;
+        if (angle_difference < 0) {
+            angle_difference += 256;
+        }
+        if (angle_difference > 128) {
+            angle_difference = 256 - angle_difference;
+        }
+        return angle_difference <= weapons_dat::attack_angle[weapon_id];
+    }
+}

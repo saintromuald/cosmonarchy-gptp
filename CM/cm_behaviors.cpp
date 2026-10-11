@@ -1,0 +1,698 @@
+#include "cm_behaviors.h"
+#include "BW\api.h"
+#include "globals.h"
+#include "hooks\load_unload_proc.h"
+
+bool is_any_corpse(Thingy* thingy) {
+	if (thingy->sprite && SpriteId::is_corpse((SpriteId::Enum)thingy->sprite->id) && !(thingy->sprite->flags & SpriteFlags::RemoveAfterDeath)) {
+		ThingyExt* corpse_ext = get_thingy_ext(thingy);
+		u32 unit_id = corpse_ext->unit_id;
+		if (units_dat::base_property[unit_id] & UnitProperty::Building
+		||	unit_id == UnitId::ZergLarva
+		||  unit_id == UnitId::ZergOcsalLarva
+		||  unit_id == UnitId::ZergEgg
+		||  unit_id == UnitId::ZergCocoon
+		||  unit_id == UnitId::ProtossPlasmaShell
+		||  unit_id == UnitId::ProtossSteward) {
+			return false;
+		}
+		return true;
+	}
+	return false;
+}
+
+static bool internal_is_corpse_active(Thingy* corpse) {
+	ThingyExt* corpse_ext = get_thingy_ext(corpse);
+	return corpse_ext->activity_timer <= 10 * 24;
+}
+
+bool is_inactive_corpse(Thingy* thingy) {
+	if (!is_any_corpse(thingy)) {
+		return false;
+	}
+	return !internal_is_corpse_active(thingy);
+}
+
+bool is_active_corpse(Thingy* thingy) {
+	if (!is_any_corpse(thingy)) {
+		return false;
+	}
+	return internal_is_corpse_active(thingy);
+}
+
+void consume_corpse(Thingy* corpse) {
+	corpse->sprite->flags |= SpriteFlags::RemoveAfterDeath;
+	corpse->sprite->play_iscript_animation(IscriptAnimation::Death);
+}
+
+Thingy* get_closest_active_corpse(v2u16 position, SearchRadius radius) {
+	return g_corpse_search
+		.search(position, radius)
+		.sort_by_distance(position)
+		.first([](Thingy* corpse) { return is_active_corpse(corpse); });
+}
+
+Thingy* get_closest_active_corpse(v2u16 position, u32 radius) {
+	return get_closest_active_corpse(position, SearchRadius{radius});
+}
+
+Unit* spawn_reclaimed_unit(u32 player, v2u16 pos, UnitId::Enum unit_id) {
+	if (units_dat::base_property[unit_id] & UnitProperty::Flyer) {
+		if (pos.y > 42) {
+			pos.y -= 42;
+		} else {
+			pos.y = 0;
+		}
+	}
+
+	Unit* unit = bw::create_unit_in_game(unit_id, player, pos.x, pos.y);
+	if (unit) {
+		auto& unit_ext = unit->ext();
+		unit->status |= UnitStatus::Invincible | UnitStatus::Unmovable | UnitStatus::CanNotReceiveOrders | UnitStatus::CanNotAttack;
+		unit->play_iscript_animation(IscriptAnimation::Unused1);
+		unit_ext.values[ValueReviveStarted] = 1;
+		unit_ext.timers[TimerReviveFlagClearMin] = 14; // 3;
+		unit_ext.timers[TimerReviveFlagClearMax] = 14;
+		switch (unit->id) {
+			case UnitId::ZergRililisk:
+			case UnitId::ZergRilirokor: {
+				unit->remove_timer = Broodspawn::LifeTimer;
+			} break;
+			case UnitId::ZergAxitriliskWeaponless: {
+				unit_ext.timers[TimerAxitriliskPerpetualWind] = Axitrilisk::PerpetualWindTimer;
+			} break;
+		}
+
+		unit->energy = 0;
+		unit->shields = 0;
+		unit->set_hitpoints(5 * 256);
+		u32 image_id = ImageId::LazarusAgentProc_Small + bw::get_overlay_offset(unit->id, true);
+		unit->sprite->create_top_overlay(image_id);
+		helper::play_sound_from_unit(SoundId::LazarusAgentProc, unit);
+		unit_ext.timers[TimerReclaimHeal] = Reclamation::ReviveHealTimer;
+		unit_ext.timers[TimerReclaimStun] = Reclamation::ReviveStunTimer;
+		unit_ext.timers[TimerStun]        = Reclamation::ReviveStunTimer;
+		unit_ext.values[ValueReclaimed]   = 1;
+		if (game_kind_has_zombies() && player == NeutralHostilePlayer) {
+			unit_ext.values[ValueNoCorpse] = true;
+		}
+	}
+	return unit;
+}
+
+Unit* reclaim_corpse(Thingy* corpse, u32 player) {
+	if (!is_active_corpse(corpse)) {
+		return 0;
+	}
+	ThingyExt* corpse_ext = get_thingy_ext(corpse);
+	UnitId::Enum unit_id = (UnitId::Enum)corpse_ext->unit_id;
+	v2u16 pos = corpse->sprite->position;
+
+	Unit* unit = spawn_reclaimed_unit(player, pos, unit_id);
+	if (unit) {
+		auto& unit_ext = unit->ext();
+		if (corpse_ext->create_origin == UnitId::ZergOcsalLarva || corpse_ext->is_regression) {
+			unit_ext.values[ValueRegressionUnstable] = true;
+		}
+		if (unit_id_is_mine_layer((UnitId::Enum)unit->id)) {
+			unit->mine_carrier.mine_count = corpse_ext->mine_count;
+		}
+		consume_corpse(corpse);
+	}
+    return unit;
+}
+
+void avenge_corpse(Thingy* corpse, u32 player) {
+	ThingyExt* corpse_ext = get_thingy_ext(corpse);
+	u32 corpse_player = corpse_ext->player;
+	if (!is_active_corpse(corpse) || !bw::are_mutual_allies(player, corpse_player)) {
+		return;
+	}
+
+	v2u16 pos = corpse->sprite->position;
+	bw::create_and_init_thingy(SpriteId::CuirassStonewallProtocolOverlay, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
+	helper::play_sound_at_pos(SoundId::ZealotRevive01, pos);
+		
+	for (Unit* unit : g_unit_search.radial(corpse->sprite->position, corpse_ext->sight_range_before_death)) {
+		if (!bw::is_allied_to(player, unit->player) || unit->player == 11) {
+			continue;
+		}
+		if (unit->is_building() && !(units_dat::base_property[unit->id] & UnitProperty::FlyingBuilding)) {
+			continue;
+		}
+		auto& unit_ext = unit->ext();
+		unit_ext.timers[TimerAvenge] = 3 * 24 + 1; // + 1 for update_speed call in game_hooks
+		unit->sprite->create_underlay(ImageId::SmallExplosion_Unused);
+		unit->update_speed();
+	}
+
+	consume_corpse(corpse);
+}
+
+void ascend_corpse(Thingy* corpse, u32 player) {
+	ThingyExt* corpse_ext = get_thingy_ext(corpse);
+	u32 corpse_player = corpse_ext->player;
+	if (!is_active_corpse(corpse) || bw::are_mutual_allies(player, corpse_player)) {
+		return;
+	}
+
+	v2u16 pos = corpse->sprite->position;
+	bw::create_and_init_thingy(SpriteId::CuirassStonewallProtocolOverlay, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
+	ascend_in_area(player, pos, corpse_ext->sight_range_before_death);
+	consume_corpse(corpse);
+}
+
+void ascend_in_area(u32 player, v2u16 position, u32 range) {
+	helper::play_sound_at_pos(SoundId::Protoss_ZEALOT_PZeRag00_wav, position);
+
+	for (Unit* unit : g_unit_search.radial(position, range)) {
+		if (!bw::is_allied_to(player, unit->player) || unit->player == 11) {
+			continue;
+		}
+		if (!unit_is_combatant(unit)) {
+			continue;
+		}
+		UnitExt* unit_ext = get_unit_ext(unit);
+		unit_ext->timers[TimerAscend] = 3 * 24;
+	}
+}
+
+void avenge_or_ascend_corpse(Thingy* corpse, u32 player) {
+	ThingyExt* corpse_ext = get_thingy_ext(corpse);
+	u32 corpse_player = corpse_ext->player;
+	if (bw::are_mutual_allies(player, corpse_player)) {
+		avenge_corpse(corpse, player);
+	} else {
+		ascend_corpse(corpse, player);
+	}
+}
+
+void avenge_corpses_in_area(v2u16 position, u32 radius, u32 player) {
+	for (Thingy* corpse : g_corpse_search.radial(position, radius)) {
+		avenge_corpse(corpse, player);
+	}
+}
+
+void ascend_corpses_in_area(v2u16 position, SearchRadius radius, u32 player) {
+	for (Thingy* corpse : g_corpse_search.search(position, radius)) {
+		ascend_corpse(corpse, player);
+	}
+}
+
+void avenge_or_ascend_corpses_in_area(v2u16 position, u32 radius, u32 player) {
+	for (Thingy* corpse : g_corpse_search.radial(position, radius)) {
+		avenge_or_ascend_corpse(corpse, player);
+	}
+}
+
+void avenge_or_ascend_corpses_in_area(v2u16 position, SearchRadius radius, u32 player) {
+	for (Thingy* corpse : g_corpse_search.search(position, radius)) {
+		avenge_or_ascend_corpse(corpse, player);
+	}
+}
+
+u32 unit_avenges_or_ascends(Unit* unit) {
+	auto& unit_ext = unit->ext();
+
+	// Avenge
+	bool avenges = false;
+	switch (unit->id) {
+		case UnitId::ProtossZealotStarbound:
+		case UnitId::ProtossEcclesiast:
+		case UnitId::ProtossVassal:
+		case UnitId::ProtossServitor:
+		case UnitId::ProtossArchon: {
+			avenges = true;
+		} break;
+		default: {
+			if (unit_ext.values[ValueIsZombified]) {
+				avenges = true;
+			} else if (unit_ext.timers[TimerHeraldAvenge]) {
+				avenges = true;
+			}
+		} break;
+	}
+	if (avenges) {
+		return unit->player + 1;
+	}
+
+	// Ascend
+	s32 ascend_player = -1;
+	if (unit_ext.values[ValueSignifyStacks] >= 5) {
+		ascend_player = unit_ext.values[ValueSignifyPlayer];
+	} else if (unit_ext.timers[TimerPariahHit]) {
+		ascend_player = unit_ext.values[ValuePariahHitPlayer];
+	}
+
+	if (ascend_player >= 0 && !bw::are_mutual_allies(unit->player, ascend_player)) {
+		return ascend_player + 1;
+	}
+	return 0;
+}
+
+void salvage_corpse(Thingy* corpse, u32 player) {
+	ThingyExt* corpse_ext = get_thingy_ext(corpse);
+	UnitId::Enum unit_id = (UnitId::Enum)corpse_ext->unit_id;
+
+	if (player_id_is_extended(player)) {
+		return;
+	}
+	u32 mineral_cost = units_dat::mineral_cost[unit_id] / 4;
+	u32 vespene_cost = units_dat::vespene_cost[unit_id] / 4;
+	if (UnitId::is_triple_birth(unit_id)) {
+		mineral_cost /= 3;
+		vespene_cost /= 3;
+	} else if (units_dat::base_property[corpse->unit_id] & UnitProperty::TwoUnitsIn1Egg) {
+		mineral_cost /= 2;
+		vespene_cost /= 2;
+	}
+	// TODO: Probably offload this to a function that adds resources to players more generically
+	g_game_minerals[player] += mineral_cost;
+	g_total_minerals[player] += mineral_cost;
+	g_aiscript_controller[player].minerals_available += mineral_cost;
+	g_game_vespene[player] += vespene_cost;
+	g_total_vespene[player] += vespene_cost;
+	g_aiscript_controller[player].vespene_available += vespene_cost;
+
+	v2u16 pos = corpse->sprite->position;
+	bw::create_and_init_thingy(SpriteId::CuirassStonewallProtocolOverlay, pos.x, pos.y, corpse->sprite->player, corpse->sprite->elevation);
+	// TODO: SFX
+
+	consume_corpse(corpse);
+}
+
+void incubate(Unit* target, u32 count, u32 unit_id, u32 player) {
+	auto& target_ext = target->ext();
+	if (target_ext.timers[TimerIncubationArm] || target->is_invincible() || unit_id_is_broodspawn(target->id)) {
+		return;
+	}
+	target_ext.values[ValueIncubationCount] = count; 
+	target_ext.values[ValueIncubationUnitId] = unit_id; 
+	target_ext.values[ValueIncubationPlayer] = player;
+	target_ext.timers[TimerIncubationArm] = 2secs + 1;
+	bw::add_unit_overlay(target, ImageId::ParasiteOverlay);
+}
+
+void set_custom_egg(Unit* egg, u32 unit_id, u32 time, u32 hp) {
+	egg->order_to_idle();
+	egg->sprite->play_iscript_animation(IscriptAnimation::Walking, true);
+	egg->build_queue[egg->build_queue_slot] = unit_id;
+	egg->set_hitpoints(hp);
+
+	auto& egg_ext = egg->ext();
+	egg_ext.values[ValueCustomEggActive]   = true;
+	egg_ext.timers[TimerCustomEggHatch]    = time;
+	egg_ext.values[ValueCustomEggHatchMax] = time;
+	egg_ext.values[ValueCustomEggHpMax]    = hp;
+}
+
+void fire_secondary_melee_weapon_if_needed(Unit* unit) {
+	Unit* target = unit->order_target.unit;
+	if (unit->order_signal & 0x20 && unit->ground_weapon_cooldown <= 1) {
+		unit->order_signal &= ~0x20;
+		if (target && !target->is_in_air() && unit->get_distance_to_target(target) <= CommonBehavior::MeleeWeaponDistance) {
+			unit->play_iscript_animation(IscriptAnimation::SpecialState1);
+		}
+	}
+}
+
+bool can_infest(u32 player, Unit* target, bool force) {
+	// Spawning cagra wouldn't work properly on units. Spawning cagra on units or addons could corrupt/crash the game.
+	return target->is_completed() && !(units_dat::base_property[target->id] & UnitProperty::Addon)
+		&& (force || is_hostile_or_neutral(player, target->player));
+}
+
+void mark_infesting(u32 player, Unit* target) {
+	if (!can_infest(player, target)) {
+		return;
+	}
+	auto& target_ext = target->ext();
+	target_ext.timers[TimerInfesting] = 24;
+	target_ext.values[ValueInfestingPlayer] = player;
+}
+
+static u32 blissful_embrace_overlay_image_id(Unit* target) {
+	if (units_dat::base_property[target->id] & UnitProperty::Building) {
+		if (unit_id_is_smaller_building(target->id)) {
+			return ImageId::InfestedOverlay_Small;
+		} else {
+			return ImageId::InfestedOverlay_Large;
+		}
+	} else {
+		if (units_dat::base_property[target->id] & UnitProperty::LargeOverlay) {
+			return ImageId::InfestedOverlay_Large;
+		} else if (units_dat::base_property[target->id] & UnitProperty::MediumOverlay) {
+			return ImageId::InfestedOverlay_Small;
+		} else {
+			return ImageId::OcsalRegressionOverlay;
+		}
+	}
+}
+
+void blissful_embrace_tick(Unit* target) {
+	// Spawn infestation overlay
+	u32 overlay_image_id = blissful_embrace_overlay_image_id(target);
+	if (!target->get_overlay(overlay_image_id)) {
+		target->sprite->create_overlay(overlay_image_id);
+	}
+
+	// Init
+	UnitExt* target_ext = get_unit_ext(target);
+	if (!target_ext->values[ValueInfestedInit]) {
+		target_ext->values[ValueInfestedInit] = true;
+		
+		// Play sound
+		helper::play_sound_from_unit(SoundId::Zerg_Bldg_ZBldgDth_WAV, target, true, 0);
+
+		// Spawn effect overlay
+		u32 effect_image_id = ImageId::ZergAirDeathExplosion_Small;
+		if (units_dat::base_property[target->id] & UnitProperty::LargeOverlay) {
+			effect_image_id = ImageId::ZergBuildingExplosion;
+		} else if (units_dat::base_property[target->id] & UnitProperty::MediumOverlay) {
+			effect_image_id = ImageId::ZergAirDeathExplosion_Large;
+		}
+		target->sprite->create_overlay(effect_image_id);
+
+		// Spread initial cagra
+		if (unit_spreads_custom_creep(target)) {
+			bw::spawn_custom_creep(target);
+		}
+	}
+}
+
+void blissful_embrace(Unit* target, u32 player, bool force) {
+	// Sanity check.
+	if (!can_infest(player, target, force)) {
+		return;
+	}
+
+	// Eject loaded units if possible, kill them otherwise
+	bw::unload_or_kill_loaded_units(target);
+	auto& target_ext = target->ext();
+
+	// Remove connected larva
+	u16 larva_id = UnitId::ZergLarva;
+	if (target->id == UnitId::ZergCaphrolosk || target->id == UnitId::ZergOcsalCesiant) {
+		larva_id = UnitId::ZergOcsalLarva;
+	}
+	for (Unit* larva : g_unit_search.radial_ex(target, 4 * 32, 0, {larva_id})) {
+		if (larva->connected_unit == target) {
+			larva->connected_unit = 0;
+		}
+	}
+
+	// Obtain control
+	target->give_to(player);
+	target_ext.values[ValueInfested] = true;
+
+	if (Unit* matraleth = target_ext.units[UnitInfestingMatraleth]) {
+		matraleth->order_to_idle();
+	}
+
+	// Init infestation
+	blissful_embrace_tick(target);
+}
+
+void empress_zombify(u32 player, Unit* source, Unit* target, u32 stacks) {
+	auto& target_ext = target->ext();
+	target_ext.values[ValueMindControlOriginalPlayer] = 0;
+
+	// Recurse
+	for (u32 i = 0; i < TransportCap; ++i) {
+		Unit* unit = target->get_loaded_unit(i);
+		if (unit) {
+			empress_zombify(player, source, unit, stacks);
+		}
+	}
+
+	// Obtain control
+	target->give_to(player);
+
+	target->hitpoints = 0;
+	target->shields = 0;
+	target->heal_hp_then_shields(stacks * 256 * 5, source);
+	target->remove_timer = 1 + stacks * 24 * 1;
+
+	target->give_to(player);
+	target_ext.values[ValueEmpressAnodyneAnnexStacks] = 0;
+	target_ext.values[ValueIsZombified] = true;
+
+	// Audiovisuals
+	target->sprite->create_overlay(ImageId::MindControlHit_Small + bw::get_overlay_offset(target->id));
+	u32 sound_id = bw::rand_between(SoundId::EmpressZombify01, SoundId::EmpressZombify03);
+	helper::play_sound_from_unit(sound_id, target);
+}
+
+void mind_control(u32 player, u32 mind_controller_unit_id, Unit* target, bool ignore_alliance) {
+	if (!target || player == target->player) {
+		return;
+	}
+	if (!ignore_alliance && !is_hostile_or_neutral(player, target->player)) {
+		return;
+	}
+	auto& target_ext = target->ext();
+	if (!target_ext.values[ValueMindControlOriginalPlayer]) {
+		target_ext.values[ValueMindControlOriginalPlayer] = target->player + 1;
+	}
+	target_ext.values[ValueMindControllerUnitId] = mind_controller_unit_id;
+
+	// Recurse
+	for (u32 i = 0; i < TransportCap; ++i) {
+		Unit* unit = target->get_loaded_unit(i);
+		if (unit) {
+			mind_control(player, mind_controller_unit_id, unit);
+		}
+	}
+
+	// Cancel in-progress units
+	if (units_dat::group_flags[target->id].is_factory) {
+		u32 offset = 0;
+		for (u32 i = 1; i < 5; ++i) {
+			u32 slot = i + target->build_queue_slot - offset;
+			u32 unit_id = target->build_queue[slot];
+			if (unit_id == UnitId::None) {
+				continue;
+			}
+			helper::refund_queue_slot(target, slot);
+			offset++;
+		}
+		helper::cancel_last_training(target);
+	}
+
+	// Global recede timer for all control abilities
+	target_ext.values[ValueMindControlPlayer] = player + 1;
+	target_ext.timers[TimerMindControlRecede] = 5 * 24;
+
+	// Obtain control
+	target->give_to(player);
+
+	// Audiovisuals
+	if (mind_controller_unit_id == UnitId::ProtossDemiurge) {
+		bw::remove_unit_overlay(target, ImageId::Malediction_Small + bw::get_overlay_offset(target->id));
+		u32 overlay_id = ImageId::DemiurgeWorshipProc_Small + bw::get_overlay_offset(target->id, true);
+		if (overlay_id == ImageId::ControlledDemolition) {
+			overlay_id = ImageId::DemiurgeWorshipProc_Large;
+		}
+		bw::add_unit_overlay(target, overlay_id);
+		helper::play_sound_from_unit(SoundId::DemiurgeWorship01, target, 1, 0);
+		target_ext.values[ValueControlledByDemiurge] = 1;
+	} else if (mind_controller_unit_id == UnitId::ProtossMindTyrant) {
+		bw::add_unit_overlay(target, ImageId::MindControlHit_Small + bw::get_overlay_offset(target->id));
+	}
+}
+
+void clear_maledictus(Unit* tyrant, Unit* malefactor) {
+	tyrant->ext().units[UnitMindTyrantMalefactor] = 0;
+
+	auto& malefactor_ext = malefactor->ext();
+	malefactor_ext.units[UnitMindTyrantLink] = 0;
+	malefactor->update_speed();
+}
+
+void clear_maledictus_if_needed(Unit* unit) {
+	auto& unit_ext = unit->ext();
+	if (unit->id == UnitId::ProtossMindTyrant) {
+		Unit* malefactor = unit_ext.units[UnitMindTyrantMalefactor];
+		if (malefactor) {
+			clear_maledictus(unit, malefactor);
+		}
+	}
+	auto& tyrant = unit_ext.units[UnitMindTyrantLink];
+	if (tyrant) {
+		clear_maledictus(tyrant, unit);
+	}
+}
+
+void recede_mind_control(Unit* target) {
+	if (!target) {
+		return;
+	}
+
+	UnitExt* target_ext = get_unit_ext(target);
+	if (target_ext->values[ValueMindControlOriginalPlayer]) {
+		target->give_to(target_ext->values[ValueMindControlOriginalPlayer] - 1);
+	}
+	if (target_ext->values[ValueControlledByDemiurge]) {
+		target_ext->values[ValueControlledByDemiurge] = 0;
+		target_ext->timers[TimerDemiurgeWorshipOverlayDelay] = 0;
+	}
+	target_ext->values[ValueMindControlOriginalPlayer] = 0;
+	target_ext->values[ValueMindControlPlayer] = 0;
+	target_ext->values[ValueMindControllerUnitId] = UnitId::None; // Or should it be 0? -Pr0nogo
+}
+
+void spread_debuffs(Unit* from, Unit* to) {
+	auto& from_ext = from->ext();
+	auto& to_ext = to->ext();
+
+	if (from_ext.values[ValueReclaimed]) {
+		to_ext.values[ValueReclaimed] = true;
+	}
+	if (from_ext.values[ValueInfested]) {
+		to_ext.values[ValueInfested] = true;
+	}
+	if (from_ext.values[ValueIsZombified]) {
+		empress_zombify(from->player, from, to, 1);
+		to->remove_timer = from->remove_timer;
+	}
+	if (from_ext.values[ValueMindControlPlayer]) {
+		to->give_to(from_ext.values[ValueMindControlOriginalPlayer] - 1);
+		mind_control(from_ext.values[ValueMindControlPlayer] - 1, from_ext.values[ValueMindControllerUnitId], to);
+	}
+}
+
+AttackTargetingType attack_targeting_type_of(Unit* unit) {
+    switch (unit->id) {
+        case UnitId::TerranDiadem:
+            return AttackTargetingType::Diadem;
+
+        case UnitId::ProtossOptecton:
+            return AttackTargetingType::FireGround;
+    }
+    return AttackTargetingType::RequiresTarget;
+}
+
+bool can_pick_new_target(Unit* unit) {
+	switch (attack_targeting_type_of(unit)) {
+		case AttackTargetingType::FireGround:
+		case AttackTargetingType::RemembersTarget: {
+            if (unit->movement_flags & MovementFlags_StartingAttack) {
+                return false;
+            }
+		} break;
+	}
+	return true;
+}
+
+void tick_psi_storm_damage(EffectField& effect, u32 update_period, u32 tick_scalar_hp) {
+	for (Unit* unit : g_unit_search.square_ex(effect, FilterIncludingSelf)) {
+		auto& unit_ext = unit->ext();
+		if (unit->under_storm_timer) {
+			unit_ext.values[ValueStormDivider] *= 2;
+		} else {
+			unit->under_storm_timer = update_period;
+			unit_ext.values[ValueStormDivider] = 1;
+		}
+		unit->damage_with(WeaponId::PsiStorm, (20 * tick_scalar_hp) / unit_ext.values[ValueStormDivider], effect.source, effect.player,
+			helper::get_direction_from_points(v2u16(effect.position), unit->position), unit->is_building() ? 2 : 1);
+	}
+}
+
+void apply_lobotomy_effect(v2u16 position, u32 timer, bool do_stun) {
+	for (Unit* victim : g_unit_search.radial(position, TerranMine::DetonationRange)) {
+		if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false) || victim->is_invincible()) {
+			continue;
+		}
+		auto& victim_ext = victim->ext();
+		if (victim_ext.timers[TimerLobotomySlow] < timer) {
+			victim_ext.timers[TimerLobotomySlow] = timer;
+		}
+		if (do_stun) {
+			if (victim->lockdown_timer == 0) {
+				u32 image_id = ImageId::LockdownField_Small + bw::get_overlay_offset(victim->id);
+				Unit* overlay_unit = victim->subunit ? victim->subunit : victim;
+				overlay_unit->sprite->create_top_overlay(image_id, 0, 0, 0);
+			}
+			if (victim->lockdown_timer < TerranMine::LobotomyTimerVanilla) {
+				victim->lockdown_timer = TerranMine::LobotomyTimerVanilla;
+			}
+			helper::disable_unit(victim);
+		}
+	}
+}
+
+void apply_goremast_effect(v2u16 position, u32 timer, bool do_damage) {
+	for (Unit* victim : g_unit_search.radial(position, TerranMine::DetonationRange)) {
+		if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false) || victim->is_invincible()) {
+			continue;
+		}
+		auto& victim_ext = victim->ext();
+		if (victim_ext.timers[TimerGoremastSlow] < timer) {
+			victim_ext.timers[TimerGoremastSlow] = timer;
+		}
+		if (do_damage) {
+			victim->damage_with_custom(15 * 256);
+		}
+	}
+}
+
+void apply_tartarus_effect(v2u16 position, u32 timer, bool do_damage, u8 attacking_player) {
+	for (Unit* victim : g_unit_search.radial(position, TerranMine::DetonationRange)) {
+		if (victim->id == UnitId::TerranMorningstar || unit_id_is_resource_node(victim->id, false) || victim->is_invincible()) {
+			continue;
+		}
+		auto& victim_ext = victim->ext();
+		if (victim_ext.timers[TimerIncinerateArmor] < TerranMine::TartarusTimer) {
+			victim_ext.timers[TimerIncinerateArmor] = TerranMine::TartarusTimer;
+		}
+		if (do_damage) {
+			victim_ext.values[ValueIncineratePlayer] = attacking_player;
+			victim_ext.timers[TimerIncinerateDamage] = TerranMine::TartarusTimer;
+		}
+	}
+}
+
+void unload_unit_on_transport_death(Unit* transport, u32 index) {
+	auto& transport_ext = transport->ext();
+	Unit* unit = hooks::get_loaded_unit_from_index(transport, index);
+	if (unit) {
+		transport->main_order_timer = 0;
+		if (helper::unload_unit_proc(unit)) {
+			if (!unit_id_is_garrison(transport->id) || transport_ext.timers[TimerEmergencyDetonation] == 1) {
+				helper::orders_self_destructing(unit); // Just kill it! -Veeq7
+			}
+		} else {
+			helper::orders_self_destructing(unit);
+		}
+	}
+	transport_ext.loaded_unit[index].value = 0;
+}
+
+void necromastery_proc(UnitId::Enum unit_id) {
+	for (Unit* grimoire = *g_first_visible_unit; grimoire; grimoire = grimoire->link.next) {
+		if (grimoire->id == UnitId::BloodsummonGrimoire && grimoire->build_queue[grimoire->build_queue_slot] == UnitId::None) {
+			Unit* cargo = grimoire->get_first_loaded_unit(); // The Grimoire can only have one unit at a time. If that ever changes, modify this! -Pr0nogo
+			if (cargo && cargo->id == unit_id) {
+				// TODO: Visual overlay
+				bw::play_sound(SoundId::GrimoirePassive01, grimoire->position);
+				grimoire->build_queue[grimoire->build_queue_slot] = cargo->id;
+				grimoire->set_secondary_order(OrderId::TrainUnit);
+			}
+		}
+	}
+}
+
+void proc_signify(Unit* target, u32 attacking_player) {
+	auto& target_ext = target->ext();
+	target_ext.values[ValueSignifyStacks]++;
+	target_ext.timers[TimerSignify] = 3secs + 1;
+	target_ext.values[ValueSignifyPlayer] = attacking_player;
+	bw::update_signify_status(target, &target_ext);
+}
+
+void proc_nanite_field_heal(Unit* shaman, u32 heal, Unit* target) {
+	if (target->get_current_hp_ingame() < target->get_max_hp_ingame()) {
+		bw::add_unit_overlay(target, ImageId::ShamanNaniteField);
+	}
+	target->heal_hp(heal * 1hp, shaman);
+}

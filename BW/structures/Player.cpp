@@ -1,0 +1,164 @@
+#include <cassert>
+#include "Player.h"
+#include "../api.h"
+#include "../enumerations.h"
+#include "../../graphics/graphics.h"
+
+// ----------------------------------------------------------------------------//
+// Return the proper ColorId to use a player color with graphics function
+// ----------------------------------------------------------------------------//
+
+graphics::ColorId Player::get_color() {
+	assert(this);
+	return g_player_minimap_colors[(u8)this->id];
+}
+
+graphics::ColorId Player::get_color(u8 player) {
+	if (player < PLAYER_COUNT) {
+		return g_player_minimap_colors[player];
+	} else {
+		return graphics::BLACK; // return 0/Black if error
+	}
+}
+
+graphics::ColorId Player::get_faction_color() {
+	assert(this);
+	return get_faction_color(this->id);
+}
+
+graphics::ColorId Player::get_faction_color(u8 player) {
+	// store a player until the end where it will properly store a ColorId
+	graphics::ColorId return_value;
+
+	// for normal players, apply colors switching
+	if (player < PLAYABLE_PLAYER_COUNT) {
+		// get the proper player in multiplayer game (don't break campaigns/UMS)
+		return_value = g_factions_colors_ordering[player];
+
+		// fix BROWN to GREEN color swap in Desert map
+		if (*g_current_tileset == TilesetType::Desert && return_value == 5) {
+			return_value = 8;
+		}
+
+		// fix WHITE to GREEN color swap in Ice map
+		if (*g_current_tileset == TilesetType::Ice && return_value == 6) {
+			return_value = 8;
+		}
+	} else {
+		return_value = player;
+	}
+
+	if (player < PLAYER_COUNT) {
+		return_value = graphics::standardColors[return_value];
+	} else {
+		return_value = graphics::BLACK; // return 0/Black if error
+	}
+	return return_value;
+}
+
+u32 Player::number_of_units_of_id(u8 player, u16 unit_id) {
+	if (unit_id == UnitId::None || unit_id > UnitId::Count) {
+		return 0;
+	}
+	u32 count = 0;
+	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+		if (unit->id == unit_id) {
+			count++;
+		}
+	}
+	return count;
+}
+
+u32 Player::number_of_completed_units_of_id(u8 player, u16 unit_id) {
+	if (unit_id == UnitId::None || unit_id > UnitId::Count) {
+		return 0;
+	}
+	u32 count = 0;
+	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+		if (unit->id == unit_id) {
+			if (unit->is_completed()) {
+				count++;
+			}
+		}
+	}
+	return count;
+}
+
+u32 Player::number_of_completed_landed_units_of_id(u8 player, u16 unit_id) {
+	if (unit_id == UnitId::None || unit_id > UnitId::Count) {
+		return 0;
+	}
+	u32 count = 0;
+	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+		if (unit->id == unit_id) {
+			if (unit->is_completed() && !unit->is_in_air()) {
+				count++;
+			}
+		}
+	}
+	return count;
+}
+
+u32 Player::number_of_completed_powered_units_of_id(u8 player, u16 unit_id) {
+	if (unit_id == UnitId::None || unit_id > UnitId::Count) {
+		return 0;
+	}
+	u32 count = 0;
+	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+		if (unit->id == unit_id) {
+			if (unit->is_completed()  && !unit->is_disabled()) {
+				count++;
+			}
+		}
+	}
+	return count;
+}
+
+u32 Player::number_of_completed_addon_units_of_id(u8 player, u16 unit_id) {
+	if (unit_id == UnitId::None || unit_id > UnitId::Count) {
+		return 0;
+	}
+	u32 count = 0;
+	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+		if (unit->id == unit_id) {
+			if (unit->is_completed() && !unit->ext().values[ValueAddonInactive]) {
+				count++;
+			}
+		}
+	}
+	return count;
+}
+
+u32 Player::number_of_base_units_of_id(u8 player, u16 unit_id) {
+	if (unit_id == UnitId::None || unit_id > UnitId::Count) {
+		return 0;
+	}
+	u32 count = 0;
+	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+		if (unit->id == unit_id) {
+			if (unit->is_completed() || UnitId::match_id_to_base(static_cast<UnitId::Enum>(unit->build_queue[unit->build_queue_slot]), static_cast<UnitId::Enum>(unit_id))) {
+				count++;
+			}
+		}
+	}
+	return count;
+}
+
+u32 Player::number_of_gestated_units_of_id(u8 player, u16 unit_id) {
+	if (unit_id == UnitId::None || unit_id > UnitId::Count) {
+		return 0;
+	}
+	u32 count = 0;
+	for (Unit* unit = first_player_unit->unit[player]; unit; unit = unit->player_link.next) {
+		if (unit->id == unit_id) {
+			if (unit->is_completed() || !unit->ext().values[ValueOriginatedFromGosvileth]) {
+				count++;
+			}
+		}
+	}
+	return count;
+}
+
+std::string_view Player::name_view(u32 player) {
+	return g_player_name_list->player[player].player_name;
+}

@@ -1,0 +1,853 @@
+#include "maxhp.h"
+#include "BW\api.h"
+#include "hook_tools.h"
+
+namespace hooks
+{
+	const u32 jmp_0x0040140B = 0x0040140B;
+	void __declspec(naked) get_max_hp_wrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EAX
+			MOV unit, ECX
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EAX, hp
+			JMP jmp_0x0040140B
+		}
+	}
+
+	const u32 jmp_0x0040227B = 0x0040227B;
+	void __declspec(naked) isOnYellowHealthWrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EAX
+			MOV unit, EDX
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EAX, hp
+			JMP jmp_0x0040227B
+		}
+	}
+
+	const u32 jmp_0x004022CB = 0x004022CB;
+	void _declspec(naked) isOnBurningHealthWrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EAX
+			MOV unit, ECX
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EAX, hp
+			JMP jmp_0x004022CB
+		}
+	}
+
+	const u32 jmp_0x00402731 = 0x00402731;
+	void _declspec(naked) getMaxHealthWrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EAX
+			MOV unit, EDX
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EAX, hp
+			JMP jmp_0x00402731
+		}
+	}
+
+	const u32 jmp_0x004263F7 = 0x004263F7;
+	void _declspec(naked) ssDrawHpEnergyWrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EDI
+			MOV unit, ESI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EAX, hp
+			JMP jmp_0x004263F7
+		}
+	}
+
+	const u32 jmp_0x00431291 = 0x00431291;
+	void _declspec(naked) calculateBaseStrengthWrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, ECX
+			MOV unit, EAX
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EAX, hp
+			JMP jmp_0x00431291
+		}
+	}
+
+	const u32 jmp_0x00433CBA = 0x00433CBA;
+	void _declspec(naked) aiRepairSomethingWrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EAX
+			MOV unit, ESI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EAX, hp
+			JMP jmp_0x00433CBA
+		}
+	}
+
+	const u32 jmp_0x00440037 = 0x00440037;
+	void _declspec(naked) aiStimIfNeededWrapper()
+	{
+		static u16 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, CX
+			MOV unit, EDI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EAX, hp
+			JMP jmp_0x00440037
+		}
+	}
+
+	const u32 jmp_0x0045673B = 0x0045673B;
+	void _declspec(naked) unkWireRandomDraw56730_Wrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EAX
+			MOV unit, ECX
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EAX, hp
+			JMP jmp_0x0045673B
+		}
+	}
+
+	const u32 jmp_0x004567EE = 0x004567EE;
+	void _declspec(naked) unkWireRandomDraw567C0_Wrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EAX
+			MOV unit, ESI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EAX, hp
+			JMP jmp_0x004567EE
+		}
+	}
+
+	const u32 jmp_0x00463CCF = 0x00463CCF;
+	void _declspec(naked) doMedicWrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, ECX
+			MOV unit, ESI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EDX, hp
+			JMP jmp_0x00463CCF
+		}
+	}
+
+	const u32 jmp_0x00466D73 = 0x00466D73;
+	void _declspec(naked) getRepairInfoWrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EAX
+			MOV unit, EBX
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EDI, hp
+			JMP jmp_0x00466D73
+		}
+	}
+
+	const u32 jmp_0x00467351 = 0x00467351;
+	void _declspec(naked) setHpWrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EAX
+			MOV unit, ESI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EAX, hp
+			JMP jmp_0x00467351
+		}
+	}
+
+	const u32 jmp_0x0047A87E = 0x0047A87E;
+	void _declspec(naked) DrawImage_HpBar_Wrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EDI
+			MOV unit, ESI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EAX, hp
+			JMP jmp_0x0047A87E
+		}
+	}
+
+	const u32 jmp_0x0047A90D = 0x0047A90D;
+	void _declspec(naked) DrawImage_HpBar_Wrapper2()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EDI
+			MOV unit, ESI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EAX, hp
+			JMP jmp_0x0047A90D
+		}
+	}
+
+	const u32 jmp_0x0047A913 = 0x0047A913;
+	void _declspec(naked) setBuildHpWrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EAX
+			MOV unit, EDI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV ECX, hp
+			JMP jmp_0x0047A913
+		}
+	}
+
+	const u32 jmp_0x0047C814 = 0x0047C814;
+	void _declspec(naked) orderFollowWrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, ECX
+			MOV unit, ESI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EAX, hp
+			JMP jmp_0x0047C814
+		}
+	}
+
+	const u32 jmp_0x0048AD44 = 0x0048AD44;
+	void _declspec(naked) getUnitBulletDamageWrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, ECX
+			MOV unit, ESI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EAX, hp
+			JMP jmp_0x0048AD44
+		}
+	}
+
+	const u32 jmp_0x0049ECC6 = 0x0049ECC6;
+	void _declspec(naked) showFinishedUnitWrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, ECX
+			MOV unit, EAX
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EDX, hp
+			JMP jmp_0x0049ECC6
+		}
+	}
+
+	const u32 jmp_0x0049F22F = 0x0049F22F;
+	void _declspec(naked) transformUnit_Main_Wrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EDX
+			MOV unit, ESI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EAX, hp
+			JMP jmp_0x0049F22F
+		}
+	}
+
+	const u32 jmp_0x0049F242 = 0x0049F242;
+	void _declspec(naked) transformUnit_Main_Wrapper2()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EDX
+			MOV unit, ESI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV ECX, hp
+			JMP jmp_0x0049F242
+		}
+	}
+
+	const u32 jmp_0x004A019E = 0x004A019E;
+	void _declspec(naked) unk_ai_subunit_Destructor_Wrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EAX
+			MOV unit, EDI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EDX, hp
+			JMP jmp_0x004A019E
+		}
+	}
+
+	const u32 jmp_0x004A020A = 0x004A020A;
+	void _declspec(naked) updateUnitStatsFinishBuilding_Wrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EAX
+			MOV unit, EDI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV ECX, hp
+			JMP jmp_0x004A020A
+		}
+	}
+
+	const u32 jmp_0x004C7B84 = 0x004C7B84;
+	void _declspec(naked) modifyUnitHp_Wrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EAX
+			MOV unit, ESI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV ECX, hp
+			JMP jmp_0x004C7B84
+		}
+	}
+
+	const u32 jmp_0x004E609D = 0x004E609D;
+	void _declspec(naked) updateUnitDamageOverlay_Wrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EAX
+			MOV unit, ESI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EDI, hp
+			JMP jmp_0x004E609D
+		}
+	}
+
+	const u32 jmp_0x004E6F8F = 0x004E6F8F;
+	void _declspec(naked) ai_findTransport_Wrapper()
+	{
+		static u16 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, AX
+			MOV unit, ESI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV EAX, hp
+			JMP jmp_0x004E6F8F
+		}
+	}
+
+	const u32 jmp_0x004F61EE = 0x004F61EE;
+	void _declspec(naked) ConvertToHallucination_Wrapper()
+	{
+		static u32 id;
+		static Unit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EDX
+			MOV unit, EDI
+			PUSHAD
+		}
+		hp = get_max_hp(id, unit->player);
+		__asm {
+			POPAD
+			MOV ECX, hp
+			JMP jmp_0x004F61EE
+		}
+	}
+
+	void __declspec(naked) get_max_vitality_wrapper() { // 00402710
+		static Unit* unit;
+		static u32 result;
+		__asm {
+			MOV unit, EDX
+			PUSHAD
+		}
+		result = hooks::get_max_vitality(unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) ai_target_enemy_proc_wrapper() {
+		static Unit* target;
+		static Unit* unit;
+		static b32 result;
+		__asm {
+			MOV target, ECX
+			MOV unit, EDX
+			PUSHAD
+		}
+		result = hooks::ai_target_enemy_proc(target, unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) calculate_unit_strength_wrapper() { // 00431270
+		static u32 unit_id;
+		static WeaponId::Enum weapon_id;
+		static u32 result;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			SUB ESP, 0x08
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV weapon_id, AX
+			POP EAX
+			MOV unit_id, EAX
+			PUSHAD
+		}
+		result = hooks::calculate_unit_strength(unit_id, weapon_id);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x04
+		}
+	}
+
+	void __declspec(naked) get_unit_strength_wrapper() { // 00431800
+		static Unit* a1;
+		static s32 a2;
+		static bool a3;
+		static s32 result;
+		__asm {
+			MOV a1, EAX
+			MOV a2, ECX
+			PUSH EBP
+			MOV EBP, ESP
+			SUB ESP, 0x08
+			PUSH EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV a3, AL
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::get_unit_strength(a1, a2, a3);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x0C
+		}
+	}
+
+	void __declspec(naked) ai_restoration_requirements_proc_wrapper() { // 004407E0
+		static Unit* caster;
+		static Unit* target;
+		static b32 result;
+		__asm {
+			MOV caster, ECX
+			MOV target, EDX
+			PUSHAD
+		}
+		result = hooks::ai_restoration_requirements_proc(caster, target);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) ai_emp_shield_requirements_proc_wrapper() {
+		static Unit* target;
+		static Unit* caster;
+		static b32 result;
+		__asm {
+			MOV target, ECX
+			MOV caster, EDX
+			PUSHAD
+		}
+		result = hooks::ai_emp_shield_requirements_proc(target, caster);
+		__asm {
+			POPAD
+			MOVZX EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) attack_overlay_and_notify_wrapper() {
+		static Unit* victim;
+		static Unit* attacker;
+		static WeaponId::Enum weapon_id;
+		static u8 direction;
+		__asm {
+			MOV victim, EAX
+			MOV attacker, ESI
+			PUSH EBP
+			MOV EBP, ESP
+			SUB ESP, 0x08
+			PUSH EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV weapon_id, AX
+			MOV EAX, [EBP + 0x10]
+			MOV direction, AL
+			POP EAX
+			PUSHAD
+		}
+		hooks::attack_overlay_and_notify(victim, attacker, weapon_id, direction);
+		__asm {
+			POPAD
+			MOV EAX, 0
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x10
+		}
+	}
+
+	void __declspec(naked) draw_image_hp_bar_wrapper() {
+		static s32 g_screen_x;
+		static s32 g_screen_y;
+		static GrpFrame* pFrame;
+		static Box32* grpRect;
+		static s32 colorData;
+		__asm {
+			MOV g_screen_x, ECX
+			MOV g_screen_y, EDX
+			PUSH EBP
+			MOV EBP, ESP
+			SUB ESP, 0x08
+			PUSH EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV pFrame, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV grpRect, EAX
+			MOV EAX, [EBP + 0x14]
+			MOV colorData, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::draw_image_hp_bar(g_screen_x, g_screen_y, pFrame, grpRect, colorData);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x14
+		}
+	}
+
+	void __declspec(naked) update_building_construct_shields_amount_wrapper() {
+		static Unit* a1;
+		__asm {
+			MOV a1, EBX
+			PUSHAD
+		}
+		hooks::update_building_construct_shields_amount(a1);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+	void __declspec(naked) ai_find_best_transport_wrapper() {
+		static Unit* unit;
+		static Unit* result_unit;
+		static b32 result;
+		__asm {
+			MOV unit, EBX
+			PUSH EBP
+			MOV EBP, ESP
+			SUB ESP, 0x08
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV result_unit, EAX
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::ai_find_best_transport(unit, result_unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
+
+	void __declspec(naked) mapDataTransfer_Wrapper() {
+		static char a1;
+		static s32 a2;
+		static s32 a3;
+		static s32 result;
+		__asm {
+			MOV a1, CL
+			MOV a2, EDX
+			MOV a3, EAX
+			PUSHAD
+		}
+		result = hooks::map_data_transfer(a1, a2, a3);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void inject_max_hp_hooks() {
+		//	jump_patch(get_max_vitality_wrapper,							0x00402710, 5);
+		//	jump_patch(drawUnitInfo_Wrapper,								0x00426190, 3);
+		//	jump_patch(ai_target_enemy_proc_wrapper,						0x00440A20, 2);
+		//	jump_patch(draw_building_info_wrapper,							0x00427890, 3);
+			jump_patch(calculate_unit_strength_wrapper,						0x00431270, 5);
+		//	jump_patch(get_unit_strength_wrapper,							0x00431800, 0);
+		//	jump_patch(ai_restoration_requirements_proc_wrapper,			0x004407E0, 1);
+		//	jump_patch(ai_emp_shield_requirements_proc_wrapper,				0x004413D0, 1);
+		//	jump_patch(attack_overlay_and_notify_wrapper,					0x00479730, 1);
+		//	jump_patch(drawImageHPBar_0_Wrapper,							0x0047A820, 1);
+		//	jump_patch(update_building_construct_shields_amount_wrapper,	0x0047B6A0, 0);
+		//	jump_patch(modify_unit_shields,									0x004C5A20, 2);
+		//	jump_patch(ai_find_best_transport_wrapper,						0x004E6EF0, 1);
+		//	jump_patch(mapDataTransfer_Wrapper,								0x004EAFE0, 1);
+
+			//required for Heatshield
+			/*jump_patch(getMaxHpWrapper, 0x00401404, 2);//done
+			jump_patch(isOnYellowHealthWrapper, 0x00402274, 2);//done
+			jump_patch(isOnBurningHealthWrapper, 0x004022C4, 2);//done
+			jump_patch(getMaxHealthWrapper, 0x0040272A, 2);//done
+			jump_patch(ssDrawHpEnergyWrapper, 0x004263F0, 2);//done
+			jump_patch(calculateBaseStrengthWrapper, 0x0043128A, 2);//done, registers may be wrong
+			jump_patch(aiRepairSomethingWrapper, 0x00433CB3, 2);//done
+			jump_patch(aiStimIfNeededWrapper, 0x00440030, 2);//done
+			jump_patch(unkWireRandomDraw56730_Wrapper, 0x00456734, 2);//done
+			jump_patch(unkWireRandomDraw567C0_Wrapper, 0x004567E7, 2);//done
+			jump_patch(startZergBuildingWrapper, 0x0045D392, 2);//MUL DWORD PTR DS:[EDX*4+662350]
+			//add changes in building_morph, building morph hooks are required (0045D6A7, 0045D6A0)
+			//add changes to nydus hooks nydus hooks are required (orders_build5)
+			jump_patch(Ai_TryReturnHomeWrapper, 0x00462EEA, 2);////CMP EDX,DWORD PTR DS:[EAX*4+662350], wrapper is not be enough, hook may be needed
+			jump_patch(Ai_OrderHealWrapper, 0x00463584, 1);////CMP EAX,DWORD PTR DS:[EDI+662350], wrapper is not be enough, hook may be needed
+			jump_patch(doMedicWrapper, 0x00463CC8, 2);////done
+			jump_patch(getRepairInfoWrapper, 0x00466D6C, 2);////done
+			jump_patch(setHpWrapper, 0x0046734A, 2);////done
+			//add changes to order_repair hook, it is requirement (0x004673ED, 004676BB)
+			//add changes to orders_terran_build_self, it is required (0x00467781, 0x004677C2, 0x0046780C, 0046785E)
+			jump_patch(createGeyserUnitWrapper, 0x0046797E, 2);//MUL DWORD PTR DS:[ECX*4+662350]
+			jump_patch(canTargetOrderWrapper, 0x00474DF8, 1);//CMP EDX,DWORD PTR DS:[EAX+662350], hook may be required
+			jump_patch(canTargetOrderWrapper, 0x00474E56, 1);//CMP ECX,DWORD PTR DS:[EAX+662350], hook may be required
+			jump_patch(DrawImage_HpBar_Wrapper, 0x0047A877, 2);////done
+			jump_patch(DrawImage_HpBar_Wrapper2, 0x0047A906, 2);////done
+			jump_patch(DrawImage_HpBar_Wrapper3, 0x0047A877, 2);////duplicate address?
+			jump_patch(DrawImage_HpBar_Wrapper4, 0x0047A906, 2);////duplicate address?
+			jump_patch(setBuildHpWrapper, 0x0047B195, 2);////done
+			jump_patch(orderFollowWrapper, 0x0047C80D, 2);////done
+			jump_patch(getUnitBulletDamageWrapper, 0x0048AD3D, 2);////done
+			jump_patch(showFinishedUnitWrapper, 0x0049ECBF, 2);////done
+			jump_patch(transformUnit_Main_Wrapper, 0x0049F228, 2);////done
+			jump_patch(transformUnit_Main_Wrapper2, 0x0049F23B, 2);////done
+			jump_patch(unk_ai_subunit_Destructor_Wrapper, 0x004A0197, 2);////done
+			jump_patch(updateUnitStatsFinishBuilding_Wrapper, 0x004A0203, 2);////done
+			jump_patch(initializeUnitBase_Wrapper, 0x004A0521, 0);////MUL DWORD PTR DS:[ECX*4+662350]
+			jump_patch(modifyUnitHp_Wrapper, 0x004C7B7D, 2);////done
+			jump_patch(unk_ccc4e_Wrapper, 0x004CCC4E, 3);////IMUL ECX,DWORD PTR DS:[EAX*4+662350]
+			jump_patch(editUnitFlags_Wrapper, 0x004CD493, 3);////IMUL ECX,DWORD PTR DS:[EAX*4+662350]
+			jump_patch(updateUnitDamageOverlay_Wrapper, 0x004E6096, 2);//done
+			jump_patch(ai_findTransport_Wrapper, 0x004E6F88, 2);//done
+			//infestation hooks required, 0x004EA624 (morph into infested)
+			jump_patch(unk_ebdc8_Wrapper, 0x004EBDC8, 1);//CMP EDX,DWORD PTR DS:[ECX+662350], hook may be required
+			//update unitState hook must be enabled (0x004EC37C)
+			jump_patch(ConvertToHallucination_Wrapper, 0x004F61E7, 2);//done
+			*/
+
+
+
+			//List of shield hooks - required for Autovitality
+			/*
+			Line 2489: 0040271E  |.  0FB70C45 000E>MOVZX ECX,WORD PTR DS:[EAX*2+660E00]
+			Line 56698: 00426418  |>  66:813C7D 000>CMP WORD PTR DS:[EDI*2+660E00],270F
+			Line 56745: 004264B7  |.  0FB7144D 000E>MOVZX EDX,WORD PTR DS:[ECX*2+660E00]
+			Line 72973: 0043127E  |.  0FB70C45 000E>MOVZX ECX,WORD PTR DS:[EAX*2+660E00]
+			Line 73609: 0043186F  |.  0FB73475 000E>MOVZX ESI,WORD PTR DS:[ESI*2+660E00]
+			Line 129042: 004566C6  |.  66:833C4D 000>CMP WORD PTR DS:[ECX*2+660E00],0
+			Line 129046: 004566D9  |.  0FB70C45 000E>MOVZX ECX,WORD PTR DS:[EAX*2+660E00]
+			Line 152261: 004666E9  |.  0FB7144D 000E>MOVZX EDX,WORD PTR DS:[ECX*2+660E00]
+			Line 182693: 0047A958  |.  0FB70C7D 000E>MOVZX ECX,WORD PTR DS:[EDI*2+660E00]
+			Line 184045: 0047B6B8  |.  0FB70C7D 000E>MOVZX ECX,WORD PTR DS:[EDI*2+660E00]
+			Line 184047: 0047B6C1  |.  8D347D 000E66>LEA ESI,DWORD PTR DS:[EDI*2+660E00]
+			Line 206962: 0048AD61  |>  0FB70C4D 000E>MOVZX ECX,WORD PTR DS:[ECX*2+660E00]
+			Line 219467: 004934B9  |.  0FB7047D 000E>MOVZX EAX,WORD PTR DS:[EDI*2+660E00]
+			Line 219488: 004934F7  |.  0FB7047D 000E>MOVZX EAX,WORD PTR DS:[EDI*2+660E00]
+			Line 219524: 0049356B  |.  0FB70C55 000E>MOVZX ECX,WORD PTR DS:[EDX*2+660E00]
+			Line 220346: 00493EDB   .  0FB70C45 000E>MOVZX ECX,WORD PTR DS:[EAX*2+660E00]
+			Line 236966: 0049EDA4  |.  0FB70C45 000E>MOVZX ECX,WORD PTR DS:[EAX*2+660E00]
+			Line 238692: 004A020D  |.  0FB71445 000E>MOVZX EDX,WORD PTR DS:[EAX*2+660E00]
+			Line 284159: 004BF03D  |.  68 000E6600   PUSH 00660E00
+			Line 284447: 004BF3AD  |.  B8 000E6600   MOV EAX,00660E00
+			Line 293902: 004C5A47  |.  0FB70C45 000E>MOVZX ECX,WORD PTR DS:[EAX*2+660E00]
+			Line 303298: 004CC1B7  |.  0FB70C45 000E>MOVZX ECX,WORD PTR DS:[EAX*2+660E00]
+			Line 304996: 004CD4BB  |.  0FB70C55 000E>MOVZX ECX,WORD PTR DS:[EDX*2+660E00]
+			Line 340325: 004E516A  |.  0FB71C5D 000E>MOVZX EBX,WORD PTR DS:[EBX*2+660E00]
+			Line 340332: 004E5181  |.  0FB70455 000E>MOVZX EAX,WORD PTR DS:[EDX*2+660E00]
+			Line 343285: 004E6FD4  |.  0FB7147D 000E>|MOVZX EDX,WORD PTR DS:[EDI*2+660E00]
+			Line 349378: 004EB0FE   .  0FB70445 000E>MOVZX EAX,WORD PTR DS:[EAX*2+660E00]
+			Line 351280: 004EC2D1   .  0FB70445 000E>MOVZX EAX,WORD PTR DS:[EAX*2+660E00]
+			*/
+	}
+}

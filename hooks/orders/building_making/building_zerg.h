@@ -1,0 +1,24 @@
+#pragma once
+#include "../../../BW/structures/Unit.h"
+
+namespace hooks {
+bool is_morphing(Unit* building);							// 0045CD00
+void orders_zerg_build_self(Unit* building);				// 0045D500
+void cancel_zerg_building(Unit* drone);						// 0045DA40
+void cancel_zerg_building_mutation(Unit* unit);				// 0045D410
+
+// from unhooked
+bool is_morphed_building(u16 unit_id);
+s32 get_morph_building_id_count(const Unit* unit, u16 unit_id, bool ignore_incomplete);
+void set_special_state_1(Sprite* sprite);
+
+void drone_morph_standard(Unit* unit, u32 id);				// 0045D890
+Unit* begin_gas_building(Unit* unit, u16 unit_id);			// 004678A0
+void orders_drone_build(Unit* builder);						// 0045E090
+void orders_drone_land(Unit* unit);							// 004E9AA0
+
+void orders_morph2(Unit* unit);								// 0045D0D0
+void droleth_build_excisant(Unit* builder);					// 0045D790
+
+void inject_building_zerg_hooks();
+}

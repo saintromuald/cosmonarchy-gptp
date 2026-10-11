@@ -1,0 +1,114 @@
+#include "replay_hooks.h"
+#include <fstream>
+#include <BW/api.h>
+#include <ReplayKraken.h>
+#include <config.h>
+#include <systems/triggers/trigger_system.h>
+#include <player_color.h>
+#include "../hook_tools.h"
+#include <future>
+#include <utility>
+#include "logger.h"
+#include <system_error>
+#include <filesystem>
+
+namespace {
+
+constexpr std::string_view replay_ext = ".ext";
+constexpr auto replay_full_size = 31; // Some weird magic BW const we would want to extend 
+constexpr auto replay_name_size = replay_full_size - replay_ext.size();
+
+void copy_last_replay(const std::string& dir, const std::string& name) {
+    std::ifstream from{bw::get_replay_path() / "LastReplay.rep", std::ios::binary};
+    if (!from) {
+        return;
+    }
+
+    fs::path to_path = bw::get_replay_path() / "Autosave" / dir / name;
+    if (fs::exists(to_path)) {
+        return; // Do not overwrite existing files
+    }
+
+    std::error_code error;
+    fs::create_directories(to_path.parent_path(), error);
+
+    std::ofstream to{to_path, std::ios::binary};
+    if (!to) {
+        return;
+    }
+
+    to << from.rdbuf();
+}
+
+void auto_save_replay() {
+    constexpr std::string_view ext = ".rep";
+    const auto now = time(0);
+    const auto ltm = localtime(&now);
+    const auto commit = bw::get_commit_hash();
+
+    std::stringstream dir_ss;
+    dir_ss << std::put_time(ltm, "%Y-%m-%d");
+    if (!commit.empty()) {
+        dir_ss << "_" << commit;
+    }
+
+    auto dir = dir_ss.str();
+    if (dir.size() > replay_name_size) {
+        dir.resize(replay_name_size);
+    }
+
+    std::stringstream file_ss;
+    if (!commit.empty()) {
+        file_ss << commit << "_";
+    }
+    file_ss << std::put_time(ltm, "%H-%M") << "_" << g_current_map_name;
+
+    auto file = file_ss.str();
+    if (file.size() > replay_name_size) {
+        file.resize(replay_name_size);
+    }
+
+    copy_last_replay(dir, file + std::string{ext});
+}
+
+} // namespace
+
+namespace hooks {
+
+void replay_save() {
+    if (g_config.auto_save_replays) {
+        auto_save_replay();
+    }
+    g_replay_kraken.upload_last_replay();
+}
+
+// Hooked to investigate the replay score screen freeze. -Pr0nogo
+void step_through_replay_data(GameAction* action_set) { // 004CDCE0
+    s32 action = action_set->start;
+    if (!action) {
+        return; // Fixes crash when no action is taken
+    }
+    s32 size = action_set->size;
+    s32 action_end = size + action;
+
+    s32 command_size = 0;
+    s32 data = 0;
+    while (action < action_end) {
+        s32 action_length = *(s32*)(action + 4);
+        action += 5;
+        for (s32 current_length = 0; current_length < action_length; action = command_size + data) {
+            s32 command_id = *(s32*)(action + 1);
+            command_size = g_turn_command_size[command_id];
+            if (command_size < 0) {
+                return;
+            }
+            data = action + 1;
+            if (command_id >= 9 && command_id <= 11) {
+                command_size = 2 * data[(s32*)1] + 2;
+            }
+            current_length += command_size + 1;
+        }
+    }
+}
+
+} // namespace hooks

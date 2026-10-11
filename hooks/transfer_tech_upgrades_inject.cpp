@@ -1,0 +1,62 @@
+#include "transfer_tech_upgrades.h"
+#include <hook_tools.h>
+
+namespace
+{
+	void __declspec(naked) transferUnitUpgradesToPlayerWrapper()
+	{
+		static Unit* source_unit;
+		static u8 targetPlayerId;
+		static u32 researchUpgradeFunc;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV researchUpgradeFunc, EAX // 2 possibilities, see header file with default values
+			MOV source_unit, EBX
+			MOV EAX, [EBP + 0x0C]
+			MOV targetPlayerId, AL
+			PUSHAD
+		}
+		hooks::transfer_unit_upgrades_to_player_hook(source_unit, targetPlayerId, researchUpgradeFunc);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
+
+	void __declspec(naked) transferUnitTechToPlayerWrapper()
+	{
+		static Unit* source_unit;
+		static u8 targetPlayerId;
+		static u32 researchTechFunc;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV researchTechFunc, EAX // usually researchTech @ 0047B3C0
+			MOV source_unit, EBX
+			MOV EAX, [EBP + 0x0C]
+			MOV targetPlayerId, AL
+			PUSHAD
+		}
+		hooks::transfer_unit_tech_to_player_hook(source_unit, targetPlayerId, researchTechFunc);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
+}
+
+namespace hooks
+{
+	void injectTransferTechAndUpgradesHooks()
+	{
+		jump_patch(transferUnitUpgradesToPlayerWrapper,	0x004E2B50, 1);
+		jump_patch(transferUnitTechToPlayerWrapper,		0x004E2C00, 1);
+	}
+}
