@@ -15,8 +15,11 @@
 #include "effect_field.h"
 #include "BW/structures.h"
 #include "bullet_extender.h"
+#include "data_ext.h"
+#include "BW/bwdata.h"
 
 #include <cstring>
+#include <cstddef>
 #include <variant>
 #include <vector>
 #include <algorithm>
@@ -24,7 +27,7 @@
 namespace {
 
 constexpr u32 GPTS_MAGIC = 0x53545047; // 'GPTS'
-constexpr u32 GPTS_VERSION = 1;
+constexpr u32 GPTS_VERSION = 2;
 
 bool g_rollback_enabled = false;
 
@@ -248,6 +251,73 @@ void read_iquare(Reader& r) {
     g->bounce_bullet = dec_bullet(r.u16v());
 }
 
+// --- Phase 2: g_ext (per-unit/per-bullet sidecar) ---
+// UnitExt has std::vector members (value_vectors/unit_vectors/timer_vectors) but they are
+// the LAST members, so we memcpy the POD prefix (scalars, fixed arrays, optional/Link,
+// pool pointers — all consistent once the engine snapshot has restored the pools) and
+// serialize the vectors' contents separately. BulletExt is POD -> raw memcpy.
+
+constexpr u32 UNIT_EXT_PREFIX = (u32)offsetof(UnitExt, value_vectors);
+
+void write_ext(Writer& w) {
+    for (u32 i = 0; i < (u32)UNIT_ARRAY_LENGTH; i++) {
+        UnitExt* e = get_unit_ext(&g_unit_table[i]);
+        w.raw(e, UNIT_EXT_PREFIX);
+        for (int v = 0; v < (int)ValueVectorCount; v++) {
+            const auto& vec = e->value_vectors[v];
+            w.u32v((u32)vec.size());
+            for (u32 x : vec) w.u32v(x);
+        }
+        for (int v = 0; v < (int)UnitVectorCount; v++) {
+            const auto& vec = e->unit_vectors[v];
+            w.u32v((u32)vec.size());
+            for (Unit* u : vec) w.u32v(enc_unit(u));
+        }
+        for (int v = 0; v < (int)TimerVectorCount; v++) {
+            const auto& vec = e->timer_vectors[v];
+            w.u32v((u32)vec.size());
+            for (u32 x : vec) w.u32v(x);
+        }
+    }
+    for (u32 i = 0; i < (u32)BulletLimit; i++) {
+        BulletExt* e = get_bullet_ext(&new_bullet_table[i]);
+        w.raw(e, sizeof(BulletExt));
+    }
+}
+
+void read_ext(Reader& r) {
+    for (u32 i = 0; i < (u32)UNIT_ARRAY_LENGTH && !r.bad; i++) {
+        UnitExt* e = get_unit_ext(&g_unit_table[i]);
+        if (!r.need(UNIT_EXT_PREFIX)) return;
+        std::memcpy(e, r.in + r.pos, UNIT_EXT_PREFIX);
+        r.pos += UNIT_EXT_PREFIX;
+        for (int v = 0; v < (int)ValueVectorCount; v++) {
+            u32 n = r.u32v();
+            e->value_vectors[v].resize(n);
+            for (u32 j = 0; j < n && !r.bad; j++) e->value_vectors[v][j] = r.u32v();
+        }
+        for (int v = 0; v < (int)UnitVectorCount; v++) {
+            u32 n = r.u32v();
+            e->unit_vectors[v].clear();
+            for (u32 j = 0; j < n && !r.bad; j++) {
+                Unit* u = dec_unit(r.u32v());
+                if (u) e->unit_vectors[v].push_back(u);
+            }
+        }
+        for (int v = 0; v < (int)TimerVectorCount; v++) {
+            u32 n = r.u32v();
+            e->timer_vectors[v].resize(n);
+            for (u32 j = 0; j < n && !r.bad; j++) e->timer_vectors[v][j] = r.u32v();
+        }
+    }
+    for (u32 i = 0; i < (u32)BulletLimit && !r.bad; i++) {
+        BulletExt* e = get_bullet_ext(&new_bullet_table[i]);
+        if (!r.need((u32)sizeof(BulletExt))) return;
+        std::memcpy(e, r.in + r.pos, sizeof(BulletExt));
+        r.pos += sizeof(BulletExt);
+    }
+}
+
 u32 serialize(u8* dst, u32 cap) {
     Writer w{ dst, cap, 0, false };
     w.u32v(GPTS_MAGIC);
@@ -256,6 +326,7 @@ u32 serialize(u8* dst, u32 cap) {
     w.u32v(0); // total_len placeholder
     u32 start = w.len;
     write_iquare(w);
+    write_ext(w);
     if (w.overflow) return 0;
     u32 body = w.len - start;
     if (dst) {
@@ -287,5 +358,6 @@ extern "C" __declspec(dllexport) u32 cosmo_gptp_load(const u8* src, u32 len) {
     if (r.u32v() != GPTS_VERSION) return 0;
     (void)r.u32v(); // total_len
     read_iquare(r);
+    read_ext(r);
     return r.bad ? 0 : 1;
 }
