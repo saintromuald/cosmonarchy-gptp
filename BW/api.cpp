@@ -2864,7 +2864,7 @@ PlayerColorCode get_player_color_code(u32 player, bool use_green_for_self) {
     if (use_green_for_self && player == g_local_nation_id) {
         code.data[0] = BWTC_GREEN[0];
     } else {
-        code.data[0] = PlayerColorByte;
+        code.data[0] = std::to_underlying(TextColor::PlayerColor);
         code.data[1] = player + 1;
     }
     return code;

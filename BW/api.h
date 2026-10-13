@@ -40,7 +40,6 @@ using namespace magic_enum::bitwise_operators;
 
 #define UnloadDelay 4
 
-#define PlayerColorByte 0x0B
 struct PlayerColorCode {
     char data[3];
 };

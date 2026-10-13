@@ -358,7 +358,7 @@ smem::ptr<bw::Dialog> load_bin_file_scaled(const char* filename, const ui::BinSc
 
 DynamicTheme::DynamicTheme() {
     // Based on 0x004ddf90 load_cursor() - converts relative frame offsets to absolute pointers
-    m_cursor_grp = sfile::load_file("glue\\dynamic\\arrow.grp").unsafe_cast<GrpFile>();
+    m_cursor_grp = sfile::load_file("glue\\dynamic\\arrow.grp").unsafe_cast<graphics::GrpFile>();
 
     u8* data = reinterpret_cast<u8*>(m_cursor_grp.get());
     u16 frame_count = *reinterpret_cast<u16*>(data) & 0x7fff;

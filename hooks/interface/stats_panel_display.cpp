@@ -6,6 +6,7 @@
 #include "systems/triggers/trigger_system.h"
 #include "DatExtend/datext.h"
 #include "player_color.h"
+#include "systems/graphics/grp.h"
 #include "BW/structures/Unit.h"
 #include "hooks/interface/weapon_armor_tooltip.h"
 #include "hooks/interface/uifeatures/hotkeys.h"
@@ -653,7 +654,7 @@ namespace hooks {
         auto has_value = [](const auto& r) { return *r.value; };
         for (const auto& resource : resource_tooltip_definitions | std::ranges::views::filter(has_value)) {
             // Icons live in HudManager now, so resolve the GRP at draw time
-            GrpFile* grp = g_hud_manager ? g_hud_manager->icons().get(resource.icon) : nullptr;
+            graphics::GrpFile* grp = g_hud_manager ? g_hud_manager->icons().get(resource.icon) : nullptr;
             if (!grp) {
                 continue;
             }

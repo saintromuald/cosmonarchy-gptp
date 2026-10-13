@@ -7,6 +7,11 @@
 #include "enumerations.h"
 #include <span>
 
+// General-purpose GRP view class, successor to GrpHead/GrpFrame below.
+namespace graphics {
+class GrpFile;
+}
+
 // New extender limits
 #define UnitLimit 4095
 #define UnitIDMask 0xFFF // Happens to be the same value as UnitLimit here, but it doesn't necessarily have to be.
@@ -472,44 +477,15 @@ struct GrpHead {
 C_ASSERT(sizeof(GrpHead) == 14);
 //static_assert(sizeof(GrpHead) == 14, "The count of the GrpHead structure is invalid");
 
-class GrpFile {
-public:
-    std::span<GrpFrame> frame_headers() {
-        return std::span<GrpFrame>(
-            reinterpret_cast<GrpFrame*>(m_raw_data),
-            m_frame_count
-        );
-    }
-
-    std::span<const GrpFrame> frame_headers() const {
-        return std::span<const GrpFrame>(
-            reinterpret_cast<const GrpFrame*>(m_raw_data),
-            m_frame_count
-        );
-    }
-
-    const u8* get_frame_pixel_data(size_t frame_index) const {
-        if (frame_index >= m_frame_count) frame_index = 0;
-        const GrpFrame& header = frame_headers()[frame_index];
-        return reinterpret_cast<const u8*>(this) + header.data_offset;
-    }
-
-    u16 frame_count() const { return m_frame_count; }
-    s16 width() const { return m_width; }
-    s16 height() const { return m_height; }
-
-private:
-    u16 m_frame_count;
-    s16 m_width;
-    s16 m_height;
-    u8 m_raw_data[];
-};
+// GrpFrame and GrpHead are deprecated in favor of GrpFile
+// (systems/graphics/grp.h); they stay until the retirement sweep moves the
+// remaining call sites over.
 
 struct DialogTheme {
     DialogTheme* next;
     s32 list_offset;
     char filename[260];
-    GrpFile* grp_handle;
+    graphics::GrpFile* grp_handle;
     u16 radiobutton_size;
     u16 checkbox_size;
     u16 hslider_endcap_w;

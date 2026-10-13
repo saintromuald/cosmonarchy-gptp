@@ -2,6 +2,7 @@
 
 #include "systems/ui/widgets.h"
 #include "hooks/unit_stats/supply_hooks.h"
+#include "systems/graphics/grp.h"
 
 #include <array>
 
@@ -39,8 +40,8 @@ private:
     void update_displayed_resource(ui::Widget* widget, s32& displayed, s32 resource_amount);
 
     // Widget draw callbacks, invoked by the dialog repaint pass
-    s16 draw_grp_icon(bw::Dialog* dialog, GrpFile* icons, u16 frame_index);
-    void draw_resource(ui::Widget& widget, GrpFile* icons, Row& row);
+    s16 draw_grp_icon(bw::Dialog* dialog, graphics::GrpFile* icons, u16 frame_index);
+    void draw_resource(ui::Widget& widget, graphics::GrpFile* icons, Row& row);
     void draw_production_slot(ui::Widget& widget, Row& row, u32 slot);
     void draw_colortext(ui::Widget& widget, Row& row, s16 alignment, bool font_by_length);
     void draw_color_box(ui::Widget& widget, Row& row);

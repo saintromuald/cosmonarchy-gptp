@@ -25,7 +25,7 @@ void CursorCache::clear() {
     m_cursors.clear();
 }
 
-HCURSOR CursorCache::get_cursor(const GrpFile* grp, u16 frame_index) {
+HCURSOR CursorCache::get_cursor(const graphics::GrpFile* grp, u16 frame_index) {
     if (!grp || grp->frame_count() == 0) {
         return nullptr;
     }
@@ -72,7 +72,7 @@ HCURSOR CursorCache::get_cursor(const GrpFile* grp, u16 frame_index) {
     return cursor;
 }
 
-HCURSOR CursorCache::create_cursor(const GrpFile* grp, u16 frame_index, f32 scale) {
+HCURSOR CursorCache::create_cursor(const graphics::GrpFile* grp, u16 frame_index, f32 scale) {
     if (!grp || frame_index >= grp->frame_count()) {
         return nullptr;
     }

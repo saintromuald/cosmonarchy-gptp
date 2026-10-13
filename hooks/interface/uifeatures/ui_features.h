@@ -86,4 +86,19 @@ void inject_ui_features_hooks();
 }
 
 #define tIconCount 7
+
+// unit\cmdbtns\ticon.pcx rows - the 16-color tints that icon ramp pixels remap through when drawing command and status icons
+// (the g_palette_remap copies in draw_stat_button_image and statbtn_button_update).
+enum class IconPalette : u8 {
+    ButtonNormal = 0,
+    ButtonDisabled = 1,
+    ButtonHighlighted = 2,
+    StatusNormal = 3,
+    StatusDisabled = 4,
+    Unused = 5,      // no draw code references this row today
+    ButtonPassive = 6,
+    Count
+};
+static_assert((size_t)IconPalette::Count == tIconCount);
+
 extern CmdBtnPalette g_new_cmdbtn_palette[tIconCount];

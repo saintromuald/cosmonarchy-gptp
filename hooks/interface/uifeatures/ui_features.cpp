@@ -701,12 +701,12 @@ namespace hooks {
 
     // Hooked to explore colorizing passive icons. -Pr0nogo
     void draw_stat_button_image(BinDlg* dialog) { // 00456C30
-        u8 palette_type = 3;
+        IconPalette palette_type = IconPalette::StatusNormal;
         if ((dialog->flags & DialogFlags::Disabled) || dialog->control_type != DialogControlType::Button) {
-            palette_type = 4;
+            palette_type = IconPalette::StatusDisabled;
         }
 
-        memcpy(g_palette_remap, g_new_cmdbtn_palette[palette_type].colors, 16);
+        memcpy(g_palette_remap, g_new_cmdbtn_palette[(size_t)palette_type].colors, 16);
         StatusScreenState* state = dialog->stat_button_user;
         GrpHead* grp = state->button_grp;
         u16 frame_index = state->grp_frame;
@@ -756,21 +756,21 @@ namespace hooks {
             helper::image_render_fxn_0_0(button->bounds.left, button->bounds.top, &image_data - 1, &rect, 0);
         }
 
-        s32 palette_type = 0;
+        IconPalette palette_type = IconPalette::ButtonNormal;
         if (button->flags & DialogFlags::Disabled) {
-            palette_type = 1;
+            palette_type = IconPalette::ButtonDisabled;
         } else if (button->flags & DialogFlags::DrawActiveState) {
-            palette_type = 2;
+            palette_type = IconPalette::ButtonHighlighted;
         } else if (button->button_user->requirement_var == TechId::Healing
                 && button->button_user->icon_id != IconId::Heal 
                 && button->button_user->icon_id != IconId::Cleric) // Passive icons
         {
-            palette_type = 6;
+            palette_type = IconPalette::ButtonPassive;
         } else {
-            palette_type = button->graphic != g_highlighted_icon ? 0 : 2;
+            palette_type = button->graphic != g_highlighted_icon ? IconPalette::ButtonNormal : IconPalette::ButtonHighlighted;
         }
 
-        memcpy(g_palette_remap, g_new_cmdbtn_palette[palette_type].colors, 16);
+        memcpy(g_palette_remap, g_new_cmdbtn_palette[(size_t)palette_type].colors, 16);
         u16 button_graphic = button->graphic;
         if (button_graphic >= (g_cmdicons_grp)->frame_count) { // Original ASM masks frame_count with 0x7FFF, but VS throws warnings with it.
             button_graphic = 0;

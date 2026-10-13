@@ -22,11 +22,11 @@ void draw_error_messages() {
 	}
 
 	if (g_error_flags & ERR_UNKNOWN_SHAPE) {
-		target->blitString("Error: Unknown shape found.", 10, 70, 2);
+		target->draw_text("Error: Unknown shape found.", 10, 70, 2);
 	}
 
 	if (g_error_flags & ERR_UNKNOWN_COORD_TYPE) {
-		target->blitString("Error: Unknown coordinate flingy_id found.", 10, 100, 2);
+		target->draw_text("Error: Unknown coordinate flingy_id found.", 10, 100, 2);
 	}
 #endif
 }
