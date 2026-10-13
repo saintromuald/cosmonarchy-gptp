@@ -130,11 +130,10 @@ void Shape::draw() const {
 	}
 
 	switch (this->type) {
-		case Text: {
-			// TODO: Add ability to change font count
-			const char* string = g_graphics.get_string_from_index(this->stringIndex).c_str();
-			target->blitString(string, p1.x, p1.y, this->fontSize);
-		} break;
+        case Text: {
+            // TODO: Add ability to change font count
+            target->draw_text(g_graphics.get_string_from_index(this->stringIndex), p1.x, p1.y, this->fontSize);
+        } break;
 
 		case DOT:
 			target->draw_dot(p1.x, p1.y, this->color);

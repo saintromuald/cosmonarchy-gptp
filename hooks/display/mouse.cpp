@@ -5,6 +5,7 @@
 #include "../../systems/display/display.h"
 #include "../../systems/display/zoom.h"
 #include "../../systems/display/cursor_cache.h"
+#include "../../systems/graphics/grp.h"
 #include "../interface/uifeatures/ui_features.h"
 
 #include <algorithm>
@@ -247,7 +248,7 @@ void __cdecl refresh_cursor_0() {
 }
 
 void begin_middle_drag_cursor(v2s32 grab_point) {
-    GrpFile* grp = MiddleDragCursorId < g_cursor_grps.size() ? g_cursor_grps[MiddleDragCursorId] : nullptr;
+    graphics::GrpFile* grp = MiddleDragCursorId < g_cursor_grps.size() ? g_cursor_grps[MiddleDragCursorId] : nullptr;
     if (!grp || grp->frame_count() == 0) {
         grp = g_current_cursor;
     }
@@ -300,7 +301,7 @@ void __cdecl update_cursor() {
         }
         if (g_current_cursor_id != u32(cursor_id)) {
             g_current_cursor_id = u32(cursor_id);
-            GrpFile* new_grp = (cursor_id >= 0 && size_t(cursor_id) < g_cursor_grps.size()) ? g_cursor_grps[cursor_id] : nullptr;
+            graphics::GrpFile* new_grp = (cursor_id >= 0 && size_t(cursor_id) < g_cursor_grps.size()) ? g_cursor_grps[cursor_id] : nullptr;
             if (g_current_cursor != new_grp) {
                 g_current_cursor = new_grp;
                 g_cursor_frame_index = 0;

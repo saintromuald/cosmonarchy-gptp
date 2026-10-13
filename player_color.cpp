@@ -1,4 +1,5 @@
 #include "player_color.h"
+#include "hooks/interface/mainmenu/glucustom.h"
 #include "systems/triggers/trigger_system.h"
 #include "color_palette.h"
 #include "storm/storm.h"
@@ -243,6 +244,15 @@ static void match_color_of(u32 player) {
 u8 get_player_color_index(u32 player, u32 index) {
     index %= ColorSetSize;
     return g_player_in_game_colors[player * ColorSetSize + index];
+}
+
+void set_player_font_ramp(u8 row) {
+    // Mirrors the asm copy in glucustom.cpp get_color_handle: every other shade
+    // of the row's in-game colors lands in the player font slot's bytes 1-4,
+    // which is what .fnt glyph masks 1-4 index.
+    for (u32 i = 0; i < 4; ++i) {
+        g_tfontgame_image_data[PlayerFontSlot * 8 + 1 + i] = g_player_in_game_colors[row * ColorSetSize + i * 2];
+    }
 }
 
 bool set_player_color(u32 player, PlayerColor color) {

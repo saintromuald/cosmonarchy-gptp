@@ -14,6 +14,7 @@
 #include "logger.h"
 #include "hooks/weapons/weapon_spellhit.h"
 #include "unit_search.h"
+#include "player_color.h"
 #include "tactical_ai.h"
 #include "threshold.h"
 #include "ai_layouts.h"

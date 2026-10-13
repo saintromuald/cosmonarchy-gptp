@@ -11,6 +11,7 @@
 #include "hooks/interface/uifeatures/ui_features.h"
 #include "player_color.h"
 #include "systems/display/hud_layout.h"
+#include "systems/graphics/grp.h"
 #include "systems/triggers/trigger_system.h"
 
 #include <charconv>
@@ -379,7 +380,7 @@ void StatResource::update_displayed_resource(ui::Widget* widget, s32& displayed,
 // --------------------------------
 
 // Draws a GRP frame at the dialog's left edge, vertically centered. Returns the frame's width.
-s16 StatResource::draw_grp_icon(bw::Dialog* dialog, GrpFile* icons, u16 frame_index) {
+s16 StatResource::draw_grp_icon(bw::Dialog* dialog, graphics::GrpFile* icons, u16 frame_index) {
     if (frame_index >= icons->frame_count()) {
         frame_index = 0;
     }
@@ -400,7 +401,7 @@ s16 StatResource::draw_grp_icon(bw::Dialog* dialog, GrpFile* icons, u16 frame_in
 }
 
 // Resource value: race icon + right-aligned green text
-void StatResource::draw_resource(ui::Widget& widget, GrpFile* icons, Row& row) {
+void StatResource::draw_resource(ui::Widget& widget, graphics::GrpFile* icons, Row& row) {
     bw::Dialog* dialog = widget.dialog();
     const s16 icon_width = draw_grp_icon(dialog, icons, row.icon_index);
 
@@ -466,12 +467,8 @@ void StatResource::draw_colortext(ui::Widget& widget, Row& row, s16 alignment, b
 
     if (row.use_player_color) {
         g_saved_font_color = g_current_font_color;
-        g_current_font_color = (u32)&g_tfontgame_image_data[304];
-        const auto color = helper::get_color_id(row.player);
-
-        for (u32 i = 0; i < 4; ++i) {
-            g_tfontgame_image_data[305 + i] = g_player_in_game_colors[color * ColorSetSize + i * 2];
-        }
+        g_current_font_color = (u32)&g_tfontgame_image_data[PlayerFontSlot * 8];
+        set_player_font_ramp((u8)helper::get_color_id(row.player));
     } else {
         helper::get_color_handle(TextColor::Green);
     }

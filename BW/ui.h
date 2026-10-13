@@ -9,6 +9,7 @@
 #include "storm/sfile.h"
 #include "storm/smem.hpp"
 #include "systems/display/display.h"
+#include "systems/graphics/grp.h"
 
 #include <functional>
 #include <map>
@@ -333,7 +334,7 @@ public:
 private:
     DynamicTheme();
     DialogTheme* m_dialog_theme{};
-    smem::ptr<GrpFile> m_cursor_grp;
+    smem::ptr<graphics::GrpFile> m_cursor_grp;
     // Currently unsure what tile.grp is used for, if anything
     // Seems related to save games
     std::array<u8, TFontCopyCount> m_tfont_indices;

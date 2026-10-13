@@ -2,6 +2,7 @@
 #include "BW/enumerations.h"
 #include "BW/structures.h"
 #include "storm/sfile.h"
+#include "systems/graphics/grp.h"
 #include "utils/rfl.h"
 
 #include <map>
@@ -23,18 +24,18 @@ public:
     enum class Kind { Mineral, Gas, Supply, General };
 
     HudIcons() {
-        m_mineral = sfile::load_file("game\\mineralicons.grp").unsafe_cast<GrpFile>();
-        m_gas     = sfile::load_file("game\\gasicons.grp").unsafe_cast<GrpFile>();
-        m_supply  = sfile::load_file("game\\supplyicons.grp").unsafe_cast<GrpFile>();
-        m_general = sfile::load_file("game\\icons.grp").unsafe_cast<GrpFile>();
+        m_mineral = sfile::load_file("game\\mineralicons.grp").unsafe_cast<graphics::GrpFile>();
+        m_gas     = sfile::load_file("game\\gasicons.grp").unsafe_cast<graphics::GrpFile>();
+        m_supply  = sfile::load_file("game\\supplyicons.grp").unsafe_cast<graphics::GrpFile>();
+        m_general = sfile::load_file("game\\icons.grp").unsafe_cast<graphics::GrpFile>();
     }
 
-    GrpFile* mineral() { return m_mineral.get(); }
-    GrpFile* gas()     { return m_gas.get(); }
-    GrpFile* supply()  { return m_supply.get(); }
-    GrpFile* general() { return m_general.get(); }
+    graphics::GrpFile* mineral() { return m_mineral.get(); }
+    graphics::GrpFile* gas()     { return m_gas.get(); }
+    graphics::GrpFile* supply()  { return m_supply.get(); }
+    graphics::GrpFile* general() { return m_general.get(); }
 
-    GrpFile* get(Kind kind) {
+    graphics::GrpFile* get(Kind kind) {
         switch (kind) {
             case Kind::Mineral: return mineral();
             case Kind::Gas:     return gas();
@@ -45,10 +46,10 @@ public:
     }
 
 private:
-    smem::ptr<GrpFile> m_mineral;
-    smem::ptr<GrpFile> m_gas;
-    smem::ptr<GrpFile> m_supply;
-    smem::ptr<GrpFile> m_general;
+    smem::ptr<graphics::GrpFile> m_mineral;
+    smem::ptr<graphics::GrpFile> m_gas;
+    smem::ptr<graphics::GrpFile> m_supply;
+    smem::ptr<graphics::GrpFile> m_general;
 };
 
 // Frees a dialog's create-time backdrop cache and re-blits it from the HUD

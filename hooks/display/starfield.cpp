@@ -1,6 +1,7 @@
 #include "starfield.h"
 
 #include "../../BW/bwdata.h"
+#include "../../graphics/Bitmap.h"
 #include "../../systems/display/display.h"
 #include "grid.h"
 

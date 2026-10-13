@@ -620,6 +620,9 @@ inline const char* player_personality_names[RaceId::FullCount][AiPersonality_Any
 #define UnitColorCount 2048
 static u8 g_tunit_colors[UnitColorCount];
 
+// Font-ramp slot the player-colored font handle points at (glucustom.cpp get_color_handle).
+constexpr u8 PlayerFontSlot = 38;
+
 struct PlayerData {
 	bool has_custom_color[PlayerLimit];
 	bool has_custom_player_name[PlayerLimit];
@@ -639,6 +642,7 @@ const char* get_random_easter_egg_unit_name(u16 unit_id);
 
 u8 get_player_color_index(u32 player, u32 index);
 bool set_player_color(u32 player, PlayerColor color);
+void set_player_font_ramp(u8 row);
 void init_player_data();
 void load_player_colors();
 bool any_player_can_randomize_color();

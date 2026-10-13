@@ -204,15 +204,15 @@ enum class TextColor : u8 {
     DarkGrey = 0x05,
     Red = 0x06,
     Green = 0x07,
-    Invisible = 0x08,
+    Invisible = 0x08,    // a color ramp entry; reads as invisible on dark backdrops
     Tab = 0x09,
     Newline = 0x0A,
-    Unknown = 0x0B,
-    Newline2 = 0x0C,
-    Invisible2 = 0x0D,
+    PlayerColor = 0x0B,
+    PrintEnd = 0x0C,
+    Ignored = 0x0D,
     AlignRight = 0x12,
     AlignCenter = 0x13,
-    TextGone = 0x14,
+    PlayerColor2 = 0x14,   // second player-color prefix, see glucustom.cpp get_color_handle
     RiverBlue = 0x0E,
     Teal = 0x0F,
     Purple = 0x10,
@@ -222,13 +222,11 @@ enum class TextColor : u8 {
     Yellow2 = 0x17,
     DarkGreen = 0x18,
     Yellow3 = 0x19,
-    Yellow4 = 0x1A,
+    Ignored2 = 0x1A,
     Navy = 0x1C,
     ArmyGreen = 0x1D,
     Grey2 = 0x1E,
     Teal2 = 0x1F,
-    AlignCenter2 = 0x13,
-    TextGone2 = 0x14,
 };
 
 enum class LobbyTextColor : u8 {
@@ -241,8 +239,6 @@ enum class LobbyTextColor : u8 {
     Red = 0x07,
     Black = 0x08,
     Tab = 0x09,
-    AlignRight = 0x18,
-    AlignCenter = 0x19,
 };
 
 namespace RaceId {

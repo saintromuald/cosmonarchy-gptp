@@ -227,7 +227,7 @@ void Tooltip::rasterize(u8* pixels, v2u16 size) const {
                 colored.clear();
                 colored.push_back(static_cast<char>(text.color));
                 colored.append(body);
-                canvas.blitString(colored.c_str(), cursor_x, cursor_y, TooltipFontSize);
+                canvas.draw_text(colored, cursor_x, cursor_y, TooltipFontSize);
                 cursor_y = static_cast<s16>(cursor_y +
                     graphics::Font::getTextHeight(body.c_str(), TooltipFontSize));
             },

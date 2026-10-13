@@ -1,6 +1,9 @@
 //Based on BWAPI's BW/Bitmap.h
 #pragma once
 #include "graphics.h"
+
+#include <string_view>
+
 #pragma pack(push, 1)
 
 //V241 for VS2008
@@ -10,7 +13,7 @@ namespace graphics
 
 	struct Bitmap
 	{
-		bool blitString(const char* pszStr, s32 x, s32 y, u8 size);
+        bool draw_text(std::string_view text, s32 x, s32 y, u8 size);
 		u16 getWidth() const;
 		u16 getHeight() const;
 
@@ -32,8 +35,6 @@ namespace graphics
 		void drawDotUnsafe(s32 x, s32 y, ColorId color);
 		void drawHorizontalLineUnsafe(s32 x1, s32 x2, s32 y, ColorId color);
 		void drawVerticalLineUnsafe(s32 x, s32 y1, s32 y2, ColorId color);
-
-		void blitKoreanChar(const char* ch, s32& x, s32& y, u8 fontSize, u8 color);
 
 		//Trivially checks whether the line should be drawn; based on the trivial
 		//check in the Cohen-Sutherland line clipping algorithm.

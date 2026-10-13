@@ -158,7 +158,7 @@ BW_REF(SetCursorProc,		g_set_cursor_iat,		0x004FE338);
 using SetCursorPosProc = BOOL(WINAPI*)(int, int);
 BW_REF(SetCursorPosProc,	g_set_cursor_pos_iat,	0x004FE2CC);
 
-BW_ARRAY(GrpFile*,	19,		g_cursor_grps,			0x00596B20);
+BW_ARRAY(graphics::GrpFile*, 19, g_cursor_grps, 0x00596B20);
 BW_REF(u32,					g_current_cursor_id,	0x00596B70);
 BW_REF(u32,					g_cursor_frame_index,	0x00597390);
 BW_REF(u32,					g_cursor_next_tick,		0x00597398);
@@ -1616,7 +1616,7 @@ BW_ARRAY(GluChatEntry, 12, g_chat_slot_entries, 0x0068ecb0);
 
 BW_ARRAY(char, 260, g_version_string, 0x005122c8);
 
-BW_REF(GrpFile*, g_current_cursor, 0x00597394);
+BW_REF(graphics::GrpFile*, g_current_cursor, 0x00597394);
 BW_REF(u32, g_modal_stack_counter, 0x006d5eb4);
 BW_REF(u8, g_theme_border_color, 0x006Ceb30);
 BW_REF(u8, g_theme_dialog_bg, 0x006ceb2f);

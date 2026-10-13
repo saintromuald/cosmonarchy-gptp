@@ -108,7 +108,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/utf-8 /bigobj %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>MA_NO_DEVICE_IO;MA_NO_ENGINE;MA_NO_NODE_GRAPH;MA_NO_RESOURCE_MANAGER;MA_NO_GENERATION;SOL_ALL_SAFETIES_ON;YAML_CPP_STATIC_DEFINE;WIN32_LEAN_AND_MEAN;CM_DEBUG;HYDRA;WINDOWS_IGNORE_PACKING_MISMATCH;WIN32;_DEBUG;_WINDOWS;_USRDLL;GPTP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
@@ -117,7 +117,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/utf-8 /bigobj %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <MinFilesInUnityFile>1</MinFilesInUnityFile>
       <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -151,7 +151,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Fast Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/utf-8 /bigobj %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SOL_ALL_SAFETIES_ON;YAML_CPP_STATIC_DEFINE;WIN32_LEAN_AND_MEAN;CM_DEBUG;HYDRA;WINDOWS_IGNORE_PACKING_MISMATCH;WIN32;_WINDOWS;_USRDLL;GPTP_EXPORTS;MA_NO_DEVICE_IO;MA_NO_ENGINE;MA_NO_NODE_GRAPH;MA_NO_RESOURCE_MANAGER;MA_NO_GENERATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
@@ -161,7 +161,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/utf-8 /bigobj %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <MinFilesInUnityFile>1</MinFilesInUnityFile>
       <DisableSpecificWarnings>26812;26495;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -194,7 +194,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/utf-8 /bigobj %(AdditionalOptions)</AdditionalOptions>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -205,7 +205,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/utf-8 /bigobj %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <MinFilesInUnityFile>10000</MinFilesInUnityFile>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -290,7 +290,6 @@
     <ClCompile Include="hooks\interface\hud\hud_manager.cpp" />
     <ClCompile Include="hooks\interface\hud\stat_resource.cpp" />
     <ClCompile Include="hooks\interface\hud\statport.cpp" />
-
     <ClCompile Include="hooks\interface\mainmenu\custom_glues.cpp" />
     <ClCompile Include="hooks\interface\mainmenu\custom_glues_inject.cpp" />
     <ClCompile Include="hooks\interface\mainmenu\glu_campaign.cpp" />
@@ -339,6 +338,14 @@
     <ClCompile Include="systems\audio\audio_system.cpp" />
     <ClCompile Include="systems\audio\music_system.cpp" />
     <ClCompile Include="systems\audio\music_stream.cpp" />
+    <ClCompile Include="systems\text\decoder.cpp" />
+    <ClCompile Include="systems\text\font_stack.cpp" />
+    <ClCompile Include="systems\text\glyph_cache.cpp" />
+    <ClCompile Include="systems\graphics\grp.cpp" />
+    <ClCompile Include="systems\text\measure.cpp" />
+    <ClCompile Include="systems\text\rasterizer.cpp" />
+    <ClCompile Include="systems\text\shaper.cpp" />
+    <ClCompile Include="systems\text\text.cpp" />
     <ClCompile Include="systems\audio\audio_decoder.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <IncludeInUnityFile>false</IncludeInUnityFile>
@@ -709,7 +716,6 @@
     <ClInclude Include="hooks\interface\hud\hud_manager.h" />
     <ClInclude Include="hooks\interface\hud\statport.h" />
     <ClInclude Include="hooks\interface\hud\stat_resource.h" />
-
     <ClInclude Include="hooks\interface\mainmenu\glu_options.h" />
     <ClInclude Include="safeunion.h" />
     <ClInclude Include="systems\audio\music_registry.h" />
@@ -839,6 +845,14 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="GameModes\Uprising.h" />
     <ClInclude Include="systems\triggers\table_edit.h" />
+    <ClInclude Include="systems\text\decoder.h" />
+    <ClInclude Include="systems\text\font_stack.h" />
+    <ClInclude Include="systems\text\glyph_cache.h" />
+    <ClInclude Include="systems\graphics\grp.h" />
+    <ClInclude Include="systems\text\measure.h" />
+    <ClInclude Include="systems\text\rasterizer.h" />
+    <ClInclude Include="systems\text\shaper.h" />
+    <ClInclude Include="systems\text\text.h" />
     <ClInclude Include="ReplayKraken.h" />
     <ClInclude Include="utility\RegConfig.h" />
     <ClInclude Include="req_table.h" />

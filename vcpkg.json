@@ -3,6 +3,7 @@
     "boost-multiprecision",
     "cpp-httplib",
     "cppcodec",
+    "freetype",
     "lua",
     "magic-enum",
     "miniaudio",

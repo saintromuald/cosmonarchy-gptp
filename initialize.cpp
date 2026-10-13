@@ -13,6 +13,7 @@
 #include "config.h"
 #include "systems/display/display.h"
 #include "systems/display/zoom.h"
+#include "systems/text/text.h"
 #include "hooks/display/refresh.h"
 #include "hooks/display/framebuffer.h"
 #include "hooks/display/blit.h"
@@ -238,6 +239,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     g_display.init();
     g_dirty_cell_grids.init();
     g_zoom.init();
+    text::TextSystem::instance().init();
     run_wmode(g_config.disable_wmode_prompt, g_config.prefer_wmode);
     // StarCraft.exe version check
     char exe_path[300];
@@ -946,7 +948,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     hooks::inject_sight_update_hooks();
     hooks::inject_creategame_hooks();
 
-	hooks::inject_iscript_extender();
+    hooks::inject_iscript_extender();
     hooks::inject_tbl_extender();
 
     hooks::inject_menu_hooks();
