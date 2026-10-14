@@ -24,11 +24,8 @@
 #include "storm/storm.h"
 #include "systems/display/display.h"
 #include "systems/display/zoom.h"
+#include "systems/text/print.h"
 #include "CM/cm_ids.h"
-
-static s32* const g_fonts = (s32*)0x006CE0F4;
-static u32* const g_print_xy_pos_y = (u32*)0x006CE0E0;
-static Box16* const g_draw_text_box = (Box16*)0x006CE0C8;
 
 CmdBtnPalette g_new_cmdbtn_palette[tIconCount];
 
@@ -45,19 +42,17 @@ void format_time(char* buffer, u32 size, const char* prefix, u32 seconds, bool a
 }
 
 namespace hooks {
-    void draw_text(const char* text, u32 x, u32 y, u32 w, u32 h, TextColor color) {
-        helper::get_color_handle(color);
-        g_print_xy_alignment = 0x11;
-        g_draw_text_box->left = x;
-        g_draw_text_box->right = x + w;
-        g_draw_text_box->top = y;
-        g_draw_text_box->bottom = y + h;
-        helper::bwfxn_print_xy(text, x, y);
-    }
+    constexpr s32 ReadoutTextWidth = 400;
 
-    void draw_ui_text(const char* text, TextColor color) {
-        draw_text(text, g_ui_text_pos.x, g_ui_text_pos.y, 300, UiTextHeight * 4, color);
-        g_ui_text_pos.y = *g_print_xy_pos_y;
+    void draw_ui_text(const char* text, TextColor color, graphics::FontSize font_size) {
+        const s32 x = g_ui_text_pos.x;
+        const s32 y = g_ui_text_pos.y;
+        const text::PrintResult result = text::print(text, x, y, text::PrintOptions{}
+            .clip({x, y, x + ReadoutTextWidth, y + s32(UiTextHeight) * 4})
+            .wrap(true)
+            .size(font_size)
+            .color(color));
+        g_ui_text_pos.y = result.final_y;
     }
 
     void register_action(ApmCounter* counter, char* buffer) {
@@ -117,7 +112,7 @@ namespace hooks {
 
         g_ui_text_pos = { 10, 3 };
         if (*leaderboard_type) {
-            g_ui_text_pos.x += 80;
+            g_ui_text_pos.x += 160;
         }
 
         if (g_config.show_timer) {
@@ -165,13 +160,13 @@ namespace hooks {
             static char previous[3][64] = {};
             const bool changed = std::memcmp(previous, lines, sizeof(lines)) != 0;
             if (changed) {
-                std::memcpy(previous, lines, sizeof(lines));
+                std::copy_n(lines[0], sizeof(lines), previous[0]);
             }
             for (const char* line : lines) {
-                draw_ui_text(line, TextColor::Green);
+                draw_ui_text(line, TextColor::Green, graphics::FontSize::FONT_SMALL);
             }
             if (changed) {
-                mark_rect(text_left, text_top, text_left + 300, g_ui_text_pos.y - 1);
+                mark_rect(text_left, text_top, text_left + ReadoutTextWidth, g_ui_text_pos.y - 1);
             }
         }
 
@@ -224,7 +219,10 @@ namespace hooks {
             mark_rect(indicator_left, indicator_top, indicator_left + ZoomIndicatorWidth, indicator_top + s32(UiTextHeight));
         }
         if (visible) {
-            draw_text(text.c_str(), u32(left), u32(top), u32(ZoomIndicatorWidth), UiTextHeight * 4, TextColor::White);
+            text::print(text, left, top, text::PrintOptions{}
+                .clip({left, top, left + ZoomIndicatorWidth, top + s32(UiTextHeight) * 4})
+                .px(10)
+                .color(TextColor::White));
             if (moved || text_changed || !indicator_shown) {
                 mark_rect(left, top, left + ZoomIndicatorWidth, top + s32(UiTextHeight));
             }
@@ -706,7 +704,7 @@ namespace hooks {
             palette_type = IconPalette::StatusDisabled;
         }
 
-        memcpy(g_palette_remap, g_new_cmdbtn_palette[(size_t)palette_type].colors, 16);
+        std::copy_n(g_new_cmdbtn_palette[(size_t)palette_type].colors, 16, g_palette_remap);
         StatusScreenState* state = dialog->stat_button_user;
         GrpHead* grp = state->button_grp;
         u16 frame_index = state->grp_frame;
@@ -770,7 +768,7 @@ namespace hooks {
             palette_type = button->graphic != g_highlighted_icon ? IconPalette::ButtonNormal : IconPalette::ButtonHighlighted;
         }
 
-        memcpy(g_palette_remap, g_new_cmdbtn_palette[(size_t)palette_type].colors, 16);
+        std::copy_n(g_new_cmdbtn_palette[(size_t)palette_type].colors, 16, g_palette_remap);
         u16 button_graphic = button->graphic;
         if (button_graphic >= (g_cmdicons_grp)->frame_count) { // Original ASM masks frame_count with 0x7FFF, but VS throws warnings with it.
             button_graphic = 0;

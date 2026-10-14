@@ -70,7 +70,7 @@ private:
     std::optional<u8> m_bg_palette_index; // Default filled with theme dialog bg
     bool m_has_border = true;
     u8 m_padding = 4;
-    std::optional<u16> m_max_width = 200; // Text wraps to this box width; nullopt disables wrapping
+    std::optional<u16> m_max_width = 400; // Text wraps to this box width; nullopt disables wrapping
     std::optional<v2u16> m_fixed_size;
 
     struct Layout {

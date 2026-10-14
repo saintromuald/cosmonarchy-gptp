@@ -18,7 +18,7 @@
 #include "hooks/display/framebuffer.h"
 #include "hooks/display/blit.h"
 #include "hooks/display/dialog_clip.h"
-#include "hooks/display/dialog_anchor.h"
+#include "hooks/display/popup_dialog.h"
 #include "hooks/display/widget_dialog_init.h"
 #include "hooks/display/tooltip_bounds.h"
 #include "hooks/display/mapblit.h"
@@ -35,6 +35,8 @@
 #include "hooks/display/mouse.h"
 #include "hooks/display/camera.h"
 #include "hooks/display/frame_pacing.h"
+#include "hooks/text/text_print.h"
+#include "hooks/text/text_width.h"
 #include "hooks/maxhp.h"
 #include "hooks/apply_upgrade_flags.h"
 #include "hooks/attack_priority.h"
@@ -795,13 +797,15 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     hooks::inject_framebuffer_hooks();
     hooks::inject_blit_hooks();
     hooks::inject_dialog_clip_hooks();
-    hooks::inject_dialog_anchor_hooks();
+    hooks::inject_popup_dialog_hooks();
     hooks::inject_widget_dialog_init_hooks();
     hooks::inject_tooltip_bounds_hooks();
     hooks::inject_mapblit_hooks();
     hooks::inject_grid_hooks();
     hooks::inject_translucent_image_hooks();
     hooks::inject_screen_text_hooks();
+    hooks::inject_text_print_hooks();
+    hooks::inject_text_width_hooks();
     hooks::inject_wheel_hooks();
     hooks::inject_gamemap_hooks();
     hooks::inject_terrain_hooks();

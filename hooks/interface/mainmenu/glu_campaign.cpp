@@ -21,29 +21,29 @@ GluCampaignList::GluCampaignList()
     const char hotkey_color = static_cast<char>(LobbyTextColor::YellowGreen);
     const char revert_color = static_cast<char>(LobbyTextColor::Revert);
 
-    image(DialogBounds::from_xywh(1752, 956, 168, 91), "glue\\dynamic\\pCancel_sm.pcx")->translucent();
-    image(DialogBounds::from_xywh(1716, 936, 204, 71), "glue\\dynamic\\pOk_sm.pcx")->translucent();
-    m_cancel_button = lightup_button(DialogBounds::from_xywh(1757, 1019, 132, 22),
+    image(DialogBounds::from_xywh(1584, 832, 336, 182), "glue\\dynamic\\pCancel.pcx")->translucent();
+    image(DialogBounds::from_xywh(1512, 792, 408, 142), "glue\\dynamic\\pOk.pcx")->translucent();
+    m_cancel_button = lightup_button(DialogBounds::from_xywh(1593, 957, 284, 44),
         std::format("{}C{}ancel", hotkey_color, revert_color))->enable_hotkey('c')->set_cancel();
-    m_ok_button = lightup_button(DialogBounds::from_xywh(1721, 983, 152, 22),
+    m_ok_button = lightup_button(DialogBounds::from_xywh(1521, 885, 308, 44),
         std::format("{}O{}k", hotkey_color, revert_color))->enable_hotkey('o')->set_default()->disable();
 
-    image(DialogBounds::from_xywh(0, 936, 236, 71), "glue\\dynamic\\left_upper_button.pcx")->translucent();
-    image(DialogBounds::from_xywh(0, 956, 200, 91), "glue\\dynamic\\left_lower_button.pcx")->translucent();
-    m_replay_button = lightup_button(DialogBounds::from_xywh(20, 1019, 181, 22),
+    image(DialogBounds::from_xywh(0, 792, 472, 142), "glue\\dynamic\\left_upper_button.pcx")->translucent();
+    image(DialogBounds::from_xywh(0, 832, 400, 182), "glue\\dynamic\\left_lower_button.pcx")->translucent();
+    m_replay_button = lightup_button(DialogBounds::from_xywh(50, 956, 334, 44),
         std::format("Watch {}R{}eplay", hotkey_color, revert_color))->enable_hotkey('r');
-    m_custom_button = lightup_button(DialogBounds::from_xywh(40, 983, 201, 22),
+    m_custom_button = lightup_button(DialogBounds::from_xywh(92, 884, 368, 44),
         std::format("Play C{}u{}stom", hotkey_color, revert_color))->enable_hotkey('u');
 
-    image(DialogBounds::from_ltrb(0, 0, 240, 333), "glue\\dynamic\\pjoin_reverse.pcx")->translucent();
-    label(DialogBounds::from_ltrb(35, 60, 230, 90), "Official Campaigns")->fontsize(ui::FontSize::Large16x);
-    m_listbox = listbox(DialogBounds::from_ltrb(45, 90, 230, 325))->fontsize(ui::FontSize::Large16);
+    image(DialogBounds::from_ltrb(0, 0, 480, 666), "glue\\dynamic\\pjoin_reverse.pcx")->translucent();
+    label(DialogBounds::from_ltrb(70, 120, 460, 180), "Official Campaigns")->fontsize(ui::FontSize::Large16x);
+    m_listbox = listbox(DialogBounds::from_ltrb(90, 180, 460, 650))->fontsize(ui::FontSize::Large16);
 
-    image(DialogBounds::from_xywh(1556, 0, 364, 357), "glue\\dynamic\\plistlrg_reverse.pcx")->translucent();
-    m_title = label(DialogBounds::from_xywh(1580, 100, 300, 25), "")->fontsize(ui::FontSize::Large16x);
-    m_description = label(DialogBounds::from_xywh(1580, 135, 275, 135), "")->fontsize(ui::FontSize::Medium14);
-    m_mission_count = label(DialogBounds::from_xywh(1580, 270, 275, 15), "")->fontsize(ui::FontSize::Small10);
-    m_author = label(DialogBounds::from_xywh(1580, 290, 275, 25), "")->fontsize(ui::FontSize::Large16);
+    image(DialogBounds::from_xywh(1192, 0, 728, 640), "glue\\dynamic\\plistlrg_reverse.pcx")->translucent();
+    m_title = label(DialogBounds::from_xywh(1240, 200, 600, 50), "")->fontsize(ui::FontSize::Large16x);
+    m_description = label(DialogBounds::from_xywh(1240, 270, 550, 270), "")->fontsize(ui::FontSize::Medium14);
+    m_mission_count = label(DialogBounds::from_xywh(1240, 540, 550, 30), "")->fontsize(ui::FontSize::Small10);
+    m_author = label(DialogBounds::from_xywh(1240, 580, 550, 50), "")->fontsize(ui::FontSize::Large16);
 }
 
 void GluCampaignList::load_campaign_by_index(u16 index) {
@@ -162,19 +162,19 @@ GluCampaignDetails::GluCampaignDetails()
     const auto hotkey_color = static_cast<char>(LobbyTextColor::YellowGreen);
     const auto revert_color = static_cast<char>(LobbyTextColor::Revert);
 
-    image(DialogBounds::from_xywh(1752, 956, 168, 91), "glue\\dynamic\\pCancel_sm.pcx")->translucent();
-    image(DialogBounds::from_xywh(1716, 936, 204, 71), "glue\\dynamic\\pOk_sm.pcx")->translucent();
-    m_cancel_button = lightup_button(DialogBounds::from_xywh(1757, 1019, 132, 22),
+    image(DialogBounds::from_xywh(1584, 832, 336, 182), "glue\\dynamic\\pCancel.pcx")->translucent();
+    image(DialogBounds::from_xywh(1512, 792, 408, 142), "glue\\dynamic\\pOk.pcx")->translucent();
+    m_cancel_button = lightup_button(DialogBounds::from_xywh(1593, 957, 284, 44),
         std::format("{}C{}ancel", hotkey_color, revert_color))->enable_hotkey('c')->set_cancel();
-    m_ok_button = lightup_button(DialogBounds::from_xywh(1721, 983, 152, 22),
+    m_ok_button = lightup_button(DialogBounds::from_xywh(1521, 885, 308, 44),
         std::format("{}O{}k", hotkey_color, revert_color))->enable_hotkey('o')->set_default();
 
-    m_title = label(DialogBounds::from_ltrb(35, 50, 335, 75), "")->fontsize(ui::FontSize::Large16x);
-    m_subtitle = label(DialogBounds::from_ltrb(50, 75, 350, 100), "")->fontsize(ui::FontSize::Medium14);
+    m_title = label(DialogBounds::from_xywh(35, 50, 400, 40), "")->fontsize(ui::FontSize::Large16x);
+    m_subtitle = label(DialogBounds::from_xywh(50, 90, 400, 30), "")->fontsize(ui::FontSize::Medium14);
 
     m_description_box = group();
-    m_description_box->image(DialogBounds::from_xywh(1680, 0, 240, 333), "glue\\dynamic\\pjoin_sm.pcx")->translucent();
-    m_description = m_description_box->label(DialogBounds::from_xywh(1695, 65, 186, 241), "");
+    m_description_box->image(DialogBounds::from_xywh(1440, 0, 480, 666), "glue\\dynamic\\pjoin.pcx")->translucent();
+    m_description = m_description_box->label(DialogBounds::from_xywh(1470, 130, 372, 482), "");
 
     auto select_type = campaigns::MissionSelectType::ComboBox;
     if (const auto selected = g_campaign_manager.selected_campaign(); selected) {
@@ -185,16 +185,16 @@ GluCampaignDetails::GluCampaignDetails()
     }
 
     if (select_type == campaigns::MissionSelectType::ComboBox) {
-        image(DialogBounds::from_xywh(0, 961, 282, 119), "glue\\dynamic\\mission_select.pcx")->translucent();
-        label(DialogBounds::from_xywh(35, 990, 240, 20), "Mission Select")->fontsize(ui::FontSize::Medium14);
-        m_combobox = combobox(DialogBounds::from_xywh(35, 1010, 230, 30));
+        image(DialogBounds::from_xywh(0, 844, 566, 236), "glue\\dynamic\\mission_select.pcx")->translucent();
+        label(DialogBounds::from_xywh(70, 900, 480, 40), "Mission Select")->fontsize(ui::FontSize::Medium14);
+        m_combobox = combobox(DialogBounds::from_xywh(70, 940, 460, 60));
     } else {
-        image(DialogBounds::from_xywh(0, 883, 282, 197), "glue\\dynamic\\mission_select_listbox.pcx")->translucent();
-        label(DialogBounds::from_xywh(35, 912, 240, 20), "Mission Select")->fontsize(ui::FontSize::Medium14);
-        m_combobox = listbox(DialogBounds::from_xywh(35, 940, 230, 100));
+        image(DialogBounds::from_xywh(0, 688, 566, 392), "glue\\dynamic\\mission_select_listbox.pcx")->translucent();
+        label(DialogBounds::from_xywh(70, 744, 480, 40), "Mission Select")->fontsize(ui::FontSize::Medium14);
+        m_combobox = listbox(DialogBounds::from_xywh(70, 800, 460, 200));
     }
 
-    m_reset_button = lightup_button(DialogBounds::from_xywh(25, 1050, 156, 30),
+    m_reset_button = lightup_button(DialogBounds::from_xywh(50, 1025, 312, 55),
         std::format("{}R{}eset Progress", hotkey_color, revert_color))
         ->enable_hotkey('r')->fontsize(ui::FontSize::Medium14)
         ->tooltip("Reset all progress for this campaign");

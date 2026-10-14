@@ -1,12 +1,14 @@
 //Based on BWAPI's BW/Bitmap.cpp
 #include "Bitmap.h"
-#include "Font.h"
 #include "../BW/bwdata.h"
 #include "BW/enumerations.h"
 #include "systems/graphics/grp.h"
 #include "systems/text/decoder.h"
 #include "systems/text/measure.h"
+#include "systems/text/plot.h"
 #include "systems/text/text.h"
+#include "systems/text/walk.h"
+#include "systems/text/wrap.h"
 #include <cassert>
 #include <utility>
 #include <string_view>
@@ -16,10 +18,6 @@
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
-
-// Defined in glucustom.h. Using extern because this is a low-level graphics file that shouldn't pull in random headers
-// TODO: Move this to a more appropriate location -Jesse
-extern u8 g_tfontgame_image_data[]; 
 
 namespace graphics
 {
@@ -38,156 +36,15 @@ namespace graphics
 
 namespace {
 
-// Control byte -> font ramp slot, matching the mod's get_color_handle remap
-// (glucustom.cpp + the 0x004200AC offset-table patches in initialize.cpp):
-// 0x02-0x08 -> 0-6, 0x0E-0x11 -> 7-10, 0x15-0x1F -> 11-21, and the extended
-// codes 0x8F-0x98 / 0x9A-0x9E -> 22-37 (0x99 is the trademark glyph and never
-// arrives as a code). Player colors use PlayerFontSlot.
-u8 color_slot(u8 code) {
-    if (code >= 0x8F) {
-        return code - 0x79;
-    }
-    if (code <= 0x08) {
-        return code - 0x02;
-    }
-    if (code <= 0x11) {
-        return code - 0x07;
-    }
-    return code - 0x0A; // 0x15-0x1F, including 0x1A (slot 16)
-}
-
-// Ramp layout: bytes 1-4 are the coverage shades (byte 1 = bright core), byte 7
-// is the shadow color baked into .fnt glyphs as mask-7 pixels.
-constexpr u32 ShadowRampByte = 7;
-
-u8 ramp_byte(u8 color, u32 mask) {
-    return g_tfontgame_image_data[color * 8 + mask];
-}
-
-// The .fnt path, kept for when TextSystem can't come up.
-bool draw_text_legacy(Bitmap& bitmap, std::string_view text, s32 x, s32 y, u8 size) {
-    Font* fnt = font_base[size];
-    if (!fnt) {
-        return false;
-    }
-
-    // verify if drawing should be done
-    if (x + fnt->getTextWidth(text) < 0 ||
-        y + fnt->getTextHeight(text) < 0 ||
-        x >= bitmap.getWidth() || y >= bitmap.getHeight()) {
-        return false;
-    }
-
-    // Reference an unsigned character array
-    const u8* pbChars = (const u8*)text.data();
-    const s32 length = (s32)text.size();
-
-    u8 last_color = 0;
-    u8 color = 0;
-    s32 Xoffset = x, Yoffset = y;
-
-    // Iterate all characters in the message
-    for (s32 c = 0; c < length; ++c) {
-        char prev_c = c > 0 ? pbChars[c - 1] : 0;
-        // Perform control character and whitespace functions
-        if (pbChars[c] <= ' ') {
-            switch (pbChars[c]) {
-                case 0:         // vanilla ends the print at 0x00 like 0x0C
-                case '\f':      // 12   formfeed
-                    return true;
-                case 1: {       // restore last colour
-                    color = last_color;
-                } continue;
-                case '\t': {    // 9    tab
-                    Xoffset += fnt->getCharWidth(pbChars[c], prev_c);
-                } continue;
-                case '\n': {    // 10   newline
-                    Xoffset = x;
-                    Yoffset += fnt->maxHeight();
-                } continue;
-                case '\r':     // 13   carriage return
-                    continue;
-                case 18: {      // right align
-                    Xoffset += bitmap.getWidth() - fnt->getTextWidth(text) - x;
-                } continue;
-                case 19: {      // center align
-                    Xoffset += (bitmap.getWidth() - fnt->getTextWidth(text)) / 2 - x;
-                } continue;
-                case ' ': {     // space
-                    Xoffset += fnt->maxWidth() / 2;
-                } continue;
-                case std::to_underlying(TextColor::PlayerColor):
-                case std::to_underlying(TextColor::PlayerColor2): { // player color
-                    if (c + 1 < length) {
-                        const u8 code = pbChars[c + 1];
-                        if ((code >= 1 && code <= 8) || (code >= 0x0E && code <= 0x11)) {
-                            ++c;
-                            last_color = color;
-                            set_player_font_ramp(code <= 8 ? u8(code - 1) : u8(code + 8));
-                            color = PlayerFontSlot;
-                        }
-                    }
-                } continue;
-                default: {       // colour code
-                    last_color = color;
-                    color = color_slot(pbChars[c]);
-                } continue;
-            }
-        } else if (pbChars[c] >= text::ExtendedColorFirst
-            && pbChars[c] <= text::ExtendedColorLast
-            && pbChars[c] != text::TrademarkByte) {
-            last_color = color;
-            color = color_slot(pbChars[c]);
-            continue;
-        }
-
-        // Skip if the character is not supported by the font
-        FontChar* fntChr = fnt->getChar(pbChars[c]);
-        if (!fntChr) {
-            continue;
-        }
-
-        // begin drawing character process
-        for (s32 i = 0, pos = 0; pos < fntChr->getHeight() * fntChr->getWidth(); ++i, ++pos) {
-            // font position
-            pos += fntChr->pixelOffset(i);
-
-            // x offset
-            s32 newX = Xoffset + (fntChr->get_x() + pos % fntChr->getWidth());
-            if (newX >= bitmap.getWidth()) break;
-            if (newX < 0) continue;
-
-            // y offset
-            s32 newY = Yoffset + (fntChr->get_y() + pos / fntChr->getWidth());
-            if (newY >= bitmap.getHeight()) break;
-            if (newY < 0) continue;
-
-            // blit offset
-            s32 offset = newY * bitmap.getWidth() + newX;
-            if (offset >= bitmap.getWidth() * bitmap.getHeight()) break;
-            if (offset < 0) continue;
-
-            // Plot pixel
-            u32 mask_index = fntChr->colorMask(i);
-            if (mask_index) {
-                bitmap.data[offset] = ramp_byte(color, mask_index);
-            }
-        }
-
-        // Increment the X offset for the width of the character
-        Xoffset += fntChr->getWidth();
-    }
-    return true;
-}
-
 bool draw_text_ttf(Bitmap& bitmap, std::string_view text, s32 x, s32 y, u8 slot) {
     text::TextSystem& text_system = text::TextSystem::instance();
-    const text::SlotConfig& config = text_system.slot(slot);
-    text::FontStack& stack = text_system.stack(config.stack);
+    const text::PrintFont font = text_system.font_for_slot(slot);
+    text::FontStack& stack = text_system.stack(font.stack);
     text::Shaper& shaper = text_system.shaper();
     text::GlyphCache& glyph_cache = text_system.glyph_cache();
-    const u32 pixel_height = config.pixel_height;
-    const s32 spacing = text_system.char_spacing();
+    const u32 pixel_height = font.pixel_height;
+    const s32 spacing = font.char_spacing;
+    const Box32 bitmap_clip{0, 0, s32(bitmap.width) - 1, s32(bitmap.height) - 1};
 
     if (x + text::text_width(slot, text) < 0
         || y + text::text_height(slot, text) < 0
@@ -199,13 +56,16 @@ bool draw_text_ttf(Bitmap& bitmap, std::string_view text, s32 x, s32 y, u8 slot)
     if (!primary_face) {
         return false;
     }
-    const s32 ascent = primary_face->ascender(pixel_height);
+    const s32 ascent = font.ascent;
 
-    u8 last_color = 0;
-    u8 color = 0;
+    const u8* last_color = text::ramp(0);
+    const u8* color = text::ramp(0);
     s32 x_offset = x;
 
-    std::vector<char32_t> run;
+    text::WalkScratch& scratch = text_system.walk_scratch();
+    std::vector<char32_t>& run = scratch.run_codepoints;
+    std::vector<text::ShapedGlyph>& shaped = scratch.shaped;
+    run.clear();
     text::FontFace* run_face = nullptr;
 
     const auto flush_run = [&]() {
@@ -213,42 +73,37 @@ bool draw_text_ttf(Bitmap& bitmap, std::string_view text, s32 x, s32 y, u8 slot)
             run.clear();
             return;
         }
-        for (const text::ShapedGlyph& glyph : shaper.shape(*run_face, pixel_height, run)) {
+        shaper.shape_into(shaped, *run_face, pixel_height, run);
+        for (const text::ShapedGlyph& glyph : shaped) {
             const text::GlyphBitmap& glyph_bitmap = glyph_cache.lookup(*run_face, pixel_height, glyph.glyph_index);
             const s32 glyph_x = x_offset + glyph.offset_x + glyph_bitmap.bitmap_left;
             const s32 glyph_y = y + glyph.offset_y + ascent - glyph_bitmap.bitmap_top;
-            const u8 shadow = ramp_byte(color, ShadowRampByte);
-            for (u32 v = 0; v < glyph_bitmap.height; ++v) {
-                for (u32 u = 0; u < glyph_bitmap.width; ++u) {
-                    if (glyph_bitmap.pixels[v * glyph_bitmap.width + u]) {
-                        bitmap.draw_dot(glyph_x + u + 1, glyph_y + v + 1, shadow);
-                    }
-                }
-            }
-            for (u32 v = 0; v < glyph_bitmap.height; ++v) {
-                for (u32 u = 0; u < glyph_bitmap.width; ++u) {
-                    const u8 mask = glyph_bitmap.pixels[v * glyph_bitmap.width + u];
-                    if (mask) {
-                        bitmap.draw_dot(glyph_x + u, glyph_y + v, ramp_byte(color, mask));
-                    }
-                }
-            }
+            text::plot_glyph(bitmap, bitmap_clip, glyph_bitmap, glyph_x, glyph_y, color);
             x_offset += glyph.advance + spacing;
         }
         run.clear();
     };
 
-    const u8* cursor = (const u8*)text.data();
+    const u8* cursor = reinterpret_cast<const u8*>(text.data());
     const u8* end = cursor + text.size();
+    const u8* view_start = cursor;
     bool print_ended = false;
     while (!print_ended) {
+        const u8* token_start = cursor;
         const auto token = text::decode_next(cursor, end);
         if (!token) {
             break;
         }
         std::visit(Overloaded{
             [&](const text::Codepoint& codepoint) {
-                text::FontFace* face = stack.resolve(codepoint.value);
+                if (text::is_cursor_pair(token_start, cursor, view_start)) {
+                    // flush first so preceding glyphs plot before the cursor (vanilla z-order)
+                    flush_run();
+                    run_face = nullptr;
+                    text::plot_cursor(bitmap, bitmap_clip, font, x_offset, y, color);
+                    return;
+                }
+                text::FontFace* face = stack.resolve(codepoint.value, run_face);
                 if (face != run_face) {
                     flush_run();
                     run_face = face;
@@ -262,14 +117,23 @@ bool draw_text_ttf(Bitmap& bitmap, std::string_view text, s32 x, s32 y, u8 slot)
                         print_ended = true;
                     } break;
                     case std::to_underlying(TextColor::Revert): {
+                        if (color == text::ramp(text::GreyColorSlot)) {
+                            break;
+                        }
+                        // The player ramp is rewritten by every pair, so a saved
+                        // pointer onto it is stale; get_color_handle escapes to the
+                        // next ramp row instead of re-applying the wrong shades.
+                        if (last_color == text::ramp(PlayerFontSlot)) {
+                            last_color += 8;
+                        }
                         color = last_color;
                     } break;
                     case '\t': {
-                        x_offset += text_system.tab_advance(slot);
+                        x_offset += text::tab_stop(font.tab_width, x_offset, x);
                     } break;
                     case '\n': {
                         x_offset = x;
-                        y += text_system.line_advance(slot);
+                        y += font.line_advance;
                     } break;
                     case '\f': {    // vanilla ends the whole print at 0x0C
                         print_ended = true;
@@ -277,61 +141,46 @@ bool draw_text_ttf(Bitmap& bitmap, std::string_view text, s32 x, s32 y, u8 slot)
                     case '\r':
                         break;
                     case std::to_underlying(TextColor::AlignRight): {
-                        const std::string_view rest{(const char*)cursor, size_t(end - cursor)};
-                        x_offset += bitmap.getWidth() - text::line_width(slot, rest) - x;
+                        const std::string_view rest{reinterpret_cast<const char*>(cursor), size_t(end - cursor)};
+                        x_offset += bitmap.getWidth() - text::line_width(slot, rest, x_offset, x) - x;
                     } break;
                     case std::to_underlying(TextColor::AlignCenter): {
-                        const std::string_view rest{(const char*)cursor, size_t(end - cursor)};
-                        x_offset += (bitmap.getWidth() - text::line_width(slot, rest)) / 2 - x;
+                        const std::string_view rest{reinterpret_cast<const char*>(cursor), size_t(end - cursor)};
+                        x_offset += (bitmap.getWidth() - text::line_width(slot, rest, x_offset, x)) / 2 - x;
                     } break;
                     case ' ': {
-                        x_offset += text_system.space_advance(slot);
+                        x_offset += font.space_advance;
                     } break;
                     case std::to_underlying(TextColor::PlayerColor):
                     case std::to_underlying(TextColor::PlayerColor2): {
+                        if (color == text::ramp(text::GreyColorSlot)) {
+                            break;
+                        }
                         if (cursor != end) {
                             const u8 code = *cursor;
                             if ((code >= 1 && code <= 8) || (code >= 0x0E && code <= 0x11)) {
                                 ++cursor;
                                 last_color = color;
-                                set_player_font_ramp(code <= 8 ? u8(code - 1) : u8(code + 8));
-                                color = PlayerFontSlot;
+                                set_player_font_ramp(player_font_ramp_row(code));
+                                color = text::ramp(PlayerFontSlot);
                             }
                         }
                     } break;
-                    default: {      // colour code, including the extended 0x8F-0x9E range
+                    default: {      // colour code, including the extended 0x8F-0x9F range
+                        // Grey swallows the legacy codes only; the extended colors
+                        // bypass the grey check (writeFontApplyColour's off_4 jump).
+                        if (color == text::ramp(text::GreyColorSlot) && control.value < 0x20) {
+                            break;
+                        }
                         last_color = color;
-                        color = color_slot(control.value);
+                        color = text::ramp(text::color_slot(control.value));
                     } break;
                 }
             },
             [&](const text::Icon& icon) {
                 flush_run();
-                const auto unit_icon = graphics::unit_icon(icon.unit_id);
-                if (!unit_icon) {
-                    return; // no icon source yet - nothing to draw or advance
-                }
-                const FrameSize size = fit_height(unit_icon->grp->frame_size(unit_icon->frame), pixel_height);
-                if (!size.height) {
-                    return; // degenerate frame - nothing to draw or advance
-                }
-                const s32 icon_y = y + (text_system.line_advance(slot) - s32(size.height)) / 2;
-                // Icon frames carry their own 15-step ramp (1 = brightest)
-                // map it onto the current text color's font-ramp shades
-                u8 icon_remap[16] = {};
-                for (u8 level = 1; level < 16; ++level) {
-                    icon_remap[level] = ramp_byte(color, 1 + ((level - 1) >> 2));
-                }
-                unit_icon->grp->blit_frame(unit_icon->frame, bitmap, {
-                    .x = x_offset,
-                    .y = icon_y,
-                    .format = FrameFormat::Rle,
-                    .width = size.width,
-                    .height = size.height,
-                    .remap = icon_remap,
-                    .remap_length = 16,
-                });
-                x_offset += unit_icon_advance(icon.unit_id, pixel_height, spacing);
+                const FrameSize icon_size = text::plot_icon(bitmap, bitmap_clip, icon.unit_id, x_offset, y, font.line_advance, pixel_height, color);
+                x_offset += icon_size.height ? s32(icon_size.width) + spacing : 0;
             },
         }, *token);
     }
@@ -346,10 +195,7 @@ bool Bitmap::draw_text(std::string_view text, s32 x, s32 y, u8 size)
     if (size > 3) {
         return false;
     }
-    if (text::TextSystem::instance().available()) {
-        return draw_text_ttf(*this, text, x, y, size);
-    }
-    return draw_text_legacy(*this, text, x, y, size);
+    return draw_text_ttf(*this, text, x, y, size);
 }
 
 

@@ -655,7 +655,7 @@ namespace hooks {
         for (const auto& resource : resource_tooltip_definitions | std::ranges::views::filter(has_value)) {
             // Icons live in HudManager now, so resolve the GRP at draw time
             graphics::GrpFile* grp = g_hud_manager ? g_hud_manager->icons().get(resource.icon) : nullptr;
-            if (!grp) {
+            if (!grp || !grp->frame_count()) {
                 continue;
             }
             auto index = resource.hud_icon
@@ -664,13 +664,9 @@ namespace hooks {
 
             if (index >= grp->frame_count()) index = 0;
 
-            auto& current_frame = grp->frame_headers()[index];
-            s16 width = current_frame.w;
-            s16 height = current_frame.h;
-            if (current_frame.data_offset < 0) {
-                current_frame.data_offset &= 0x7FFFFFFF;
-                width += 256;
-            }
+            const graphics::FrameSize size = grp->frame_size(index);
+            const s16 width = s16(size.width);
+            const s16 height = s16(size.height);
 
             Bounds bounds{0, 0, width, height, width, height};
             FxnDrawIconData data{width, height, grp->get_frame_pixel_data(index)};
@@ -679,7 +675,7 @@ namespace hooks {
                 width + max_x + space_width, area->bottom);
 
             max_height = std::max(max_height, height);
-            max_x = tooltip_required_area->right;
+            max_x = g_draw_area_bounds.right;
         }
 
         if (max_x > space_width) {

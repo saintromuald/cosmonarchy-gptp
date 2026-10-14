@@ -642,6 +642,7 @@ const char* get_random_easter_egg_unit_name(u16 unit_id);
 
 u8 get_player_color_index(u32 player, u32 index);
 bool set_player_color(u32 player, PlayerColor color);
+u8 player_font_ramp_row(u8 payload);
 void set_player_font_ramp(u8 row);
 void init_player_data();
 void load_player_colors();

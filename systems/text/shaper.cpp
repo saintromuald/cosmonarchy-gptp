@@ -30,31 +30,40 @@ size_t Shaper::KeyHash::operator()(const Key& key) const {
 }
 
 std::vector<ShapedGlyph> Shaper::shape(FontFace& face, u32 pixel_height, std::span<const char32_t> codepoints) {
+    std::vector<ShapedGlyph> glyphs;
+    shape_into(glyphs, face, pixel_height, codepoints);
+    return glyphs;
+}
+
+void Shaper::shape_into(std::vector<ShapedGlyph>& out, FontFace& face, u32 pixel_height, std::span<const char32_t> codepoints) {
+    out.clear();
     if (codepoints.empty()) {
-        return {};
+        return;
     }
     const Key key{&face, pixel_height, run_hash(codepoints)};
     if (const auto it = m_runs.find(key); it != m_runs.end()) {
         const Run& run = it->second;
         if (run.codepoints.size() == codepoints.size()
             && std::equal(run.codepoints.begin(), run.codepoints.end(), codepoints.begin())) {
-            return run.glyphs;
+            out = run.glyphs;
+            return;
         }
     }
 
     FT_Face ft = face.ft();
     if (!ft) {
-        return {};
+        return;
     }
+    // Unchecked on purpose: a rejected size keeps the face's previous one, so
+    // the run mis-sizes instead of dropping (an empty result would).
     FT_Set_Pixel_Sizes(ft, 0, pixel_height);
     const bool kerns = FT_HAS_KERNING(ft) != 0;
 
-    std::vector<ShapedGlyph> glyphs;
-    glyphs.reserve(codepoints.size());
+    out.resize(codepoints.size());
     u32 previous_index = 0;
-    for (const char32_t codepoint : codepoints) {
+    for (size_t index = 0; index < codepoints.size(); ++index) {
         ShapedGlyph shaped;
-        shaped.glyph_index = face.glyph_index(codepoint);
+        shaped.glyph_index = face.glyph_index(codepoints[index]);
         if (FT_Load_Glyph(ft, shaped.glyph_index, FT_LOAD_DEFAULT)) {
             shaped.advance = 0;
         } else {
@@ -67,14 +76,15 @@ std::vector<ShapedGlyph> Shaper::shape(FontFace& face, u32 pixel_height, std::sp
             }
         }
         previous_index = shaped.glyph_index;
-        glyphs.push_back(shaped);
+        out[index] = shaped;
     }
 
     if (m_runs.size() >= RunCacheLimit) {
         m_runs.clear();
     }
-    auto [it, inserted] = m_runs.emplace(key, Run{{codepoints.begin(), codepoints.end()}, std::move(glyphs)});
-    return it->second.glyphs;
+    // insert_or_assign, not emplace: a same-hash different-run key must
+    // replace the stale entry, not keep it.
+    m_runs.insert_or_assign(key, Run{{codepoints.begin(), codepoints.end()}, out});
 }
 
 } // namespace text

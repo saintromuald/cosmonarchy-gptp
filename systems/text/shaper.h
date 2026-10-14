@@ -16,11 +16,15 @@ struct ShapedGlyph {
     s32 offset_y = 0;
 };
 
-// FreeTypeonly today, replace body of this function if/when we add HarfBuzz
+// FreeType only today, replace body of this function if/when we add HarfBuzz
 class Shaper {
 public:
     // Shapes a run with no control bytes.
     std::vector<ShapedGlyph> shape(FontFace& face, u32 pixel_height, std::span<const char32_t> codepoints);
+    // The same resolution into a caller-owned buffer (kept for its capacity,
+    // so steady-state shaping stops allocating); shape() is the convenience
+    // wrapper.
+    void shape_into(std::vector<ShapedGlyph>& out, FontFace& face, u32 pixel_height, std::span<const char32_t> codepoints);
 
 private:
     struct Key {

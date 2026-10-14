@@ -10,7 +10,7 @@ namespace hooks {
 // Every blit's clip band starts at its top and extends down by g_text_area_y,
 // so only the left, top and right of each band are pinned here.
 constexpr s32 MessageLogLeft = 10;
-constexpr s32 MessageLogTop = 450;
+constexpr s32 MessageLogTop = 250;
 constexpr s32 MessageLogRight = 630;
 
 constexpr s32 DisplayCenter = display::SurfaceWidth / 2;

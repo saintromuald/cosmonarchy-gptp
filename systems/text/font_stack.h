@@ -18,6 +18,8 @@ enum class Script : u8 {
 
 std::optional<Script> classify_script(char32_t codepoint);
 
+bool is_shared_cjk(char32_t codepoint);
+
 // Font resolution chain, CJK -> per-script -> fallback -> emoji -> symbols -> tofu
 class FontStack {
 public:
@@ -30,8 +32,9 @@ public:
     };
 
     explicit FontStack(Faces faces);
+    FontStack() = default;
 
-    FontFace* resolve(char32_t codepoint);
+    FontFace* resolve(char32_t codepoint, FontFace* prefer = nullptr);
 
     // Per-script face report for diagnostics: which family the script's text
     // renders from, and whether the system probe or the bundled face

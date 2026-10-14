@@ -255,6 +255,36 @@ static u32 __fastcall glu_chat_dlgproc(BinDlg* dialog, DialogEvent* event) {
     return helper::generic_dialog_interact(dialog, event);
 }
 
+static void scale_chat_combobox_widths(bw::Dialog* chat_root) {
+    constexpr s32 PlayerSlotComboWidth = 164;
+    constexpr s32 RaceComboWidth = 100;
+    constexpr s32 LatencyComboWidth = 160;
+    const auto factor = s32(ui_scale::Factor);
+
+    auto widen = [factor](bw::Dialog* combo, s32 width) {
+        combo->bounds.set_ltrb(combo->bounds.left(), combo->bounds.top(),
+            s16(combo->bounds.left() + width * factor), combo->bounds.bottom());
+    };
+
+    for (s32 slot = 0; slot < 12; ++slot) {
+        const auto combo_base = s16(std::to_underlying(GluChatControls::Slot1Left) + slot * 4);
+        if (auto* player_slot = get_first_child_by_index(chat_root, s16(combo_base + 1))) {
+            widen(player_slot, PlayerSlotComboWidth);
+        }
+        if (auto* race = get_first_child_by_index(chat_root, s16(combo_base + 2))) {
+            widen(race, RaceComboWidth);
+        }
+    }
+    // BW doesn't support these custom observer slots but they're in the bin so
+    // might as well widen them... maybe we can use them in the future?
+    for (s32 observer = 0; observer < 4; ++observer) {
+        const auto index = s16(std::to_underlying(GluChatControls::Observer1Value) + observer);
+        if (auto* latency = get_first_child_by_index(chat_root, index)) {
+            widen(latency, LatencyComboWidth);
+        }
+    }
+}
+
 void glu_chat() {
     g_chat_update_needed = false;
     g_chat_leaving_chat = false;
@@ -264,6 +294,7 @@ void glu_chat() {
     g_chat_bin = load_bin_file_scaled("rez\\gluChat.bin", ui::MenuBinScale).release();
 
     helper::chat_update_race_slots(g_chat_bin);
+    scale_chat_combobox_widths(g_chat_bin);
 
     if (GetUserDefaultLangID() == MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN) && !g_input_context) {
         g_input_context = ImmGetContext(g_main_window);

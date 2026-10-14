@@ -984,9 +984,29 @@ BW_DATA(u16*,						g_draw_text_bottom,		0x006CE0CE);*/
 // Extra spacing added to the font height for one line's advance; set to 3 by set_font_handle
 // and varied by other dialog text contexts.
 BW_REF(u8,                      g_line_spacing,         0x006CE0D4);
+// Refresh rect grown by bw_print_xy around what it drew (±2, clamped to the clip box).
+BW_REF(Box16,                   g_draw_area_bounds,     0x006CE0D8);
+// The print cursor bw_print_xy drives: x resets per line, y advances per line.
+BW_REF(s32,                     g_current_text_y,      0x006CE0E0);
+BW_REF(s32,                     g_current_text_x,      0x006CE108);
+// Tab-stop width (xMax << 1); tabs advance to the next multiple from clip-left.
+BW_REF(u8,                      g_font_tab_width,       0x006CDFF8);
+// The font's widest glyph advance (raw xMax); the in-game chat combobox wraps
+// messages inset by it (its only reader).
+BW_REF(u8,                      g_font_max_advance,     0x006CE0ED);
+// font_find_line_break mode: nonzero = word wrap, zero = char wrap.
+BW_REF(u8,                      g_word_wrap_mode,       0x0051A0E8);
+// Cursor marker byte (0xA6); the 04+marker pair renders with zero advance.
+BW_REF(u8,                      g_font_invisible_marker, 0x006CE104);
 BW_REF(u32,                     g_saved_font_color,		0x006CE0E8);
 // Height of the font table selected by set_font_handle, read from its byte 7.
 BW_REF(u8,                      g_current_font_height,  0x006CE111);
+// Edit-field context for the text input machinery: 1 = in-game fields, 2 = chat
+// (set by the font loaders, read by textbox_scroll_to_cursor).
+BW_REF(u32,                     g_text_input_mode,     0x006D11D4);
+
+// The font table set by set_font_handle (0x0041FB30); null only clears it.
+BW_REF(graphics::Font*,          g_current_font,        0x006D5DDC);
 
 // Array used in multiplayer to randomize factions used by unit.get_faction_color() and player.get_faction_color()
 // Max index is PLAYABLE_PLAYER_COUNT-1
@@ -1104,7 +1124,6 @@ BW_DATA(u32**,			g_current_tiles,						0x006D0E84);
 // For draw_tooltip_with_icon
 BW_DATA(char*,			grp_stat_res_icon_mapping,		0x00515228); // sizeof 8
 BW_REF(GrpHead*,        g_icons_grp,                    0x0068C238);
-BW_DATA(Box16*,			tooltip_required_area,			0x006CE0D8);
 
 // For do_attack_notify_unit
 BW_DATA(char*,			g_palette_index_reference,		0x006CEB20); // sizeof at least 20
@@ -1595,6 +1614,12 @@ BW_REF(u32, g_chat_unkown_1,            0x0068f4f0);
 BW_REF(u32, g_chat_unkown_2,            0x005999dc);
 BW_REF(u32, g_chat_unkown_3,            0x0068f520);
 BW_REF(b32, g_chat_minimap_shown,       0x005999d0);
+// Set by chat_lock_slots (0044FD30) at countdown; while set, chat slot labels stay disabled
+BW_REF(u32, g_chat_slots_locked,        0x0068f4f4);
+// Turn by which pending team switches may apply; set by chat_click_on_team_name (004504A0)
+BW_REF(u32, g_chat_team_switch_deadline, 0x0068ecac);
+// Incremented once per game turn by the turn processor (00487070)
+BW_REF(u32, g_turn_count,               0x0057eebc);
 
 BW_REF(HIMC, g_input_context, 0x006d6438);
 

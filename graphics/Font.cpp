@@ -48,10 +48,8 @@ namespace graphics
     s32 Font::getTextWidth(std::string_view text) const {
         assert(this);
 
-        if (text::TextSystem::instance().available()) {
-            if (const auto slot = text::slot_of(this)) {
-                return text::text_width(*slot, text);
-            }
+        if (const auto slot = text::slot_of(this)) {
+            return text::text_width(*slot, text);
         }
 
         s32 size = 0;
@@ -67,10 +65,8 @@ namespace graphics
     {
         if (this == nullptr) return 0;
 
-        if (text::TextSystem::instance().available()) {
-            if (const auto slot = text::slot_of(this)) {
-                return text::text_height(*slot, text);
-            }
+        if (const auto slot = text::slot_of(this)) {
+            return text::text_height(*slot, text);
         }
 
         s32 size = this->yMax;
@@ -89,28 +85,17 @@ namespace graphics
         return 0;
     }
 
-    s32 Font::maxHeight() const
-    {
-        if (this != nullptr)
-            return this->yMax;
-        return 0;
-    }
-
     s32 Font::getTextWidth(std::string_view text, s32 size)
     {
-        if (text::TextSystem::instance().available() && 0 <= size && size <= 3)
-            return text::text_width((u8)size, text);
         if (0 <= size && size <= 3)
-            return font_base[size]->getTextWidth(text);
+            return text::text_width((u8)size, text);
         return 0;
     }
 
     s32 Font::getTextHeight(std::string_view text, s32 size)
     {
-        if (text::TextSystem::instance().available() && 0 <= size && size <= 3)
-            return text::text_height((u8)size, text);
         if (0 <= size && size <= 3)
-            return font_base[size]->getTextHeight(text);
+            return text::text_height((u8)size, text);
         return 0;
     }
 
@@ -121,39 +106,6 @@ namespace graphics
         if (this != nullptr)
             return this->width;
         return 0;
-    }
-
-    s32 FontChar::getHeight() const
-    {
-        if (this != nullptr)
-            return this->height;
-        return 0;
-    }
-
-    s32 FontChar::get_x() const
-    {
-        if (this != nullptr)
-            return this->x;
-        return 0;
-    }
-
-    s32 FontChar::get_y() const
-    {
-        if (this != nullptr)
-            return this->y;
-        return 0;
-    }
-
-    s32 FontChar::colorMask(s32 index) const
-    {
-        assert(this != nullptr);
-        return this->data[index] & 7;
-    }
-
-    s32 FontChar::pixelOffset(s32 index) const
-    {
-        assert(this != nullptr);
-        return this->data[index] >> 3;
     }
 
 } // namespace graphics

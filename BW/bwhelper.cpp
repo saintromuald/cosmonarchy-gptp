@@ -5994,21 +5994,6 @@ namespace helper {
         return larvaeList_Count;
     }
 
-    s32 bwfxn_print_xy(const char* text, s32 x, s32 y) {
-        const u32 BWFXN_PrintXY_function = 0x004202B0;
-        static s32 result;
-        _asm {
-            PUSHAD
-            PUSH y
-            MOV EAX, text
-            MOV ESI, x
-            CALL BWFXN_PrintXY_function
-            MOV result, EAX
-            POPAD
-        }
-        return result;
-    }
-
     void get_color_handle(TextColor color) {
         const u32 func_address = 0x0041F610;
         _asm {

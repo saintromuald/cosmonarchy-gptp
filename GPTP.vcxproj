@@ -343,9 +343,12 @@
     <ClCompile Include="systems\text\glyph_cache.cpp" />
     <ClCompile Include="systems\graphics\grp.cpp" />
     <ClCompile Include="systems\text\measure.cpp" />
+    <ClCompile Include="systems\text\plot.cpp" />
+    <ClCompile Include="systems\text\print.cpp" />
     <ClCompile Include="systems\text\rasterizer.cpp" />
     <ClCompile Include="systems\text\shaper.cpp" />
     <ClCompile Include="systems\text\text.cpp" />
+    <ClCompile Include="systems\text\wrap.cpp" />
     <ClCompile Include="systems\audio\audio_decoder.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <IncludeInUnityFile>false</IncludeInUnityFile>
@@ -371,8 +374,8 @@
     <ClCompile Include="hooks\display\blit.cpp" />
     <ClCompile Include="hooks\display\blit_inject.cpp" />
     <ClCompile Include="hooks\display\dialog_clip_inject.cpp" />
-    <ClCompile Include="hooks\display\dialog_anchor.cpp" />
-    <ClCompile Include="hooks\display\dialog_anchor_inject.cpp" />
+    <ClCompile Include="hooks\display\popup_dialog.cpp" />
+    <ClCompile Include="hooks\display\popup_dialog_inject.cpp" />
     <ClCompile Include="hooks\display\tooltip_bounds_inject.cpp" />
     <ClCompile Include="hooks\display\mapblit.cpp" />
     <ClCompile Include="hooks\display\mapblit_inject.cpp" />
@@ -510,6 +513,10 @@
     <ClCompile Include="hooks\requirements\requirement_parser.cpp" />
     <ClCompile Include="hooks\target_related.cpp" />
     <ClCompile Include="hooks\target_related_inject.cpp" />
+    <ClCompile Include="hooks\text\text_print.cpp" />
+    <ClCompile Include="hooks\text\text_print_inject.cpp" />
+    <ClCompile Include="hooks\text\text_width.cpp" />
+    <ClCompile Include="hooks\text\text_width_inject.cpp" />
     <ClCompile Include="hooks\trap_hooks.cpp" />
     <ClCompile Include="hooks\trap_hooks_inject.cpp" />
     <ClCompile Include="hooks\unit_ai.cpp" />
@@ -799,7 +806,7 @@
     <ClInclude Include="hooks\display\framebuffer.h" />
     <ClInclude Include="hooks\display\blit.h" />
     <ClInclude Include="hooks\display\dialog_clip.h" />
-    <ClInclude Include="hooks\display\dialog_anchor.h" />
+    <ClInclude Include="hooks\display\popup_dialog.h" />
     <ClInclude Include="hooks\display\tooltip_bounds.h" />
     <ClInclude Include="hooks\display\mapblit.h" />
     <ClInclude Include="hooks\display\grid.h" />
@@ -850,8 +857,12 @@
     <ClInclude Include="systems\text\glyph_cache.h" />
     <ClInclude Include="systems\graphics\grp.h" />
     <ClInclude Include="systems\text\measure.h" />
+    <ClInclude Include="systems\text\plot.h" />
+    <ClInclude Include="systems\text\print.h" />
     <ClInclude Include="systems\text\rasterizer.h" />
     <ClInclude Include="systems\text\shaper.h" />
+    <ClInclude Include="systems\text\walk.h" />
+    <ClInclude Include="systems\text\wrap.h" />
     <ClInclude Include="systems\text\text.h" />
     <ClInclude Include="ReplayKraken.h" />
     <ClInclude Include="utility\RegConfig.h" />
@@ -884,6 +895,8 @@
     <ClInclude Include="hooks\placement.h" />
     <ClInclude Include="hooks\requirements\requirements.h" />
     <ClInclude Include="hooks\requirements\requirement_parser.h" />
+    <ClInclude Include="hooks\text\text_print.h" />
+    <ClInclude Include="hooks\text\text_width.h" />
     <ClInclude Include="hooks\trap_hooks.h" />
     <ClInclude Include="hooks\unit_ai.h" />
     <ClInclude Include="hooks\unit_movement.h" />

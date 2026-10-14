@@ -1,5 +1,6 @@
 #pragma once
 #include "types.h"
+#include "BW/structures/common.h"
 
 #include <optional>
 #include <span>
@@ -30,7 +31,6 @@ public:
     s16 height() const { return m_height; }
 
     std::span<const GrpFrame> frame_headers() const;
-    std::span<GrpFrame> frame_headers();
 
     const u8* get_frame_pixel_data(size_t frame_index) const;
 
@@ -43,11 +43,14 @@ public:
         u32 width = 0;    // 0 = native
         u32 height = 0;   // 0 = native
 
+        // Nullopt: only the bitmap's own bounds clip the blit.
+        std::optional<Box32> clip;
+
         const u8* remap = nullptr;
         u32 remap_length = 0;
     };
 
-    void blit_frame(size_t frame_index, graphics::Bitmap& bitmap, const Blit& options) const;
+    void blit_frame(size_t frame_index, Bitmap& bitmap, const Blit& options) const;
 
 private:
     u16 m_frame_count;

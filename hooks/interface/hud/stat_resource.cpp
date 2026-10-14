@@ -12,6 +12,7 @@
 #include "player_color.h"
 #include "systems/display/hud_layout.h"
 #include "systems/graphics/grp.h"
+#include "systems/text/print.h"
 #include "systems/triggers/trigger_system.h"
 
 #include <charconv>
@@ -27,9 +28,9 @@ constexpr s16 RowHeight = 32;
 
 // Column widths, right to left
 constexpr s16 RightInset    = 6;
-constexpr s16 SupplyWidth   = 100;
-constexpr s16 GasWidth      = 100;
-constexpr s16 MineralsWidth = 100;
+constexpr s16 SupplyWidth   = 140;
+constexpr s16 GasWidth      = 140;
+constexpr s16 MineralsWidth = 140;
 constexpr s16 ApmWidth      = 60;
 constexpr s16 ColorBoxSize  = 18;
 
@@ -63,7 +64,8 @@ constexpr u8 ProductionBarColor = 117;
 // Vanilla statres text codes (passed to draw_colortext / g_print_xy_alignment).
 constexpr s16 ApmTextCode = 0x21;
 constexpr s16 NameTextCode = 0x24;
-constexpr s16 ProductionTextCode = 0x44;
+// old font_statres digits were 4x5px (10px tall at 2x); a 14px em renders ~10px Exo 2 digits
+constexpr u32 ProductionTextPx = 14;
 constexpr s16 ResourceFontLengthLimit = 8;
 constexpr s16 ApmFontLengthLimit      = 5;
 } // namespace layout
@@ -114,8 +116,6 @@ StatResource::StatResource()
     timer_dialog->index = 0xFFF6;
     timer_dialog->type = DialogControlType::LabelRightAlign; // Authored right-aligned in the .bin
     timer_dialog->draw_function = helper::g_default_dialog_draw_functions[std::to_underlying(DialogControlType::LabelRightAlign)];
-
-    m_font = helper::load_font("font_statres");
 
     initialize();
     for (u32 row = 0; row < PlayerLimit; ++row) {
@@ -381,18 +381,16 @@ void StatResource::update_displayed_resource(ui::Widget* widget, s32& displayed,
 
 // Draws a GRP frame at the dialog's left edge, vertically centered. Returns the frame's width.
 s16 StatResource::draw_grp_icon(bw::Dialog* dialog, graphics::GrpFile* icons, u16 frame_index) {
+    if (!icons || !icons->frame_count()) {
+        return 0;
+    }
     if (frame_index >= icons->frame_count()) {
         frame_index = 0;
     }
 
-    auto& frame = icons->frame_headers()[frame_index];
-    s16 width = frame.w;
-    s16 height = frame.h;
-    if (static_cast<s32>(frame.data_offset) < 0) {
-        frame.data_offset &= 0x7FFFFFFF;
-        width += 256;
-    }
-
+    const graphics::FrameSize size = icons->frame_size(frame_index);
+    const s16 width = s16(size.width);
+    const s16 height = s16(size.height);
     Bounds bounds{0, 0, width, height, width, height};
     FxnDrawIconData data{(u16)width, (u16)height, icons->get_frame_pixel_data(frame_index)};
     helper::bw_print_icon(&bounds, &data, dialog->bounds.left(),
@@ -427,14 +425,13 @@ void StatResource::draw_production_slot(ui::Widget& widget, Row& row, u32 slot) 
 
     const std::string& text = widget.text();
     if (!text.empty()) {
-        helper::set_font_handle((u32*)m_font);
-        g_print_xy_alignment = layout::ProductionTextCode;
-        g_font_spacing = 0;
-        helper::get_color_handle(TextColor::White);
-        g_draw_text = dialog->bounds;
-
-        helper::bw_print_xy(text.c_str(), dialog->bounds.left(), dialog->bounds.top());
-        helper::set_font_handle(nullptr);
+        const Box16 bounds = dialog->bounds;
+        text::print(text, bounds.left, bounds.top, text::PrintOptions{}
+            .clip({bounds.left, bounds.top, bounds.right, bounds.bottom})
+            .px(layout::ProductionTextPx)
+            .halign(text::HAlign::Right)
+            .valign(text::VAlign::Bottom)
+            .color(TextColor::White));
     }
 
     // Prevent underflow when queue compacts mid-tick

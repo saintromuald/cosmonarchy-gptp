@@ -1,0 +1,26 @@
+#include "popup_dialog.h"
+
+#include "../../BW/bwhelper.h"
+#include "../../BW/ui.h"
+#include "../../systems/display/hud_layout.h"
+#include "../interface/uifeatures/ui_features.h"
+
+namespace hooks {
+
+void scale_and_initialize_popup_dialog(bw::Dialog* dialog, bw::DialogInteraction* dialogproc) {
+    end_middle_drag();
+
+    if (dialog) {
+        ui::scale_bin(*dialog);
+
+        // Root bounds are x/y/w/h until 00419D20 converts them, so hand
+        // place_popup_dialog an l/t/r/b box and convert back on return.
+        auto& bounds = dialog->bounds;
+        bounds.set_ltrb(bounds.left(), bounds.top(), bounds.right() + bounds.left(), bounds.bottom() + bounds.top());
+        hud_layout::place_popup_dialog(dialog->to_bindlg());
+        bounds.set_ltrb(bounds.left(), bounds.top(), bounds.right() - bounds.left(), bounds.bottom() - bounds.top());
+    }
+    helper::initialize_dialog(dialog, dialogproc);
+}
+
+} // hooks

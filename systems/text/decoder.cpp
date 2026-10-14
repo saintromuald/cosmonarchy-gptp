@@ -1,5 +1,7 @@
 #include "decoder.h"
 
+#include "BW/bwdata.h"
+
 #include <array>
 
 namespace text {
@@ -25,8 +27,7 @@ constexpr std::array<char32_t, 32> LegacyHighBytes{
     0x2612,                         // 0x8E ballot box with X
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   // 0x8F-0x98 extended color codes
     0x2122,                         // 0x99 trademark
-    0, 0, 0, 0, 0,                  // 0x9A-0x9E extended color codes
-    0x0178,                         // 0x9F latin capital Y with diaeresis
+    0, 0, 0, 0, 0, 0,               // 0x9A-0x9F extended color codes
 };
 
 char32_t legacy_codepoint(u8 byte) {
@@ -105,6 +106,13 @@ std::optional<Token> decode_next(const u8*& cursor, const u8* end) {
     }
     ++cursor;
     return Codepoint{legacy_codepoint(lead)};
+}
+
+bool is_cursor_pair(const u8* token_start, const u8* token_end, const u8* view_start) {
+    return token_end - token_start == 1
+        && *token_start == g_font_invisible_marker
+        && token_start > view_start
+        && token_start[-1] == CursorPrefixByte;
 }
 
 } // namespace text

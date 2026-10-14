@@ -5,6 +5,7 @@
 #include "../interface/mainmenu/glucustom.h"
 #include "../interface/uifeatures/ui_features.h"
 #include "../../systems/display/zoom.h"
+#include "../../systems/text/text.h"
 
 namespace hooks {
 namespace {
@@ -61,13 +62,13 @@ void draw_engine_screen_text() {
 
 } // namespace
 
-// 0048CE90, reimplemented. Vanilla pads the per-line step so the log bottom lands on the
-// center text band; deriving the span from the layout constants keeps that true after
+// 0048CE90, reimplemented. Vanilla pads the per-line step so the log bottom lands on
+// the center text band; deriving the span from the layout constants keeps that true after
 // either band moves.
 void __cdecl init_screen_text_layout() {
     helper::set_font_handle((u32*)font_base[1]);
 
-    const s32 band_height = g_line_spacing + g_current_font_height;
+    const s32 band_height = text::TextSystem::instance().line_advance(1);
     g_text_area_y = band_height;
     g_text_line_height = band_height;
 

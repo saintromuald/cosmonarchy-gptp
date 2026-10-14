@@ -246,6 +246,12 @@ u8 get_player_color_index(u32 player, u32 index) {
     return g_player_in_game_colors[player * ColorSetSize + index];
 }
 
+// The 0x0B/0x14 payload byte: 1-8 = players 1-8, 0x0E-0x11 = players 9-12;
+// the row is the 0-based player index, the same decode get_color_handle applies.
+u8 player_font_ramp_row(u8 payload) {
+    return payload <= 8 ? u8(payload - 1) : u8(payload - 6);
+}
+
 void set_player_font_ramp(u8 row) {
     // Mirrors the asm copy in glucustom.cpp get_color_handle: every other shade
     // of the row's in-game colors lands in the player font slot's bytes 1-4,
