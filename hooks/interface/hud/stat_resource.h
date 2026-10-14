@@ -49,7 +49,6 @@ private:
     static void __fastcall timer_proc(BinDlg* dialog, u16 index);
 
     std::array<Row, PlayerLimit> m_rows;
-    graphics::Font* m_font = nullptr; // font_statres
     u32 m_last_frame = u32(-1);
     bool m_last_alt = false;
     bool m_last_hidden = false;

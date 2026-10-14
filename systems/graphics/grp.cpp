@@ -47,9 +47,10 @@ void decode_row(const FrameView& view, FrameFormat format, u32 row, u8* out) {
     }
     // Rle: u16 row-offset table, then opcode lines - skip = 0x80|n transparent
     // pixels, run = 0x40|n repeats of the next color byte, plain n = n literal
-    // color bytes. Same semantics cursor_cache and PyMS's GRP library decode
-    // with; rows are independently addressed, so an overrun cannot desync
-    // the rows after it.
+    // color bytes. Count-0 opcodes end the line (cursor_cache and PyMS's GRP
+    // library agree), so every consumed byte advances a column or terminates;
+    // rows are independently addressed, so an overrun cannot desync the rows
+    // after it.
     const u16* row_offsets = reinterpret_cast<const u16*>(view.data);
     if (row_offsets[row] == 0) {
         return; // empty line
@@ -59,7 +60,11 @@ void decode_row(const FrameView& view, FrameFormat format, u32 row, u8* out) {
     while (col < view.width) {
         const u8 opcode = *stream++;
         if (opcode & 0x80) {
-            col += opcode & 0x7F;
+            const u8 count = opcode & 0x7F;
+            if (count == 0) {
+                break;
+            }
+            col += count;
         } else if (opcode & 0x40) {
             const u8 count = opcode & 0x3F;
             if (count == 0) {
@@ -86,15 +91,14 @@ std::span<const GrpFrame> GrpFile::frame_headers() const {
     return {reinterpret_cast<const GrpFrame*>(m_raw_data), m_frame_count};
 }
 
-std::span<GrpFrame> GrpFile::frame_headers() {
-    return {reinterpret_cast<GrpFrame*>(m_raw_data), m_frame_count};
-}
-
 const u8* GrpFile::get_frame_pixel_data(size_t frame_index) const {
+    if (!m_frame_count) {
+        return nullptr;
+    }
     if (frame_index >= m_frame_count) {
         frame_index = 0;
     }
-    return reinterpret_cast<const u8*>(this) + frame_headers()[frame_index].data_offset;
+    return frame_view(*this, frame_headers()[frame_index]).data;
 }
 
 FrameSize GrpFile::frame_size(size_t frame_index) const {
@@ -134,6 +138,10 @@ void GrpFile::blit_frame(size_t frame_index, Bitmap& bitmap, const Blit& options
     const auto draw_pixel = [&](s32 x, s32 y, u8 color) {
         if (!color) {
             return; // pixel 0 is transparent
+        }
+        if (options.clip && (x < options.clip->left || x > options.clip->right
+                || y < options.clip->top || y > options.clip->bottom)) {
+            return;
         }
         if (options.remap && color < options.remap_length) {
             color = options.remap[color];

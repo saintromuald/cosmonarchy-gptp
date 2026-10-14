@@ -10,8 +10,12 @@ struct Font;
 
 namespace text {
 
+struct PrintFont;
+
 // Width of the remaining text on the current line
-s32 line_width(u8 slot, std::string_view text);
+// x_origin anchors tab stops the same way the rendering walk will.
+s32 line_width(u8 slot, std::string_view text, s32 x_start = 0, s32 x_origin = 0);
+s32 line_width(const PrintFont& font, std::string_view text, s32 x_start = 0, s32 x_origin = 0);
 
 // Total width across all lines
 s32 text_width(u8 slot, std::string_view text);

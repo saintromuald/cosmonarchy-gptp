@@ -504,6 +504,12 @@ namespace hooks {
 
 	void __declspec(naked) set_display_text_color() {
 		__asm {
+			// A wrapped line renders in the color state it carried in; only the
+			// first slot (no carried state) uses the message's packed color.
+			CMP		g_split_slot_color, 0
+			JE		store_message_color
+			MOV		AX, g_split_slot_color
+		store_message_color:
 			MOV[EDX * 2 + display_text_color], AX
 			RET
 		}

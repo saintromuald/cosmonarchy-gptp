@@ -939,8 +939,6 @@ namespace helper {
     u32 getLarvaeUnitsFromList(Unit** unitList, Unit** outputList);													// 00423190
 
     //// uifeatures
-
-    s32 bwfxn_print_xy(const char* text, s32 x, s32 y);
     void get_color_handle(TextColor color);      // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
     inline void get_color_handle(LobbyTextColor color) { get_color_handle((TextColor)color); };
     void get_color_handle(u16 color);             // 0x0041F610, arg in AX; full pcolor: color id in the low byte, player color slot in the high byte

@@ -45,10 +45,31 @@ static void __declspec(naked) load_bin_scaled_wrapper() {
     }
 }
 
+static void __declspec(naked) chat_set_slot_label_wrapper() {
+    static bw::Dialog* label;
+    static const char* text;
+    __asm {
+        PUSH EBP
+        MOV EBP, ESP
+        MOV label, EAX
+        MOV EAX, [EBP + 0x8]
+        MOV text, EAX
+        PUSHAD
+    }
+    hooks::chat_set_slot_label(label, text);
+    __asm {
+        POPAD
+        MOV ESP, EBP
+        POP EBP
+        RETN 4
+    }
+}
+
 namespace hooks {
 void inject_custom_glues() {
     jump_patch(glu_main_switch_wrapper, 0x004de445);
     jump_patch(chat_race_combobox_wrapper, 0x00451be7);
+    jump_patch(chat_set_slot_label_wrapper, 0x00450560, 1);
     // Remove Sleep(1000) from glu_login cancel
     // It's not necessary with new flow to intentionally delay snetdestroy
     nop_patch(0x004c4690, 11);

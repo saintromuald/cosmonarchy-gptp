@@ -324,6 +324,12 @@ void scale_bin(bw::Dialog& dialog, const BinScale& options) {
 
         auto& surface = node.data<bw::MenuData>()->backup_surface;
         resize_surface(surface, u16(surface.width * scale), u16(surface.height * scale));
+
+        // Bitmap dimensions are used to generate the tiled background (rounded up to 1 full tile)
+        if (!node.bitmap.buffer) {
+            node.bitmap.width = u16(node.bitmap.width * scale);
+            node.bitmap.height = u16(node.bitmap.height * scale);
+        }
     };
 
     if (options.fullscreen) {

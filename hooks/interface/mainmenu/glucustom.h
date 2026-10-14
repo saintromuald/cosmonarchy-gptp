@@ -5,6 +5,7 @@ inline u8 g_tfontgame_image_data[328]; // Larger tfont.pcx buffer to fit the new
 // Per-slot ring message colors: written by print via set_display_text_color, read by the
 // screen text draw (screen_text.cpp).
 inline u16 display_text_color[11];
+inline u16 g_split_slot_color = 0;
 namespace hooks {
     void display_establishing_shot();														// 004D9200, hooked by X405
     void cmdact_game_speed(BinDlg* control);												// 00481EF0

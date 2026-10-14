@@ -40,7 +40,9 @@ s32 FontFace::ascender(u32 pixel_height) {
     if (!m_face) {
         return 0;
     }
-    FT_Set_Pixel_Sizes(m_face, 0, pixel_height);
+    if (FT_Set_Pixel_Sizes(m_face, 0, pixel_height)) {
+        return 0; // stale metrics would silently misplace baselines
+    }
     return (s32)(m_face->size->metrics.ascender >> 6);
 }
 
@@ -50,7 +52,9 @@ GlyphBitmap rasterize_glyph(FontFace& face, u32 pixel_height, u32 glyph_index) {
     if (!ft) {
         return bitmap;
     }
-    FT_Set_Pixel_Sizes(ft, 0, pixel_height);
+    if (FT_Set_Pixel_Sizes(ft, 0, pixel_height)) {
+        return bitmap; // stale metrics would silently misplace glyphs
+    }
     if (FT_Load_Glyph(ft, (FT_UInt)glyph_index, FT_LOAD_RENDER | FT_LOAD_TARGET_LIGHT)) {
         return bitmap;
     }

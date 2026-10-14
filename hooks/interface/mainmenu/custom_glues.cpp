@@ -132,3 +132,45 @@ void glu_main_switch() {
         default: { g_gl_glues_mode = MenuId::GlueMainMenu; } break;
     }
 }
+
+namespace hooks {
+
+void chat_set_slot_label(bw::Dialog* label, const char* text) {
+    label->graphic |= 0x0100; // Chat-visible marker. Show handlers suppress the label while clear
+
+    if (!g_chat_unkown_3) {
+        helper::show_dialog(label->to_bindlg());
+    }
+    if (!g_chat_slots_locked) {
+        helper::enable_dialog(label);
+    }
+
+    const s32 factor = s32(ui_scale::Factor);
+    constexpr s32 ChatSlotLabelWidth = 184;
+    constexpr s32 ChatSlotLabelHeight = 18;
+    label->bounds.set_ltrb(label->bounds.left(), label->bounds.top(),
+        s16(label->bounds.left() + ChatSlotLabelWidth * factor), s16(label->bounds.top() + ChatSlotLabelHeight * factor));
+
+    auto flags = label->flags;
+    if (g_turn_count >= g_chat_team_switch_deadline) {
+        flags &= ~(DialogFlags::PropagateUpdate | DialogFlags::UpdateNeeded);
+    }
+    flags |= (DialogFlags::UseAlternateStyle | DialogFlags::RespondsToEvents);
+    label->flags = flags;
+
+    label->interaction_function = reinterpret_cast<bw::DialogInteraction*>(0x004504A0); // chat_click_on_team_name
+    label->draw_function = reinterpret_cast<bw::DialogDraw*>(0x00450330); // chat slot label draw
+    *label->text<const char*>() = text;
+
+    if (!(flags & DialogFlags::UpdateNeeded)) {
+        label->flags = flags | DialogFlags::UpdateNeeded;
+        helper::update_dialog(label);
+    }
+    // update_dialog consumes UpdateNeeded; force the redraw through once more the way vanilla does
+    if (!(label->flags & DialogFlags::UpdateNeeded)) {
+        label->flags |= DialogFlags::UpdateNeeded;
+        helper::update_dialog(label);
+    }
+}
+
+} // hooks

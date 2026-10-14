@@ -15,7 +15,7 @@
 
 namespace ui {
 constexpr s32 TooltipFontSize = graphics::FontSize::FONT_SMALL;
-constexpr v2s16 MousePositionOffset{25, 25};
+constexpr v2s16 MousePositionOffset{50, 50};
 
 Tooltip::Tooltip(std::string string) {
     text(std::move(string));

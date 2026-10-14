@@ -12,11 +12,6 @@ namespace graphics {
 
 struct FontChar {
       s32 getWidth() const;
-    s32 getHeight() const;
-    s32 get_x() const;
-    s32 get_y() const;
-    s32 colorMask(s32 index) const;
-    s32 pixelOffset(s32 index) const;
 
       u8  width, height, x, y;
     u8  data[1];
@@ -28,7 +23,6 @@ struct Font {
     s32 getTextHeight(std::string_view text) const;
     s32 getCharWidth(char c, char prev_c) const;
     s32 maxWidth() const;
-    s32 maxHeight() const;
     static s32 getTextWidth(std::string_view text, s32 size);
     static s32 getTextHeight(std::string_view text, s32 size);
 

@@ -27,15 +27,15 @@ static constexpr auto TabCount = 5;
 static constexpr auto TabHorizontalOffset = 99;
 static constexpr auto TabHorizontalStart = 1908 - (TabCount * TabHorizontalOffset);
 
-static constexpr auto CheckboxHeight = 20;
-static constexpr auto ComboboxHeight = 20;
-static constexpr auto SliderHeight = 20;
-static constexpr auto LabelHeight = 25;
+static constexpr auto CheckboxHeight = 36;
+static constexpr auto ComboboxHeight = 36;
+static constexpr auto SliderHeight = 36;
+static constexpr auto LabelHeight = 40;
 
-static constexpr auto ColumnWidth = 230;
-static constexpr auto UIBoolWidth = 80;
-static constexpr auto ItemIndent = 10;
-static constexpr auto SectionPadding = 10;
+static constexpr auto ColumnWidth = 500;
+static constexpr auto UIBoolWidth = 160;
+static constexpr auto ItemIndent = 20;
+static constexpr auto SectionPadding = 20;
 static constexpr auto ColumnPadding = 40;
 
 static constexpr auto StartX = 30;
@@ -45,7 +45,7 @@ static constexpr u32 SfxPreviewThrottleMs = 200; // Min time gap between SFX sli
 static constexpr s32 SfxPreviewVolumeStep = 5;   // Min volume change between SFX slider preview blips
 
 static constexpr u8  SwatchShadeCount = 8;
-static constexpr u16 SwatchBoxSize = 10;
+static constexpr u16 SwatchBoxSize = 20;
 static constexpr std::array<u8, SwatchShadeCount> SwatchPaletteSlots = {247, 248, 249, 250, 251, 252, 253, 255};
 
 struct LayoutCursor : public v2u16 {
@@ -126,10 +126,10 @@ static ui::Widget* linked_slider(ui::Group* tab, LayoutCursor& cursor, u16 min, 
 }
 
 // Advisor matrix
-static constexpr auto MatrixCellSize = 18;
+static constexpr auto MatrixCellSize = 36;
 static constexpr auto MatrixLabelGap = 8;
-static constexpr auto MatrixLabelWidth = 150;
-static constexpr auto MatrixRowHeight = 20;
+static constexpr auto MatrixLabelWidth = 200;
+static constexpr auto MatrixRowHeight = 36;
 
 struct MatrixColumn { std::string_view header; RaceFlags::Enum flag; };
 struct MatrixRow    { std::string_view label;  RaceFlags::Enum* flags; };
@@ -312,28 +312,28 @@ static std::shared_ptr<ColorListEditor> player_color_selector(ui::Group* tab, La
     std::initializer_list<PlayerColor> exclude = {}) {
     LayoutCursor layout{cursor};
 
-    tab->image(DialogBounds::from_xywh(layout.x - 4, layout.y + 1, 168, 257), "glue\\dynamic\\checked_listbox_back.pcx")->translucent();
+    tab->image(DialogBounds::from_xywh(layout.x - 4, layout.y + 1, 336, 514), "glue\\dynamic\\checked_listbox_back.pcx")->translucent();
 
     // Above the listbox: select all / none.
-    auto select_none = tab->lightup_button(DialogBounds::from_xywh(layout.x, layout.y, 75, 24), "None");
-    auto select_all  = tab->lightup_button(DialogBounds::from_xywh(layout.x + 85, layout.y, 75, 24), "All");
+    auto select_none = tab->lightup_button(DialogBounds::from_xywh(layout.x, layout.y, 150, 48), "None");
+    auto select_all  = tab->lightup_button(DialogBounds::from_xywh(layout.x + 170, layout.y, 150, 48), "All");
 
     const s16 list_x = static_cast<s16>(layout.x);
-    const s16 list_y = static_cast<s16>(layout.y + 30);
-    auto listbox = tab->checked_listbox(DialogBounds::from_xywh(list_x, list_y, 160, 200));
+    const s16 list_y = static_cast<s16>(layout.y + 60);
+    auto listbox = tab->checked_listbox(DialogBounds::from_xywh(list_x, list_y, 320, 400));
 
     // Right of the listbox: which target vector we're editing
     auto target_names = std::views::keys(targets) | std::ranges::to<std::vector<std::string_view>>();
-    ui::Group* options = tab->radio_group(DialogBounds::from_xywh(list_x + 180, list_y, 120, 200), target_names);
+    ui::Group* options = tab->radio_group(DialogBounds::from_xywh(list_x + 360, list_y, 240, 400), target_names);
 
     // Below the listbox: reorder the highlighted (selected) entry
-    const s16 buttons_y = static_cast<s16>(list_y + 204);
-    auto move_up = tab->lightup_button(DialogBounds::from_xywh(list_x, buttons_y, 75, 24), "Up")
+    const s16 buttons_y = static_cast<s16>(list_y + 408);
+    auto move_up = tab->lightup_button(DialogBounds::from_xywh(list_x, buttons_y, 150, 48), "Up")
         ->tooltip("Move selected color up in the priority list");
-    auto move_down = tab->lightup_button(DialogBounds::from_xywh(list_x + 85, buttons_y, 75, 24), "Down")
+    auto move_down = tab->lightup_button(DialogBounds::from_xywh(list_x + 170, buttons_y, 150, 48), "Down")
         ->tooltip("Move selected color down in the priority list");
 
-    cursor.pad_vertical(264); // 30 (button row) + 200 (listbox) + 4 gap + 24 (buttons) + 6
+    cursor.pad_vertical(528); // 60 (select buttons) + 400 (listbox) + 8 gap + 48 (reorder buttons) + 12
 
     auto ordered = std::views::values(targets) | std::ranges::to<std::vector>();
 
@@ -361,9 +361,9 @@ GluOptions::GluOptions()
     const char revert_color = static_cast<char>(LobbyTextColor::Revert);
 
     image(DialogBounds::from_xywh(0, 0, 1920, 1080), "glue\\dynamic\\fullscreen_tabs.pcx")->translucent();
-    m_cancel_button = lightup_button(DialogBounds::from_xywh(1761, 1029, 130, 34),
+    m_cancel_button = lightup_button(DialogBounds::from_xywh(1738, 1029, 164, 34),
         std::format("{}C{}ancel", hotkey_color, revert_color))->enable_hotkey('c')->set_cancel();
-    m_ok_button = lightup_button(DialogBounds::from_xywh(1542, 1029, 204, 34),
+    m_ok_button = lightup_button(DialogBounds::from_xywh(1408, 1029, 316, 34),
         std::format("Apply {}O{}ptions", hotkey_color, revert_color))->enable_hotkey('o')->set_default();
 
     auto tab_index = 0;
@@ -373,13 +373,13 @@ GluOptions::GluOptions()
         return x;
     };
     m_misc_tab_button    = lightup_button(DialogBounds::from_xywh(button_x(), 16, 86, 24),
-        std::format("{}M{}isc", hotkey_color, revert_color))->enable_hotkey('m');
+        std::format("{}M{}isc", hotkey_color, revert_color))->fontsize(ui::FontSize::Medium14)->enable_hotkey('m');
     m_ui_tab_button      = lightup_button(DialogBounds::from_xywh(button_x(), 16, 86, 24),
-        std::format("{}U{}i", hotkey_color, revert_color))->enable_hotkey('u');
+        std::format("{}U{}i", hotkey_color, revert_color))->fontsize(ui::FontSize::Medium14)->enable_hotkey('u');
     m_color_tab_button   = lightup_button(DialogBounds::from_xywh(button_x(), 16, 86, 24),
-        std::format("Co{}l{}or", hotkey_color, revert_color))->enable_hotkey('l');
+        std::format("Co{}l{}or", hotkey_color, revert_color))->fontsize(ui::FontSize::Medium14)->enable_hotkey('l');
     m_audio_tab_button = lightup_button(DialogBounds::from_xywh(button_x(), 16, 86, 24),
-        std::format("{}A{}udio", hotkey_color, revert_color))->enable_hotkey('a');
+        std::format("{}A{}udio", hotkey_color, revert_color))->fontsize(ui::FontSize::Medium14)->enable_hotkey('a');
 
     m_misc_tab    = make_misc_tab();
     m_ui_tab      = make_ui_tab()->hide();
@@ -506,7 +506,7 @@ ui::Group* GluOptions::make_misc_tab() {
     auto cells = checkbox_matrix(tab, cursor, RaceColumns, rows);
 
     // Reset the matrix to just each race's own advisor, refreshing the visuals
-    tab->lightup_button(DialogBounds::from_xywh(cursor.x + ItemIndent, cursor.y, 72, 24), "Reset")
+    tab->lightup_button(DialogBounds::from_xywh(cursor.x + ItemIndent, cursor.y, 90, 25), "Reset")->fontsize(ui::FontSize::Medium14)
         ->on_activate([this, cells = std::move(cells)](ui::Widget&) -> ui::ActivateResult {
             reset_advisor_flags();
             for (const MatrixCell& cell : cells) {
@@ -651,16 +651,16 @@ ui::Group* GluOptions::make_color_tab() {
 
     cursor.x += 10;
     cursor.y += 26;
-    tab->label(DialogBounds::from_xywh(cursor.x + ItemIndent, cursor.y, 186, 225), std::format(
+    tab->label(DialogBounds::from_xywh(cursor.x + ItemIndent, cursor.y, 372, 450), std::format(
         "{}Player Color Selection\n\n{}"
         "This list defines your preferred player colors.\n"
         "Colors will be chosen in order of preference. Use the up/down arrows to reorder.\n\n"
         "Hover your mouse over a color to see a preview.",
         static_cast<char>(LobbyTextColor::White), static_cast<char>(LobbyTextColor::Revert)));
-    cursor.pad_vertical(225 + SectionPadding);
+    cursor.pad_vertical(450 + SectionPadding);
     linked_checkbox(tab, cursor, "Shuffle Colors", m_config.shuffle_preferred_colors);
 
-    cursor = {StartX + 230, StartY + 26};
+    cursor = {StartX + 460, StartY + 52};
 
     Bitmap tunit{};
     load_bitmap("game\\tunit.pcx", tunit, &m_palette);

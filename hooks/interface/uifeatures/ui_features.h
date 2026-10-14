@@ -19,7 +19,7 @@ enum DialogButtonIndex : s32 {
 };
 
 inline const u32 UiTextHeight = 15;
-inline v2u16 g_ui_text_pos;
+inline v2s32 g_ui_text_pos;
 
 inline ApmCounter g_local_apm_counter;
 inline ApmCounter g_player_apm_counter[PlayerLimit];
@@ -29,8 +29,7 @@ inline bool g_disable_mouse_scroll;
 void format_time(char* buffer, u32 size, const char* prefix, u32 seconds, bool allow_short);
 
 namespace hooks {
-void draw_text(const char* text, u32 x, u32 y, u32 w, u32 h, TextColor color = TextColor::Grey);
-void draw_ui_text(const char* text, TextColor color = TextColor::Grey);
+void draw_ui_text(const char* text, TextColor color = TextColor::Grey, graphics::FontSize font_size = graphics::FontSize::FONT_MEDIUM);
 
 s32 select_units(Unit** a1, s32 a2, u8 a3, s32 a4);
 void queue_game_command(u8* data, u32 size);

@@ -54,5 +54,6 @@ void glu_join_crownlink();
 void glu_main_switch();
 
 namespace hooks {
+void chat_set_slot_label(bw::Dialog* label, const char* text);
 void inject_custom_glues();
 }

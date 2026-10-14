@@ -1,111 +1,44 @@
 #include "measure.h"
 
 #include "BW/bwdata.h"
-#include "BW/enumerations.h"
-#include "decoder.h"
-#include "systems/graphics/grp.h"
 #include "text.h"
+#include "walk.h"
 
-#include <cassert>
-#include <utility>
-#include <variant>
-#include <vector>
+#include <optional>
 
 namespace text {
-namespace {
 
-// Sums advances from cursor until a newline or the end of input
-// cursor advances with the scan
-s32 measure_line(u8 slot, const u8*& cursor, const u8* end) {
-    TextSystem& text_system = TextSystem::instance();
-    assert(text_system.available());
+s32 line_width(u8 slot, std::string_view text, s32 x_start, s32 x_origin) {
+    return line_width(TextSystem::instance().font_for_slot(slot), text, x_start, x_origin);
+}
 
-    const SlotConfig& config = text_system.slot(slot);
-    FontStack& stack = text_system.stack(config.stack);
-    Shaper& shaper = text_system.shaper();
-    const s32 spacing = text_system.char_spacing();
-
-    s32 width = 0;
-    std::vector<char32_t> run;
-    FontFace* run_face = nullptr;
-
-    const auto flush_run = [&]() {
-        if (!run.empty() && run_face) {
-            for (const ShapedGlyph& glyph : shaper.shape(*run_face, config.pixel_height, run)) {
-                width += glyph.advance + spacing;
-            }
-        }
-        run.clear();
+s32 line_width(const PrintFont& font, std::string_view text, s32 x_start, s32 x_origin) {
+    const u8* start = (const u8*)text.data();
+    const u8* end = start + text.size();
+    const u8* cursor = start;
+    const auto sink = [](const Atom&) {
+        return true;
     };
-
-    bool at_newline = false;
-    while (!at_newline) {
-        const auto token = decode_next(cursor, end);
-        if (!token) {
-            break;
-        }
-        std::visit(Overloaded{
-            [&](const Codepoint& codepoint) {
-                FontFace* face = stack.resolve(codepoint.value);
-                if (face != run_face) {
-                    flush_run();
-                    run_face = face;
-                }
-                run.push_back(codepoint.value);
-            },
-            [&](const Control& control) {
-                flush_run();
-                switch (control.value) {
-                    case '\t': {
-                        width += text_system.tab_advance(slot);
-                    } break;
-                    case ' ': {
-                        width += text_system.space_advance(slot);
-                    } break;
-                    case '\n':
-                    case '\f':     // 0x0C ends the print in vanilla, so does 0x00
-                    case '\0':
-                        at_newline = true;
-                        break;
-                    case std::to_underlying(TextColor::PlayerColor):
-                    case std::to_underlying(TextColor::PlayerColor2): {
-                        if (cursor != end) {
-                            const u8 code = *cursor;
-                            if ((code >= 1 && code <= 8) || (code >= 0x0E && code <= 0x11)) {
-                                ++cursor; // valid player color pair; the payload byte renders nothing
-                            }
-                        }
-                    } break;
-                }
-            },
-            [&](const Icon& icon) {
-                flush_run();
-                width += graphics::unit_icon_advance(icon.unit_id, config.pixel_height, spacing);
-            },
-        }, *token);
-    }
-    flush_run();
-    return width;
-}
-
-}
-
-s32 line_width(u8 slot, std::string_view text) {
-    const u8* scan = (const u8*)text.data();
-    const u8* end = scan + text.size();
-    return measure_line(slot, scan, end);
+    const WalkSummary summary = walk_line({font, start, x_start, x_origin}, cursor, end, sink);
+    return summary.x - x_start;
 }
 
 s32 text_width(u8 slot, std::string_view text) {
+    const u8* start = (const u8*)text.data();
+    const u8* end = start + text.size();
+    const u8* cursor = start;
     s32 width = 0;
-    const u8* cursor = (const u8*)text.data();
-    const u8* end = cursor + text.size();
-    while (cursor != end) {
-        width += measure_line(slot, cursor, end);
-        if (cursor == end || cursor[-1] == '\f' || cursor[-1] == '\0') {
+    const PrintFont font = TextSystem::instance().font_for_slot(slot);
+    const auto sink = [](const Atom&) {
+        return true;
+    };
+    while (cursor < end) {
+        const WalkSummary summary = walk_line({font, start, 0, 0}, cursor, end, sink);
+        width += summary.x;
+        if (summary.stop != WalkStop::Newline) {
             break; // 0x00 and 0x0C end the print in vanilla
         }
-        // measure_line already consumed the '\n'; the next line starts at cursor
+        cursor = summary.cursor;
     }
     return width;
 }

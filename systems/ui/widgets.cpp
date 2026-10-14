@@ -45,7 +45,7 @@ static constexpr DialogFlags::Enum FontSizes
 
 static constexpr size_t TextInputBufferSize = 256;
 
-static constexpr u16 DefaultRadioButtonHeight = 20;
+static constexpr u16 DefaultRadioButtonHeight = 40;
 static constexpr u16 RadioButtonRowSpacing = 8;
 
 // Checked-listbox row state. flags_array first 4 bits is used by font style but the rest is unused
@@ -1035,7 +1035,8 @@ Group* Group::radio_group(DialogBounds bounds, std::span<const std::string_view>
 
     // g_theme_radiobutton_size is 0 until the theme GRP is parsed at menu load;
     // fall back so buttons don't stack when built in a Menu constructor.
-    const u16 row_height = g_theme_radiobutton_size ? g_theme_radiobutton_size : DefaultRadioButtonHeight;
+    // const u16 row_height = g_theme_radiobutton_size ? g_theme_radiobutton_size : DefaultRadioButtonHeight;
+    const u16 row_height = 40;
     // Pitch = button height + configurable gap; adjust RadioButtonRowSpacing to taste.
     const u16 row_pitch = static_cast<u16>(row_height + RadioButtonRowSpacing);
     auto current_bounds = bounds;
