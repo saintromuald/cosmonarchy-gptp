@@ -173,4 +173,19 @@ void chat_set_slot_label(bw::Dialog* label, const char* text) {
     }
 }
 
+// For vanilla savegame (save replay), ok, okcancel modals
+void scale_glue_modal(bw::Dialog* dialog) {
+    ui::scale_bin(*dialog);
+
+    auto& bounds = dialog->bounds;
+    // Pre-init modals are actually stored xywh not ltrb.
+    // We're using set_ltrb because it doesn't translate the coordinates, but passing xywh because that's what the modal actually uses
+    bounds.set_ltrb(
+        bounds.left() + ui::MenuBinScale.offset.x,
+        bounds.top() + ui::MenuBinScale.offset.y,
+        bounds.right(),
+        bounds.bottom()
+    );
+}
+
 } // hooks

@@ -45,6 +45,22 @@ static void __declspec(naked) load_bin_scaled_wrapper() {
     }
 }
 
+// For call patch wrapping vanilla loader — glue modal boxes (savegame/ok/
+// okcancel) whose roots are sub-640x480 dialogs, not fullscreen menu bins
+static void __declspec(naked) load_bin_scaled_modal_wrapper() {
+    static bw::Dialog* dialog;
+    static const u32 func_address = 0x0041a080;
+    __asm {
+        PUSHAD
+        MOV dialog, EAX
+    }
+    hooks::scale_glue_modal(dialog);
+    __asm {
+        POPAD
+        JMP func_address
+    }
+}
+
 static void __declspec(naked) chat_set_slot_label_wrapper() {
     static bw::Dialog* label;
     static const char* text;
@@ -85,5 +101,10 @@ void inject_custom_glues() {
     call_patch(load_bin_scaled_wrapper, 0x004f766d); // glu_t_readyroom
     call_patch(load_bin_scaled_wrapper, 0x004f730d); // glu_z_readyroom
     call_patch(load_bin_scaled_wrapper, 0x004b4d73); // glu_scorescreen
+
+    // Scorescreen save replay modal and its confirm/error boxes
+    call_patch(load_bin_scaled_modal_wrapper, 0x004e0118); // score_save_replay
+    call_patch(load_bin_scaled_modal_wrapper, 0x004f5eb2); // okcancel.bin overwrite confirm
+    call_patch(load_bin_scaled_modal_wrapper, 0x004f6022); // ok.bin error modal
 }
 }
