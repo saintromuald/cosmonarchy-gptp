@@ -55,5 +55,6 @@ void glu_main_switch();
 
 namespace hooks {
 void chat_set_slot_label(bw::Dialog* label, const char* text);
+void scale_glue_modal(bw::Dialog* dialog);
 void inject_custom_glues();
 }

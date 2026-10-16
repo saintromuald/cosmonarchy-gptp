@@ -25,6 +25,7 @@ namespace hooks {
 
 void inject_popup_dialog_hooks() {
     call_patch(scale_and_initialize_popup_dialog_wrapper, 0x004F5920);
+    jump_patch(dialog_center_on_screen, 0x004CD9C0, 3);
 }
 
 } // hooks
