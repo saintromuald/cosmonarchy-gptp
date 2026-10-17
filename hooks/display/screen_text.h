@@ -14,9 +14,9 @@ constexpr s32 MessageLogTop = 250;
 constexpr s32 MessageLogRight = 630;
 
 constexpr s32 DisplayCenter = display::SurfaceWidth / 2;
-constexpr s32 CenterTextLeft = DisplayCenter - 125;
+constexpr s32 CenterTextLeft = DisplayCenter - 200;
 constexpr s32 CenterTextTop = 690;
-constexpr s32 CenterTextRight = DisplayCenter + 125;
+constexpr s32 CenterTextRight = DisplayCenter + 200;
 
 constexpr s32 TopRightTextLeft = 420;
 constexpr s32 TopRightTextTop = 24;
