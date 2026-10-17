@@ -648,8 +648,18 @@ namespace hooks {
     // 00458EF0 - Hooked to use new icon grps -Jesse
     void draw_tooltip_with_icon(Box16* area) {
         const u32 space_width = 2;
+        const u32 max_costs_per_line = 2;
         s16 max_x = space_width;
         s16 max_height = 0;
+        u32 costs_on_line = 0;
+
+        auto finish_line = [&] {
+            area->right = std::max(area->right, max_x);
+            area->bottom += max_height + 1;
+            max_x = space_width;
+            max_height = 0;
+            costs_on_line = 0;
+        };
 
         auto has_value = [](const auto& r) { return *r.value; };
         for (const auto& resource : resource_tooltip_definitions | std::ranges::views::filter(has_value)) {
@@ -676,11 +686,14 @@ namespace hooks {
 
             max_height = std::max(max_height, height);
             max_x = g_draw_area_bounds.right;
+
+            if (++costs_on_line == max_costs_per_line) {
+                finish_line();
+            }
         }
 
-        if (max_x > space_width) {
-            area->right = std::max(area->right, max_x);
-            area->bottom += max_height + 1;
+        if (costs_on_line > 0) {
+            finish_line();
         }
     }
 
