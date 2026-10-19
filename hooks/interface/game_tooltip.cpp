@@ -57,7 +57,6 @@ constexpr u16 UpgradeLevelLabel = 795; // Next Level:
 
 CommandCosts unit_costs(u16 unit_id) {
     const RaceId::Enum race = Unit::get_race(unit_id);
-    const bool original_race = race == RaceId::Zerg || race == RaceId::Terran || race == RaceId::Protoss;
     const bool paired = units_dat::base_property[unit_id] & UnitProperty::TwoUnitsIn1Egg;
     return {
         .minerals = units_dat::mineral_cost[unit_id],

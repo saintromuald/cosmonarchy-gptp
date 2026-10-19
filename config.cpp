@@ -3,6 +3,7 @@
 #include <format>
 #include "logger.h"
 #include "player_color.h"
+#include "systems/locale/locale.h"
 
 #define NOMINMAX
 #include <Windows.h>
@@ -34,6 +35,12 @@ static void write_field(YAML::Emitter& emitter, const std::string& key, const T&
 }
 
 static void validate_config() {
+    if (auto tag = locale::LanguageTag::parse(g_config.language)) {
+        g_config.language = tag->to_string();
+    } else {
+        g_config.language = "en-US";
+    }
+
     if (g_config.extended_control_groups) {
         if (!g_config.grid_hotkeys) {
             config_error("Extended control groups must be used together with grid hotkeys!");
@@ -75,6 +82,9 @@ void load_config() {
     load_field(yaml, "disable-wmode-prompt", g_config.disable_wmode_prompt);
     load_field(yaml, "prefer-wmode", g_config.prefer_wmode);
     load_field(yaml, "allow-multiple-instances", g_config.allow_multiple_instances);
+
+    // Localization
+    load_field(yaml, "language", g_config.language);
 
     // General UI
     load_field(yaml, "extended-camera-hotkeys", g_config.extended_camera_hotkeys);
@@ -221,6 +231,11 @@ void save_config() {
     write_field(yaml, "disable-wmode-prompt", g_config.disable_wmode_prompt);
     write_field(yaml, "prefer-wmode", g_config.prefer_wmode);
     write_field(yaml, "allow-multiple-instances", g_config.allow_multiple_instances);
+    yaml << YAML::Newline << YAML::Newline;
+
+    yaml << YAML::Comment("Localization");
+    yaml << YAML::Newline << YAML::Comment("BCP47 language tag, e.g. ko-KR. Missing translations fall back to English");
+    write_field(yaml, "language", g_config.language);
     yaml << YAML::Newline << YAML::Newline;
 
     yaml << YAML::Comment("General UI");

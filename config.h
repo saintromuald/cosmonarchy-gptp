@@ -12,6 +12,9 @@ struct Config {
     bool prefer_wmode = false;
     bool allow_multiple_instances = false;
 
+    // Localization (BCP47 tag, e.g. "ko-KR"; missing translations fall back to English)
+    std::string language = "en-US";
+
     // Display
     u32 ui_redraw_cap_hz = 0; // 0 = match the monitor's refresh rate
 
