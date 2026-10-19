@@ -8,6 +8,7 @@
 #include "psi_field.h"
 #include "hooks/interface/uifeatures/hotkeys.h"
 #include "hooks/interface/uifeatures/ui_features.h"
+#include "hooks/interface/weapon_armor_tooltip.h"
 #include "hooks/cosmonarchy_finder.h"
 #include "globals.h"
 #include "hooks/weapons/weapon_cooldown.h"
@@ -643,6 +644,7 @@ namespace hooks {
             }
         }
         draw_transport_ui();
+        draw_hovered_weapon_range();
     }
 
     void game_init_first_frame() {
@@ -953,14 +955,6 @@ namespace hooks {
         // No per-tick full-screen refresh: it forced every present to redraw and
         // rescale everything, defeating the dirty-cell system. World changes mark
         // their own cells (images, fog, placement), and shape draws drive want_refresh.
-
-        // Needed for extended tooltips
-        static bool last_shift = 0;
-        bool new_shift = *g_is_holding_shift;
-        if (last_shift != new_shift) {
-            bw::refresh_console();
-        }
-        last_shift = new_shift;
 
         // Implict ESC for closing submenus. -Pr0nogo
         // @Veeq7 - Should this be moved to hotkeys.cpp?

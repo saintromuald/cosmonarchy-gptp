@@ -4513,6 +4513,16 @@ namespace helper {
         }
     }
 
+    void dialog_set_focus(bw::Dialog* dialog) {
+        const u32 func_address = 0x00418830;
+        __asm {
+            PUSHAD
+            MOV EDI, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
     Unit* find_random_attack_target(Unit* unit) {
         const u32 func_address = 0x00442FC0;
         static Unit* target;
@@ -7276,28 +7286,6 @@ namespace helper {
         }
     }
 
-    s16 create_tooltip(char* text) {
-        const u32 func_address = 0x004591A6;
-        static s16 result;
-        __asm {
-            PUSHAD
-            PUSH text
-            CALL func_address
-            MOV result, AX
-            POPAD
-        }
-        return result;
-    }
-
-    char refresh_selection_screen() {
-        const u32 func_address = 0x00481480;
-        static char result;
-        __asm {
-            PUSHAD
-            CALL func_address
-            POPAD
-        }
-    }
 
     // For ai_send_suicide
     bool is_threat(Unit* target, Unit* unit) {
@@ -10295,24 +10283,6 @@ namespace helper {
             PUSHAD
             PUSH vision_filter_xd
             MOV EBX, sprite
-            CALL func_address
-            POPAD
-        }
-    }
-
-    void set_tooltip_info(u32 mineral_cost, u32 vespene_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u16 z_supply) {
-        const u32 func_address = 0x00458800;
-        __asm {
-            PUSHAD
-            MOV EAX, mineral_cost
-            MOV ECX, vespene_cost
-            MOVZX EBX, z_supply
-            PUSH EBX
-            PUSH t_supply
-            PUSH p_supply
-            PUSH z_energy
-            PUSH t_energy
-            MOV EDX, p_energy
             CALL func_address
             POPAD
         }
@@ -15140,38 +15110,6 @@ namespace helper {
         return result;
     }
 
-    void create_context_help_from_dialog(BinDlg* dialog, const char* text) {
-        const u32 func_address = 0x00481510;
-        u32 x = dialog->bounds.right, y = dialog->bounds.bottom;
-        if (dialog->control_type != DialogControlType::DialogBoxDC) {
-            x += dialog->parent->bounds.left;
-            y += dialog->parent->bounds.top;
-        }
-        __asm {
-            PUSHAD
-            PUSH text
-            PUSH y
-            MOV EAX, x
-            CALL func_address
-            POPAD
-        }
-    }
-
-    u16 create_context_tooltip(s32 x, s32 y, char* text) {
-        const u32 func_address = 0x00481510;
-        static u16 result;
-        __asm {
-            PUSHAD
-            PUSH text
-            PUSH y
-            MOV EAX, x
-            CALL func_address
-            MOV result, AX
-            POPAD
-        }
-        return result;
-    }
-
     void parse_unit_dat_requirements() {
         const u32 func_address = 0x0046E100;
         __asm {
@@ -15437,58 +15375,6 @@ namespace helper {
         const u32 func_address = 0x00494100;
         __asm {
             PUSHAD
-            CALL func_address
-            POPAD
-        }
-    }
-
-    void draw_cancel_unit_context(BinDlg* dialog) {
-        const u32 func_address = 0x00457B10;
-        __asm {
-            PUSHAD
-            MOV EBX, dialog
-            CALL func_address
-            POPAD
-        }
-    }
-
-    void statdata_user_interact(u32 dialog_index, BinDlg* dialog) {
-        const u32 func_address = 0x004576A0;
-        __asm {
-            PUSHAD
-            PUSH dialog
-            MOV ECX, dialog_index
-            CALL func_address
-            POPAD
-        }
-    }
-
-    void draw_cancel_upgrade_context(BinDlg* dialog) {
-        const u32 func_address = 0x004575A0;
-        __asm {
-            PUSHAD
-            MOV EBX, dialog
-            CALL func_address
-            POPAD
-        }
-    }
-
-    void create_context_from_dialog(BinDlg* dialog, const char* text) {
-        const u32 func_address = 0x00457350;
-        __asm {
-            PUSHAD
-            PUSH text
-            MOV EAX, dialog
-            CALL func_address
-            POPAD
-        }
-    }
-
-    void draw_unload_unit_context(BinDlg* dialog) {
-        const u32 func_address = 0x00457C20;
-        __asm {
-            PUSHAD
-            MOV EBX, dialog
             CALL func_address
             POPAD
         }

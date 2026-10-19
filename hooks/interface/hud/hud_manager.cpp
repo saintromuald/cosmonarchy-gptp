@@ -12,6 +12,7 @@
 #include "storm/storm.h"
 #include "systems/display/display.h"
 #include "systems/display/hud_layout.h"
+#include "systems/ui/tooltip.h"
 
 #include <algorithm>
 #include <format>
@@ -81,6 +82,11 @@ HudManager::~HudManager() {
 }
 
 void HudManager::change(std::string_view name) {
+    // Tooltips may reference icons and widgets owned by the outgoing HUD
+    if (ui::g_game_tooltips) {
+        ui::g_game_tooltips->clear();
+    }
+
     const auto was_hidden = m_hidden;
     if (was_hidden) {
         show();
@@ -358,7 +364,7 @@ void HudManager::unload_all() {
     free_bitmap(g_cmdbuttons_progressbar_empty);
     free_bitmap(g_cmdbuttons_progressbar_full);
 
-    helper::reset_status_screen_area();
+    ui::hide_game_tooltip();
 
     m_loaded = false;
 }

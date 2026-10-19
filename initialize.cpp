@@ -20,7 +20,6 @@
 #include "hooks/display/dialog_clip.h"
 #include "hooks/display/popup_dialog.h"
 #include "hooks/display/widget_dialog_init.h"
-#include "hooks/display/tooltip_bounds.h"
 #include "hooks/display/mapblit.h"
 #include "hooks/display/grid.h"
 #include "hooks/display/translucent_image.h"
@@ -64,6 +63,7 @@
 #include "hooks/unit_stats/max_energy.h"
 #include "hooks/unit_stats/weapon_range.h"
 #include "hooks/interface/weapon_armor_tooltip.h"
+#include "hooks/interface/game_tooltip.h"
 #include "hooks/orders/ai/ai_orders.h"
 #include "hooks/orders/base_orders/attack_orders.h"
 #include "hooks/interface/btns_cond.h"
@@ -799,7 +799,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     hooks::inject_dialog_clip_hooks();
     hooks::inject_popup_dialog_hooks();
     hooks::inject_widget_dialog_init_hooks();
-    hooks::inject_tooltip_bounds_hooks();
     hooks::inject_mapblit_hooks();
     hooks::inject_grid_hooks();
     hooks::inject_translucent_image_hooks();
@@ -897,7 +896,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     hooks::inject_sight_range_hooks();
     hooks::inject_unit_max_energy_hooks();
     hooks::inject_weapon_range_hooks();
-    hooks::inject_unit_tooltip_hooks();
+    hooks::inject_game_tooltip_hooks();
     hooks::inject_max_hp_hooks();
     hooks::inject_spellcaster_ai_hooks();
     hooks::inject_ai_orders_hooks();

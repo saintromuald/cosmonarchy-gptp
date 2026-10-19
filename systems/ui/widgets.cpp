@@ -1247,7 +1247,8 @@ const Palette& BackgroundState::default_palette() {
 }
 
 Menu::Menu(std::string background, PalettePreserve instant_colors)
-    : Group(), m_instant_colors(instant_colors) {
+    : Group(), m_instant_colors(instant_colors),
+      m_tooltip_controller(std::make_unique<DialogTooltipSurface>(*this)) {
     m_main = make(DialogBounds::from_xywh(0, 0, display::SurfaceWidth, display::SurfaceHeight), DialogControlType::DialogBoxDC, 0);
     m_main->m_text = std::move(background);
     m_main->dialog()->data<bw::MenuData>()->backup_surface.width = display::SurfaceWidth;
@@ -1309,7 +1310,8 @@ void Menu::on_top_dialog_create(Widget& top) {
 // --------------------------------
 // Modal
 // --------------------------------
-Modal::Modal(std::string background) : Group() {
+Modal::Modal(std::string background)
+    : Group(), m_tooltip_controller(std::make_unique<DialogTooltipSurface>(*this)) {
     Bitmap popup_bitmap{};
     load_bitmap(background.c_str(), popup_bitmap, nullptr, SFileScope::DiskAndMpq, false);
 

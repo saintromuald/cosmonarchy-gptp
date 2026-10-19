@@ -5,25 +5,6 @@
 
 u16 __fastcall get_stat_icon_graphic(u8 value);
 
-enum class tooltip_resource {
-    Minerals,
-    Gas,
-    Energy,
-    Unused,
-    BuildTime,
-    PSupply,
-    TSupply,
-    ZSupply,
-};
-
-struct tooltip_resource_cost {
-    tooltip_resource resource;
-    u16* value;
-    HudIcons::Kind icon;
-    u16 base_index;
-    u32 HudManager::Config::* hud_icon;
-};
-
 enum class StatPanel : s16 {
     ForceName = -21,
 };
@@ -38,10 +19,6 @@ void stats_weapon_level(BinDlg* dialog, u16 status_screen_index, WeaponId::Enum 
 void stats_shield_level(BinDlg* dialog, u16 status_screen_index);																				// 00425510
 b32 stats_spidermine_count(BinDlg* dialog, u16 index);																							// 00426300
 const char* get_unit_name(Unit* unit);																											// 0047B5A0
-void reset_tooltip_info();																														// 00459360 004593B0 004597D5
-void set_tooltip_info(u32 mineral_cost, u32 vespene_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u32 z_supply);	// 00458800
-void set_tooltip_info_unit(u16 unit_id);																										// 004594B0 0045952F
-void draw_tooltip_with_icon(Box16* area);																										// 00458EF0
 s32 stat_data_unit_wireframe_selection(BinDlg* dialog, DialogEvent* event_arg);	                                                                // 004583E0
 u16 get_last_queue_slot_id(Unit* unit);																											// 0047B270
 void unit_stat_action_transport(BinDlg* dialog);																								// 00427C90

@@ -35,7 +35,6 @@ s32 select_units(Unit** a1, s32 a2, u8 a3, s32 a4);
 void queue_game_command(u8* data, u32 size);
 
 b32 check_hotkey_char(BinDlg* dialog, char hotkey);
-char create_upgrade_level_tooltip(char* text);
 bool trigact_transmission(TriggerAction* trigger);                                  // 004C7890
 void draw_minimap_unit_box(u32 player);                                             // 004A4650
 void draw_all_minimap_boxes();                                                      // 004A4AC0
@@ -61,10 +60,10 @@ void end_middle_drag();
 bool statport_dlg_interact(BinDlg* dialog, DialogEvent* dlg_event);					// 0045F290
 char CMDRECV_minimap_ping(char* buffer);											// 004BF7A0
 void __cdecl show_or_hide_minimap();												// 004A4150
-u16 draw_game_menu_context(BinDlg* dialog);                                         // 004F4F70
+void draw_game_menu_context(BinDlg* dialog);                                        // 004F4F70
 char* get_stat_txt_string(u16 string_id);                                           // 004C36F0
 void draw_show_hide_terrain_context(BinDlg* dialog);                                // 004A4C40
-void draw_cancel_unit_context(BinDlg* dialog);                                      // 00457B10
+void __fastcall show_minimap_button_tooltip(BinDlg* dialog);                       // 004A5110
 void statdata_mouseover_interact(BinDlg* main_dialog, BinDlg* secondary_dialog);    // 00457CE0
 void move_screen_to_unit(Unit* unit);                                               // 004E6020
 s32 get_color_id(u8 player);                                                        // 0049B0E0

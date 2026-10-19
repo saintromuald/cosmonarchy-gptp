@@ -81,6 +81,8 @@ public:
     operator Box16() const;
     operator Box32() const;
 
+    bool operator==(const DialogBounds&) const = default;
+
 private:
     s16 m_left;
     s16 m_top;

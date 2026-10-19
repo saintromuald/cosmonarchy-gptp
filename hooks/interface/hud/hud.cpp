@@ -8,6 +8,7 @@
 #include "hooks/interface/uifeatures/ui_features.h"
 #include "storm/storm.h"
 #include "storm/sfile.h"
+#include "systems/ui/tooltip.h"
 
 #include <magic_enum/magic_enum.hpp>
 
@@ -43,6 +44,10 @@ void load_progressbar(BinDlg* dialog, BinDlgProc update_function, Bitmap& empty,
 }
 
 void load_hud() { // 004c3bb0
+    // Only one LayerTooltipSurface may own the context layer, so release any previous one first
+    ui::g_game_tooltips.reset();
+    ui::g_game_tooltips = std::make_unique<ui::TooltipController>(std::make_unique<ui::LayerTooltipSurface>());
+
     if (g_is_in_replay) {
         HudManager::install_replay();
     } else {
@@ -64,6 +69,8 @@ void unload_hud() { // 004c3780
     *g_active_portrait_unit = nullptr;
     g_old_client_selection_group.fill(0);
 
+    // May point at a HUD widget, so it goes before the HUD
+    ui::g_game_tooltips.reset();
     g_hud_manager.reset();
 }
 

@@ -8,23 +8,11 @@
 #include "player_color.h"
 #include "systems/graphics/grp.h"
 #include "BW/structures/Unit.h"
-#include "hooks/interface/weapon_armor_tooltip.h"
+#include "hooks/unit_stats/armor_bonus.h"
 #include "hooks/interface/uifeatures/hotkeys.h"
 #include "hooks/interface/hud/hud.h"
 #include "DatExtend/datext.h"
-
-#include <ranges>
-
-static const auto resource_tooltip_definitions = std::to_array<tooltip_resource_cost>({
-    {tooltip_resource::Minerals,  tooltip_ore_cost,      HudIcons::Kind::Mineral, 0, &HudManager::Config::mineral_icon},
-    {tooltip_resource::Gas,       tooltip_gas_cost,      HudIcons::Kind::Gas,     0, &HudManager::Config::gas_icon},
-    {tooltip_resource::Energy,    tooltip_energy_cost,   HudIcons::Kind::General, 9, nullptr},
-    {tooltip_resource::Unused,    tooltip_unused_cost,   HudIcons::Kind::General, 8, nullptr},
-    {tooltip_resource::BuildTime, tooltip_time_cost,     HudIcons::Kind::General, 7, nullptr},
-    {tooltip_resource::PSupply,   tooltip_p_supply_cost, HudIcons::Kind::Supply,  0, &HudManager::Config::supply_icon},
-    {tooltip_resource::TSupply,   tooltip_t_supply_cost, HudIcons::Kind::Supply,  0, &HudManager::Config::supply_icon},
-    {tooltip_resource::ZSupply,   tooltip_z_supply_cost, HudIcons::Kind::Supply,  0, &HudManager::Config::supply_icon},
-});
+#include "systems/ui/tooltip.h"
 
 u16 __fastcall get_stat_icon_graphic(u8 value) {
     u8 frame = 13; // 2nd stat icon frame in unit\cmdbtns\?cmdbtns.grp
@@ -400,7 +388,7 @@ namespace hooks {
         // Second arg is unit id in one case and an empty Unit* in another, so I'm ignoring it entirely and just using g_active_portrait_unit. -Pr0nogo
         BinDlg* dialog_var = dialog;
         Unit* portrait_unit = *g_active_portrait_unit;
-        s32 armor_value = units_dat::armor_amount[portrait_unit->id] + get_bonus_armor(portrait_unit, units_dat::armor_amount[portrait_unit->id]);
+        s32 armor_value = units_dat::armor_amount[portrait_unit->id] + get_armor_bonus_display(portrait_unit);
         sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%i", armor_value);
         if (dialog_var->control_type != DialogControlType::DialogBoxDC) {
             dialog_var = dialog_var->parent;
@@ -503,7 +491,7 @@ namespace hooks {
         if (unit_ext->values[ValueTriggerArmorBaseSet]) {
             base_armor = unit_ext->values[ValueTriggerArmorBaseAmount];
         }
-        u32 armor_value = base_armor + get_bonus_armor(unit, units_dat::armor_amount[unit->id]);
+        u32 armor_value = base_armor + get_armor_bonus_display(unit);
         sprintf_s(g_status_screen_info_button_unk[status_screen_index], 8, "%d", armor_value);
 
         if (dialog_var->control_type != DialogControlType::DialogBoxDC) {
@@ -600,103 +588,6 @@ namespace hooks {
         }
     }
     
-    // 004594B0 0045952F - Hooked to add time costs to tooltip info. -Veeq7
-    void set_tooltip_info_unit(u16 unit_id) {
-        u32 mineral_cost = units_dat::mineral_cost[unit_id];
-        u32 vespene_cost = units_dat::vespene_cost[unit_id];
-        u32 time_cost = units_dat::time_cost[unit_id] / 24;
-
-        u32 race = Unit::get_race(unit_id);
-        u32 supply = 0;
-        if (units_dat::base_property[unit_id] & UnitProperty::TwoUnitsIn1Egg) {
-            supply = 2;
-        }
-
-        set_tooltip_info(mineral_cost, vespene_cost, 0, 0, 0,
-            race == RaceId::Protoss ? supply : 0,
-            race == RaceId::Terran ? supply : 0,
-            race == RaceId::Zerg ? supply : 0);
-        *tooltip_time_cost = time_cost;
-    }
-
-    // 00459360 004593B0 004597D5 - Hooked to add time costs to tooltip info. -Veeq7
-    void reset_tooltip_info() {
-        helper::refresh_selection_screen();
-
-        *tooltip_ore_cost = 0;	
-        *tooltip_gas_cost = 0;
-        *tooltip_energy_cost = 0;
-        *tooltip_unused_cost = 0;
-        *tooltip_time_cost = 0;
-        *tooltip_p_supply_cost = 0;
-        *tooltip_t_supply_cost = 0;
-        *tooltip_z_supply_cost = 0;
-    }
-
-    // 00458800 - Hooked to add time costs to tooltip info. -Veeq7
-    void set_tooltip_info(u32 mineral_cost, u32 vespene_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u32 z_supply) {
-        *tooltip_ore_cost = mineral_cost;	
-        *tooltip_gas_cost = vespene_cost;
-        *tooltip_energy_cost = p_energy + t_energy + z_energy;
-        *tooltip_unused_cost = 0;
-        *tooltip_time_cost = 0;
-        *tooltip_p_supply_cost = p_supply;
-        *tooltip_t_supply_cost = t_supply;
-        *tooltip_z_supply_cost = z_supply;
-    }
-
-    // 00458EF0 - Hooked to use new icon grps -Jesse
-    void draw_tooltip_with_icon(Box16* area) {
-        const u32 space_width = 2;
-        const u32 max_costs_per_line = 2;
-        s16 max_x = space_width;
-        s16 max_height = 0;
-        u32 costs_on_line = 0;
-
-        auto finish_line = [&] {
-            area->right = std::max(area->right, max_x);
-            area->bottom += max_height + 1;
-            max_x = space_width;
-            max_height = 0;
-            costs_on_line = 0;
-        };
-
-        auto has_value = [](const auto& r) { return *r.value; };
-        for (const auto& resource : resource_tooltip_definitions | std::ranges::views::filter(has_value)) {
-            // Icons live in HudManager now, so resolve the GRP at draw time
-            graphics::GrpFile* grp = g_hud_manager ? g_hud_manager->icons().get(resource.icon) : nullptr;
-            if (!grp || !grp->frame_count()) {
-                continue;
-            }
-            auto index = resource.hud_icon
-                ? resource.base_index + g_hud_manager->current().*resource.hud_icon
-                : resource.base_index;
-
-            if (index >= grp->frame_count()) index = 0;
-
-            const graphics::FrameSize size = grp->frame_size(index);
-            const s16 width = s16(size.width);
-            const s16 height = s16(size.height);
-
-            Bounds bounds{0, 0, width, height, width, height};
-            FxnDrawIconData data{width, height, grp->get_frame_pixel_data(index)};
-            helper::bw_print_icon(&bounds, &data, max_x, area->bottom);
-            helper::bw_print_xy(std::format("{}", *resource.value).c_str(),
-                width + max_x + space_width, area->bottom);
-
-            max_height = std::max(max_height, height);
-            max_x = g_draw_area_bounds.right;
-
-            if (++costs_on_line == max_costs_per_line) {
-                finish_line();
-            }
-        }
-
-        if (costs_on_line > 0) {
-            finish_line();
-        }
-    }
-
     // Hooked by accident. -Pr0nogo
     // Fixed types, but this isn't actually injected so not refactoring for now -Jesse
     s32 stat_data_unit_wireframe_selection(BinDlg* dialog, DialogEvent* event) { // 004583E0
@@ -728,7 +619,7 @@ namespace hooks {
                 } break;
                 case DialogUserType_AcceptFocus: {
                     if (dialog == g_control_under_mouse) {
-                        helper::refresh_selection_screen();
+                        ui::hide_game_tooltip();
                         g_control_under_mouse = 0;
                     }
                 } break;

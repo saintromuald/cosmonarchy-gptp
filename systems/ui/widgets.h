@@ -205,7 +205,7 @@ private:
 };
 
 class Group {
-    friend class TooltipController;
+    friend class DialogTooltipSurface;
 public:
     using Member = std::variant<std::unique_ptr<Widget>, std::unique_ptr<Group>>;
 
@@ -369,6 +369,8 @@ public:
 
     bool passthrough_mouse() const override { return true; }
     bool passthrough_keyboard() const override { return true; }
+
+    TooltipController* tooltip_controller() override { return g_game_tooltips.get(); }
 
 protected:
     // Flags select the compositing style; see OverlayHud
