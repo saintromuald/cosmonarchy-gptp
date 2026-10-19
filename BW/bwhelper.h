@@ -1410,12 +1410,12 @@ namespace helper {
     void refresh_all_visible_images_at_screen_position(Sprite* sprite, u8 vision_filter);					// 00497480
 
 
-    void bw_print_icon(Bounds* bounds, FxnDrawIconData* data, int pos_x, int pos_y);						// 0041D090
-    void bw_print_xy(const char* text, s32 pos_x, s32 pos_y);												// 004202B0
+    void bw_print_icon(Bounds* bounds, FxnDrawIconData* data, int pos_x, int pos_y);                        // 0041D090
+    void bw_print_xy(const char* text, s32 pos_x, s32 pos_y);                                               // 004202B0
 
-    bool unit_is_in_notify_range(Unit* unit);																// 004E5AD0
-    u32 reset_all_unit_attack_notify_timers_in_range(Unit* unit);											// 0048EAE0
-    void do_unit_event_notification(Unit* unit, char event_type, u32 timer, bool ping, u32 message_id);		// 0045EFE0
+    // bool unit_is_in_notify_range(Unit* unit); // Replaced in weapon_damage.cpp                           // 004E5AD0
+    u32 reset_all_unit_attack_notify_timers_in_range(Unit* unit);                                           // 0048EAE0
+    void do_unit_event_notification(Unit* unit, char event_type, u32 timer, bool ping, u32 message_id);     // 0045EFE0
 
     s32 stat_data_unit_wireframe_select_update(BinDlg* dialog, Event* event_arg);							// 00456F50
     char status_screen_update_tooltip_mouse_held(BinDlg* dialog, DialogEvent* dialog_event);				// 00457DE0

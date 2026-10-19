@@ -10313,19 +10313,6 @@ namespace helper {
         }
     }
 
-    bool unit_is_in_notify_range(Unit* unit) {
-        static bool result;
-        const u32 func_address = 0x004E5AD0;
-        __asm {
-            PUSHAD
-            MOV EAX, unit
-            CALL func_address
-            MOV result, AL
-            POPAD
-        }
-        return result;
-    }
-
     u32 reset_all_unit_attack_notify_timers_in_range(Unit* unit) {
         static u32 result;
         const u32 func_address = 0x0048EAE0;

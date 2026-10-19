@@ -13,6 +13,7 @@
 #include "DatExtend/datext.h"
 #include "weapon_fire.h"
 #include "systems/triggers/trigger_system.h"
+#include "systems/display/zoom.h"
 #include "hooks/unit_stats/armor_bonus.h"
 #include "hooks/unit_destructor_special.h"
 #include "GameModes/IGameMode.h"
@@ -114,6 +115,18 @@ namespace hooks {
         }
     }
 
+    static bool unit_is_in_notify_range(Unit* unit) { // 0x004E5AD0
+        const s32 left = s32(g_move_to_x) + g_zoom.source_left();
+        const s32 top = s32(g_move_to_y) + g_zoom.source_top();
+        const s32 right = left + g_zoom.visible_width();
+        const s32 bottom = top + g_zoom.visible_height();
+        const s32 margin = 2 * s32(display::TileSize);
+
+        const s32 x = unit->sprite->position.x;
+        const s32 y = unit->sprite->position.y;
+        return x < left - margin || x > right + margin || y < top - margin || y > bottom + margin;
+    }
+
     static bool g_should_play_alert;
 
     void play_attack_notification(Unit* unit) {
@@ -136,7 +149,7 @@ namespace hooks {
             unit->last_event_color = g_palette_index_reference[20];
             unit->last_event_timer = 20;
             if (!g_globals->alert.own_cooldown) {
-                if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
+                if (unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
                     if (!witness_or_replay) {
                         reset_all_unit_attack_notify_timers_in_range(unit);
                         g_globals->alert.own_cooldown = 100;
@@ -165,7 +178,7 @@ namespace hooks {
             unit->last_event_color = g_palette_index_reference[20];
             unit->last_event_timer = 20;
             if (!g_globals->alert.own_cooldown && !g_globals->alert.ally_cooldown) {
-                if (helper::unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
+                if (unit_is_in_notify_range(unit) && !unit->attack_notify_timer) {
                     reset_all_unit_attack_notify_timers_in_range(unit);
                     g_globals->alert.ally_cooldown = 1000;
 
