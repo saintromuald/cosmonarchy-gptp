@@ -4,6 +4,8 @@
 #include "color_palette.h"
 #include "storm/storm.h"
 
+#include <algorithm>
+
 #define ColorSetCount 256
 #define MinimapColorCount (ColorSetCount * TilesetType::Count)
 
@@ -252,13 +254,18 @@ u8 player_font_ramp_row(u8 payload) {
     return payload <= 8 ? u8(payload - 1) : u8(payload - 6);
 }
 
-void set_player_font_ramp(u8 row) {
+void set_player_font_ramp(u8 row, u8 ramp_slot) {
     // Mirrors the asm copy in glucustom.cpp get_color_handle: every other shade
     // of the row's in-game colors lands in the player font slot's bytes 1-4,
     // which is what .fnt glyph masks 1-4 index.
     for (u32 i = 0; i < 4; ++i) {
-        g_tfontgame_image_data[PlayerFontSlot * 8 + 1 + i] = g_player_in_game_colors[row * ColorSetSize + i * 2];
+        g_tfontgame_image_data[ramp_slot * 8 + 1 + i] = g_player_in_game_colors[row * ColorSetSize + i * 2];
     }
+}
+
+void back_up_player_ramp() {
+    std::copy_n(&g_tfontgame_image_data[PlayerFontSlot * 8 + 1], 4,
+        &g_tfontgame_image_data[(PlayerFontSlot + 1) * 8 + 1]);
 }
 
 bool set_player_color(u32 player, PlayerColor color) {

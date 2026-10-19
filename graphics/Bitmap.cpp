@@ -116,18 +116,6 @@ bool draw_text_ttf(Bitmap& bitmap, std::string_view text, s32 x, s32 y, u8 slot)
                     case 0: {        // vanilla ends the print at 0x00 like 0x0C
                         print_ended = true;
                     } break;
-                    case std::to_underlying(TextColor::Revert): {
-                        if (color == text::ramp(text::GreyColorSlot)) {
-                            break;
-                        }
-                        // The player ramp is rewritten by every pair, so a saved
-                        // pointer onto it is stale; get_color_handle escapes to the
-                        // next ramp row instead of re-applying the wrong shades.
-                        if (last_color == text::ramp(PlayerFontSlot)) {
-                            last_color += 8;
-                        }
-                        color = last_color;
-                    } break;
                     case '\t': {
                         x_offset += text::tab_stop(font.tab_width, x_offset, x);
                     } break;
@@ -153,27 +141,37 @@ bool draw_text_ttf(Bitmap& bitmap, std::string_view text, s32 x, s32 y, u8 slot)
                     } break;
                     case std::to_underlying(TextColor::PlayerColor):
                     case std::to_underlying(TextColor::PlayerColor2): {
-                        if (color == text::ramp(text::GreyColorSlot)) {
-                            break;
-                        }
                         if (cursor != end) {
                             const u8 code = *cursor;
                             if ((code >= 1 && code <= 8) || (code >= 0x0E && code <= 0x11)) {
-                                ++cursor;
-                                last_color = color;
-                                set_player_font_ramp(player_font_ramp_row(code));
-                                color = text::ramp(PlayerFontSlot);
+                                if (text::color_step(color == text::ramp(text::GreyColorSlot),
+                                        text::Atom{.kind = text::AtomKind::PlayerColor, .payload = code}) == text::ColorStep::Push) {
+                                    ++cursor;
+                                    if (color == text::ramp(PlayerFontSlot)) {
+                                        back_up_player_ramp();
+                                        last_color = text::ramp(u8(PlayerFontSlot + 1));
+                                    } else {
+                                        last_color = color;
+                                    }
+                                    set_player_font_ramp(player_font_ramp_row(code));
+                                    color = text::ramp(PlayerFontSlot);
+                                }
                             }
                         }
                     } break;
                     default: {      // colour code, including the extended 0x8F-0x9F range
-                        // Grey swallows the legacy codes only; the extended colors
-                        // bypass the grey check (writeFontApplyColour's off_4 jump).
-                        if (color == text::ramp(text::GreyColorSlot) && control.value < 0x20) {
-                            break;
+                        switch (text::color_step(color == text::ramp(text::GreyColorSlot),
+                                text::Atom{.kind = text::AtomKind::Control, .control = control.value})) {
+                            case text::ColorStep::Push:
+                                last_color = color;
+                                color = text::ramp(text::color_slot(control.value));
+                                break;
+                            case text::ColorStep::Revert:
+                                color = last_color;
+                                break;
+                            case text::ColorStep::None:
+                                break;
                         }
-                        last_color = color;
-                        color = text::ramp(text::color_slot(control.value));
                     } break;
                 }
             },

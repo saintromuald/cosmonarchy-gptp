@@ -57,7 +57,7 @@ struct PrintParams {
 };
 
 struct PrintOutcome {
-    const u8* remaining = nullptr;
+    std::string_view remaining;
     u16 line_count = 0;
     Box32 bounds = {};
     s32 final_y = 0;
@@ -113,12 +113,16 @@ struct LineRenderer {
             case AtomKind::Tab:
                 return true;
             case AtomKind::PlayerColor: {
-                if (color == grey_ramp || atom.payload == 0) {
-                    return true;
+                if (color_step(color == grey_ramp, atom) == ColorStep::Push) {
+                    if (color == ramp(PlayerFontSlot)) {
+                        back_up_player_ramp();
+                        saved_color = ramp(u8(PlayerFontSlot + 1));
+                    } else {
+                        saved_color = color;
+                    }
+                    set_player_font_ramp(player_font_ramp_row(atom.payload));
+                    color = ramp(PlayerFontSlot);
                 }
-                saved_color = color;
-                set_player_font_ramp(player_font_ramp_row(atom.payload));
-                color = ramp(PlayerFontSlot);
                 return true;
             }
             case AtomKind::Control: {
@@ -130,22 +134,16 @@ struct LineRenderer {
                     case '\r':
                         return true;
                     default:
-                        // Grey swallows the legacy codes only; the extended colors
-                        // bypass the grey check (writeFontApplyColour's off_4 jump).
-                        if (color == grey_ramp && atom.control < 0x20) {
-                            return true;
-                        }
-                        if (atom.control == std::to_underlying(TextColor::Revert)) {
-                            // The player ramp is rewritten by every pair, so a saved
-                            // pointer onto it is stale; get_color_handle escapes to the
-                            // next ramp row instead of re-applying the wrong shades.
-                            if (saved_color == ramp(PlayerFontSlot)) {
-                                saved_color += 8;
-                            }
-                            color = saved_color;
-                        } else {
-                            saved_color = color;
-                            color = ramp(color_slot(atom.control));
+                        switch (color_step(color == grey_ramp, atom)) {
+                            case ColorStep::Push:
+                                saved_color = color;
+                                color = ramp(color_slot(atom.control));
+                                break;
+                            case ColorStep::Revert:
+                                color = saved_color;
+                                break;
+                            case ColorStep::None:
+                                break;
                         }
                         return true;
                 }
@@ -167,23 +165,6 @@ void grow_draw_area_bounds(const Box32& bounds, const Box32& clip) {
     g_draw_area_bounds.bottom = s16(grown.bottom);
 }
 
-// find_line_break returns the line start unchanged when the first word (word wrap) or the first glyph (char wrap) alone overflows
-// Retry in char-wrap mode, then consume a single overflowing atom, so a print always advances.
-LineBreak next_line_break(const PrintFont& font, const u8* start, const u8* end, s32 x_start, s32 x_origin, s32 clip_right, bool word_wrap) {
-    LineBreak line = find_line_break(font, start, end, x_start, x_origin, clip_right, word_wrap);
-    if (line.stop != WalkStop::Sink || line.break_at != start) {
-        return line;
-    }
-    if (word_wrap) {
-        line = find_line_break(font, start, end, x_start, x_origin, clip_right, false);
-        if (line.stop != WalkStop::Sink || line.break_at != start) {
-            return line;
-        }
-    }
-    const WalkSummary forced = walk_line({font, start, x_start, x_origin}, start, end, [](const Atom&) { return false; });
-    return {forced.cursor, forced.x - x_start, forced.stop};
-}
-
 PrintOutcome print_core(graphics::Bitmap& surface, const PrintParams& params, std::string_view text) {
     TextSystem& text_system = TextSystem::instance();
     const PrintFont& font = params.font;
@@ -193,11 +174,9 @@ PrintOutcome print_core(graphics::Bitmap& surface, const PrintParams& params, st
     const s32 font_height = font.font_height;
     const s32 scaled_gap = font.line_gap;
 
-    const u8* start = (const u8*)text.data();
-    const u8* end = start + text.size();
+    const u8* start = (const u8*)text.data(); // the walk's cursor-pair lookback boundary
 
     PrintOutcome outcome;
-    outcome.remaining = end;
     outcome.color = params.color;
     outcome.saved_color = params.saved_color;
 
@@ -218,14 +197,15 @@ PrintOutcome print_core(graphics::Bitmap& surface, const PrintParams& params, st
         // Measure pass: how many lines fit and how much height they span.
         u16 lines = 0;
         bool page_ended = false; // '\f' ends the print without the gap unwind
-        const u8* cursor = start;
+        std::string_view remaining = text;
         s32 line_x = params.x;
-        while (cursor < end) {
-            const LineBreak line = next_line_break(font, cursor, end, line_x, params.clip.left, params.clip.right, params.word_wrap);
+        while (!remaining.empty()) {
+            const LineBreak line = next_line_break(font, remaining, line_x, params.clip.left, params.clip.right, params.word_wrap);
+            const size_t consumed = size_t(line.break_at - (const u8*)remaining.data());
             ++lines;
             y += line_advance;
             if (line.stop == WalkStop::PrintEnd) {
-                page_ended = line.break_at[-1] == '\f';
+                page_ended = remaining[consumed - 1] == '\f';
                 break;
             }
             if (line.stop == WalkStop::End) {
@@ -235,7 +215,7 @@ PrintOutcome print_core(graphics::Bitmap& surface, const PrintParams& params, st
                 break;
             }
             line_x = params.clip.left; // vanilla starts every line after the first at the clip's left
-            cursor = line.break_at;
+            remaining.remove_prefix(consumed);
         }
         if (!page_ended) {
             y -= scaled_gap;
@@ -282,10 +262,11 @@ PrintOutcome print_core(graphics::Bitmap& surface, const PrintParams& params, st
 
     u16 lines_printed = 0;
     bool page_ended = false;
-    const u8* cursor = start;
+    std::string_view remaining = text;
     s32 line_x = params.x;
-    while (cursor < end) {
-        const LineBreak line = next_line_break(font, cursor, end, line_x, params.clip.left, params.clip.right, params.word_wrap);
+    while (!remaining.empty()) {
+        const LineBreak line = next_line_break(font, remaining, line_x, params.clip.left, params.clip.right, params.word_wrap);
+        const size_t consumed = size_t(line.break_at - (const u8*)remaining.data());
 
         s32 x_line = line_x;
         if (alignment & AlignCenterBit) {
@@ -296,7 +277,7 @@ PrintOutcome print_core(graphics::Bitmap& surface, const PrintParams& params, st
 
         renderer.line_y = y;
         renderer.cursor.reset();
-        const u8* walk_cursor = cursor;
+        const u8* walk_cursor = (const u8*)remaining.data();
         s32 walk_x = x_line;
         while (true) {
             const WalkSummary summary = walk_line({font, start, walk_x, params.clip.left}, walk_cursor, line.break_at, renderer);
@@ -320,23 +301,24 @@ PrintOutcome print_core(graphics::Bitmap& surface, const PrintParams& params, st
         }
 
         ++lines_printed;
-        cursor = line.break_at;
         y += line_advance;
 
         if (line.stop == WalkStop::PrintEnd) {
-            page_ended = line.break_at[-1] == '\f';
-            outcome.remaining = page_ended ? line.break_at : line.break_at - 1;
+            page_ended = remaining[consumed - 1] == '\f';
+            // '\f' ends the page before it; '\0' remains for the caller to stop on.
+            outcome.remaining = page_ended ? remaining.substr(consumed) : remaining.substr(consumed - 1);
             break;
         }
         if (line.stop == WalkStop::End) {
-            outcome.remaining = line.break_at;
+            outcome.remaining = remaining.substr(consumed);
             break;
         }
         if (y + font_height > params.clip.bottom) {
-            outcome.remaining = cursor;
+            outcome.remaining = remaining.substr(consumed);
             break;
         }
         line_x = params.clip.left;
+        remaining.remove_prefix(consumed);
     }
 
     if (!page_ended) {
@@ -394,7 +376,7 @@ PrintResult print(std::string_view text, s32 x, s32 y, const PrintOptions& optio
     const PrintOutcome outcome = print_core(*target, params, text);
 
     PrintResult result;
-    result.remaining = {(const char*)outcome.remaining, size_t((const u8*)text.data() + text.size() - outcome.remaining)};
+    result.remaining = outcome.remaining;
     result.line_count = outcome.line_count;
     result.bounds = outcome.bounds;
     result.final_y = outcome.final_y;
@@ -452,7 +434,7 @@ const char* print_vanilla(const char* text, s32 x, s32 y) {
     g_current_font_color = (u32)outcome.color;
     g_saved_font_color = (u32)outcome.saved_color;
     grow_draw_area_bounds(outcome.bounds, clip);
-    return *outcome.remaining ? (const char*)outcome.remaining : nullptr;
+    return outcome.remaining.empty() ? nullptr : outcome.remaining.data();
 }
 
 } // namespace text
