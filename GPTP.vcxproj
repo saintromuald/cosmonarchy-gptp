@@ -334,6 +334,7 @@
     <ClCompile Include="GameModes\Uprising.cpp" />
     <ClCompile Include="ReplayKraken.cpp" />
     <ClCompile Include="systems\audio\music_registry.cpp" />
+    <ClCompile Include="systems\locale\locale.cpp" />
     <ClCompile Include="systems\scripting\scripting.cpp" />
     <ClCompile Include="systems\audio\audio_system.cpp" />
     <ClCompile Include="systems\audio\music_system.cpp" />
@@ -726,6 +727,7 @@
     <ClInclude Include="hooks\interface\mainmenu\glu_options.h" />
     <ClInclude Include="safeunion.h" />
     <ClInclude Include="systems\audio\music_registry.h" />
+    <ClInclude Include="systems\locale\locale.h" />
     <ClInclude Include="systems\scripting\api\ai\ai.h" />
     <ClInclude Include="systems\scripting\api\ai\attack_wave.h" />
     <ClInclude Include="systems\scripting\api\ai\defense.h" />

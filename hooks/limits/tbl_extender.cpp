@@ -1,45 +1,10 @@
 #include "tbl_extender.h"
 #include "storm/storm.h"
-#include "storm/sfile.h"
-#include <fstream>
+#include "systems/locale/locale.h"
 #include <string>
 #include <format>
 
 namespace hooks {
-
-static void collapse_control_codes(std::string& line) {
-    for (size_t i = 0; i < line.size(); i++) {
-        switch (line[i]) {
-            case '<': {
-                for (size_t j = i + 1; j < line.size(); j++) {
-                    if (line[j] == '>') {
-                        u32 control_char = 0;
-                        const auto first = line.c_str() + i + 1;
-                        const auto last = line.c_str() + j;
-                        const auto result = std::from_chars(first, last, control_char, 10);
-                        if (result.ec == std::errc{} && result.ptr == last) {
-                            line[i] = char(control_char);
-                            line.erase(i + 1, j - i);
-                        }
-                        break;
-                    }
-                }
-            } break;
-            case '\\': {
-                // Safe to check i+1, since we have the ending null char as buffer
-                switch (line[i+1]) {
-                    case 'n': {
-                        line[i] = '\n';
-                        line.erase(i + 1, 1);
-                    } break;
-                    case '\\': {
-                        line.erase(i + 1, 1);
-                    } break;
-                }
-            } break;
-        }
-    }
-}
 
 template <typename... Ts>
 static void load_stat_txt_error(const std::format_string<Ts...>& format, Ts&&... args) {
@@ -51,21 +16,16 @@ static void load_stat_txt_error(const std::format_string<Ts...>& format, Ts&&...
 
 void __cdecl load_stat_txt() { // 004C3A20
     static constexpr auto RezStatTxt = "rez\\stat.txt";
-    if (!sfile::file_exists(RezStatTxt, SFileScope::MpqOnly)) {
+    auto base_lines = locale::read_stat_file(RezStatTxt);
+    if (!base_lines) {
         load_stat_txt_error("File {} not found", RezStatTxt);
     }
-    std::istringstream stream{mpq_load_file(RezStatTxt).value_or("")};
+    auto lines = std::move(*base_lines);
+    locale::apply_translations(lines);
 
     size_t data_size = 0;
-    std::vector<std::string> lines;
-    std::string line;
-    while (std::getline(stream, line)) {
-        if (!line.empty() && line.back() == '\r') {
-            line.pop_back();
-        }
-        collapse_control_codes(line);
+    for (const auto& line : lines) {
         data_size += line.size() + 1; // + null char
-        lines.push_back(std::move(line));
     }
 
     size_t header_size = sizeof(u32) + lines.size() * sizeof(u32);

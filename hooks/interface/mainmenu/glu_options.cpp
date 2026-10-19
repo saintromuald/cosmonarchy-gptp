@@ -114,6 +114,38 @@ static ui::Widget* linked_uibool(ui::Group* tab, LayoutCursor& cursor, std::stri
     return combobox;
 }
 
+static ui::Widget* linked_language(ui::Group* tab, LayoutCursor& cursor, std::string text,
+    std::string& target, const locale::LanguageList& languages) {
+    // Narrower than the linked_uibool layout so the row stays clear of the next column
+    tab->label(DialogBounds::from_xywh(cursor.x + ItemIndent, cursor.y, 300, ComboboxHeight), std::move(text));
+    auto combobox = tab->combobox(DialogBounds::from_xywh(cursor.x + ItemIndent + 310, cursor.y, 190, ComboboxHeight));
+    combobox->on_create([&target, &languages](ui::Widget& self) {
+        u16 selection = 0;
+        u16 english = 0;
+        bool found = false;
+        for (u16 i = 0; i < languages.languages.size(); i++) {
+            const locale::Language& language = languages.languages[i];
+            self.add_item(language.name);
+            if (language.tag == target) {
+                selection = i;
+                found = true;
+            }
+            if (language.tag == "en-US") {
+                english = i;
+            }
+        }
+        if (!found) {
+            selection = english;
+        }
+        quick_send_event(self.dialog()->to_bindlg(), DialogUserType_SetSelectionIndex, selection);
+    })->on_selection([&target, &languages](ui::Widget&, u16 index) {
+        if (index >= languages.languages.size()) return;
+        target = languages.languages[index].tag;
+    });
+    cursor.pad_vertical(ComboboxHeight);
+    return combobox;
+}
+
 template <typename T>
 requires std::is_integral_v<T>
 static ui::Widget* linked_slider(ui::Group* tab, LayoutCursor& cursor, u16 min, u16 max, T& target) {
@@ -356,7 +388,8 @@ static std::shared_ptr<ColorListEditor> player_color_selector(ui::Group* tab, La
 }
 
 GluOptions::GluOptions()
-    : ui::Menu("glue\\dynamic\\backgrounds\\options.pcx"), m_config(g_config), m_options(*g_options_list), m_race_flags(RaceRandomizer::instance().race_flags()) {
+    : ui::Menu("glue\\dynamic\\backgrounds\\options.pcx"), m_config(g_config), m_languages(locale::load_languages()),
+      m_options(*g_options_list), m_race_flags(RaceRandomizer::instance().race_flags()) {
     const char hotkey_color = static_cast<char>(LobbyTextColor::YellowGreen);
     const char revert_color = static_cast<char>(LobbyTextColor::Revert);
 
@@ -467,6 +500,11 @@ ui::Group* GluOptions::make_misc_tab() {
 
     options_label(tab, cursor, "Launch Settings");
     linked_checkbox(tab, cursor, "Suppress Windows Key", m_config.suppress_windows_key);
+    cursor.pad_vertical();
+
+    options_label(tab, cursor, "Localization");
+    linked_language(tab, cursor, "Language", m_config.language, m_languages)
+        ->tooltip("Currently applies in-game only");
     cursor.pad_vertical();
 
     options_label(tab, cursor, "Audiovisuals");

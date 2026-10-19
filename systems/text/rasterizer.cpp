@@ -59,8 +59,56 @@ GlyphBitmap rasterize_glyph(FontFace& face, u32 pixel_height, u32 glyph_index) {
         return bitmap;
     }
     const FT_Bitmap& source = ft->glyph->bitmap;
-    if (source.pixel_mode != FT_PIXEL_MODE_GRAY || !source.buffer) {
+    if (!source.buffer || !source.width || !source.rows) {
         return bitmap;
+    }
+
+    std::vector<u8> normalized;
+    const u8* gray = source.buffer;
+    size_t gray_pitch = (size_t)source.pitch;
+    switch (source.pixel_mode) {
+        case FT_PIXEL_MODE_GRAY:
+            break;
+        case FT_PIXEL_MODE_MONO: {
+            normalized.resize(size_t(source.width) * source.rows);
+            for (u32 y = 0; y < source.rows; ++y) {
+                const u8* src = source.buffer + y * source.pitch;
+                u8* dst = normalized.data() + size_t(y) * source.width;
+                for (u32 x = 0; x < source.width; ++x) {
+                    dst[x] = (src[x / 8] & (0x80 >> (x % 8))) ? 255 : 0;
+                }
+            }
+            gray = normalized.data();
+            gray_pitch = source.width;
+        } break;
+        case FT_PIXEL_MODE_GRAY2: {
+            normalized.resize(size_t(source.width) * source.rows);
+            for (u32 y = 0; y < source.rows; ++y) {
+                const u8* src = source.buffer + y * source.pitch;
+                u8* dst = normalized.data() + size_t(y) * source.width;
+                for (u32 x = 0; x < source.width; ++x) {
+                    const u32 value = (src[x / 4] >> (6 - 2 * (x % 4))) & 0x3;
+                    dst[x] = u8(value * 85);
+                }
+            }
+            gray = normalized.data();
+            gray_pitch = source.width;
+        } break;
+        case FT_PIXEL_MODE_GRAY4: {
+            normalized.resize(size_t(source.width) * source.rows);
+            for (u32 y = 0; y < source.rows; ++y) {
+                const u8* src = source.buffer + y * source.pitch;
+                u8* dst = normalized.data() + size_t(y) * source.width;
+                for (u32 x = 0; x < source.width; ++x) {
+                    const u32 value = (src[x / 2] >> (4 - 4 * (x % 2))) & 0xF;
+                    dst[x] = u8(value * 17);
+                }
+            }
+            gray = normalized.data();
+            gray_pitch = source.width;
+        } break;
+        default:
+            return bitmap;
     }
     bitmap.width = source.width;
     bitmap.height = source.rows;
@@ -76,7 +124,7 @@ GlyphBitmap rasterize_glyph(FontFace& face, u32 pixel_height, u32 glyph_index) {
         return coverage ? u8(4 - (coverage >> 6)) : 0;
     };
     for (u32 y = 0; y < source.rows; ++y) {
-        const auto row = std::span{source.buffer + y * source.pitch, source.width};
+        const auto row = std::span{gray + y * gray_pitch, source.width};
         const auto destination = std::span{bitmap.pixels}.subspan(y * source.width, source.width);
         std::ranges::transform(row, destination.begin(), quantize);
     }

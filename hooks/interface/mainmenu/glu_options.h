@@ -2,6 +2,7 @@
 #include "systems/ui/widgets.h"
 #include "hooks/race_randomization.h"
 #include "config.h"
+#include "systems/locale/locale.h"
 #include "storm/smem.hpp"
 #include "systems/triggers/trigger_system.h" // For Advisor
 
@@ -49,6 +50,7 @@ private:
 
     ui::Group* m_active_tab;
     Config m_config;
+    locale::LanguageList m_languages;
     Options m_options;
     bool m_committed = false;
 };
