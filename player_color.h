@@ -622,6 +622,8 @@ static u8 g_tunit_colors[UnitColorCount];
 
 // Font-ramp slot the player-colored font handle points at (glucustom.cpp get_color_handle).
 constexpr u8 PlayerFontSlot = 38;
+// Rows in g_player_in_game_colors: players 1-8 plus the 9-12 payload extension.
+constexpr u8 PlayerColorRows = 12;
 
 struct PlayerData {
 	bool has_custom_color[PlayerLimit];
@@ -643,7 +645,8 @@ const char* get_random_easter_egg_unit_name(u16 unit_id);
 u8 get_player_color_index(u32 player, u32 index);
 bool set_player_color(u32 player, PlayerColor color);
 u8 player_font_ramp_row(u8 payload);
-void set_player_font_ramp(u8 row);
+void set_player_font_ramp(u8 row, u8 ramp_slot = PlayerFontSlot);
+void back_up_player_ramp();
 void init_player_data();
 void load_player_colors();
 bool any_player_can_randomize_color();

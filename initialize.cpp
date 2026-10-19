@@ -659,9 +659,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     memory_patch(0x0048D2F9, (u32)0x66C10900);//OR ECX,EAX;
     memory_patch(0x0048D2FD, (u32)0xEBFC4D89);//MOV [EBP - 4], CX; JMP...
     memory_patch(0x0048D301, (u8)0x73);//...0x0048D376;
-    // DisplayTextMessage (0x0048CD30)
-    memory_patch(0x0048CDC0, (u8)0x8B);//change AL to EAX
-    call_patch(hooks::set_display_text_color, 0x0048CDC3, 1);
     // off_48D478
     memory_patch(0x0048D478, (u32)0x0B0F1708);
 

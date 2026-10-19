@@ -3,15 +3,9 @@
 
 namespace hooks {
 
-// Screen text band layout, shared by the draw pass below and by expire_text_line's
-// refresh marking (grid.cpp) so the blits and their dirty bounds cannot drift apart.
-// Mixed anchoring: the log and top-right bands stay in legacy 640x480 space while the
-// center band follows the surface (vanilla drew them at y=112 and y=295 per 0048CF60).
-// Every blit's clip band starts at its top and extends down by g_text_area_y,
-// so only the left, top and right of each band are pinned here.
 constexpr s32 MessageLogLeft = 10;
 constexpr s32 MessageLogTop = 250;
-constexpr s32 MessageLogRight = 630;
+constexpr s32 MessageLogRight = display::SurfaceWidth / 2;
 
 constexpr s32 DisplayCenter = display::SurfaceWidth / 2;
 constexpr s32 CenterTextLeft = DisplayCenter - 200;
@@ -30,6 +24,9 @@ constexpr u32 TextSlotSize = 218;
 constexpr u32 MessageLogSlotCount = 11;
 constexpr u32 TopRightTextSlot = 11;  // Never populated by vanilla
 constexpr u32 CenterTextSlot = 12;    // Aliases draw_out_text_left
+
+// 0048CD30 reimplemented to use new word-wrap color logic
+void display_text_message(const char* text, u16 packed_color, u32 ticks, u8 from_trigger);
 
 // 0048CE90, jump-patched. Runs once at game start and sizes the message log around the
 // current font: each line's clip band is the font height plus line spacing, and the

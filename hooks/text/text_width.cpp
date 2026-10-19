@@ -2,7 +2,6 @@
 
 #include "BW/bwdata.h"
 #include "BW/structures.h"
-#include "hooks/interface/mainmenu/glucustom.h"
 #include "systems/text/measure.h"
 #include "systems/text/text.h"
 #include "systems/text/walk.h"
@@ -41,21 +40,11 @@ s32 collect_glyph_spans(const text::PrintFont& font, const u8* text, GlyphSpan* 
 }
 
 const u8* __stdcall font_find_line_break_impl(const u8* text) {
-    static u16 carry = 0;
-    static const u8* previous_break = nullptr;
-    if (text != previous_break) {
-        carry = 0;
-    }
-    g_split_slot_color = carry;
     const text::PrintFont font = current_print_font();
     const s32 start = g_current_text_x;
     const text::LineBreak line = text::find_line_break(font, text, text + strlen((const char*)text),
         start, g_draw_text.left, g_draw_text.right, g_word_wrap_mode != 0);
     g_current_text_x = start + line.width;
-    if (line.break_at != text) {
-        previous_break = line.break_at;
-        carry = line.carry_color ? line.carry_color : carry;
-    }
     return line.break_at;
 }
 

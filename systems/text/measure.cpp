@@ -14,12 +14,10 @@ s32 line_width(u8 slot, std::string_view text, s32 x_start, s32 x_origin) {
 
 s32 line_width(const PrintFont& font, std::string_view text, s32 x_start, s32 x_origin) {
     const u8* start = (const u8*)text.data();
-    const u8* end = start + text.size();
-    const u8* cursor = start;
     const auto sink = [](const Atom&) {
         return true;
     };
-    const WalkSummary summary = walk_line({font, start, x_start, x_origin}, cursor, end, sink);
+    const WalkSummary summary = walk_line({font, start, x_start, x_origin}, start, start + text.size(), sink);
     return summary.x - x_start;
 }
 

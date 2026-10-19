@@ -944,13 +944,15 @@ BW_REF(const u8,				g_sound_disabled,		0x006D11D0);
 
 // Message-log console layout, sized at game start by init_screen_text_layout (0048CE90,
 // reimplemented in hooks/display/screen_text.cpp) and read when drawing and marking refresh bounds.
-BW_REF(u16,					g_text_area_y,			0x0064096C);
-BW_REF(u16,					g_text_line_height,		0x00640B20);
-BW_REF(u8,						g_text_line_first,		0x00640B58);
+BW_REF(u16,                     g_text_area_y,      0x0064096C);
+BW_REF(u16,                     g_text_line_height, 0x00640B20);
+BW_REF(u8,                      g_text_line_first,  0x00640B58);
 
 // Screen text slot buffers drawn by 0048CF60, 0xDA bytes each. Slots 0-10 form the scrolling
 // message ring, 11 is a top-right line vanilla never populates, and 12 is draw_out_text_left.
-BW_ARRAY(char, 13 * 0xDA,		g_text_slot_buffers,	0x00640B60);
+BW_ARRAY(char, 13 * 0xDA,       g_text_slot_buffers,        0x00640B60);
+BW_ARRAY(u32, 13,               g_text_slot_timers,         0x00640B24);
+BW_ARRAY(u8, 13,                g_text_slot_from_trigger,   0x00641684);
 
 // GRP blitter destination bounds (0040AAE0 targets scratch buffer; screen blitters target screen).
 BW_REF(u8*,						g_overlay_end,			0x0050CED9);
