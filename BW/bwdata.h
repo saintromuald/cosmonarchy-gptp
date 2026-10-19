@@ -231,16 +231,6 @@ BW_REF(u32,         g_provider_turns_in_transit,0x0057F090);
 BW_DATA(u32*,		g_command_queue_size,		0x00654AA0);
 BW_DATA(char*,		g_turn_buffer,				0x00654880);
 
-// For reset_tooltip_info, set_tooltip_info, set_tooltip_info_unit_case5, etc
-BW_DATA(u16*,		tooltip_ore_cost,			0x0068C1D0);
-BW_DATA(u16*,		tooltip_gas_cost,			0x0068C1D2);
-BW_DATA(u16*,		tooltip_energy_cost,		0x0068C1D4); // Used to be Protoss energy
-BW_DATA(u16*,		tooltip_unused_cost,		0x0068C1D6); // Used to be Terran energy
-BW_DATA(u16*,		tooltip_time_cost,			0x0068C1D8); // Used to be Zerg energy
-BW_DATA(u16*,		tooltip_p_supply_cost,		0x0068C1DA);
-BW_DATA(u16*,		tooltip_t_supply_cost,		0x0068C1DC);
-BW_DATA(u16*,		tooltip_z_supply_cost,		0x0068C1DE);
-
 // Added from BWAPI Offsets.h
 BW_DATA(char*,		  g_current_map_filename, 0x0057FD3C);
 BW_DATA(char*,		  g_current_map_name,	  0x0057FE40);
@@ -383,8 +373,6 @@ BW_REF(u32,			g_place_building_message_id,	0x00640958);
 // For targeted_order
 BW_REF(u32,				g_order_count,				0x00641698);
 
-// For create_upgrade_level_tooltip
-BW_REF(u16,				g_upgrade_level_tooltip,	0x0068C1CC);
 BW_REF(StringTbl,		g_stat_txt_buffer,			0x006D1238);
 
 struct BufferStr {
@@ -935,6 +923,7 @@ BW_DATA(graphics::Font**,		font_base,				0x006CE0F4);
 BW_DATA(graphics::Bitmap*,		g_game_screen_buffer,	0x006CEFF0);
 //BW_DATA(u8*,					g_refresh_regions,		0x006CEFF8); // replaced by g_dirty_cell_grids.surface (16px heap grid)
 BW_REF(Layers,					g_screen_layers,		0x006CEF50);
+BW_REF(b32,						g_game_tooltip_visible,	0x00655C48);	// Read by the F10 button hover handlers (004F5070, 004F50F0)
 BW_REF(u32,						g_graphics_ready,		0x006D5DF8);	// set once init has completed
 // Storm region for dialog repaints; created by 0041C200, freed/nulled by 0041CA00 (null = none pending).
 BW_REF(u32,						g_dialog_refresh_region,	0x006D5E2C);
@@ -1121,7 +1110,6 @@ BW_DATA(u32*,			g_map_creep_width,						0x006D0F08);
 BW_DATA(u32*,			g_dying_unit_creep_disappearance_count, 0x00658AE4);
 BW_DATA(u32**,			g_current_tiles,						0x006D0E84);
 
-// For draw_tooltip_with_icon
 BW_DATA(char*,			grp_stat_res_icon_mapping,		0x00515228); // sizeof 8
 BW_REF(GrpHead*,        g_icons_grp,                    0x0068C238);
 

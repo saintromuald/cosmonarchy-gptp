@@ -356,7 +356,7 @@ namespace hooks {
                     armor_pen += bullet_ext->distance_traveled / 32;
                 }
             }
-            s32 armor_total = (hooks::get_armor_internal(data.target) - armor_pen);
+            s32 armor_total = (get_armor(data.target) - armor_pen);
 
             u32 fore_castle_factor = bw::get_fore_castle_armor_bonus(data.target);
             if (fore_castle_factor) {
@@ -876,7 +876,7 @@ namespace hooks {
                 case WeaponId::OlympianMountainGun:
                 case WeaponId::OlympianTitansFist: {
                     if (!data.target->is_building() && bw::unit_is_exposed_to(data.target, data.attacker->position)) {
-                        s32 bonus_damage = hooks::get_modified_armor_pen(data.attacker, data.target, data.weapon_id) + data.bonus_armor_pen - hooks::get_armor_internal(data.target);
+                        s32 bonus_damage = hooks::get_modified_armor_pen(data.attacker, data.target, data.weapon_id) + data.bonus_armor_pen - get_armor(data.target);
                         if (bonus_damage > 0) {
                             auto& target_ext = data.target->ext();
                             if (!target_ext.timers[TimerOlympianMythicalMightSFX]) {
@@ -1155,7 +1155,7 @@ namespace hooks {
                             attacker_ext.timers[TimerPowerOverloadBuff] = Askosi::PowerOverloadTimer;
                             target_ext.timers[TimerPowerOverloadDebuff] = Askosi::PowerOverloadTimer;
                         }
-                        if (hooks::get_armor_internal(data.target) > 0) {
+                        if (get_armor(data.target) > 0) {
                             attacker_ext.timers[TimerPowerOverloadBuff] = Askosi::PowerOverloadTimer;
                             target_ext.timers[TimerPowerOverloadDebuff] = Askosi::PowerOverloadTimer;
                             if (attacker_ext.values[ValuePowerOverloadBuffStacks] < Askosi::PowerOverloadCap) {

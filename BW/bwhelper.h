@@ -109,7 +109,6 @@ namespace helper {
     BW_FUNC(0x00456ef0, void __cdecl,   unload_statdata_bar);   // destroys statdata dialog + progressbar buffers
     BW_FUNC(0x00458cf0, void __cdecl,   unload_buttonset);      // destroys buttonset dialog + cmdbtns.grp + cmdicons.grp
     BW_FUNC(0x0045e710, void __cdecl,   unload_statport);       // stops portrait video, destroys portrait dialog, frees portdata
-    BW_FUNC(0x00481480, void __cdecl,   reset_status_screen_area); // bw_refresh + reset status area to full-screen
     BW_FUNC(0x00456b40, void __fastcall, statdata_bar_update, BinDlg* dialog, DialogEvent* event);
     BW_FUNC(0x00458730, void __fastcall, cmdbuttons_bar_update, BinDlg* dialog, DialogEvent* event);
     BW_FUNC(0x00459B00, u32 __fastcall, statbtn_dlgproc, BinDlg* dialog, DialogEvent* dlg_event);
@@ -707,6 +706,7 @@ namespace helper {
     
     void update_dialog(bw::Dialog* dialog);                                                                                         // 0041C400
     inline void update_dialog(BinDlg* dialog) { update_dialog(dialog->to_dialog()); }
+    void dialog_set_focus(bw::Dialog* dialog);                                                                                      // 00418830
 
     //// bunker_hooks
     Unit* find_random_attack_target(Unit* unit);																					// 00442FC0
@@ -1045,9 +1045,6 @@ namespace helper {
     bool is_unit_target_out_of_max_range(Unit* unit, Unit* target);											// 00476430
     void move_for_melee_range(Unit* target, Unit* unit);													// 00477F10
 
-    // For create_upgrade_level_tooltip
-    s16 create_tooltip(char* text);																			// 004591A6
-    char refresh_selection_screen();																		// 00481480
 
     // lobby.cpp
     
@@ -1412,7 +1409,6 @@ namespace helper {
 
     void refresh_all_visible_images_at_screen_position(Sprite* sprite, u8 vision_filter);					// 00497480
 
-    void set_tooltip_info(u32 mineral_cost, u32 vespene_cost, u32 p_energy, u32 t_energy, u32 z_energy, u32 p_supply, u32 t_supply, u16 z_supply); // 00458800
 
     void bw_print_icon(Bounds* bounds, FxnDrawIconData* data, int pos_x, int pos_y);						// 0041D090
     void bw_print_xy(const char* text, s32 pos_x, s32 pos_y);												// 004202B0
@@ -1922,8 +1918,6 @@ namespace helper {
     bool unit_is_clean_detector(Unit* unit);									// 00403430
     char* get_unit_rank_string(Unit* unit);										// 0042F370
     u32 get_upgrade_time_cost(u32 player, u8 upgrade_id);						// 00453F70
-    void create_context_help_from_dialog(BinDlg* dialog, const char* text);		// 00481510
-    u16 create_context_tooltip(s32 x, s32 y, char* text);						// 00481510
     void parse_unit_dat_requirements();											// 0046E100
 
     s32 confirm_building_placeability(Unit* builder, u16 unit_id, u8 player, u16 tile_x, u32 tile_y); // 00473EF0
@@ -1946,11 +1940,6 @@ namespace helper {
     void orders_init_psi_provider(Unit* unit);                                                      // 00493F70
     s8 remove_selection_circle_and_hp_bar(Sprite* sprite);                                          // 00497620
     void hide_all_psi_fields();                                                                     // 00494100
-    void draw_cancel_unit_context(BinDlg* dialog);                                                  // 00457B10
-    void statdata_user_interact(u32 dialog_index, BinDlg* dialog);                                  // 004576A0
-    void draw_cancel_upgrade_context(BinDlg* dialog);                                               // 004575A0
-    void create_context_from_dialog(BinDlg* dialog, const char* text);                              // 00457350
-    void draw_unload_unit_context(BinDlg* dialog);                                                  // 00457C20
     void do_melee_town_region_fixups(s32 pos_x, s32 pos_y, u32 player, u32 some_type);              // 00445AA0
     void ai_make_chokepoint_region_state_4(u32 player, s32 pos_x, s32 pos_y);                       // 0043A8F0
     void ai_delete_guard_needs(u32 player);                                                         // 004626E0

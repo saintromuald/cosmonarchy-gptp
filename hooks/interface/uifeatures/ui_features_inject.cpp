@@ -68,21 +68,6 @@ namespace {
         }
     }
 
-    void __declspec(naked) create_upgrade_level_tooltip_wrapper() {
-        static char result;
-        static char* text;
-        __asm {
-            MOV text, ECX
-            PUSHAD
-        }
-        result = hooks::create_upgrade_level_tooltip(text);
-        __asm {
-            POPAD
-            MOVZX EAX, result
-            RETN
-        }
-    }
-
     void __declspec(naked) trigact_transmission_wrapper() { // 004C7890
         static b32 result;
         static TriggerAction* trigger;
@@ -379,15 +364,13 @@ namespace {
 
     void __declspec(naked) draw_game_menu_context_wrapper() { // 004F4F70
         static BinDlg* dialog;
-        static u16 result;
         __asm {
             MOV dialog, EDX
             PUSHAD
         }
-        result = hooks::draw_game_menu_context(dialog);
+        hooks::draw_game_menu_context(dialog);
         __asm {
             POPAD
-            MOVZX EAX, result
             RETN
         }
     }
@@ -414,19 +397,6 @@ namespace {
             PUSHAD
         }
         hooks::draw_show_hide_terrain_context(dialog);
-        __asm {
-            POPAD
-            RETN
-        }
-    }
-
-    void __declspec(naked) draw_cancel_unit_context_wrapper() { // 00457B10
-        static BinDlg* dialog;
-        __asm {
-            MOV dialog, EBX
-            PUSHAD
-        }
-        hooks::draw_cancel_unit_context(dialog);
         __asm {
             POPAD
             RETN
@@ -639,7 +609,6 @@ namespace hooks {
     //	jump_patch(select_units_wrapper,					            0x0046FA00, 1);
         jump_patch(queue_game_command_wrapper,			0x00485BD0, 4);
         jump_patch(check_hotkey_char_wrapper,				0x004588C0, 3);
-    //	jump_patch(create_upgrade_level_tooltip_wrapper,	            0x00459150, 3);
     	jump_patch(trigact_transmission_wrapper,			0x004C7890, 0);
         jump_patch(draw_minimap_unit_box_wrapper,			0x004A4650, 4);
         jump_patch(draw_all_minimap_boxes_wrapper,		0x004A4AC0, 0);
@@ -669,7 +638,7 @@ namespace hooks {
         jump_patch(draw_game_menu_context_wrapper,		   0x004F4F70, 1);
         jump_patch(get_stat_txt_string_wrapper,			   0x004C36F0, 1);
         jump_patch(draw_show_hide_terrain_context_wrapper, 0x004A4C40, 0);
-        jump_patch(draw_cancel_unit_context_wrapper,	   0x00457B10, 4);
+        jump_patch(show_minimap_button_tooltip,             0x004A5110, 0);
         jump_patch(statdata_mouseover_interact_wrapper,    0x00457CE0, 1);
         jump_patch(move_screen_to_unit_wrapper,            0x004E6020, 3);
         jump_patch(get_color_id_wrapper,                   0x0049B0E0, 2);

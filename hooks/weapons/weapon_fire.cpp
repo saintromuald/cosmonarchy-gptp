@@ -1008,7 +1008,7 @@ namespace hooks {
             auto bullet_ext = get_bullet_ext(bullet);
             bool stops_on_armor = weapon_id_piercing_stops_on_armor(bullet_ext->weapon_id);
             if (stops_on_armor) {
-                u32 armor = hooks::get_armor_internal(target.unit);
+                u32 armor = get_armor(target.unit);
                 u32 armor_pen = hooks::get_modified_armor_pen(bullet->source_unit, target.unit, bullet_ext->weapon_id);
                 if (armor >= armor_pen) {
                     bullet->attack_target.pt = target.cp;

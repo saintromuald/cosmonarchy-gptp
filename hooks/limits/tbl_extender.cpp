@@ -220,105 +220,6 @@ void inject_tbl_extender() {
     memory_patch(0x00455C3F, lea_ecx_eax1);
     call_patch(get_string, 0x00455C42, 8);
      
-    // drawCancelUpgradeContextHelp @ 4575A0
-    memory_patch(0x004575BE, mov_ecx);
-    memory_patch(0x004575BF, (u32)805);
-    call_patch(get_string, 0x004575C3, 11);
-    memory_patch(0x004575FC, mov_ecx);
-    memory_patch(0x004575FD, (u32)806);
-    call_patch(get_string, 0x00457601, 11);
-    memory_patch(0x0045762E, (u8)0x48);//Change EDX to ECX
-    memory_patch(0x00457636, (u8)0x41);//INC ECX
-    call_patch(get_string, 0x00457637, 4);
-     
-    // statdata_user_interact @ 4576A0
-    memory_patch(0x004576EC, mov_ecx);
-    memory_patch(0x004576ED, (u32)777);
-    call_patch(get_string, 0x004576F1);
-    memory_patch(0x004576F6, mov_edi_eax);
-    nop_patch(0x004576F8, 6);
-    memory_patch(0x00457739, mov_ecx);
-    memory_patch(0x0045773A, (u32)1301);
-    call_patch(get_string, 0x0045773E);
-    memory_patch(0x00457743, mov_ecx_eax);
-    nop_patch(0x00457745, 9);
-    memory_patch(0x00457759, mov_ecx);
-    memory_patch(0x0045775A, (u32)1301);
-    call_patch(get_string, 0x0045775E);
-    memory_patch(0x00457763, mov_edi_eax);
-    memory_patch(0x004577B1, mov_ecx);
-    memory_patch(0x004577B2, (u32)1301);
-    call_patch(get_string, 0x004577B6, 11);
-    memory_patch(0x004577D1, mov_ecx);
-    memory_patch(0x004577D2, (u32)777);
-    call_patch(get_string, 0x004577D6);
-    memory_patch(0x004577DB, mov_edi_eax);
-    memory_patch(0x00457834, mov_ecx);
-    memory_patch(0x00457835, (u32)778);
-    call_patch(get_string, 0x00457839);
-    memory_patch(0x0045783E, mov_ecx_eax);
-    nop_patch(0x00457840, 6);
-    memory_patch(0x00457899, mov_edx);
-    memory_patch(0x0045789A, (u32)779);
-    call_patch(get_string_edx, 0x0045789E, 8);
-    memory_patch(0x0045792E, mov_ecx);
-    memory_patch(0x0045792F, (u32)777);
-    call_patch(get_string, 0x00457933);
-    memory_patch(0x00457938, mov_ebx_eax);
-    nop_patch(0x0045793A, 9);
-    memory_patch(0x0045794E, mov_ecx);
-    memory_patch(0x0045794F, (u32)791);
-    call_patch(get_string, 0x00457953);
-    memory_patch(0x00457958, mov_edi_eax);
-    memory_patch(0x0045798D, mov_ecx);
-    memory_patch(0x0045798E, (u32)777);
-    call_patch(get_string, 0x00457992);
-    memory_patch(0x00457997, mov_ebx_eax);
-    nop_patch(0x00457999, 9);
-    memory_patch(0x004579AD, mov_ecx);
-    memory_patch(0x004579AE, (u32)792);
-    call_patch(get_string, 0x004579B2);
-    memory_patch(0x004579B7, mov_edi_eax);
-    memory_patch(0x004579D0, mov_ecx);
-    memory_patch(0x004579D1, (u32)793);
-    call_patch(get_string, 0x004579D5);
-    memory_patch(0x004579DA, mov_ecx_eax);
-    nop_patch(0x004579DC, 6);
-    memory_patch(0x00457A25, mov_ecx);
-    memory_patch(0x00457A26, (u32)777);
-    call_patch(get_string, 0x00457A2A);
-    memory_patch(0x00457A2F, mov_ebx_eax);
-    nop_patch(0x00457A31, 9);
-    memory_patch(0x00457A45, mov_ecx);
-    memory_patch(0x00457A46, (u32)794);
-    call_patch(get_string, 0x00457A4A);
-    memory_patch(0x00457A4F, mov_edi_eax);
-     
-    // drawCancelUnitContextHelp @ 457B10
-    memory_patch(0x00457BAB, lea_ecx_eax1);
-    call_patch(get_string, 0x00457BAE);
-    memory_patch(0x00457BB3, mov_esi_eax);
-    nop_patch(0x00457BB5, 6);
-     
-    // drawUnloadUnitContextHelp @ 457C20
-    memory_patch(0x00457C29, mov_ecx);
-    memory_patch(0x00457C2A, (u32)808);
-    call_patch(get_string, 0x00457C2E);
-    memory_patch(0x00457C38, mov_esi_eax);
-    nop_patch(0x00457C3A, 5);
-     
-    // statdataMouseOverInteract @ 457CE0 //Handled by selection extender jump_patch @ 457D87
-    /*
-    memory_patch(0x00457D81, mov_ecx);
-    memory_patch(0x00457D82, (u32)809);
-    call_patch(get_string, 0x00457D86, 8);
-    */
-     
-    // create_upgrade_level_tooltip @ 459150
-    memory_patch(0x0045916A, mov_edx);
-    memory_patch(0x0045916B, (u32)795);
-    call_patch(get_string_edx, 0x0045916F, 8);
-     
     // orders_PlaceScanner @ 464E40
     memory_patch(0x00464EAB, lea_ecx_eax1);
     call_patch(get_string, 0x00464EAE, 8);
@@ -385,25 +286,6 @@ void inject_tbl_extender() {
     // orders_Recall @ 494470
     memory_patch(0x0049456D, lea_ecx_eax1);
     call_patch(get_string, 0x00494570, 8);
-     
-    // drawShowHideTerrainContextHelp @ 4A4C40
-    memory_patch(0x004A4C50, mov_edx);
-    memory_patch(0x004A4C51, (u32)810);
-    call_patch(get_string_edx, 0x004A4C55, 2);
-    memory_patch(0x004A4C67, mov_edx);
-    memory_patch(0x004A4C68, (u32)811);
-    call_patch(get_string_edx, 0x004A4C6C, 6);
-     
-    // drawStatLBBtnsContextHelp @ 4A5110
-    memory_patch(0x004A5139, mov_edx);
-    memory_patch(0x004A513A, (u32)1540);
-    call_patch(get_string_edx, 0x004A513E, 2);
-    memory_patch(0x004A5150, mov_edx);
-    memory_patch(0x004A5151, (u32)812);
-    call_patch(get_string_edx, 0x004A5155, 6);
-    memory_patch(0x004A5182, mov_edx);
-    memory_patch(0x004A5183, (u32)1540);
-    call_patch(get_string_edx, 0x004A5187, 8);
      
     // get_stat_txt_string @ 4C36F0
     jump_patch(get_string, 0x004C36F0, 1);

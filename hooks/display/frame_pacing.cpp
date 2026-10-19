@@ -3,6 +3,7 @@
 #include "perf_tracker.h"
 #include "../../BW/bwhelper.h"
 #include "../../config.h"
+#include "../../systems/ui/tooltip.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -133,6 +134,10 @@ void __cdecl game_loop_top() {
         }
 
         helper::update_hud_info();
+
+        if (ui::g_game_tooltips) {
+            ui::g_game_tooltips->tick(now_ms);
+        }
 
         const u32 now_us = monotonic_us();
         if (should_present(tick_present, world_changed, now_us)) {

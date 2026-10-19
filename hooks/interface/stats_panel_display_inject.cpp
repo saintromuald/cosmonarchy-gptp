@@ -156,156 +156,6 @@ namespace {
         }
     }
 
-    void __declspec(naked) set_tooltip_info_unit_case1_wrapper() { // 004594B0
-        static const u32 jmp_address = 0x00459635;
-        static u32 unit_id;
-        __asm {
-            MOV unit_id, EDI
-            PUSHAD
-        }
-        hooks::set_tooltip_info_unit(unit_id);
-        __asm {
-            POPAD
-            JMP jmp_address
-        }
-    }
-
-    void __declspec(naked) set_tooltip_info_unit_case5_wrapper() { // 0045952F
-        static const u32 jmp_address = 0x00459635;
-        static u32 unit_id;
-        __asm {
-            MOV unit_id, EAX
-            PUSHAD
-        }
-        hooks::set_tooltip_info_unit(unit_id);
-        __asm {
-            POPAD
-            JMP jmp_address
-        }
-    }
-
-    void __declspec(naked) reset_tooltip_info_wrapper_1() { // 00459360
-        __asm {
-            PUSHAD
-        }
-        hooks::reset_tooltip_info();
-        __asm {
-            POPAD
-            RETN
-        }
-    }
-
-    void __declspec(naked) reset_tooltip_info_wrapper_2() { // 004593B0
-        static const u32 jmp_address = 0x004593ED;
-        __asm {
-            PUSHAD
-        }
-        hooks::reset_tooltip_info();
-        __asm {
-            POPAD
-            JMP jmp_address
-        }
-    }
-
-    void __declspec(naked) reset_tooltip_info_wrapper_3() { // 004597D5
-        static const u32 jmp_address = 0x00459819;
-        __asm {
-            PUSHAD
-        }
-        hooks::reset_tooltip_info();
-        __asm {
-            POPAD
-            JMP jmp_address
-        }
-    }
-
-    void __declspec(naked) set_tooltip_info_wrapper() { // 00458800
-        static u16 mineral_cost;
-        static u16 vespene_cost;
-        static u16 p_energy;
-        static u16 t_energy;
-        static u16 z_energy;
-        static u16 p_supply;
-        static u16 t_supply;
-        static u16 z_supply;
-        __asm {
-            PUSH EBP
-            MOV EBP, ESP
-            PUSH EAX
-            MOV EAX, [EBP + 0x08]
-            MOV t_energy, AX
-            MOV EAX, [EBP + 0x0C]
-            MOV z_energy, AX
-            MOV EAX, [EBP + 0x10]
-            MOV p_supply, AX
-            MOV EAX, [EBP + 0x14]
-            MOV t_supply, AX
-            MOV EAX, [EBP + 0x18]
-            MOV z_supply, AX
-            POP EAX
-            MOV mineral_cost, AX
-            MOV vespene_cost, CX
-            MOV p_energy, DX
-            PUSHAD
-        }
-        hooks::set_tooltip_info(mineral_cost, vespene_cost, p_energy, t_energy, z_energy, p_supply, t_supply, z_supply);
-        __asm {
-            POPAD
-            MOV ESP, EBP
-            POP EBP
-            RETN 0x14
-        }
-    }
-
-    void __declspec(naked) draw_tooltip_with_icon_wrapper() { // 00458EF0
-        static Box16* area;
-        __asm {
-            PUSH EBP
-            MOV EBP, ESP
-            PUSH EAX
-            MOV EAX, [EBP + 0x08]
-            MOV area, EAX
-            POP EAX
-            PUSHAD
-        }
-        hooks::draw_tooltip_with_icon(area);
-        __asm {
-            POPAD
-            MOV ESP, EBP
-            POP EBP
-            RETN 0x4
-        }
-    }
-
-    static void draw_tooltip_with_icon_partial(u32 index, char* buffer, u32 value) {
-        if (index == 5) {
-            sprintf_s(buffer, 16, "%ds", value);
-        } else {
-            sprintf_s(buffer, 16, "%d", value);
-        }
-    }
-
-    void __declspec(naked) draw_tooltip_with_icon_partial_wrapper() { // 00458FB2
-        static const u32 jmp_address = 0x00458FC5;
-        static u32 index;
-        static char* buffer;
-        static u32 value;
-        __asm {
-            MOV index, ESI
-            PUSH EAX
-            LEA EAX, [EBP-0x2C] // This is wrong
-            MOV buffer, EAX
-            POP EAX
-            MOV value, EDX
-            PUSHAD
-        }
-        draw_tooltip_with_icon_partial(index, buffer, value);
-        __asm {
-            POPAD
-            JMP jmp_address
-        }
-    }
-
     void __declspec(naked) stat_data_unit_wireframe_selection_wrapper() { // 004583E0
         static u32 result;
         static BinDlg* dialog;
@@ -632,14 +482,6 @@ namespace hooks {
         jump_patch(stats_weapon_level_wrapper,				0x00425790, 1);
         jump_patch(stats_shield_level_wrapper,				0x00425510, 1);
         jump_patch(stats_spidermine_count_wrapper,			0x00426300, 0);
-        jump_patch(set_tooltip_info_unit_case1_wrapper,		0x004594B0, 2);
-        jump_patch(set_tooltip_info_unit_case5_wrapper,		0x0045952F, 4);
-        jump_patch(reset_tooltip_info_wrapper_1,				0x00459360, 0);
-        jump_patch(reset_tooltip_info_wrapper_2,				0x004593B0, 0);
-        jump_patch(reset_tooltip_info_wrapper_3,				0x004597D5, 0);
-        jump_patch(set_tooltip_info_wrapper,					0x00458800, 4);
-
-        call_patch(draw_tooltip_with_icon, 0x004590f6);
     //	jump_patch(stat_data_unit_wireframe_selection_wrapper,		        0x004583E0, 3); // Don't recall why this was disabled.
 
         jump_patch(get_last_queue_slot_id_wrapper,				0x0047B270, 2);
@@ -665,8 +507,6 @@ namespace hooks {
         // Disable player checks for progress bar functions
         nop_patch(0x0042690C, 2);
         nop_patch(0x00426918, 6);
-        
-    //	call_patch(draw_tooltip_with_icon_partial_wrapper,          0x00458FB2, 1); // Don't recall why this was disabled.
 
         // The following patches are to be retired when their respective functions are hooked.
         // Dynamic status icon sizing.

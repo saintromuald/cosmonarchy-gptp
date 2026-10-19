@@ -18,6 +18,7 @@
 #include "hooks/display/perf_tracker.h"
 #include "Game.h"
 #include "hooks/interface/weapon_armor_tooltip.h"
+#include "systems/ui/tooltip.h"
 #include "hooks/snp.h"
 #include "hooks/interface/mainmenu/custom_glues.h"
 #include "hooks/race_randomization.h"
@@ -26,6 +27,91 @@
 #include "systems/display/zoom.h"
 #include "systems/text/print.h"
 #include "CM/cm_ids.h"
+
+namespace {
+    // Minimap buttons and the F10 button show their tooltip above the button
+    void show_button_tooltip(const bw::Dialog& button, ui::TooltipSource::Kind kind, u16 string_id) {
+        const char* text = g_stat_txt_buffer.get_string32(string_id);
+        if (!ui::g_game_tooltips || !text) return;
+        const ui::TooltipAnchor anchor{
+            .rect = ui::control_screen_bounds(button),
+            .placement = ui::Placement::Above,
+            .gap = 0,
+        };
+        ui::g_game_tooltips->show({.kind = kind, .id = button.index}, anchor, ui::game_text_tooltip(text));
+    }
+
+    // Status panel controls show their tooltip to their right, aligned to their top
+    void show_stat_action_tooltip(const bw::Dialog& control, std::string text) {
+        if (!ui::g_game_tooltips) return;
+        const ui::TooltipAnchor anchor{
+            .rect = ui::control_screen_bounds(control),
+            .placement = ui::Placement::Right,
+            .gap = 0,
+        };
+        const ui::TooltipSource source{.kind = ui::TooltipSource::Kind::StatAction, .id = control.index};
+        ui::g_game_tooltips->show(source, anchor, ui::game_text_tooltip(std::move(text)));
+    }
+
+    // Production queue slots (dialog indices 2-6, 17)
+    void show_cancel_unit_tooltip(const bw::Dialog& dialog) {
+        const auto* user = static_cast<const StatusScreenState*>(dialog.user);
+        if (user->type != 3) {
+            ui::hide_game_tooltip();
+            return;
+        }
+        Unit* active_unit = *g_active_portrait_unit;
+        if ((unit_id_is_zerg_egg(active_unit->id)) && active_unit->is_frozen()) {
+            ui::hide_game_tooltip();
+            return;
+        }
+
+        std::string_view action;
+        if (bw::in_replay_or_witness() || active_unit->player != g_local_nation_id) {
+            switch (active_unit->get_race()) {
+                case RaceId::Terran:  action = "Deploying "; break;
+                case RaceId::Protoss: action = "Warping ";   break;
+                case RaceId::Zerg:    action = "Morphing ";  break;
+                case RaceId::Askosi:  action = "Raising ";   break;
+            }
+        } else {
+            switch (active_unit->get_race()) {
+                case RaceId::Terran:  action = "Cancel Deployment "; break;
+                case RaceId::Protoss: action = "Cancel Warp ";       break;
+                case RaceId::Zerg:    action = "Cancel Morph ";      break;
+                case RaceId::Askosi:  action = "Cancel Raising ";    break;
+            }
+        }
+        const char* name = helper::get_unit_name_stat_string(user->id);
+        show_stat_action_tooltip(dialog, std::format("{}({})", action, name ? name : ""));
+    }
+
+    // Research/upgrade progress (dialog index 15) - replaces 004575A0
+    // Currently unused since upgrades are disabled
+    void show_cancel_research_tooltip(const bw::Dialog& dialog) {
+        const auto* user = static_cast<const StatusScreenState*>(dialog.user);
+        u16 action_string;
+        u16 label;
+        switch (user->type) {
+            case 4: action_string = 806; label = techdata_dat::label[user->id];  break; // Cancel Research
+            case 5: action_string = 805; label = upgrades_dat::label[user->id];  break; // Cancel Upgrade
+            default: return;
+        }
+        const char* action = g_stat_txt_buffer.get_string32(action_string);
+        const char* name = label ? g_stat_txt_buffer.get_string32(label) : nullptr;
+        show_stat_action_tooltip(dialog, std::format("{}\n({})", action ? action : "", name ? name : ""));
+    }
+
+    // Transport cargo slots (dialog indices 18-32); replaces 00457C20
+    void show_unload_tooltip(const bw::Dialog& dialog) {
+        Unit* cargo = static_cast<Unit*>(dialog.user);
+        const char* format = g_stat_txt_buffer.get_string32(808); // Unload Unit (%s)
+        if (!cargo || !format) return;
+        char text[128];
+        sprintf_s(text, 128, format, reinterpret_cast<const char*>(helper::get_unit_name(cargo)));
+        show_stat_action_tooltip(dialog, text);
+    }
+} // namespace
 
 CmdBtnPalette g_new_cmdbtn_palette[tIconCount];
 
@@ -295,28 +381,6 @@ namespace hooks {
         }
 
         return hotkey == label[0];
-    }
-
-    char create_upgrade_level_tooltip(char* text) {
-        if (!g_upgrade_level_tooltip) {
-            if (text) {
-                return helper::create_tooltip(text);
-            }
-            return helper::refresh_selection_screen();
-        }
-        if (!text) {
-            return helper::refresh_selection_screen();
-        }
-        const char* description;
-        if (g_stat_txt_buffer.get_string_count32() > 794) {
-            description = (char*)g_stat_txt_buffer.get_string32(795);
-        } else {
-            description = "";
-        }
-        char buffer[128];
-        sprintf_s(buffer, 128, "%s\n%s %d", text, description, (s16)g_upgrade_level_tooltip);
-        bw::printf("%s", buffer);
-        return helper::create_tooltip(buffer);
     }
 
     // Hooked to improve functionality and to use in our own dialogue system. -Pr0nogo
@@ -1014,11 +1078,8 @@ namespace hooks {
         }
     }
 
-    // Hooked to make stat_txt.tbl a .txt. -Pr0nogo
-    u16 draw_game_menu_context(BinDlg* dialog) { // 004F4F70
-        return helper::create_context_tooltip(dialog->bounds.right + dialog->parent->bounds.left,
-            dialog->bounds.top + dialog->parent->bounds.top,
-            (char*)g_stat_txt_buffer.get_string32(814)); // Game Menu (F10)
+    void draw_game_menu_context(BinDlg* dialog) { // 004F4F70
+        show_button_tooltip(*dialog->to_dialog(), ui::TooltipSource::Kind::GameMenu, 814); // Game Menu (F10)
     }
 
     // Hooked to eventually turn stat_txt.tbl into a .txt. -Pr0nogo
@@ -1026,62 +1087,24 @@ namespace hooks {
         return (char*)g_stat_txt_buffer.get_string32(string_id);
     }
 
-    // Hooked to eventually turn stat_txt.tbl into a .txt. -Pr0nogo
     void draw_show_hide_terrain_context(BinDlg* dialog) { // 004A4C40
-        if (!g_hide_minimap_terrain) {
-            // string is 'Hide Terrain in Minimap'
-            helper::create_context_tooltip(dialog->bounds.right + dialog->parent->bounds.left, dialog->bounds.top + dialog->parent->bounds.top, (char*)g_stat_txt_buffer.get_string32(811));
-        } else {
-            // string is 'Show Terrain in Minimap'
-            helper::create_context_tooltip(dialog->bounds.right + dialog->parent->bounds.left, dialog->bounds.top + dialog->parent->bounds.top, (char*)g_stat_txt_buffer.get_string32(810));
-        }
+        // 811 is 'Hide Terrain', 810 is 'Show Terrain'
+        show_button_tooltip(*dialog->to_dialog(), ui::TooltipSource::Kind::Minimap, g_hide_minimap_terrain ? 810 : 811);
     }
 
-    // Hooked to eventually turn stat_txt.tbl into a .txt. -Pr0nogo
-    void draw_cancel_unit_context(BinDlg* dialog) { // 00457B10
-        const auto* user = dialog->stat_button_user;
-        if (user->type != 3) {
-            helper::refresh_selection_screen();
-            return;
+    void __fastcall show_minimap_button_tooltip(BinDlg* dialog) { // 004A5110
+        switch (dialog->index) {
+            case 2: draw_show_hide_terrain_context(dialog); break;
+            case 3: show_button_tooltip(*dialog->to_dialog(), ui::TooltipSource::Kind::Minimap, 1540); break; // View Players
+            case 4: show_button_tooltip(*dialog->to_dialog(), ui::TooltipSource::Kind::Minimap, g_is_in_replay ? 1540 : 812); break; // View players or Diplomacy
+            default: ui::hide_game_tooltip(); break;
         }
-        Unit* active_unit = *g_active_portrait_unit;
-        if ((unit_id_is_zerg_egg(active_unit->id)) && active_unit->is_frozen()) {
-            helper::refresh_selection_screen();
-            return;
-        }
-
-        const char* cancel_string = "(%s)";
-        if (bw::in_replay_or_witness() || active_unit->player != g_local_nation_id) {
-            switch (active_unit->get_race()) {
-                case RaceId::Terran:  cancel_string = "Deploying (%s)"; break;
-                case RaceId::Protoss: cancel_string = "Warping (%s)";   break;
-                case RaceId::Zerg:    cancel_string = "Morphing (%s)";  break;
-                case RaceId::Askosi:  cancel_string = "Raising (%s)";   break;
-            }
-        } else {
-            switch (active_unit->get_race()) {
-                case RaceId::Terran:  cancel_string = "Cancel Deployment (%s)"; break;
-                case RaceId::Protoss: cancel_string = "Cancel Warp (%s)";       break;
-                case RaceId::Zerg:    cancel_string = "Cancel Morph (%s)";      break;
-                case RaceId::Askosi:  cancel_string = "Cancel Raising (%s)";    break;
-            }
-        }
-        const char* name = helper::get_unit_name_stat_string(user->id);
-        char dest[128];
-        sprintf_s(dest, 128, cancel_string, name);
-        s32 bounds_top = 0;
-        s32 bounds_left = 0;
-        if (dialog->control_type != DialogControlType::DialogBoxDC) {
-            bounds_left = dialog->parent->bounds.left;
-            bounds_top = dialog->parent->bounds.top;
-        }
-        helper::create_context_tooltip(bounds_left + dialog->bounds.right, bounds_top + dialog->bounds.top, dest);
     }
 
     // Hooked to eventually turn stat_txt.tbl into a .txt. -Pr0nogo
     void statdata_mouseover_interact(BinDlg* main_dialog, BinDlg* secondary_dialog) { // 00457CE0
         if (!*g_active_portrait_unit || !main_dialog || secondary_dialog == main_dialog) {
-            helper::refresh_selection_screen();
+            ui::hide_game_tooltip();
             return;
         }
 
@@ -1094,26 +1117,26 @@ namespace hooks {
             case 5:
             case 6:
             case 17: {
-                helper::draw_cancel_unit_context(main_dialog);
+                show_cancel_unit_tooltip(*main_dialog->to_dialog());
             } break;
             case 9:
             case 10:
             case 11:
             case 12: {
-                bw::statdata_user_interact_internal(main_dialog);
+                show_stat_icon_tooltip(main_dialog->to_dialog());
             } break;
             case 15: {
-                helper::draw_cancel_upgrade_context(main_dialog);
+                show_cancel_research_tooltip(*main_dialog->to_dialog());
             } break;
             default: {
                 if (index < 18 || index > 32) {
                     if (index < 33 || index > 44) {
-                        helper::refresh_selection_screen();
+                        ui::hide_game_tooltip();
                     } else {
-                        helper::create_context_from_dialog(main_dialog, g_stat_txt_buffer.get_string32(809)); // Selection instructions
+                        show_stat_action_tooltip(*main_dialog->to_dialog(), g_stat_txt_buffer.get_string32(809)); // Selection instructions
                     }
                 } else {
-                    helper::draw_unload_unit_context(main_dialog);
+                    show_unload_tooltip(*main_dialog->to_dialog());
                 }
             } break;
         }
