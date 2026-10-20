@@ -285,6 +285,8 @@ enum ExtValueId {
     ValueAI_PreventTargeting,
     ValueAI_BunkerCustom,
 
+    ValueTyrannySpeedActive,
+
     ValueCount,
 };
 
@@ -695,6 +697,7 @@ void init_ext_variables();
 void update_ext_variables();
 
 UnitExt* get_unit_ext(Unit* unit);
+const UnitExt* get_unit_ext(const Unit* unit);
 void reset_unit_ext(UnitExt* unit_ext);
 void unit_ext_remove_references_to(Unit* unit);
 

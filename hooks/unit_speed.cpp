@@ -11,12 +11,12 @@
 #include "utils/captivating_claws.h"
 
 namespace hooks {
-    fp32 get_speed_multiplier(Unit* unit) {
-        auto& unit_ext = unit->ext();
+    fp32 get_speed_multiplier(const Unit& unit) {
+        const auto& unit_ext = unit.ext();
 
         fp32 speed{1};
         // Set additives based on status effects
-        s32 decrease = (unit->ensnare_timer ? unit_ext.values[ValueEnsnareFactor] : 0);
+        s32 decrease = (unit.ensnare_timer ? unit_ext.values[ValueEnsnareFactor] : 0);
 
         if (decrease > 0) {
             for (s32 i = 0; i < decrease; i++) {
@@ -24,8 +24,8 @@ namespace hooks {
             }
         }
 
-        if (unit->stim_timer) {
-            switch (unit->id) {
+        if (unit.stim_timer) {
+            switch (unit.id) {
                 case UnitId::TerranMaverick:        speed *= 1.75fp; break;
                 case UnitId::TerranMaverickUpstart: speed *= 1.5fp;  break;
                 default:                            speed *= 1.75fp; break;
@@ -68,12 +68,12 @@ namespace hooks {
         }
 
         // Vorvrokor - Captivating Claws - reduces movement speed by 25% per unique attacker
-        if (captivating_claws_get_timer(unit) > 1) {
-            speed *= 1 - 0.25fp * captivating_claws_get_stacks(unit);
+        if (captivating_claws_get_timer(&unit) > 1) {
+            speed *= 1 - 0.25fp * captivating_claws_get_stacks(&unit);
         }
 
         // Sovroleth - Writhing Web - slow more based on proximal Sovroleths
-        if (unit->id == UnitId::ZergSovroleth) {
+        if (unit.id == UnitId::ZergSovroleth) {
             speed *= pow(0.95fp, unit_ext.values[ValueSovrolethLinkCount]);
         }
 
@@ -83,48 +83,10 @@ namespace hooks {
         }
 
         // Zoryusthaleth - Swarming Omen - 133% movement speed when moving towards Zoryusthaleth victims
-        if (unit_ext.timers[TimerSwarmingOmenSearch] && unit_ext.timers[TimerSwarmingOmenSpeed] < 2) {
-            for (Unit* target : g_unit_search.radial_ex(unit, Zoryusthaleth::SwarmingOmenRadius)) {
-                UnitExt& target_ext = target->ext();
-                if (!target_ext.timers[TimerSwarmingOmenDebuff]) {
-                    continue;
-                }
-                if (!bw::unit_is_facing(unit, target->position)) {
-                    continue;
-                }
-                unit_ext.timers[TimerSwarmingOmenSpeed] = 6;
-                if (unit_ext.try_reset_timer(TimerSwarmingOmenVisuals, 12)) {
-                    bw::add_unit_overlay(unit, ImageId::SwarmingOmenSmall + bw::get_overlay_offset(unit->id, true));
-                }
-                if (unit_ext.try_reset_timer(TimerSwarmingOmenAudio, 36)) {
-                    u32 sound_id = bw::rand_between(SoundId::SwarmingOmenProc01, SoundId::SwarmingOmenProc02);
-                    helper::play_sound_from_unit(sound_id, unit, 1, 0);
-                }
-                break;
-            }
-        }
         if (unit_ext.timers[TimerSwarmingOmenSpeed] > 1) {
             speed *= 1.33fp;
         }
 
-        if (unit_ext.timers[TimerWarAtrophySearch]) {
-            for (Unit* target : g_unit_search.radial_ex(unit, BloodsummonNihilist::WarAtrophySearchRadius, FilterEnemy)) {
-                if (!bw::unit_is_facing(unit, target->position)) {
-                    continue;
-                }
-                if (target) {
-                    if (unit_ext.try_reset_timer(TimerSwarmingOmenVisuals, 12)) {
-                        bw::add_unit_overlay(unit, ImageId::SwarmingOmenSmall + bw::get_overlay_offset(unit->id, true));
-                    }
-                    if (unit_ext.try_reset_timer(TimerSwarmingOmenAudio, 36)) {
-                        u32 sound_id = bw::rand_between(SoundId::SwarmingOmenProc01, SoundId::SwarmingOmenProc02);
-                        helper::play_sound_from_unit(sound_id, unit, 1, 0);
-                    }
-                    unit_ext.timers[TimerWarAtrophySpeed] = 6;
-                    break;
-                }
-            }
-        }
         if (unit_ext.timers[TimerWarAtrophySpeed] > 1) {
             speed *= 0.66fp;
         }
@@ -135,20 +97,11 @@ namespace hooks {
 
         if (unit_ext.timers[TimerImpactDissipation] > 1) {
             speed *= 1.33fp;
-            bw::add_unit_overlay(unit, ImageId::ImpactDissipationSmall + bw::get_overlay_offset(unit->id, true));
         }
 
         // Tyranny of the Sun
-        if (unit_ext.values[ValueMindControllerUnitId]) {
-            auto targets = g_unit_search
-                .radial_ex(unit, unit->get_sight_range() * 32, FilterEnemy | FilterVisible);
-            for (auto target : targets) {
-                speed *= 1.33fp;
-                bw::set_unit_overlay(unit, {ImageId::DemiurgeWorshipOverlay_Small, ImageId::DemiurgeWorshipOverlay_XLarge}, true);
-                // TODO: make this overlay work when not moving (probably move to game_hooks). -Pr0nogo
-                // TODO: might need to remove the overlay externally
-                break;
-            }
+        if (unit_ext.values[ValueMindControllerUnitId] && unit_ext.values[ValueTyrannySpeedActive]) {
+            speed *= 1.33fp;
         }
 
         if (unit_ext.timers[TimerSegmentedExpansion]) {
@@ -214,7 +167,7 @@ namespace hooks {
             speed *= utils::map<fp32>(unit_ext.timers[TimerVengefulMarch], Protoss::VengefulMarchDuration, 0, 1.33fp, 1);
         }
 
-        if (unit->id == UnitId::TerranEidolonNydus && !unit_ext.timers[TimerDecloak]) {
+        if (unit.id == UnitId::TerranEidolonNydus && !unit_ext.timers[TimerDecloak]) {
             speed *= 1.33fp;
         }
 
@@ -222,7 +175,7 @@ namespace hooks {
             speed *= 2;
         }
 
-        switch (unit->id) {
+        switch (unit.id) {
             case UnitId::TerranBlackjack: {
                 // Wear and Tear: reduce movement speed based on missing health
                 if (unit_ext.values[ValueWearAndTear]) {
@@ -256,7 +209,7 @@ namespace hooks {
             // Deathless Procession
             case UnitId::ProtossAdherent: {
                 speed *= 1.25fp;
-                if (unit->shields > 256) {
+                if (unit.shields > 256) {
                     speed *= 1.25fp;
                 }
             } break;
@@ -406,13 +359,9 @@ namespace hooks {
         return speed;
     }
 
-    u32 get_modified_unit_speed(Unit* unit, u32 base_speed) { // 0047B5F0
-        if (!unit) {
-            return 1;
-        }
-
-        s32 increase = unit->status & UnitStatus::SpeedUpgrade ? 1 : 0;
-        switch (unit->id) {
+    static u32 modified_speed(const Unit& unit, u32 base_speed, fp32 multiplier) {
+        s32 increase = unit.status & UnitStatus::SpeedUpgrade ? 1 : 0;
+        switch (unit.id) {
             case UnitId::ProtossPanoptus: {
                 // Leftover movement speed code
                 base_speed = 1707;
@@ -429,23 +378,105 @@ namespace hooks {
                 }
             }
         }
-        return static_cast<u32>(base_speed * get_speed_multiplier(unit));
+        return static_cast<u32>(base_speed * multiplier);
     }
 
-    u32 get_modified_unit_acceleration(Unit* unit) {
-        if (unit->id == UnitId::TerranDiadem && unit->status & UnitStatus::InAir) {
-            return flingy_dat::acceleration[units_dat::graphic[unit->id]];
+    static u32 modified_acceleration(const Unit& unit, fp32 multiplier) {
+        if (unit.id == UnitId::TerranDiadem && unit.status & UnitStatus::InAir) {
+            return flingy_dat::acceleration[units_dat::graphic[unit.id]];
         }
-        return u32(std::max(flingy_dat::acceleration[units_dat::graphic[unit->id]] * get_speed_multiplier(unit), 1.0fp));
+        return u32(std::max(flingy_dat::acceleration[units_dat::graphic[unit.id]] * multiplier, 1.0fp));
     }
 
-    u32 get_modified_unit_turn_speed(Unit* unit) {
-        if (unit->id == UnitId::TerranDiadem) {
-            if (unit->status & UnitStatus::InAir) {
+    static u32 modified_turn_speed(const Unit& unit, fp32 multiplier) {
+        if (unit.id == UnitId::TerranDiadem) {
+            if (unit.status & UnitStatus::InAir) {
                 return 27;
             }
         }
-        return u32(std::max(flingy_dat::turn_speed[units_dat::graphic[unit->id]] * get_speed_multiplier(unit), 1.0fp));
+        return u32(std::max(flingy_dat::turn_speed[units_dat::graphic[unit.id]] * multiplier, 1.0fp));
+    }
+
+    u32 get_modified_unit_speed(Unit* unit, u32 base_speed) { // 0047B5F0
+        if (!unit) {
+            return 1;
+        }
+        return modified_speed(*unit, base_speed, get_speed_multiplier(*unit));
+    }
+
+    u32 get_modified_unit_acceleration(Unit* unit) {
+        return modified_acceleration(*unit, get_speed_multiplier(*unit));
+    }
+
+    u32 get_modified_unit_turn_speed(Unit* unit) {
+        return modified_turn_speed(*unit, get_speed_multiplier(*unit));
+    }
+
+
+    bool tick_speed_procs(Unit* unit) {
+        auto& unit_ext = unit->ext();
+        bool refresh = false;
+
+        if (unit_ext.timers[TimerSwarmingOmenSearch] && unit_ext.timers[TimerSwarmingOmenSpeed] < 2) {
+            for (Unit* target : g_unit_search.radial_ex(unit, Zoryusthaleth::SwarmingOmenRadius)) {
+                UnitExt& target_ext = target->ext();
+                if (!target_ext.timers[TimerSwarmingOmenDebuff]) {
+                    continue;
+                }
+                if (!bw::unit_is_facing(unit, target->position)) {
+                    continue;
+                }
+                unit_ext.timers[TimerSwarmingOmenSpeed] = 6;
+                if (unit_ext.try_reset_timer(TimerSwarmingOmenVisuals, 12)) {
+                    bw::add_unit_overlay(unit, ImageId::SwarmingOmenSmall + bw::get_overlay_offset(unit->id, true));
+                }
+                if (unit_ext.try_reset_timer(TimerSwarmingOmenAudio, 36)) {
+                    u32 sound_id = bw::rand_between(SoundId::SwarmingOmenProc01, SoundId::SwarmingOmenProc02);
+                    helper::play_sound_from_unit(sound_id, unit, 1, 0);
+                }
+                break;
+            }
+        }
+        if (unit_ext.timers[TimerSwarmingOmenSearch] || unit_ext.timers[TimerSwarmingOmenSpeed]) {
+            refresh = true;
+        }
+
+        if (unit_ext.timers[TimerWarAtrophySearch]) {
+            for (Unit* target : g_unit_search.radial_ex(unit, BloodsummonNihilist::WarAtrophySearchRadius, FilterEnemy)) {
+                if (!bw::unit_is_facing(unit, target->position)) {
+                    continue;
+                }
+                if (unit_ext.try_reset_timer(TimerSwarmingOmenVisuals, 12)) {
+                    bw::add_unit_overlay(unit, ImageId::SwarmingOmenSmall + bw::get_overlay_offset(unit->id, true));
+                }
+                if (unit_ext.try_reset_timer(TimerSwarmingOmenAudio, 36)) {
+                    u32 sound_id = bw::rand_between(SoundId::SwarmingOmenProc01, SoundId::SwarmingOmenProc02);
+                    helper::play_sound_from_unit(sound_id, unit, 1, 0);
+                }
+                unit_ext.timers[TimerWarAtrophySpeed] = 6;
+                break;
+            }
+        }
+        if (unit_ext.timers[TimerWarAtrophySearch] || unit_ext.timers[TimerWarAtrophySpeed]) {
+            refresh = true;
+        }
+
+        // Tyranny of the Sun
+        u32 tyranny_active = 0;
+        if (unit_ext.values[ValueMindControllerUnitId]) {
+            tyranny_active = g_unit_search
+                .radial_ex(unit, unit->get_sight_range() * 32, FilterEnemy | FilterVisible)
+                .count() > 0;
+            if (tyranny_active) {
+                bw::set_unit_overlay(unit, {ImageId::DemiurgeWorshipOverlay_Small, ImageId::DemiurgeWorshipOverlay_XLarge}, true);
+            }
+        }
+        if (unit_ext.values[ValueTyrannySpeedActive] != tyranny_active) {
+            unit_ext.values[ValueTyrannySpeedActive] = tyranny_active;
+            refresh = true;
+        }
+
+        return refresh;
     }
 
     // Hooked to investigate crashes. -Pr0nogo
@@ -538,5 +569,21 @@ namespace hooks {
             result = flingy_dat::halt_distance[flingy_id] >> 2;
         }
         return result;
+    }
+}
+
+namespace bw {
+    void update_speed(Unit* unit) { // 00454310
+        const u16 flingy_id = units_dat::graphic[unit->id];
+        const u8 movement_control = flingy_dat::movement_control[flingy_id];
+        if (movement_control != 0 && movement_control != 1) {
+            helper::update_iscript_speed(unit);
+            return;
+        }
+
+        const fp32 multiplier = hooks::get_speed_multiplier(*unit);
+        unit->flingy_top_speed = hooks::modified_speed(*unit, flingy_dat::top_speed[flingy_id], multiplier);
+        unit->flingy_acceleration = u16(hooks::modified_acceleration(*unit, multiplier));
+        unit->flingy_turn_rate = u8(hooks::modified_turn_speed(*unit, multiplier));
     }
 }

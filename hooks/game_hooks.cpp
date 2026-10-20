@@ -31,6 +31,7 @@
 #include "hooks/weapons/weapon_damage.h"
 #include "selection_extender.h"
 #include "hooks/update_unit_sight.h"
+#include "hooks/unit_speed.h"
 #include "hooks/orders/larva_creep_spawn.h"
 #include "Discord.h"
 #include "hooks/rally_point.h"
@@ -3397,12 +3398,9 @@ namespace hooks {
                     }
                     target->ext().timers[TimerSwarmingOmenSearch] = 24 + 1;
                 }
-            } else if (unit_ext.timers[TimerSwarmingOmenDebuff == 1]) {
+            } else if (unit_ext.timers[TimerSwarmingOmenDebuff] == 1) {
                 bw::remove_unit_overlay(unit, overlay_id);
             }
-        }
-        if (unit_ext.timers[TimerSwarmingOmenSearch]) {
-            should_update_speed = true;
         }
 
         if (hooks::unit_can_have_rally(unit) && unit->rally.unit && !helper::is_target_visible(unit, unit->rally.unit)) {
@@ -4193,6 +4191,10 @@ namespace hooks {
         if (unit_ext.timers[TimerDelayedRally] == 1) {
             hooks::move_to_rally(unit, unit->rally);
             unit->rally = {};
+        }
+
+        if (tick_speed_procs(unit)) {
+            should_update_speed = true;
         }
 
         if (should_update_speed) {

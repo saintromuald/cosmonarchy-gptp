@@ -11780,6 +11780,16 @@ namespace helper {
         return result;
     }
 
+    void update_iscript_speed(Unit* unit) {
+        const u32 func_address = 0x0042D8C0;
+        __asm {
+            PUSHAD
+            MOV ESI, unit
+            CALL func_address
+            POPAD
+        }
+    }
+
     Image* get_empty_image() {
         static Image* result;
         const u32 func_address = 0x004D4E30;

@@ -398,6 +398,7 @@ struct Unit : public UnitLayout {
     inline u32 get_strength() const { return std::max(this->ground_strength, this->air_strength); }
 
     struct UnitExt& ext();
+    const struct UnitExt& ext() const;
     bool has_energy_for(u32 tech_id);
     bool can_attack_transport_checks();
     void issue_custom_order(u32 order_id);

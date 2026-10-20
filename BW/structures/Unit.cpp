@@ -15,6 +15,7 @@
 #include "BW/stat_txt_spec.h"
 #include "hooks\weapons\weapon_cooldown.h"
 #include "hooks\stim_packs.h"
+#include "hooks/unit_speed.h"
 
 UnitRef::UnitRef(Unit* unit) : index{unit->get_unit_index()}, unique_id{unit->unique_id} {}
 
@@ -1261,13 +1262,7 @@ bool Unit::is_visible_to(u8 player) const {
 
 void Unit::update_speed() {
     assert(this);
-    const u32 func_address = 0x00454310;
-    __asm {
-        PUSHAD
-        MOV EAX, this
-        CALL func_address
-        POPAD
-    }
+    bw::update_speed(this);
 }
 
 u32 Unit::get_supply_provided() { // overwrites previous supply provided
@@ -1419,6 +1414,10 @@ u8 Unit::get_right_click_action_order() {
 }
 
 UnitExt& Unit::ext() {
+    return *get_unit_ext(this);
+}
+
+const UnitExt& Unit::ext() const {
     return *get_unit_ext(this);
 }
 

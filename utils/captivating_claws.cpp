@@ -2,15 +2,15 @@
 #include "globals.h"
 #include <algorithm>
 
-u32 captivating_claws_get_stacks(Unit* target)
+u32 captivating_claws_get_stacks(const Unit* target)
 {
-	UnitExt* targetExt = get_unit_ext(target);
+	const UnitExt* targetExt = get_unit_ext(target);
 	return std::min(targetExt->unit_vectors[UnitVectorCaptivatingClaws].size(), (u32)4);
 }
 
-u32 captivating_claws_get_timer(Unit* target)
+u32 captivating_claws_get_timer(const Unit* target)
 {
-	UnitExt* targetExt = get_unit_ext(target);
+	const UnitExt* targetExt = get_unit_ext(target);
 	return targetExt->timers[TimerCaptivatingClaws];
 }
 
