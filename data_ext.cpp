@@ -132,6 +132,10 @@ UnitExt* get_unit_ext(Unit* unit) {
 	return &g_ext->units[index];
 }
 
+const UnitExt* get_unit_ext(const Unit* unit) {
+	return get_unit_ext(const_cast<Unit*>(unit));
+}
+
 void reset_unit_ext(UnitExt* unit_ext) {
 	*unit_ext = {};
 }

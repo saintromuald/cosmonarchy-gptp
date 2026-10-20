@@ -1571,6 +1571,7 @@ namespace helper {
     void turn_unit_left(Unit* unit, char amount);																						// 00496170
     u32 get_difference_between_points(char point_1, char point_2);																		// 00494BD0
     u32 get_modified_unit_speed(u32 speed, Unit* unit);																					// 0047B5F0
+    void update_iscript_speed(Unit* unit);																							// 0042D8C0
     Image* get_empty_image();																											// 004D4E30
     Image* images_insert(Image* image, Image* next, Image* prev);																		// 0047A070
     void some_play_image_crap_that_crashes(char x_pos, char y_pos, Image* image, Sprite* sprite, u32 image_id);							// 004010E0

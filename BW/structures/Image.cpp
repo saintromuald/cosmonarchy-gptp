@@ -793,14 +793,14 @@ namespace hooks {
                 case IscriptOpcodes::opc_move: {
                     char arg = take_iscript_datum<char>(program_state);
                     u32 speed = arg << 8;
+                    const u32 final_speed = helper::get_modified_unit_speed(speed, *g_active_iscript_unit);
                     if (distance_moved) {
-                        *distance_moved = helper::get_modified_unit_speed(speed, *g_active_iscript_unit);
+                        *distance_moved = final_speed;
                     }
                     if (noop) {
                         break;
                     }
-                    u32 final_speed = helper::get_modified_unit_speed(speed, *g_active_iscript_unit);
-                    helper::set_unit_movement_speed(*g_active_iscript_unit, final_speed); 
+                    helper::set_unit_movement_speed(*g_active_iscript_unit, final_speed);
                 } break;
                 case IscriptOpcodes::opc_gotorepeatattk:
                     if (noop) {
