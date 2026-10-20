@@ -34,6 +34,7 @@ namespace hooks {
 
 void inject_framebuffer_hooks() {
     patch_ddraw_dimensions();
+    repair_storm_surface_copy_procs();
 
     jump_patch(init_screen_state, 0x0041E050);
     jump_patch(graphics_init, 0x004DB060);

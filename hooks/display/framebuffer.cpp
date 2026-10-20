@@ -17,6 +17,23 @@ u32 surface_bytes() {
 } // namespace
 
 namespace hooks {
+// Ported from MTL
+// Storm generates surface-copy blit procs at runtime.
+// On some systems the generator overreads its template, corrupting blits.
+void repair_storm_surface_copy_procs() {
+    if (!g_storm_surface_copy_procs) {
+        return;
+    }
+    u8* code = g_storm_surface_copy_procs->procedures[0xa0];
+    if (!code || code[1] == 0x6) {  // Healthy codegen already has the correct byte here
+        return;
+    }
+    for (u32 i = 0; i < 0xa0; ++i) {
+        code[i * 0x10 + 0x1] = 0x6;
+        code[i * 0x10 + 0x9] = 0x7;
+    }
+}
+
 // 0041E050. Clears the layer table and dirty grid, and resets screen buffer dimensions.
 void __cdecl init_screen_state() {
     g_screen_layers = Layers{};
@@ -50,6 +67,8 @@ void __cdecl graphics_init() {
     }
 
     helper::ddraw_init();
+
+    repair_storm_surface_copy_procs();
 
     g_graphics_ready = 1;
     helper::register_shutdown_proc(0x004DA310);

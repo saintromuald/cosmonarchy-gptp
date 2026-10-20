@@ -1694,6 +1694,14 @@ struct SPIFunctions {
 };
 //---------- End SNET SPI ----------//
 
+// storm.dll's runtime-generated surface-copy blit procedures.
+// The generator can overread its template string and emit broken push immediates,
+// which hooks::repair_storm_surface_copy_procs() detects and repairs.
+struct StormSurfaceCopyProcs {
+    u8 header[0x4c];
+    u8* procedures[0xa1];
+};
+
 struct SetLatencyCommand {
     GameCommand type = GameCommand_SetLatency;
     u8 value;
