@@ -1494,6 +1494,7 @@ BW_REF(SPIProvider*,        g_spi_provider,         0x1505e62c);
 BW_REF(SPIProvider*,        g_spi_provider_list,    0x1505ad6c);
 BW_REF(CRITICAL_SECTION,    g_spi_critsec,          0x1505eba8);
 BW_REF(SPIFunctions*,       g_spi_functions,        0x1505e620);
+BW_REF(StormSurfaceCopyProcs*, g_storm_surface_copy_procs, 0x1505EC04);
 
 //-------- end storm.dll --------//
 

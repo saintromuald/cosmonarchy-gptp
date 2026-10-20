@@ -15,6 +15,7 @@ inline graphics::Bitmap g_world_surface = {};
 void __cdecl init_screen_state();  // 0041E050
 void __cdecl graphics_init();      // 004DB060
 void __cdecl graphics_shutdown();  // 004DA310
+void repair_storm_surface_copy_procs();
 
 void inject_framebuffer_hooks();
 
