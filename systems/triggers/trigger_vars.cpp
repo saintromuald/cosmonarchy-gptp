@@ -1,6 +1,9 @@
 #include "trigger_vars.h"
-#include <ranges>
+
+#include "utils/starcraft_path.h"
+
 #include <fstream>
+#include <ranges>
 
 VarBank::VarBank(const std::string& name) : m_path{(bw::get_starcraft_path() / "banks" / (name + ".bank"))} {
 	load();

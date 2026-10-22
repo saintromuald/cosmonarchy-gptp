@@ -3,6 +3,7 @@
 #include "BW/api.h"
 #include "config.h"
 #include "systems/triggers/trigger_vars.h"
+#include "utils/starcraft_path.h"
 
 #include <algorithm>
 #include <cctype>

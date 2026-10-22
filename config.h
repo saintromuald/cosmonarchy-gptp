@@ -1,8 +1,6 @@
 #pragma once
 #include "config_utils.h"
 
-inline const std::filesystem::path g_config_path = bw::get_starcraft_path() / "cosmonarchy.yml";
-
 struct Config {
     // Random settings
     std::vector<std::string> random_races{"Zerg", "Terran", "Protoss", "Askosi"};

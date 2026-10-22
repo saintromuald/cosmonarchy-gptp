@@ -4,12 +4,15 @@
 #include "logger.h"
 #include "player_color.h"
 #include "systems/locale/locale.h"
+#include "utils/starcraft_path.h"
 
 #define NOMINMAX
 #include <Windows.h>
 
 #include <algorithm>
 #include <format>
+
+const std::filesystem::path g_config_path = bw::get_starcraft_path() / "cosmonarchy.yml";
 
 // Have to use std::vformat and no `const auto&...`, because of some obscure VS issue that makes it not compile for Pr0nogo.
 // It's sad, because it will make std::string allocate a copy, but it is what it is, we only do it once on a fail path anyways. -Veeq7

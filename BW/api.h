@@ -283,7 +283,6 @@ struct TeleportOptions {
     bool check_distance : 1 = true;
 };
 
-std::filesystem::path get_starcraft_path();
 bool is_any_morph_result(u16 id);
 bool is_conventional_unit_morph_result(u16 id);
 bool is_conventional_unit_morph_source(u16 id, bool allow_larvae = false);

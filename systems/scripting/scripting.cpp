@@ -9,6 +9,7 @@
 #include <sol/sol.hpp>
 
 #include "../BW/api.h"
+#include "../../utils/starcraft_path.h"
 #include "../storm/sfile.h"
 #include "api/script_api.h"
 
