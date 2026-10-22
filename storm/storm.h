@@ -2,6 +2,10 @@
 
 #include "types.h"
 
+#include <format>
+#include <string>
+#include <string_view>
+
 struct Palette;
 struct Caps;
 struct LobbyInfo;
@@ -88,4 +92,17 @@ __declspec(dllimport) b32   __stdcall SVidPlayEnd(HANDLE video);
 __declspec(dllimport) b32   __stdcall SErrGetErrorStr(u32 error_code, char* buffer, u32 buffer_size);
 __declspec(dllimport) u32   __stdcall SErrGetLastError();
 __declspec(dllimport) void  __stdcall SErrSetLastError(u32 error_code);
+}
+
+inline std::string last_storm_error() {
+    auto code = SErrGetLastError();
+    std::string error(0x100, '\0');
+    if (!SErrGetErrorStr(code, error.data(), error.size())) {
+        error = std::format("Unknown Storm error code: 0x{:08X}", code);
+    } else {
+        size_t length = std::string_view(error).find('\0');
+        if (length != std::string_view::npos) error.resize(length);
+    }
+
+    return error;
 }

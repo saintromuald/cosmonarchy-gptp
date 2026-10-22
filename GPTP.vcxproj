@@ -703,6 +703,7 @@
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="utils\captivating_claws.cpp" />
     <ClCompile Include="utils\enum.cpp" />
+    <ClCompile Include="utils\starcraft_path.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aise_signal.h" />
@@ -1049,6 +1050,7 @@
     <ClInclude Include="hooks\unit_stats\weapon_range.h" />
     <ClInclude Include="BW\enumerations\WeaponId.h" />
     <ClInclude Include="utils\rfl.h" />
+    <ClInclude Include="utils\starcraft_path.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -23,6 +23,7 @@
 #include "systems/display/zoom.h"
 #include "hooks/display/grid.h"
 #include "hooks/unit_stats/weapon_range.h"
+#include "utils/starcraft_path.h"
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -91,12 +92,6 @@ StatString::StatString(const char* stat_string) {
             safe_copy(m_game_data.map_title, parts[1]);
         }
     }
-}
-
-std::filesystem::path get_starcraft_path() {
-    wchar_t buffer[MAX_PATH] = {};
-    GetModuleFileNameW(NULL, buffer, MAX_PATH);
-    return std::filesystem::path(buffer).parent_path();
 }
 
 bool is_witness() {
