@@ -112,18 +112,6 @@ void __declspec(naked) show_os_cursor_wrapper() {
     }
 }
 
-void __declspec(naked) center_cursor_on_launch_wrapper() {
-    __asm {
-        PUSHAD
-    }
-    hooks::center_cursor();
-    __asm {
-        POPAD
-        MOV EAX, dword ptr [0x0051CC34]
-        TEST EAX, EAX
-        RETN
-    }
-}
 
 void __declspec(naked) center_cursor_on_game_start_wrapper() {
     __asm {
@@ -181,7 +169,9 @@ void inject_mouse_hooks() {
     // Prevent the software cursor from restoring last MMB drag as extra on-screen cursor
     memory_patch(0x0041C987, u8(0xEB));
     jump_patch(show_os_cursor_wrapper, 0x004D1750);
-    call_patch(center_cursor_on_launch_wrapper, 0x004E087A, 38);
+    // 004E087A: SetCursorPos(320, 240) -> center_cursor; 004E0891: drop vanilla's g_mouse = {320, 240}
+    call_patch(center_cursor, 0x004E087A, 11);
+    nop_patch(0x004E0891, 20);
     call_patch(center_cursor_on_game_start_wrapper, 0x004D996B, 10);
 
     memory_patch(0x004D2684, u32(window_proc_mouse_move_wrapper));

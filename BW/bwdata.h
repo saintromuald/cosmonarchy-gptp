@@ -276,6 +276,12 @@ BW_ARRAY(void*, 3,		g_sc_campaign_lists,		0x005122A0);
 BW_ARRAY(void*, 3,		g_bw_campaign_lists,		0x005122AC);
 
 BW_DATA(void**,			map_archive_handle,			0x00596BC4);
+
+// Storm archive handles opened at startup (004DABD0) and closed together by 004DA2B0.
+BW_REF(HANDLE,			g_patch_rt_archive,			0x0051CC28);
+BW_REF(HANDLE,			g_broodat_archive,			0x0051CC2C);
+BW_REF(HANDLE,			g_cd_archive,				0x0051CC34); // BroodWar.mpq, else StarCraft.mpq, else the CD (004DA950)
+BW_REF(HANDLE,			g_stardat_archive,			0x0051CC38);
 BW_DATA(GameData*,		game_data,					0x005967F8);
 BW_DATA(u8*,			map_started,				0x006D121C);
 BW_DATA(u8*,			player_has_left,			0x00581D62); // array of 0x8

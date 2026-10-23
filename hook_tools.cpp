@@ -1,5 +1,7 @@
 #include "hook_tools.h"
 
+#include <algorithm>
+
 // Injects a relative CALL to [target] at the [position].
 // Original function from BWAPI by Kovarex; Modified by pastelmind
 void call_patch(const void* target, void* position, const u32 nops) {
@@ -14,11 +16,12 @@ void call_patch(const void* target, void* position, const u32 nops) {
     delete[] data;
 }
 
-void nop_patch(const u32 address, u32 number) {
-	u8 nop = 0x90;
-	for (s32 i = 0; i < number; i++) {
-		memory_patch((void*)(address + i), &nop, sizeof(u8));
-	}
+void fill_patch(u32 address, u8 value, size_t count) {
+    auto* const destination = reinterpret_cast<u8*>(address);
+    DWORD old_protect = 0;
+    VirtualProtect(destination, count, PAGE_EXECUTE_READWRITE, &old_protect);
+    std::fill_n(destination, count, value);
+    VirtualProtect(destination, count, old_protect, &old_protect);
 }
 
 // Injects a relative JMP to [target] at the [position].

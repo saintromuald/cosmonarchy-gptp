@@ -26,7 +26,12 @@ inline void jump_patch(const void* target, DWORD position, u32 nops = 0) {
     jump_patch(target, (void*)position, nops);
 }
 
-void nop_patch(const u32 address, u32 number);
+// Overwrites [count] bytes at [address] with [value].
+void fill_patch(u32 address, u8 value, size_t count);
+
+inline void nop_patch(u32 address, size_t count) {
+    fill_patch(address, 0x90, count);
+}
 
 // Injects a CALL to [target] at the [position], optionally overwriting [nops]
 // bytes with NOPs.
@@ -61,19 +66,6 @@ void memory_patch(const u32 address, const T& data) {
     memory_patch(address, (u8*)&data, sizeof(T));
 }
 
-// Patches the specified address with the given data using memcpy().
-template <typename T>
-void memory_patch_df(const u32 address, const T& data, unsigned char reps = 0) {
-    if (reps) {
-        u8* const data1 = new u8 [reps * sizeof(T)];
-        for (unsigned int i = 0; i < reps; ++i) {
-            *(T*)(&data1[i * sizeof(T)]) = data;
-        }
-        memory_patch(address, data1, reps * sizeof(T));
-    } else {
-        memory_patch(address, (u8*)&data, sizeof(T));
-    }
-}
 
 void wrapper_patch(const u8* code, u32 len, const u32 position, u32 nops = 0);
 
