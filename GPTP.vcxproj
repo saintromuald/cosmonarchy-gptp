@@ -252,6 +252,7 @@
   <ItemGroup>
     <ClCompile Include="aise_signal.cpp" />
     <ClCompile Include="ai_layouts.cpp" />
+    <ClCompile Include="cosmo_rollback_state.cpp" />
     <ClCompile Include="bullet_extender.cpp" />
     <ClCompile Include="BW\bwdata.cpp" />
     <ClCompile Include="BW\bwhelper.cpp" />
