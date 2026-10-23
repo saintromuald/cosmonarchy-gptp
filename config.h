@@ -4,6 +4,14 @@
 struct Config {
     // Random settings
     std::vector<std::string> random_races{"Zerg", "Terran", "Protoss", "Askosi"};
+    // Avoid mirror matchups when rolling random races (roll each player against
+    // the races already rolled for the others; falls back to the full pool).
+    bool avoid_mirror_races = true;
+
+    // Replay Kraken (self-hosted fork)
+    std::string kraken_server{ "http://cosmonarchy.com" };
+    std::string kraken_token{};
+    bool kraken_upload_all = false;
 
     // Launch settings
     bool disable_wmode_prompt = true;

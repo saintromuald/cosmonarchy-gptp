@@ -58,17 +58,51 @@ static RaceId::Enum random_from(std::span<const RaceId::Enum> races) {
     return races[bw::rand_between(0, races.size() - 1)];
 }
 
+static RaceFlags::Enum race_flag(RaceId::Enum race) {
+    switch (race) {
+        case RaceId::Zerg:    return RaceFlags::Zerg;
+        case RaceId::Terran:  return RaceFlags::Terran;
+        case RaceId::Protoss: return RaceFlags::Protoss;
+        case RaceId::Askosi:  return RaceFlags::Askosi;
+        default:              return RaceFlags::None;
+    }
+}
+
+/// Roll one race from `pool`, preferring the races nobody in this pass has rolled
+/// yet (avoids mirror matchups); falls back to the full pool when all are taken.
+static RaceId::Enum roll_race(std::span<const RaceId::Enum> pool, u32 avoid_flags) {
+    std::array<RaceId::Enum, RaceId::FullCount> fresh{};
+    u32 n = 0;
+    for (auto race : pool) {
+        if ((race_flag(race) & avoid_flags) == RaceFlags::None) {
+            fresh[n++] = race;
+        }
+    }
+    if (n > 0) {
+        return random_from(std::span<const RaceId::Enum>(fresh.data(), n));
+    }
+    return random_from(pool);
+}
+
 void RaceRandomizer::process_randomization() {
     m_randomized_players.clear();
+    u32 rolled_flags = RaceFlags::None;
     for (auto& player : g_player_table) {
         if (player.race == RaceId::Random) {
             if (player.type == PlayerType::Human) {
                 auto index = slot_id_to_index(player.id);
+                std::span<const RaceId::Enum> pool;
                 if (index < 8 && m_player_race_flags[index] != RaceFlags::None) {
                     auto selected_races = to_race_array(m_player_race_flags[index]);
-                    player.race = random_from(to_span(selected_races));
+                    pool = to_span(selected_races);
                 } else {
-                    player.race = random_from(human_races);
+                    pool = human_races;
+                }
+                if (g_config.avoid_mirror_races) {
+                    player.race = roll_race(pool, rolled_flags);
+                    rolled_flags |= race_flag(player.race);
+                } else {
+                    player.race = random_from(pool);
                 }
             } else {
                 // Only use original races for CPU players for now
