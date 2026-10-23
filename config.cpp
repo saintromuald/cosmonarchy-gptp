@@ -60,7 +60,7 @@ static void validate_config() {
                 }
                 for (u32 k = 0; k < 6; k++) {
                     // Note: We don't need to validate against tilde, since not only it's not included in A-Z range, neither '`' nor '~' maps to the correct VK code anyways.
-                    static const char* invalid_hotkeys = "RFVTGB";
+                    static const char* invalid_hotkeys = "RFVTGBYHN";
                     char invalid_ch = invalid_hotkeys[k];
                     if (hotkey == invalid_ch) {
                         config_error("Grid hotkey \"{}\" collides with extended control group \"{}\"! Please resolve the collision in cosmonarchy.yml.", hotkey, invalid_ch);
