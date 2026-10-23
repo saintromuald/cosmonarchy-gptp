@@ -100,7 +100,7 @@ void RaceRandomizer::process_randomization() {
                 }
                 if (g_config.avoid_mirror_races) {
                     player.race = roll_race(pool, rolled_flags);
-                    rolled_flags |= race_flag(player.race);
+                    rolled_flags |= race_flag(static_cast<RaceId::Enum>(player.race));
                 } else {
                     player.race = random_from(pool);
                 }
