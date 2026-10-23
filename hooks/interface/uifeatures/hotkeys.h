@@ -3,8 +3,8 @@
 #include "logger.h"
 
 #define CameraCap 8
-#define ControlGroupCap 17
-#define ExtendedControlGroupKeys "RFVTGB"
+#define ControlGroupCap 20
+#define ExtendedControlGroupKeys "RFVTGBYHN"
 #define KeyCap 256
 
 struct KeyState {

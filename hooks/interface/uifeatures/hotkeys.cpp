@@ -36,15 +36,15 @@ static int control_group_index_from_key(u32 key) {
 		return key - '0';
 	}
 	if (g_config.extended_control_groups) {
-		const char* keys = "RFVTGB"; // NOTE: lower case letters do not work on some computers...
-		for (u32 i = 0; i < 6; i++) {
-			if (key == keys[i]) {
+		const char* keys = ExtendedControlGroupKeys; // NOTE: lower case letters do not work on some computers...
+		for (u32 i = 0; keys[i] != '\0'; i++) {
+			if (key == (u32)keys[i]) {
 				return 10 + i;
 			}
 		}
 	}
 	if (g_config.tilde_control_group && key == 192) {
-		return 16;
+		return ControlGroupCap - 1;
 	}
 	return -1;
 }
