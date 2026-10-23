@@ -37,11 +37,14 @@ ReplayKraken::ReplayKraken() {
     const std::string server_url = g_config.kraken_server.empty()
         ? "http://cosmonarchy.com"
         : g_config.kraken_server;
-    m_api_client.set_base_url(server_url);
+    m_server_url = server_url;
+    // This httplib predates set_base_url: construct a fresh client for the
+    // configured server.
+    m_api_client = std::make_unique<httplib::Client>(server_url);
 
     m_token = g_config.kraken_token.empty() ? read_token() : g_config.kraken_token;
     if (!m_token.empty()) {
-        m_api_client.set_default_headers({
+        m_api_client->set_default_headers({
             {"Authorization", "Bearer " + m_token},
         });
         authenticate();
@@ -59,7 +62,7 @@ void ReplayKraken::shutdown() {
         m_stopping = true;
         m_upload_queue.clear();
     }
-    m_api_client.stop();
+    m_api_client->stop();
     m_queue_condition.notify_all();
     if (m_upload_thread.joinable()) {
         m_upload_thread.join();
@@ -73,7 +76,7 @@ void ReplayKraken::log(std::string_view message) {
 
 bool ReplayKraken::authenticate() {
     for (int retry = 0; retry < 3; retry++) {
-        if (const auto res = m_api_client.Get("/api/users/@me")) {
+        if (const auto res = m_api_client->Get("/api/users/@me")) {
             if (res->status == 200) {
                 const auto json = Json::parse(res->body);
                 try {
@@ -335,7 +338,7 @@ bool ReplayKraken::upload_replay(
     ));
     for (int retry = 0; retry < UploadAttempts; retry++) {
         log(std::format("Attempt {} to upload replay...", retry + 1));
-        if (const auto res = m_api_client.Post("/api/matches", json_str, "application/json")) {
+        if (const auto res = m_api_client->Post("/api/matches", json_str, "application/json")) {
             if (res->status >= 200 && res->status < 300) {
                 log("Replay uploaded successfully.");
                 return true;
