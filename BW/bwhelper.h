@@ -41,6 +41,7 @@ namespace helper {
 
     // game_loop_top's callees, in the order it runs them
     BW_FUNC(0x004D1BF0, void __stdcall, pump_messages, u32 flags);
+    BW_FUNC(0x004D1810, u32 __cdecl, check_modifier_keys);
     BW_FUNC(0x004D14D0, void __cdecl, update_cursor);
     BW_FUNC(0x0047F0E0, void __cdecl, scroll_screen_step);
     BW_FUNC(0x00485F70, void __cdecl, receive_network_messages);
@@ -80,6 +81,9 @@ namespace helper {
     BW_FUNC(0x0041baa0, u32 __fastcall, default_interaction_listbox,   bw::Dialog* dialog, DialogEvent* event);
     BW_FUNC(0x0041bc40, u32 __fastcall, default_interaction_combobox,  bw::Dialog* dialog, DialogEvent* event);
     BW_FUNC(0x004e17e0, u32 __fastcall, default_interaction_lightup,   bw::Dialog* dialog, DialogEvent* event);
+
+    BW_FUNC(0x004F3540, u32 __fastcall, game_chat_textbox_interact, bw::Dialog* dialog, DialogEvent* event);
+    BW_FUNC(0x004B6C30, u32 __fastcall, char_name_popup_textbox_interact, bw::Dialog* dialog, DialogEvent* event);
 
     BW_FUNC(0x004ab840, u32* __stdcall, glu_main_load_ums_templates);
     BW_FUNC(0x004c4680, void __stdcall, glu_login_leave_game);
@@ -1005,6 +1009,12 @@ namespace helper {
     
     void clear_callback_timer(bw::Dialog* dialog, u16 timer_index);                                                 // 00416000
     inline void clear_callback_timer(BinDlg* dialog, u16 timer_index) { clear_callback_timer(dialog->to_dialog(), timer_index); }
+
+    // Text-input widget internals
+    void set_active_widget_for_event(bw::Dialog* dialog, u32 slot);                                                 // 004196A0
+    void clear_active_widget_slots(bw::Dialog* dialog);                                                             // 00419640
+    void textbox_init(bw::Dialog* dialog);                                                                          // 00416450
+    void textbox_destroy(bw::Dialog* dialog);                                                                       // 004165C0
     
     void remove_from_selections(Unit* unit);																		// 0049A7F0
     u32 fxn_interact(BinDlg* dialog, u32 data_struct_offset);

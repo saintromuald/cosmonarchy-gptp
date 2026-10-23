@@ -1,5 +1,6 @@
 #include "custom_glues.h"
 #include "hooks/snp.h"
+#include "hooks/text/text_input.h"
 #include "glu_campaign.h"
 #include "glu_options.h"
 #include "glu_chat.h"
@@ -9,6 +10,8 @@ static void update_window() {
 
     static bool attempted = false;
     if (attempted) return;
+
+    TextInput::instance().ensure_installed();
 
     attempted = true;
 

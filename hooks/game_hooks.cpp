@@ -26,6 +26,7 @@
 #include "custom_ai.h"
 #include "BW\UnitFinder.h"
 #include "hooks/interface/buttonsets.h"
+#include "hooks/text/text_input.h"
 #include "weapons/weapon_fire.h"
 #include "harvest.h"
 #include "hooks/weapons/weapon_damage.h"
@@ -649,6 +650,8 @@ namespace hooks {
     }
 
     void game_init_first_frame() {
+        TextInput::instance().ensure_installed();
+
         // Re-resolve the replay/witness role now that per-player state is certainly
         // valid, in case map load (alloc_fog_arrays) ran before witness slots were
         // assigned (CM maps assign witnesses via a first-frame trigger). Buffers

@@ -7,6 +7,7 @@
 #include "../../systems/display/frame_overlay.h"
 #include "../../systems/display/zoom.h"
 #include "../interface/hud/hud_manager.h"
+#include "../text/text_input.h"
 #include "screen_text.h"
 #include "mouse.h"
 #include "sprites.h"
@@ -140,6 +141,7 @@ namespace hooks {
 // 0041D710: Checks window draw state and marks all cells if repaint is pending.
 s32 __cdecl begin_frame() {
     update_window_focus();
+    TextInput::instance().reconcile_association(); // Catch focus changes outside the message pump
     if (!g_ddraw_ready || !g_window_active || !g_main_window) {
         return 0;
     }

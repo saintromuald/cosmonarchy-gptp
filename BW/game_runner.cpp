@@ -1,5 +1,6 @@
 #include "game_runner.h"
 #include "hooks/race_randomization.h"
+#include "systems/text/utf8.h"
 
 GameRunner::Result GameRunner::create_singleplayer_game(const fs::path& map_path, u16 game_type = GameType::Unranked, u16 game_subtype = 1) {
     if (!g_player_name) return Result::PlayerNameNotSet;
@@ -152,7 +153,7 @@ bool GameRunner::load_adfile(u32 index) {
                 auto& game_data = m_mapfile.game_data;
                 game_data = stats.game_data();
                 game_data.index = adfile.game_index;
-                safe_copy(game_data.game_name, adfile.game_name);
+                text::copy_truncated(game_data.game_name, adfile.game_name);
                 return true;
             }
             return false;
@@ -163,7 +164,7 @@ bool GameRunner::load_adfile(u32 index) {
 
 bool GameRunner::setup_game(const char* game_name, u16 game_type, u16 game_subtype) {
     auto& game_data = m_mapfile.game_data;
-    safe_copy(game_data.game_name, game_name);
+    text::copy_truncated(game_data.game_name, game_name);
     game_data.game_type = game_type;
     game_data.game_subtype = game_subtype;
     game_data.active_player_count = 1;

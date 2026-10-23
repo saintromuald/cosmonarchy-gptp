@@ -4,6 +4,7 @@
 #include "BW/enumerations.h"
 #include "magic_enum/magic_enum.hpp"
 #include "systems/audio/music_system.h"
+#include "systems/text/utf8.h"
 #include "systems/ui/widgets.h"
 
 namespace {
@@ -243,7 +244,7 @@ u32 GluJoinCrownlinkContext::on_activate(bw::Dialog* dialog, DialogEvent* event)
         case GluJoinControls::LobbyPasswordSet: {
             std::string new_password;
             if (ui::modal_string_prompt("Enter a new password", new_password)) {
-                if (new_password.size() >= password_max_length) new_password.resize(password_max_length);
+                new_password.resize(text::truncate_to_boundary(new_password, password_max_length));
                 update_password(new_password.c_str());
             }
             return 1;

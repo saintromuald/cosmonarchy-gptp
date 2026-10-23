@@ -6389,6 +6389,47 @@ namespace helper {
         }
     }
 
+    void set_active_widget_for_event(bw::Dialog* dialog, u32 slot) {
+        const u32 func_address = 0x004196A0;
+        __asm {
+            PUSHAD
+            MOV EDI, dialog
+            MOV ESI, slot
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void clear_active_widget_slots(bw::Dialog* dialog) {
+        const u32 func_address = 0x00419640;
+        __asm {
+            PUSHAD
+            MOV EDX, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void textbox_init(bw::Dialog* dialog) {
+        const u32 func_address = 0x00416450;
+        __asm {
+            PUSHAD
+            MOV ESI, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
+    void textbox_destroy(bw::Dialog* dialog) {
+        const u32 func_address = 0x004165C0;
+        __asm {
+            PUSHAD
+            MOV EAX, dialog
+            CALL func_address
+            POPAD
+        }
+    }
+
     void remove_from_selections(Unit* unit) {
         const u32 func_address = 0x0049A7F0;
         __asm {

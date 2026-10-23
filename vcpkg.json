@@ -12,6 +12,7 @@
       "name": "reflectcpp",
       "features": ["yaml"]
     },
+    "simdutf",
     "sol2",
     "stb",
     "stduuid",

@@ -155,19 +155,22 @@ BW_REF(ClientToScreenProc,	g_client_to_screen,		0x004FE378);
 using SetCursorProc = HCURSOR(WINAPI*)(HCURSOR);
 BW_REF(SetCursorProc,		g_set_cursor_iat,		0x004FE338);
 
-using SetCursorPosProc = BOOL(WINAPI*)(int, int);
-BW_REF(SetCursorPosProc,	g_set_cursor_pos_iat,	0x004FE2CC);
+using SetCursorPosProc =        BOOL(WINAPI*)(s32, s32);
+BW_REF(SetCursorPosProc,        g_set_cursor_pos_iat,       0x004FE2CC);
 
-BW_ARRAY(graphics::GrpFile*, 19, g_cursor_grps, 0x00596B20);
-BW_REF(u32,					g_current_cursor_id,	0x00596B70);
-BW_REF(u32,					g_cursor_frame_index,	0x00597390);
-BW_REF(u32,					g_cursor_next_tick,		0x00597398);
-BW_REF(u8,					g_disable_cursor_scroll,	0x006D1214);
+using TranslateMessageProc =    BOOL(WINAPI*)(const MSG*);
+BW_REF(TranslateMessageProc,    g_translate_message_iat,    0x004FE2C8);
+
+BW_ARRAY(graphics::GrpFile*, 19, g_cursor_grps,         0x00596B20);
+BW_REF(u32,                 g_current_cursor_id,        0x00596B70);
+BW_REF(u32,                 g_cursor_frame_index,       0x00597390);
+BW_REF(u32,                 g_cursor_next_tick,         0x00597398);
+BW_REF(u8,                  g_disable_cursor_scroll,	0x006D1214);
 
 // Suppresses edge scrolling after a click until cursor moves.
-BW_REF(s32,					g_scroll_wait_for_move,	0x006D5C1C);
-BW_REF(s32,					g_last_scroll_cursor_x,	0x0051A3E0);
-BW_REF(s32,					g_last_scroll_cursor_y,	0x0051A3DC);
+BW_REF(s32,                 g_scroll_wait_for_move,	0x006D5C1C);
+BW_REF(s32,                 g_last_scroll_cursor_x,	0x0051A3E0);
+BW_REF(s32,                 g_last_scroll_cursor_y,	0x0051A3DC);
 
 // Edge-scroll cursor IDs, indexed by dx + 3 * dy + 4 (dx, dy in [-1, 1]; index 4 unused).
 BW_ARRAY(const u16,	9,	g_scroll_cursor_types,	0x00512754);
@@ -1417,6 +1420,12 @@ BW_DATA(BinDlg**,			g_main_dlg,						0x0057F0DC);
 // For create_main_window
 BW_DATA(HINSTANCE*,			g_main_hinstance,				0x0051BFAC);
 BW_DATA(HIMC*,				g_app_context,					0x006D6438);
+
+// Shared with vanilla field-cap wrappers
+BW_REF(u8,                  g_ime_input_active,             0x00596B18);
+BW_REF(u8,                  g_ime_insert_blocked,           0x00596A14);
+using UnhandledCharProc = u32(__fastcall*)(DialogEvent*); // Event in ECX, plain RET
+BW_REF(UnhandledCharProc,   g_unhandled_char_callback,      0x005968DC);
 
 // For show_or_hide_minimap
 BW_REF(s8,				    g_hide_minimap_terrain,			0x006D5BBF);
