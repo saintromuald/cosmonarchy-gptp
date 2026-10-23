@@ -39,19 +39,21 @@ ReplayKraken::ReplayKraken() {
 
     // The upload endpoint comes from cosmonarchy.yml so a build never leaks
     // games to a server nobody configured for it. Empty = uploads disabled.
+    // This httplib predates set_base_url: construct a fresh client for the
+    // configured server.
     const auto server = g_config.replay_kraken_server;
     if (server.empty()) {
         log("Replay auto-upload is disabled: replay-kraken-server is empty in cosmonarchy.yml.");
         return;
     }
-    m_api_client.set_base_url(server);
+    m_api_client = std::make_unique<httplib::Client>(server);
 
     m_token = g_config.replay_kraken_token;
     if (m_token.empty()) {
         m_token = read_token();
     }
     if (!m_token.empty()) {
-        m_api_client.set_default_headers({
+        m_api_client->set_default_headers({
             {"Authorization", "Bearer " + m_token},
         });
         authenticate();
@@ -69,7 +71,7 @@ void ReplayKraken::shutdown() {
         m_stopping = true;
         m_upload_queue.clear();
     }
-    m_api_client.stop();
+    m_api_client->stop();
     m_queue_condition.notify_all();
     if (m_upload_thread.joinable()) {
         m_upload_thread.join();
@@ -83,7 +85,7 @@ void ReplayKraken::log(std::string_view message) {
 
 bool ReplayKraken::authenticate() {
     for (int retry = 0; retry < 3; retry++) {
-        if (const auto res = m_api_client.Get("/api/users/@me")) {
+        if (const auto res = m_api_client->Get("/api/users/@me")) {
             if (res->status == 200) {
                 const auto json = Json::parse(res->body);
                 try {
@@ -284,7 +286,7 @@ bool ReplayKraken::upload_replay(
     ));
     for (int retry = 0; retry < UploadAttempts; retry++) {
         log(std::format("Attempt {} to upload replay...", retry + 1));
-        if (const auto res = m_api_client.Post("/api/matches", json_str, "application/json")) {
+        if (const auto res = m_api_client->Post("/api/matches", json_str, "application/json")) {
             if (res->status >= 200 && res->status < 300) {
                 log("Replay uploaded successfully.");
                 return true;

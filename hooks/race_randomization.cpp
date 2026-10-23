@@ -69,6 +69,13 @@ void RaceRandomizer::process_randomization() {
                     player.race = random_from(to_span(selected_races));
                 } else {
                     player.race = random_from(human_races);
+                    pool = human_races;
+                }
+                if (g_config.avoid_mirror_races) {
+                    player.race = roll_race(pool, rolled_flags);
+                    rolled_flags |= race_flag(static_cast<RaceId::Enum>(player.race));
+                } else {
+                    player.race = random_from(pool);
                 }
             } else {
                 // Only use original races for CPU players for now

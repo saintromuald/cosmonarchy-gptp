@@ -2,6 +2,7 @@
 #include <condition_variable>
 #include <deque>
 #include <fstream>
+#include <memory>
 #include <mutex>
 #include <optional>
 #include <string>
@@ -74,6 +75,8 @@ private:
     std::ofstream m_logs;
     std::mutex m_log_mutex;
     httplib::Client m_api_client{};
+    std::unique_ptr<httplib::Client> m_api_client;
+    std::string m_server_url;
     uuids::uuid_name_generator m_uuid_generator{uuids::uuid_namespace_dns};
     std::string m_token;
     std::string m_username;
