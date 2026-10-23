@@ -75,7 +75,7 @@ namespace {
 		result = hooks::game_input_user_key_press(event_arg);
 		__asm {
 			POPAD
-			MOV result, AL
+			MOVZX EAX, result
 			RET
 		}
 	}

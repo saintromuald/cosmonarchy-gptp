@@ -296,19 +296,9 @@ void glu_chat() {
     helper::chat_update_race_slots(g_chat_bin);
     scale_chat_combobox_widths(g_chat_bin);
 
-    if (GetUserDefaultLangID() == MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN) && !g_input_context) {
-        g_input_context = ImmGetContext(g_main_window);
-        ImmAssociateContext(g_main_window, g_input_context);
-    }
-
     g_chat_context = std::make_unique<GluChatContext>();
 
     auto last_control = static_cast<GluChatControls>(helper::glu_load_bin_dialog(g_chat_bin->to_bindlg(), glu_chat_dlgproc));
-
-    if (GetUserDefaultLangID() == MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN) && !g_input_context) {
-        g_input_context = ImmGetContext(g_main_window);
-        g_input_context = ImmAssociateContext(g_main_window, g_input_context);
-    }
 
     if (last_control == GluChatControls::HostLeft || last_control == GluChatControls::CancelButton) {
         if (g_provider_id == 'BNET') {

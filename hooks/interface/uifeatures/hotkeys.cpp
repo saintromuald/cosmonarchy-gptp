@@ -297,5 +297,6 @@ namespace hooks {
 				}
 			}
 		}
+		return 0;
 	}
 }

@@ -36,6 +36,7 @@
 #include "hooks/display/frame_pacing.h"
 #include "hooks/text/text_print.h"
 #include "hooks/text/text_width.h"
+#include "hooks/text/text_input.h"
 #include "hooks/maxhp.h"
 #include "hooks/apply_upgrade_flags.h"
 #include "hooks/attack_priority.h"
@@ -802,6 +803,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
     hooks::inject_screen_text_hooks();
     hooks::inject_text_print_hooks();
     hooks::inject_text_width_hooks();
+    hooks::inject_text_input_hooks();
     hooks::inject_wheel_hooks();
     hooks::inject_gamemap_hooks();
     hooks::inject_terrain_hooks();
@@ -967,6 +969,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 BOOL WINAPI Plugin::TerminatePlugin() {
     g_replay_kraken.shutdown();
     remove_win_key_hook();
+    TextInput::instance().teardown();
+    hooks::teardown_text_input_hooks();
 
     return true;
 }

@@ -339,13 +339,18 @@ struct LightUpButtonData {
 };
 static_assert(sizeof(LightUpButtonData) == 12);
 
+enum TextInputFlags : u8 {
+    ScrollToCursorOnDraw = 0x01,
+    InsertMode           = 0x10, // Clear for overwrite mode
+};
+
 struct TextInputData {
     u8 flags;
     u8 scroll_offset;
     u8 horizontal_margin;
     u8 vertical_offset;
     u16 visible_width;
-    bool click_notified_slots; // Have we notified active-widget slots this click?
+    bool holds_mouse_slots; // Hide the cursor until the mouse moves
     u8 unknown_7;
     u8 cursor_position;
     u8 unknown_9[3];

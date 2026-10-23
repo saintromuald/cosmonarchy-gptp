@@ -4,6 +4,7 @@
 #include "BW/structures.h"
 #include "systems/text/measure.h"
 #include "systems/text/text.h"
+#include "systems/text/utf8.h"
 #include "systems/text/walk.h"
 #include "systems/text/wrap.h"
 
@@ -62,6 +63,9 @@ void __stdcall textbox_scroll_to_cursor_impl(BinDlg* dlg) {
     bw::TextInputData& data = *reinterpret_cast<bw::TextInputData*>(&dlg->TextBox0x36);
     const u8* text = (const u8*)dlg->text;
     const Box16& bounds = dlg->bounds;
+    // Stale scroll offsets can point inside a codepoint
+    data.scroll_offset = u8(text::snap_to_sequence_start(
+        {(const char*)text, strlen((const char*)text)}, data.scroll_offset));
     const text::PrintFont font = current_print_font();
     const s32 cursor_width = text::cursor_width(font);
 
