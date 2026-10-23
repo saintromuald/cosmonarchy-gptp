@@ -3223,8 +3223,7 @@ namespace helper {
             PUSH unk1
             PUSH unk2
             PUSH unk3
-            MOVZX EBX, order_id
-            PUSH EBX
+            PUSH order_id
             PUSH unk4
             PUSH unk5
             MOV EAX, 0
@@ -12254,8 +12253,7 @@ namespace helper {
         static u32 func_address = 0x0048DAF0;
         __asm {
             PUSHAD
-            MOVZX EBX, unit_id
-            PUSH EBX
+            PUSH unit_id
             PUSH is_addon
             CALL func_address
             MOV result, EAX
