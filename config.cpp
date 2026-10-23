@@ -71,6 +71,10 @@ void load_config() {
     YAML::Node yaml = YAML::LoadFile(g_config_path.string());
     // Random settings
     load_field(yaml, "random-races", g_config.random_races);
+    load_field(yaml, "avoid-mirror-races", g_config.avoid_mirror_races);
+    load_field(yaml, "replay-kraken-server", g_config.kraken_server);
+    load_field(yaml, "replay-kraken-token", g_config.kraken_token);
+    load_field(yaml, "replay-kraken-upload-all", g_config.kraken_upload_all);
 
     // Launch settings
     load_field(yaml, "disable-wmode-prompt", g_config.disable_wmode_prompt);
@@ -206,6 +210,16 @@ void save_config() {
     yaml << YAML::Newline << YAML::Comment("Possible values: Zerg, Terran, Protoss, Askosi, All, Original");
     yaml << YAML::Newline << YAML::Comment("You must select at least two values or All will be used");
     write_field(yaml, "random-races", g_config.random_races);
+    yaml << YAML::Newline;
+    write_field(yaml, "avoid-mirror-races", g_config.avoid_mirror_races);
+    yaml << YAML::Newline << YAML::Newline;
+
+    yaml << YAML::Comment("Replay Kraken (self-hosted fork)");
+    write_field(yaml, "replay-kraken-server", g_config.kraken_server);
+    yaml << YAML::Newline;
+    write_field(yaml, "replay-kraken-token", g_config.kraken_token);
+    yaml << YAML::Newline;
+    write_field(yaml, "replay-kraken-upload-all", g_config.kraken_upload_all);
     yaml << YAML::Newline << YAML::Newline;
 
     yaml << YAML::Comment("Launch settings");

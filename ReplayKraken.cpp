@@ -9,6 +9,7 @@
 #include <Windows.h>
 
 #include "BW/api.h"
+#include "config.h"
 #include "systems/triggers/trigger_system.h"
 #include "logger.h"
 
@@ -30,13 +31,22 @@ ReplayKraken::ReplayKraken() {
     fs::create_directories("logs/", ec);
     m_logs.open("logs/replay_kraken.log", std::ios::out | std::ios::app);
 
-    m_token = read_token();
+    // Self-hosted fork: server URL, token and the upload-everything switch come
+    // from cosmonarchy.yml; the registry token remains the fallback.
+    m_upload_all = g_config.kraken_upload_all;
+    const std::string server_url = g_config.kraken_server.empty()
+        ? "http://cosmonarchy.com"
+        : g_config.kraken_server;
+    m_api_client.set_base_url(server_url);
+
+    m_token = g_config.kraken_token.empty() ? read_token() : g_config.kraken_token;
     if (!m_token.empty()) {
         m_api_client.set_default_headers({
             {"Authorization", "Bearer " + m_token},
         });
         authenticate();
     }
+    log(std::format("Replay Kraken: server {}, upload-all {}", server_url, m_upload_all));
 }
 
 ReplayKraken::~ReplayKraken() {
@@ -87,6 +97,10 @@ bool ReplayKraken::should_upload_last_replay() {
         log("Replay auto-upload is forbidden by the config.");
         return false;
     }
+    if (m_upload_all) {
+        log("Replay auto-upload is enabled (replay-kraken-upload-all).");
+        return true;
+    }
     if (bw::human_or_defeated_human_count() < 2) {
         log("Replay auto-upload is disabled for single-player games.");
         return false;
@@ -97,6 +111,73 @@ bool ReplayKraken::should_upload_last_replay() {
     }
     log("Replay auto-upload is disabled for unranked non-desynced games.");
     return false;
+}
+
+static const char* race_name(u8 race) {
+    switch (race) {
+        case RaceId::Zerg:        return "Zerg";
+        case RaceId::Terran:      return "Terran";
+        case RaceId::Protoss:     return "Protoss";
+        case RaceId::Askosi:      return "Askosi";
+        case RaceId::Bloodsummon: return "Bloodsummon";
+        case RaceId::Kogri:       return "Kogri";
+        default:                  return "";
+    }
+}
+
+static char race_code(u8 race) {
+    switch (race) {
+        case RaceId::Zerg:        return 'Z';
+        case RaceId::Terran:      return 'T';
+        case RaceId::Protoss:     return 'P';
+        case RaceId::Askosi:      return 'A';
+        case RaceId::Bloodsummon: return 'B';
+        case RaceId::Kogri:       return 'K';
+        default:                  return 0;
+    }
+}
+
+/// Structured metadata the server stores alongside the replay files: map, game type,
+/// every human player's name/race/result, and the sorted matchup string ("ZvT").
+static Json build_meta() {
+    Json meta;
+    meta["map"] = g_current_map_filename ? g_current_map_filename : "";
+    meta["gameType"] = bw::get_game_kind() == GameKind::Ranked ? "ranked" : "melee";
+
+    Json players = Json::array();
+    std::string codes;
+    for (u32 i = 0; i < 8; i++) {
+        if (bw::player_is_witness(i)) {
+            continue;
+        }
+        const auto& player = g_player_table[i];
+        if (player.type != PlayerType::Human && player.type != PlayerType::HumanDefeated) {
+            continue;
+        }
+        const char* race = race_name(player.race);
+        const char* result = player.type == PlayerType::HumanDefeated ? "lost" : "won";
+        players.push_back({
+            {"name", std::string(player.name, strnlen(player.name, sizeof(player.name)))},
+            {"race", race},
+            {"slot", i},
+            {"result", result},
+        });
+        if (const char code = race_code(player.race); code && codes.find(code) == std::string::npos) {
+            codes.push_back(code);
+        }
+    }
+    meta["players"] = std::move(players);
+
+    std::sort(codes.begin(), codes.end());
+    std::string matchup;
+    for (const char c : codes) {
+        if (!matchup.empty()) {
+            matchup += 'v';
+        }
+        matchup += c;
+    }
+    meta["matchup"] = matchup;
+    return meta;
 }
 
 void ReplayKraken::upload_last_replay() {
@@ -155,6 +236,7 @@ void ReplayKraken::upload_last_replay() {
             .replay_file = std::move(replay),
             .desync_file = std::move(desync),
             .randoms_file = std::move(randoms),
+            .meta = build_meta(),
         });
         log("Replay upload queued.");
     } catch (const std::exception& ex) {
@@ -199,7 +281,8 @@ void ReplayKraken::upload_worker() {
                 std::move(job.game_version),
                 std::move(job.replay_file),
                 std::move(job.desync_file),
-                std::move(job.randoms_file)
+                std::move(job.randoms_file),
+                std::move(job.meta)
             );
         } catch (const std::exception& ex) {
             log(std::format("Replay upload failed with an exception: {}", ex.what()));
@@ -214,7 +297,8 @@ bool ReplayKraken::upload_replay(
     std::string game_version,
     std::string replay_file,
     std::string desync_file,
-    std::string randoms_file
+    std::string randoms_file,
+    Json meta
 ) {
     const auto replay_size = replay_file.size();
     const auto desync_size = desync_file.size();
@@ -224,6 +308,7 @@ bool ReplayKraken::upload_replay(
     InsertMatchRequest request{
         .matchUuid = match_uuid,
         .gameVersion = std::move(game_version),
+        .meta = std::move(meta),
     };
 
     request.replayFile = cppcodec::base64_rfc4648::encode(replay_file);
