@@ -299,3 +299,11 @@ namespace hooks {
 		}
 	}
 }
+
+// Exported for the Cosmonarchy Plus plugin: the eight saved camera positions
+// (F1-F8 -> C1-C8) as CameraCap x v2u16 (32 bytes, x/y world px each), so the
+// plugin can label them on the minimap. Returns the live array; the plugin
+// treats a missing export (older build) as "labels disabled".
+extern "C" __declspec(dllexport) const v2u16* __stdcall cosmo_camera_screens() {
+    return hotkeys.screens;
+}
