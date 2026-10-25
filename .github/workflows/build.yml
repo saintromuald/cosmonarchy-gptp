@@ -1,0 +1,50 @@
+name: build-gptp
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Show tools
+        shell: pwsh
+        run: |
+          vswhere -latest -property installationVersion
+          vcpkg version
+          echo "VCPKG_INSTALLATION_ROOT=$env:VCPKG_INSTALLATION_ROOT"
+
+      - name: vcpkg install (manifest)
+        shell: pwsh
+        run: |
+          vcpkg integrate install
+          vcpkg install --triplet x86-windows --disable-metrics
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Build (Release Win32)
+        shell: pwsh
+        run: |
+          msbuild GPTP.sln /m /p:Configuration=Release /p:Platform=Win32 /p:VcpkgEnableManifest=true /v:m
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Collect artifact
+        shell: pwsh
+        run: |
+          Get-ChildItem -Recurse -Include *.qdp,*.dll -Path _Build | Format-Table FullName,Length
+          New-Item -ItemType Directory -Force -Path out | Out-Null
+          Copy-Item _Build\CM-GPTP-Release.qdp out\ -ErrorAction SilentlyContinue
+          Copy-Item _Build\CM-GPTP-Release.pdb out\ -ErrorAction SilentlyContinue
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CM-GPTP-Release
+          path: out/*
+          if-no-files-found: warn
