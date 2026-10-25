@@ -58,9 +58,9 @@ static void validate_config() {
                         config_error("Grid hotkey '{}' is not valid! Please correct your cosmonarchy.yml to use hotkeys from the A-Z range.", hotkey);
                     }
                 }
-                for (u32 k = 0; k < 6; k++) {
-                    // Note: We don't need to validate against tilde, since not only it's not included in A-Z range, neither '`' nor '~' maps to the correct VK code anyways.
-                    static const char* invalid_hotkeys = "RFVTGB";
+                // Note: We don't need to validate against tilde, since not only it's not included in A-Z range, neither '`' nor '~' maps to the correct VK code anyways.
+                static const char* invalid_hotkeys = "RFVTGBYHN";
+                for (u32 k = 0; invalid_hotkeys[k] != '\0'; k++) {
                     char invalid_ch = invalid_hotkeys[k];
                     if (hotkey == invalid_ch) {
                         config_error("Grid hotkey \"{}\" collides with extended control group \"{}\"! Please resolve the collision in cosmonarchy.yml.", hotkey, invalid_ch);
@@ -335,7 +335,7 @@ void save_config() {
         }
         yaml << YAML::EndSeq << YAML::EndMap;
     }
-    yaml << YAML::Newline << YAML::Comment("Adds extra control groups at R, F, V, T, G, B. Must be used with grid hotkeys!");
+    yaml << YAML::Newline << YAML::Comment("Adds extra control groups at R, F, V, T, G, B, Y, H, N. Must be used with grid hotkeys!");
     write_field(yaml, "extended-control-groups", g_config.extended_control_groups);
     write_field(yaml, "default-to-steal-hotkeys", g_config.default_to_steal_hotkeys);
     yaml << YAML::Newline << YAML::Comment("Replaces tilde with an additional control group, moves console to F12");
