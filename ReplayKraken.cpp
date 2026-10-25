@@ -1,14 +1,21 @@
 #include "pch.h"
 #include "ReplayKraken.h"
 
+#include <algorithm>
+#include <cctype>
 #include <exception>
 #include <format>
 #include <stdexcept>
+#include <vector>
 
 #include <cppcodec/base64_rfc4648.hpp>
 #include <Windows.h>
 
 #include "BW/api.h"
+#include "BW/enumerations.h"
+#include "BW/structures/Player.h"
+#include "CM/cm_utils.h"
+#include "config.h"
 #include "systems/triggers/trigger_system.h"
 #include "logger.h"
 
@@ -30,13 +37,26 @@ ReplayKraken::ReplayKraken() {
     fs::create_directories("logs/", ec);
     m_logs.open("logs/replay_kraken.log", std::ios::out | std::ios::app);
 
-    m_token = read_token();
+    // The upload endpoint comes from cosmonarchy.yml so a build never leaks
+    // games to a server nobody configured for it. Empty = uploads disabled.
+    const auto server = g_config.replay_kraken_server;
+    if (server.empty()) {
+        log("Replay auto-upload is disabled: replay-kraken-server is empty in cosmonarchy.yml.");
+        return;
+    }
+    m_api_client.set_base_url(server);
+
+    m_token = g_config.replay_kraken_token;
+    if (m_token.empty()) {
+        m_token = read_token();
+    }
     if (!m_token.empty()) {
         m_api_client.set_default_headers({
             {"Authorization", "Bearer " + m_token},
         });
         authenticate();
     }
+    m_upload_enabled = true;
 }
 
 ReplayKraken::~ReplayKraken() {
@@ -79,6 +99,9 @@ bool ReplayKraken::authenticate() {
 }
 
 bool ReplayKraken::should_upload_last_replay() {
+    if (!m_upload_enabled) {
+        return false;
+    }
     if (g_globals->desync_state.had_desync()) {
         log("Replay auto-upload is enabled for desynced games.");
         return true;
@@ -86,6 +109,10 @@ bool ReplayKraken::should_upload_last_replay() {
     if (g_globals->forbid_replay_auto_upload) {
         log("Replay auto-upload is forbidden by the config.");
         return false;
+    }
+    if (g_config.replay_kraken_upload_all) {
+        log("Replay auto-upload is enabled by the config.");
+        return true;
     }
     if (bw::human_or_defeated_human_count() < 2) {
         log("Replay auto-upload is disabled for single-player games.");
@@ -155,6 +182,7 @@ void ReplayKraken::upload_last_replay() {
             .replay_file = std::move(replay),
             .desync_file = std::move(desync),
             .randoms_file = std::move(randoms),
+            .meta = build_meta(),
         });
         log("Replay upload queued.");
     } catch (const std::exception& ex) {
@@ -199,7 +227,8 @@ void ReplayKraken::upload_worker() {
                 std::move(job.game_version),
                 std::move(job.replay_file),
                 std::move(job.desync_file),
-                std::move(job.randoms_file)
+                std::move(job.randoms_file),
+                std::move(job.meta)
             );
         } catch (const std::exception& ex) {
             log(std::format("Replay upload failed with an exception: {}", ex.what()));
@@ -214,7 +243,8 @@ bool ReplayKraken::upload_replay(
     std::string game_version,
     std::string replay_file,
     std::string desync_file,
-    std::string randoms_file
+    std::string randoms_file,
+    Json meta
 ) {
     const auto replay_size = replay_file.size();
     const auto desync_size = desync_file.size();
@@ -239,6 +269,10 @@ bool ReplayKraken::upload_replay(
         std::string{}.swap(randoms_file);
     }
 
+    if (!meta.is_null() && !meta.empty()) {
+        request.meta = std::move(meta);
+    }
+
     Json json(request);
     request = {};
     const auto json_str = json.dump();
@@ -260,4 +294,93 @@ bool ReplayKraken::upload_replay(
     }
     log(std::format("Failed to upload replay after {} attempts.", UploadAttempts));
     return false;
+}
+
+Json ReplayKraken::build_meta() {
+    Json meta;
+
+    // Map, game kind and length.
+    meta["map"] = g_current_map_name;
+    meta["gameType"] = game_kind_to_string(bw::get_game_kind());
+    meta["durationFrames"] = g_elapsed_time_frames;
+
+    // Players: name, race, slot, result, and human/computer type. The result
+    // is derived from the local player's outcome and the force (team) layout;
+    // in free-for-alls only the local force's outcome is known.
+    const s32 local_id = g_local_nation_id;
+    const bool has_local = local_id >= 0 && local_id < PLAYER_COUNT &&
+        (g_player_table[local_id].type == PlayerType::Human ||
+         g_player_table[local_id].type == PlayerType::HumanDefeated);
+    const u8 local_force = has_local ? g_player_table[local_id].force : 0;
+    const bool decided = g_game_result == GameResult::Victory || g_game_result == GameResult::Defeat;
+    const bool local_won = g_game_result == GameResult::Victory;
+    const bool draw = g_game_result == GameResult::Draw;
+
+    u32 force_count = 0;
+    {
+        std::vector<u8> forces;
+        for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
+            const auto type = g_player_table[i].type;
+            if (type != PlayerType::Human && type != PlayerType::HumanDefeated) {
+                continue;
+            }
+            if (std::find(forces.begin(), forces.end(), g_player_table[i].force) == forces.end()) {
+                forces.push_back(g_player_table[i].force);
+            }
+        }
+        force_count = static_cast<u32>(forces.size());
+    }
+
+    Json players = Json::array();
+    std::vector<std::string> matchup_sides;
+    std::vector<u8> matchup_forces;
+    for (u32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
+        const auto type = g_player_table[i].type;
+        if (type != PlayerType::Human && type != PlayerType::HumanDefeated && type != PlayerType::Computer) {
+            continue;
+        }
+        const auto race = static_cast<RaceId::Enum>(g_player_table[i].race);
+
+        std::string result = "unknown";
+        if (draw) {
+            result = "draw";
+        } else if (decided && has_local) {
+            const u8 force = g_player_table[i].force;
+            if (force_count <= 2 || force == local_force) {
+                const bool same_force = force == local_force;
+                result = same_force == local_won ? "won" : "lost";
+            }
+        }
+
+        players.push_back({
+            {"name", std::string{Player::name_view(i)}},
+            {"race", race_to_string(race)},
+            {"slot", i},
+            {"result", result},
+            {"type", type == PlayerType::Computer ? "computer" : "human"},
+        });
+
+        if (type != PlayerType::Computer &&
+            std::find(matchup_forces.begin(), matchup_forces.end(), g_player_table[i].force) == matchup_forces.end()) {
+            matchup_forces.push_back(g_player_table[i].force);
+            if (const auto initial = get_race_initial(race)) {
+                matchup_sides.emplace_back(1, static_cast<char>(
+                    std::toupper(static_cast<unsigned char>(*initial))));
+            } else {
+                matchup_sides.emplace_back(race_to_string(race));
+            }
+        }
+    }
+    meta["players"] = players;
+
+    std::string matchup;
+    for (size_t k = 0; k < matchup_sides.size(); k++) {
+        if (k > 0) {
+            matchup += 'v';
+        }
+        matchup += matchup_sides[k];
+    }
+    meta["matchup"] = matchup;
+
+    return meta;
 }

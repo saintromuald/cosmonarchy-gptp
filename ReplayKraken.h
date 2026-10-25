@@ -3,6 +3,7 @@
 #include <deque>
 #include <fstream>
 #include <mutex>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <thread>
@@ -15,13 +16,14 @@ using Json = nlohmann::json;
 
 struct InsertMatchRequest {
     // NOTE: camelCase required for macro to work as intended
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(InsertMatchRequest, matchUuid, gameVersion, replayFile, desyncFile, randomsFile);
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(InsertMatchRequest, matchUuid, gameVersion, replayFile, desyncFile, randomsFile, meta);
 
     std::string matchUuid;
     std::string gameVersion;
     std::string replayFile;
     std::string desyncFile;
     std::string randomsFile;
+    std::optional<Json> meta;
 };
 
 class ReplayKraken {
@@ -43,7 +45,8 @@ public:
         std::string game_version,
         std::string replay_file,
         std::string desync_file,
-        std::string randoms_file
+        std::string randoms_file,
+        Json meta
     );
 
     std::string token() const { return m_token; }
@@ -56,18 +59,25 @@ private:
         std::string replay_file;
         std::string desync_file;
         std::string randoms_file;
+        Json meta;
     };
 
     void enqueue_upload(UploadJob job);
     void upload_worker();
     void log(std::string_view message);
 
+    /// Players, map, matchup and result for the finished game, as the
+    /// self-hosted fork's `meta` payload. Empty object when no metadata
+    /// could be gathered (never fails the upload).
+    static Json build_meta();
+
     std::ofstream m_logs;
     std::mutex m_log_mutex;
-    httplib::Client m_api_client{"http://cosmonarchy.com"};
+    httplib::Client m_api_client{};
     uuids::uuid_name_generator m_uuid_generator{uuids::uuid_namespace_dns};
     std::string m_token;
     std::string m_username;
+    bool m_upload_enabled = false;
 
     std::mutex m_queue_mutex;
     std::condition_variable m_queue_condition;
