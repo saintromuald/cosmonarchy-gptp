@@ -8,6 +8,10 @@
 
 Hotkeys hotkeys;
 
+extern "C" __declspec(dllexport) const u16* cosmo_camera_screens() {
+    return reinterpret_cast<const u16*>(hotkeys.screens);
+}
+
 static KeyEvent key_event(u32 key, bool was_held, bool is_held) {
 	u64 now = GetTickCount64();
 	KeyState& state = hotkeys.keys[key];
