@@ -1,10 +1,7 @@
 {
   "dependencies": [
     "boost-multiprecision",
-    {
-      "name": "cpp-httplib",
-      "features": ["ssl"]
-    },
+    "cpp-httplib",
     "cppcodec",
     "freetype",
     "lua",
@@ -13,7 +10,9 @@
     "nlohmann-json",
     {
       "name": "reflectcpp",
-      "features": ["yaml"]
+      "features": [
+        "yaml"
+      ]
     },
     "simdutf",
     "sol2",
