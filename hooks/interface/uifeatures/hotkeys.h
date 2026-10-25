@@ -56,6 +56,11 @@ struct Hotkeys {
 
 extern Hotkeys hotkeys;
 
+// Exported for Cosmonarchy Plus: the F1..F8 camera screens as 8 × v2u16 of
+// world pixels (x, y interleaved). The Plus plugin draws C1..C8 minimap
+// labels from this; absent export = feature disarms.
+extern "C" __declspec(dllexport) const u16* cosmo_camera_screens();
+
 void init_hotkeys();
 void update_hotkeys();
 
