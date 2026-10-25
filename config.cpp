@@ -183,6 +183,11 @@ void load_config() {
     load_field(yaml, "auto-save-replays", g_config.auto_save_replays);
     load_field(yaml, "sanitize-replay-chat", g_config.sanitize_replay_chat);
 
+    // Replay Kraken (self-hosted fork)
+    load_field(yaml, "replay-kraken-server", g_config.replay_kraken_server);
+    load_field(yaml, "replay-kraken-token", g_config.replay_kraken_token);
+    load_field(yaml, "replay-kraken-upload-all", g_config.replay_kraken_upload_all);
+
     validate_config();
     save_config();
 }
@@ -373,6 +378,14 @@ void save_config() {
     yaml << YAML::Comment("Replays");
     write_field(yaml, "auto-save-replays", g_config.auto_save_replays);
     write_field(yaml, "sanitize-replay-chat", g_config.sanitize_replay_chat);
+    yaml << YAML::Newline << YAML::Newline;
+
+    yaml << YAML::Comment("Replay Kraken upload (self-hosted fork)");
+    yaml << YAML::Newline << YAML::Comment("Where finished games are uploaded. Leave empty to disable auto-upload.");
+    yaml << YAML::Newline << YAML::Comment("Token overrides the registry account token when set.");
+    write_field(yaml, "replay-kraken-server", g_config.replay_kraken_server);
+    write_field(yaml, "replay-kraken-token", g_config.replay_kraken_token);
+    write_field(yaml, "replay-kraken-upload-all", g_config.replay_kraken_upload_all);
     yaml << YAML::Newline << YAML::Newline;
 
     yaml << YAML::EndMap;

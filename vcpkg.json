@@ -1,7 +1,10 @@
 {
   "dependencies": [
     "boost-multiprecision",
-    "cpp-httplib",
+    {
+      "name": "cpp-httplib",
+      "features": ["ssl"]
+    },
     "cppcodec",
     "freetype",
     "lua",

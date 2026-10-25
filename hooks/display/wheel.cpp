@@ -8,8 +8,11 @@ void __cdecl mouse_wheel(u32 event_type, u32 packed_position, InputProcsFunc* in
     // Uses g_mouse (surface client coords) since packed_position is in screen space.
     // 004D2487 thresholds WHEEL_DELTA into discrete events.
     const s32 notches = event_type == DialogEventType_MWheelUp ? 1 : -1;
-    // Zoom claims the wheel only while in-game and no popup modal is open; glue screens use it to scroll listboxes.
-    if (g_is_in_game && !g_popup_dialog && g_zoom.adjust_by_wheel(notches, { g_mouse->x, g_mouse->y })) {
+    // Zoom claims the wheel only while Ctrl is held and in-game with no popup
+    // modal open; the plain wheel stays available for pan-scrolling and for
+    // glue screens to scroll listboxes.
+    const bool ctrl_held = GetKeyState(VK_CONTROL) & (1 << 15);
+    if (ctrl_held && g_is_in_game && !g_popup_dialog && g_zoom.adjust_by_wheel(notches, { g_mouse->x, g_mouse->y })) {
         return;
     }
 

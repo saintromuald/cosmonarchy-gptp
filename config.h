@@ -98,6 +98,13 @@ struct Config {
     // Replays
     bool auto_save_replays = true;
     bool sanitize_replay_chat = false;
+
+    // Replay Kraken upload (self-hosted fork). An empty server disables
+    // auto-upload entirely, so a build never leaks games to an endpoint
+    // nobody configured for it.
+    std::string replay_kraken_server = "";
+    std::string replay_kraken_token = "";
+    bool replay_kraken_upload_all = false;
 };
 
 inline Config g_config{};
