@@ -84,3 +84,23 @@ s32 Graphics::draw_screen_shapes() {
 }
 
 }
+// ---------------------------------------------------------------------------
+// Exported for Cosmonarchy Plus: screen-fixed overlay text/shapes through the
+// fork's graphics system. The shapes draw post-resample in
+// draw_deferred_shapes (present_frame, i==2) and the fork's refresh handling
+// (draw_hook.cpp: want_refresh -> refresh_screen) presents them — the same
+// pipeline the fork's own UI text uses. Coordinates are plain screen pixels
+// on the presented buffer (ON_SCREEN).
+// ---------------------------------------------------------------------------
+
+extern "C" __declspec(dllexport) void cosmo_plus_gfx_text(int x, int y, const char* text) {
+    g_graphics.draw_text(x, y, text ? text : "", graphics::FONT_MEDIUM, graphics::ON_SCREEN);
+}
+
+extern "C" __declspec(dllexport) void cosmo_plus_gfx_box(int left, int top, int right, int bottom, unsigned char color) {
+    g_graphics.draw_box(left, top, right, bottom, color, graphics::ON_SCREEN);
+}
+
+extern "C" __declspec(dllexport) void cosmo_plus_gfx_filled_box(int left, int top, int right, int bottom, unsigned char color) {
+    g_graphics.draw_filled_box(left, top, right, bottom, color, graphics::ON_SCREEN);
+}
