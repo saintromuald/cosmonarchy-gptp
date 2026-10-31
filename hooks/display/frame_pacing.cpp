@@ -7,11 +7,96 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <filesystem>
+#include <fstream>
+#include <sstream>
+#include <thread>
 
 #define NOMINMAX
 #include <Windows.h>
 
 namespace {
+// --- Freeze watchdog --------------------------------------------------------
+// The Unit Tester map froze the game thread in an infinite wait with no
+// diagnostics: the loop simply stopped iterating (the game process sat at
+// 0% CPU in NtWaitForSingleObject). A detached monitor thread watches the
+// loop's heartbeat; when the loop stalls in-game for 15 s it suspends the
+// game thread, captures its Windows-side context and stack, and appends the
+// raw addresses plus the loop state to logs/gptp_freeze.log. The addresses
+// resolve to module+offset afterwards (exe 0x400000, gptp.qdp base, etc.).
+namespace freeze_watchdog {
+
+volatile u32 g_heartbeat_ms = 0;
+volatile bool g_started = false;
+volatile DWORD g_game_thread_id = 0;
+
+void monitor_thread() {
+    u32 last_dump_ms = 0;
+    for (;;) {
+        Sleep(1000);
+        const u32 now_ms = GetTickCount();
+        if (!g_started || !g_game_active) {
+            continue;
+        }
+        if (now_ms - g_heartbeat_ms < 15000 || now_ms - last_dump_ms < 10000) {
+            continue;
+        }
+        last_dump_ms = now_ms;
+
+        std::ostringstream out;
+        out << "freeze watchdog: game loop stalled (" << (now_ms - g_heartbeat_ms)
+            << " ms without a heartbeat)\n";
+        out << "  tick_count=" << now_ms << " next_tick_ms=" << g_next_tick_ms
+            << " turn_stalled=" << unsigned{g_turn_stalled}
+            << " turn_ticks_left=" << g_turn_ticks_left
+            << " gptp_base=0x" << std::hex << u32(reinterpret_cast<u32>(GetModuleHandleA("gptp.qdp")))
+            << std::dec << "\n";
+
+        HANDLE thread = OpenThread(
+            THREAD_GET_CONTEXT | THREAD_SUSPEND_RESUME | THREAD_QUERY_INFORMATION,
+            FALSE, g_game_thread_id);
+        if (thread) {
+            SuspendThread(thread);
+            CONTEXT ctx{};
+            ctx.ContextFlags = CONTEXT_FULL;
+            if (GetThreadContext(thread, &ctx)) {
+                out << "  eip=0x" << std::hex << ctx.Eip << " esp=0x" << ctx.Esp << std::dec << "\n";
+                // The thread is suspended, so reading its Windows stack
+                // directly is safe: the return addresses of the wait chain.
+                const u32* sp = reinterpret_cast<u32*>(ctx.Esp);
+                out << "  stack:";
+                for (int i = 0; i < 24; i++) {
+                    out << " 0x" << std::hex << sp[i];
+                }
+                out << std::dec << "\n";
+            } else {
+                out << "  GetThreadContext failed\n";
+            }
+            ResumeThread(thread);
+            CloseHandle(thread);
+        } else {
+            out << "  OpenThread failed\n";
+        }
+
+        std::filesystem::create_directories("logs/");
+        std::ofstream log{"logs/gptp_freeze.log", std::ios::app};
+        if (log) {
+            log << out.str() << std::endl;
+        }
+    }
+}
+
+// Called at the top of every loop iteration: heartbeat + one-time thread start.
+void beat() {
+    g_game_thread_id = GetCurrentThreadId();
+    g_heartbeat_ms = GetTickCount();
+    if (!g_started) {
+        g_started = true;
+        std::thread{monitor_thread}.detach();
+    }
+}
+
+} // namespace freeze_watchdog
 
 constexpr u32 ScrollStepMs = 10;
 constexpr u32 DeclinedTickPollMs = 1;
@@ -96,6 +181,7 @@ void __cdecl game_loop_top() {
     bool tick_declined = false;
 
     while (g_game_active) {
+        freeze_watchdog::beat();
         sleep_until_due(ms_until_due(GetTickCount(), tick_declined));
         const u64 busy_start = perf::now_us();
 

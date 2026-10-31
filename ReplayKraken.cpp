@@ -71,7 +71,13 @@ void ReplayKraken::shutdown() {
         m_stopping = true;
         m_upload_queue.clear();
     }
-    m_api_client->stop();
+    // m_api_client is only constructed when replay-kraken-server is set in
+    // cosmonarchy.yml. Uploads are disabled by default, and stopping the
+    // null client crashed every plugin teardown (AV at gptp+0x9012D, tick=0,
+    // captured at every boot).
+    if (m_api_client) {
+        m_api_client->stop();
+    }
     m_queue_condition.notify_all();
     if (m_upload_thread.joinable()) {
         m_upload_thread.join();
